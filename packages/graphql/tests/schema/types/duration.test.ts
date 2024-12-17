@@ -83,11 +83,6 @@ describe("Duration", () => {
               set: Duration
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -110,7 +105,6 @@ describe("Duration", () => {
             type MovieAggregateSelection {
               count: Int!
               duration: DurationAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

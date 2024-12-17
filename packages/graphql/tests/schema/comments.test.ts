@@ -154,11 +154,6 @@ describe("Comments", () => {
               set: Genre
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -218,7 +213,6 @@ describe("Comments", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -463,11 +457,6 @@ describe("Comments", () => {
                   lte: Float
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -632,7 +621,6 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1523,7 +1511,6 @@ describe("Comments", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1569,11 +1556,6 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -1597,7 +1579,6 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {

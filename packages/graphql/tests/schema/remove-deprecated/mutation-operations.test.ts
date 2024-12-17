@@ -313,7 +313,6 @@ describe("Deprecated mutation operations", () => {
 
             type ActorMovieActedInNodeAggregateSelection {
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             \\"\\"\\"
@@ -455,11 +454,6 @@ describe("Deprecated mutation operations", () => {
               multiply: Float
               set: Float
               subtract: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -674,7 +668,6 @@ describe("Deprecated mutation operations", () => {
             type MovieAggregateSelection {
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {

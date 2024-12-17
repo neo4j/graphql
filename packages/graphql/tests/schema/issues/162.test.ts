@@ -89,11 +89,6 @@ describe("162", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -211,7 +206,6 @@ describe("162", () => {
 
             type TigerJawLevel2AggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2CreateInput {
@@ -249,7 +243,6 @@ describe("162", () => {
 
             type TigerJawLevel2Part1AggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {
@@ -593,11 +586,6 @@ describe("162", () => {
 
             type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
               count: Int!
-              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
-            }
-
-            type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2UpdateInput {

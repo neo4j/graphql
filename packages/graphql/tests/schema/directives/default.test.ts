@@ -137,11 +137,6 @@ describe("@default directive", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -277,7 +272,6 @@ describe("@default directive", () => {
             type UserAggregateSelection {
               count: Int!
               fromInterface: StringAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               numberOfFriends: IntAggregateSelection!
               rating: FloatAggregateSelection!

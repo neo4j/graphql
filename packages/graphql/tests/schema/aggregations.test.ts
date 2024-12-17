@@ -170,11 +170,6 @@ describe("Aggregations", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -278,7 +273,6 @@ describe("Aggregations", () => {
             type MovieAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               imdbRating: FloatAggregateSelection!
               isbn: StringAggregateSelection!
               screenTime: DurationAggregateSelection!
@@ -728,11 +722,6 @@ describe("Aggregations", () => {
               multiply: Float
               set: Float
               subtract: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -1452,7 +1441,6 @@ describe("Aggregations", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -1465,7 +1453,6 @@ describe("Aggregations", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -1629,7 +1616,6 @@ describe("Aggregations", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -2008,11 +1994,6 @@ describe("Aggregations", () => {
               multiply: Float
               set: Float
               subtract: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID list filters\\"\\"\\"
@@ -2653,7 +2634,6 @@ describe("Aggregations", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -2829,7 +2809,6 @@ describe("Aggregations", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!

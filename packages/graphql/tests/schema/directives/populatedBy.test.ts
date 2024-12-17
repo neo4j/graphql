@@ -183,11 +183,6 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -214,7 +209,6 @@ describe("@populatedBy tests", () => {
                   callback2: StringAggregateSelection!
                   callback3: StringAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -400,11 +394,6 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -455,7 +444,6 @@ describe("@populatedBy tests", () => {
                   callback2: IntAggregateSelection!
                   callback3: IntAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -792,7 +780,6 @@ describe("@populatedBy tests", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -838,11 +825,6 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
@@ -876,7 +858,6 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -896,18 +877,12 @@ describe("@populatedBy tests", () => {
                 type MovieGenreGenresAggregationSelection {
                   count: Int!
                   edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
                   callback1: StringAggregateSelection!
                   callback2: StringAggregateSelection!
                   callback3: StringAggregateSelection!
-                  id: IDAggregateSelection!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {
@@ -1355,7 +1330,6 @@ describe("@populatedBy tests", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1399,11 +1373,6 @@ describe("@populatedBy tests", () => {
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
-                }
-
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
                 }
 
                 \\"\\"\\"ID filters\\"\\"\\"
@@ -1461,7 +1430,6 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1481,18 +1449,12 @@ describe("@populatedBy tests", () => {
                 type MovieGenreGenresAggregationSelection {
                   count: Int!
                   edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
                   callback1: IntAggregateSelection!
                   callback2: IntAggregateSelection!
                   callback3: IntAggregateSelection!
-                  id: IDAggregateSelection!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {

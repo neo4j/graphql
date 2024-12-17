@@ -59,11 +59,6 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -109,7 +104,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -275,11 +269,6 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -301,7 +290,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: BigIntAggregateSelection!
             }
 
@@ -465,11 +453,6 @@ describe("Algebraic", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -491,7 +474,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: FloatAggregateSelection!
             }
 
@@ -814,7 +796,6 @@ describe("Algebraic", () => {
             }
 
             type DirectorMovieDirectsNodeAggregateSelection {
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -886,11 +867,6 @@ describe("Algebraic", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -947,7 +923,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -1324,11 +1299,6 @@ describe("Algebraic", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -1385,7 +1355,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 

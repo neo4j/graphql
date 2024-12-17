@@ -173,11 +173,6 @@ describe("Deprecated Aggregations disabled", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -281,7 +276,6 @@ describe("Deprecated Aggregations disabled", () => {
             type MovieAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               imdbRating: FloatAggregateSelection!
               isbn: StringAggregateSelection!
               screenTime: DurationAggregateSelection!
@@ -734,11 +728,6 @@ describe("Deprecated Aggregations disabled", () => {
               multiply: Float
               set: Float
               subtract: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -1198,7 +1187,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -1211,7 +1199,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -1375,7 +1362,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -1757,11 +1743,6 @@ describe("Deprecated Aggregations disabled", () => {
               multiply: Float
               set: Float
               subtract: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID list filters\\"\\"\\"
@@ -2272,7 +2253,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!
@@ -2448,7 +2428,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
               someFloat: FloatAggregateSelection!
-              someId: IDAggregateSelection!
               someInt: IntAggregateSelection!
               someLocalDateTime: LocalDateTimeAggregateSelection!
               someLocalTime: LocalTimeAggregateSelection!

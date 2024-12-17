@@ -144,11 +144,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
               eq: [ID!]
@@ -249,7 +244,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type ResourceAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
             }
@@ -450,7 +444,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceEntityAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -507,7 +500,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceResourceContainedByNodeAggregateSelection {
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
             }

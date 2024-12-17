@@ -44,10 +44,6 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             {
                 moviesAggregate {
                     _count: count
-                    _id: id {
-                        _shortest: shortest
-                        _longest: longest
-                    }
                     _title: title {
                         _shortest: shortest
                         _longest: longest
@@ -74,24 +70,20 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             }
             CALL {
                 MATCH (this:Movie)
-                RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var1
-            }
-            CALL {
-                MATCH (this:Movie)
                 WITH this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
-                RETURN { _longest: head(list), _shortest: last(list) } AS var2
+                RETURN { _longest: head(list), _shortest: last(list) } AS var1
             }
             CALL {
                 MATCH (this:Movie)
-                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var3
+                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
             }
             CALL {
                 MATCH (this:Movie)
-                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var4
+                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
-            RETURN { _count: var0, _id: var1, _title: var2, _imdbRating: var3, _createdAt: var4 }"
+            RETURN { _count: var0, _title: var1, _imdbRating: var2, _createdAt: var3 }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

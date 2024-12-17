@@ -84,11 +84,6 @@ describe("Relationship", () => {
 
             type ActorMovieMoviesAggregationSelection {
               count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -286,11 +281,6 @@ describe("Relationship", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -457,7 +447,6 @@ describe("Relationship", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {

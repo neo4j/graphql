@@ -88,7 +88,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor2MovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -296,7 +295,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -520,11 +518,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -551,7 +544,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 

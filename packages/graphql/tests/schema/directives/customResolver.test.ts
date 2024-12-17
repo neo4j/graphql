@@ -75,11 +75,6 @@ describe("@customResolver directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -169,7 +164,6 @@ describe("@customResolver directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               password: StringAggregateSelection!
               username: StringAggregateSelection!
             }

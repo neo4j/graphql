@@ -60,11 +60,6 @@ describe("Localtime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -111,7 +106,6 @@ describe("Localtime", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               time: LocalTimeAggregateSelection!
             }
 

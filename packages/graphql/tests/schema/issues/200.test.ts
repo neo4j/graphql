@@ -55,7 +55,6 @@ describe("200", () => {
             }
 
             type CategoryAggregateSelection {
-              categoryId: IDAggregateSelection!
               count: Int!
               description: StringAggregateSelection!
               name: StringAggregateSelection!
@@ -138,11 +137,6 @@ describe("200", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"

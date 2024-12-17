@@ -83,11 +83,6 @@ describe("Datetime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -110,7 +105,6 @@ describe("Datetime", () => {
             type MovieAggregateSelection {
               count: Int!
               datetime: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

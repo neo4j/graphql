@@ -263,7 +263,6 @@ describe("Arrays Methods", () => {
 
             type ActorMovieActedInNodeAggregateSelection {
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             \\"\\"\\"
@@ -388,11 +387,6 @@ describe("Arrays Methods", () => {
               multiply: Float
               set: Float
               subtract: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -577,7 +571,6 @@ describe("Arrays Methods", () => {
             type MovieAggregateSelection {
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {

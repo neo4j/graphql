@@ -297,11 +297,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               UPDATE
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -350,7 +345,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -659,11 +653,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type PersonProductionMoviesAggregationSelection {
               count: Int!
-              node: PersonProductionMoviesNodeAggregateSelection
-            }
-
-            type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input PersonUpdateInput {
@@ -716,7 +705,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input ProductionConnectInput {
@@ -947,7 +935,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type SeriesAggregateSelection {
               count: Int!
               episode: IntAggregateSelection!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 

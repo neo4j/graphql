@@ -80,11 +80,6 @@ describe("Relationship nested operations", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -205,7 +200,6 @@ describe("Relationship nested operations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -223,7 +217,6 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviePersonActorsNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -314,7 +307,6 @@ describe("Relationship nested operations", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -480,11 +472,6 @@ describe("Relationship nested operations", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -567,7 +554,6 @@ describe("Relationship nested operations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

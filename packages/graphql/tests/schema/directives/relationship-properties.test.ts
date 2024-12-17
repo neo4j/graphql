@@ -957,7 +957,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
@@ -1215,11 +1214,6 @@ describe("Relationship-properties", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -1275,7 +1269,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              id: IDAggregateSelection!
               screenTime: IntAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
@@ -1708,7 +1701,6 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMovieMoviesEdgeAggregateSelection {
-              id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
 
@@ -1962,11 +1954,6 @@ describe("Relationship-properties", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -2000,7 +1987,6 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorActorsEdgeAggregateSelection {
-              id: IDAggregateSelection!
               timestamp: DateTimeAggregateSelection!
             }
 

@@ -157,11 +157,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -207,7 +202,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type ProfileAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               userName: StringAggregateSelection!
             }
 
@@ -336,7 +330,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               userName: StringAggregateSelection!
             }
 
@@ -491,7 +484,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserProfileFollowingNodeAggregateSelection {
-              id: IDAggregateSelection!
               userName: StringAggregateSelection!
             }
 

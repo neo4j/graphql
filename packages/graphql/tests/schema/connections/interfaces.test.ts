@@ -93,7 +93,6 @@ describe("Connection with interfaces", () => {
 
             type CreatureAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input CreatureConnectInput {
@@ -304,11 +303,6 @@ describe("Connection with interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -357,7 +351,6 @@ describe("Connection with interfaces", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -369,11 +362,6 @@ describe("Connection with interfaces", () => {
 
             type MovieCreatureDirectorAggregationSelection {
               count: Int!
-              node: MovieCreatureDirectorNodeAggregateSelection
-            }
-
-            type MovieCreatureDirectorNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input MovieDeleteInput {
@@ -566,7 +554,6 @@ describe("Connection with interfaces", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input PersonCreateInput {
@@ -664,11 +651,6 @@ describe("Connection with interfaces", () => {
 
             type PersonProductionMoviesAggregationSelection {
               count: Int!
-              node: PersonProductionMoviesNodeAggregateSelection
-            }
-
-            type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             \\"\\"\\"
@@ -731,7 +713,6 @@ describe("Connection with interfaces", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input ProductionConnectInput {
@@ -966,7 +947,6 @@ describe("Connection with interfaces", () => {
             type SeriesAggregateSelection {
               count: Int!
               episode: IntAggregateSelection!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -985,11 +965,6 @@ describe("Connection with interfaces", () => {
 
             type SeriesCreatureDirectorAggregationSelection {
               count: Int!
-              node: SeriesCreatureDirectorNodeAggregateSelection
-            }
-
-            type SeriesCreatureDirectorNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input SeriesDeleteInput {

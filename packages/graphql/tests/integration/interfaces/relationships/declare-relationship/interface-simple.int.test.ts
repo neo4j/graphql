@@ -1333,7 +1333,7 @@ describe("interface with declared relationships", () => {
             ]
         );
     });
-
+    // FLAKY_TEST
     // update -> connect -> edge
     test("update interface relationship, connect edge", async () => {
         const actorName = "actor1";

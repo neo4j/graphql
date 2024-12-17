@@ -270,11 +270,6 @@ describe("Exclude attribute suffix based filtering", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -1097,7 +1092,6 @@ describe("Exclude attribute suffix based filtering", () => {
               averageRating: FloatAggregateSelection!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
-              id: IDAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
               localTime: LocalTimeAggregateSelection!
               time: TimeAggregateSelection!
@@ -1126,7 +1120,6 @@ describe("Exclude attribute suffix based filtering", () => {
               count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
-              id: IDAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
               localTime: LocalTimeAggregateSelection!
               time: TimeAggregateSelection!

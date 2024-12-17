@@ -83,11 +83,6 @@ describe("Custom-mutations", () => {
               id: ID
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -108,7 +103,6 @@ describe("Custom-mutations", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

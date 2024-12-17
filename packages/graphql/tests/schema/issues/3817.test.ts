@@ -143,11 +143,6 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -196,7 +191,6 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -333,15 +327,10 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type PersonPersonFriendsAggregationSelection {
               count: Int!
               edge: PersonPersonFriendsEdgeAggregateSelection
-              node: PersonPersonFriendsNodeAggregateSelection
             }
 
             type PersonPersonFriendsEdgeAggregateSelection {
               id: StringAggregateSelection!
-            }
-
-            type PersonPersonFriendsNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             \\"\\"\\"

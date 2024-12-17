@@ -8336,7 +8336,6 @@ describe("Interface Relationships", () => {
             type CommentAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input CommentConnectInput {
@@ -8564,7 +8563,6 @@ describe("Interface Relationships", () => {
 
             type CommentPostPostNodeAggregateSelection {
               content: StringAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             type CommentPostRelationship {
@@ -8619,7 +8617,6 @@ describe("Interface Relationships", () => {
             }
 
             type CommentUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -8711,7 +8708,6 @@ describe("Interface Relationships", () => {
             type ContentAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input ContentConnectInput {
@@ -8973,11 +8969,6 @@ describe("Interface Relationships", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -9036,7 +9027,6 @@ describe("Interface Relationships", () => {
             type PostAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             type PostCommentCommentsAggregationSelection {
@@ -9046,7 +9036,6 @@ describe("Interface Relationships", () => {
 
             type PostCommentCommentsNodeAggregateSelection {
               content: StringAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input PostCommentsAggregateInput {
@@ -9319,7 +9308,6 @@ describe("Interface Relationships", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -9485,7 +9473,6 @@ describe("Interface Relationships", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -9558,7 +9545,6 @@ describe("Interface Relationships", () => {
 
             type UserContentContentNodeAggregateSelection {
               content: StringAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input UserContentCreateFieldInput {

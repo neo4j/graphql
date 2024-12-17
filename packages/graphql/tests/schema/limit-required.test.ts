@@ -246,7 +246,6 @@ describe("limitRequired constructor option", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -292,7 +291,6 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -425,7 +423,6 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -565,11 +562,6 @@ describe("limitRequired constructor option", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -636,7 +628,6 @@ describe("limitRequired constructor option", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -773,7 +764,6 @@ describe("limitRequired constructor option", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1039,7 +1029,6 @@ describe("limitRequired constructor option", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -1288,7 +1277,6 @@ describe("limitRequired constructor option", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -1378,7 +1366,6 @@ describe("limitRequired constructor option", () => {
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelection!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -1757,7 +1744,6 @@ describe("limitRequired constructor option", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -1960,7 +1946,6 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2128,7 +2113,6 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorProductionActedInNodeAggregateSelection {
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -2364,11 +2348,6 @@ describe("limitRequired constructor option", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -2435,7 +2414,6 @@ describe("limitRequired constructor option", () => {
             }
 
             type MovieActorActorsNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -2572,7 +2550,6 @@ describe("limitRequired constructor option", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2717,7 +2694,6 @@ describe("limitRequired constructor option", () => {
 
             type ProductionAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -2811,7 +2787,6 @@ describe("limitRequired constructor option", () => {
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelection!
-              id: IDAggregateSelection!
               title: StringAggregateSelection!
             }
 
@@ -3104,7 +3079,6 @@ describe("limitRequired constructor option", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -3389,11 +3363,6 @@ describe("limitRequired constructor option", () => {
             input FloatWhere {
               max: Float
               min: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -3722,7 +3691,6 @@ describe("limitRequired constructor option", () => {
 
             type ActorAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -4007,11 +3975,6 @@ describe("limitRequired constructor option", () => {
             input FloatWhere {
               max: Float
               min: Float
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"

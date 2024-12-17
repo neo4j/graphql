@@ -93,11 +93,6 @@ describe("Arrays", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -128,7 +123,6 @@ describe("Arrays", () => {
             type MovieAggregateSelection {
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

@@ -142,11 +142,6 @@ describe("Null", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
               eq: [ID!]
@@ -267,7 +262,6 @@ describe("Null", () => {
               averageRating: FloatAggregateSelection!
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 

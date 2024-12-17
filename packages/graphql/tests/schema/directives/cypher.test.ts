@@ -356,11 +356,6 @@ describe("Cypher", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
               eq: [ID!]
@@ -473,7 +468,6 @@ describe("Cypher", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -1977,11 +1971,6 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -2013,7 +2002,6 @@ describe("Cypher", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {

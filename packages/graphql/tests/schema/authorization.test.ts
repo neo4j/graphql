@@ -83,11 +83,6 @@ describe("Authorization", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -139,7 +134,6 @@ describe("Authorization", () => {
 
             type PostAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -304,7 +298,6 @@ describe("Authorization", () => {
             }
 
             type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -432,7 +425,6 @@ describe("Authorization", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -609,7 +601,6 @@ describe("Authorization", () => {
             }
 
             type UserUserPostsNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 

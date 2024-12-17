@@ -210,11 +210,6 @@ describe("Subscriptions", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -397,7 +392,6 @@ describe("Subscriptions", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -735,7 +729,6 @@ describe("Subscriptions", () => {
             type ActorMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -1014,11 +1007,6 @@ describe("Subscriptions", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -1180,7 +1168,6 @@ describe("Subscriptions", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -1546,11 +1533,6 @@ describe("Subscriptions", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -1769,7 +1751,6 @@ describe("Subscriptions", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -2022,7 +2003,6 @@ describe("Subscriptions", () => {
             type PersonMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -2291,7 +2271,6 @@ describe("Subscriptions", () => {
             type StarMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {
@@ -2682,7 +2661,6 @@ describe("Subscriptions", () => {
             type ActorMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input ActorMoviesAggregateInput {
@@ -2961,11 +2939,6 @@ describe("Subscriptions", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -3142,7 +3115,6 @@ describe("Subscriptions", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -3568,11 +3540,6 @@ describe("Subscriptions", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -3755,7 +3722,6 @@ describe("Subscriptions", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -4078,11 +4044,6 @@ describe("Subscriptions", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -4301,7 +4262,6 @@ describe("Subscriptions", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -4554,7 +4514,6 @@ describe("Subscriptions", () => {
             type PersonMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input PersonMoviesAggregateInput {
@@ -4813,7 +4772,6 @@ describe("Subscriptions", () => {
             type StarMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input StarMoviesAggregateInput {

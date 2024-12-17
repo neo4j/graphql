@@ -75,11 +75,6 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -115,7 +110,6 @@ describe("Interfaces", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -146,11 +140,6 @@ describe("Interfaces", () => {
 
             type MovieMovieMoviesAggregationSelection {
               count: Int!
-              node: MovieMovieMoviesNodeAggregateSelection
-            }
-
-            type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input MovieMoviesAggregateInput {
@@ -231,7 +220,6 @@ describe("Interfaces", () => {
 
             type MovieNodeAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             type MovieNodeEdge {
@@ -535,11 +523,6 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
@@ -575,7 +558,6 @@ describe("Interfaces", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -606,11 +588,6 @@ describe("Interfaces", () => {
 
             type MovieMovieMoviesAggregationSelection {
               count: Int!
-              node: MovieMovieMoviesNodeAggregateSelection
-            }
-
-            type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input MovieMoviesAggregateInput {
@@ -691,7 +668,6 @@ describe("Interfaces", () => {
 
             type MovieNodeAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             type MovieNodeEdge {
