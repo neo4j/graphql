@@ -93,13 +93,13 @@ describe("Point", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               filmedAt: PointFilters
-              filmedAt_DISTANCE: PointDistance
-              filmedAt_EQ: PointInput
-              filmedAt_GT: PointDistance
-              filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput!]
-              filmedAt_LT: PointDistance
-              filmedAt_LTE: PointDistance
+              filmedAt_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { distance: ... }\\")
+              filmedAt_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { eq: ... }\\")
+              filmedAt_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { gt: ... }\\")
+              filmedAt_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { gte: ... }\\")
+              filmedAt_IN: [PointInput!] @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { in: ... }\\")
+              filmedAt_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { lt: ... }\\")
+              filmedAt_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { lte: ... }\\")
             }
 
             type MoviesConnection {
@@ -315,13 +315,13 @@ describe("Point", () => {
               NOT: MachineWhere
               OR: [MachineWhere!]
               partLocation: CartesianPointFilters
-              partLocation_DISTANCE: CartesianPointDistance
-              partLocation_EQ: CartesianPointInput
-              partLocation_GT: CartesianPointDistance
-              partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput!]
-              partLocation_LT: CartesianPointDistance
-              partLocation_LTE: CartesianPointDistance
+              partLocation_DISTANCE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { distance: ... }\\")
+              partLocation_EQ: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter partLocation: { eq: ... }\\")
+              partLocation_GT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { gt: ... }\\")
+              partLocation_GTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { gte: ... }\\")
+              partLocation_IN: [CartesianPointInput!] @deprecated(reason: \\"Please use the relevant generic filter partLocation: { in: ... }\\")
+              partLocation_LT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { lt: ... }\\")
+              partLocation_LTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { lte: ... }\\")
             }
 
             type MachinesConnection {
@@ -447,8 +447,8 @@ describe("Point", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               filmedAt: PointListFilters
-              filmedAt_EQ: [PointInput!]
-              filmedAt_INCLUDES: PointInput
+              filmedAt_EQ: [PointInput!] @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { eq: ... }\\")
+              filmedAt_INCLUDES: PointInput @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { includes: ... }\\")
             }
 
             type MoviesConnection {
@@ -630,8 +630,8 @@ describe("Point", () => {
               NOT: MachineWhere
               OR: [MachineWhere!]
               partLocations: CartesianPointListFilters
-              partLocations_EQ: [CartesianPointInput!]
-              partLocations_INCLUDES: CartesianPointInput
+              partLocations_EQ: [CartesianPointInput!] @deprecated(reason: \\"Please use the relevant generic filter partLocations: { eq: ... }\\")
+              partLocations_INCLUDES: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter partLocations: { includes: ... }\\")
             }
 
             type MachinesConnection {

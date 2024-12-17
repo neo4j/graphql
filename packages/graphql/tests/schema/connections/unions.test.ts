@@ -286,41 +286,41 @@ describe("Unions", () => {
               NOT: AuthorWhere
               OR: [AuthorWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               publications: AuthorPublicationsRelationshipFilters
               publicationsConnection: AuthorPublicationsConnectionFilters
               \\"\\"\\"
               Return Authors where all of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
-              publicationsConnection_ALL: AuthorPublicationsConnectionWhere
+              publicationsConnection_ALL: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'publicationsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Authors where none of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
-              publicationsConnection_NONE: AuthorPublicationsConnectionWhere
+              publicationsConnection_NONE: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'publicationsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Authors where one of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
-              publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere
+              publicationsConnection_SINGLE: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'publicationsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Authors where some of the related AuthorPublicationsConnections match this filter
               \\"\\"\\"
-              publicationsConnection_SOME: AuthorPublicationsConnectionWhere
+              publicationsConnection_SOME: AuthorPublicationsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'publicationsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Authors where all of the related Publications match this filter\\"\\"\\"
-              publications_ALL: PublicationWhere
+              publications_ALL: PublicationWhere @deprecated(reason: \\"Please use the relevant generic filter 'publications: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Authors where none of the related Publications match this filter
               \\"\\"\\"
-              publications_NONE: PublicationWhere
+              publications_NONE: PublicationWhere @deprecated(reason: \\"Please use the relevant generic filter 'publications: { none: ... }' instead.\\")
               \\"\\"\\"Return Authors where one of the related Publications match this filter\\"\\"\\"
-              publications_SINGLE: PublicationWhere
+              publications_SINGLE: PublicationWhere @deprecated(reason: \\"Please use the relevant generic filter 'publications: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Authors where some of the related Publications match this filter
               \\"\\"\\"
-              publications_SOME: PublicationWhere
+              publications_SOME: PublicationWhere @deprecated(reason: \\"Please use the relevant generic filter 'publications: {  some: ... }' instead.\\")
             }
 
             type AuthorsConnection {
@@ -535,33 +535,33 @@ describe("Unions", () => {
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_ALL: BookAuthorConnectionWhere
+              authorConnection_ALL: BookAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Books where none of the related BookAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_NONE: BookAuthorConnectionWhere
+              authorConnection_NONE: BookAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Books where one of the related BookAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SINGLE: BookAuthorConnectionWhere
+              authorConnection_SINGLE: BookAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Books where some of the related BookAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SOME: BookAuthorConnectionWhere
+              authorConnection_SOME: BookAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
-              author_ALL: AuthorWhere
+              author_ALL: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { all: ... }' instead.\\")
               \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
-              author_NONE: AuthorWhere
+              author_NONE: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { none: ... }' instead.\\")
               \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
-              author_SINGLE: AuthorWhere
+              author_SINGLE: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  single: ... }' instead.\\")
               \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
-              author_SOME: AuthorWhere
+              author_SOME: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type BooksConnection {
@@ -849,33 +849,33 @@ describe("Unions", () => {
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_ALL: JournalAuthorConnectionWhere
+              authorConnection_ALL: JournalAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Journals where none of the related JournalAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_NONE: JournalAuthorConnectionWhere
+              authorConnection_NONE: JournalAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Journals where one of the related JournalAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SINGLE: JournalAuthorConnectionWhere
+              authorConnection_SINGLE: JournalAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Journals where some of the related JournalAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SOME: JournalAuthorConnectionWhere
+              authorConnection_SOME: JournalAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
-              author_ALL: AuthorWhere
+              author_ALL: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { all: ... }' instead.\\")
               \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
-              author_NONE: AuthorWhere
+              author_NONE: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { none: ... }' instead.\\")
               \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
-              author_SINGLE: AuthorWhere
+              author_SINGLE: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  single: ... }' instead.\\")
               \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
-              author_SOME: AuthorWhere
+              author_SOME: AuthorWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               subject: StringScalarFilters
-              subject_CONTAINS: String
-              subject_ENDS_WITH: String
-              subject_EQ: String
-              subject_IN: [String!]
-              subject_STARTS_WITH: String
+              subject_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter subject: { contains: ... }\\")
+              subject_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { endsWith: ... }\\")
+              subject_EQ: String @deprecated(reason: \\"Please use the relevant generic filter subject: { eq: ... }\\")
+              subject_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter subject: { in: ... }\\")
+              subject_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter subject: { startsWith: ... }\\")
             }
 
             type JournalsConnection {
@@ -1045,12 +1045,12 @@ describe("Unions", () => {
               NOT: WroteWhere
               OR: [WroteWhere!]
               words: IntScalarFilters
-              words_EQ: Int
-              words_GT: Int
-              words_GTE: Int
-              words_IN: [Int!]
-              words_LT: Int
-              words_LTE: Int
+              words_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter words: { eq: ... }\\")
+              words_GT: Int @deprecated(reason: \\"Please use the relevant generic filter words: { gt: ... }\\")
+              words_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter words: { gte: ... }\\")
+              words_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter words: { in: ... }\\")
+              words_LT: Int @deprecated(reason: \\"Please use the relevant generic filter words: { lt: ... }\\")
+              words_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter words: { lte: ... }\\")
             }"
         `);
     });

@@ -225,11 +225,11 @@ describe("Pluralize consistency", () => {
               NOT: super_friendWhere
               OR: [super_friendWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type super_user {
@@ -410,41 +410,41 @@ describe("Pluralize consistency", () => {
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
-              my_friendConnection_ALL: super_userMy_friendConnectionWhere
+              my_friendConnection_ALL: super_userMy_friendConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friendConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return super_users where none of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
-              my_friendConnection_NONE: super_userMy_friendConnectionWhere
+              my_friendConnection_NONE: super_userMy_friendConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friendConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return super_users where one of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
-              my_friendConnection_SINGLE: super_userMy_friendConnectionWhere
+              my_friendConnection_SINGLE: super_userMy_friendConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friendConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return super_users where some of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
-              my_friendConnection_SOME: super_userMy_friendConnectionWhere
+              my_friendConnection_SOME: super_userMy_friendConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friendConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return super_users where all of the related super_friends match this filter
               \\"\\"\\"
-              my_friend_ALL: super_friendWhere
+              my_friend_ALL: super_friendWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friend: { all: ... }' instead.\\")
               \\"\\"\\"
               Return super_users where none of the related super_friends match this filter
               \\"\\"\\"
-              my_friend_NONE: super_friendWhere
+              my_friend_NONE: super_friendWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friend: { none: ... }' instead.\\")
               \\"\\"\\"
               Return super_users where one of the related super_friends match this filter
               \\"\\"\\"
-              my_friend_SINGLE: super_friendWhere
+              my_friend_SINGLE: super_friendWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friend: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return super_users where some of the related super_friends match this filter
               \\"\\"\\"
-              my_friend_SOME: super_friendWhere
+              my_friend_SOME: super_friendWhere @deprecated(reason: \\"Please use the relevant generic filter 'my_friend: {  some: ... }' instead.\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type super_usersuper_friendMy_friendAggregationSelection {

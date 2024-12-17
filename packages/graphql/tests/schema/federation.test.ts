@@ -326,33 +326,33 @@ describe("Apollo Federation", () => {
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_ALL: PostAuthorConnectionWhere
+              authorConnection_ALL: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_NONE: PostAuthorConnectionWhere
+              authorConnection_NONE: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SINGLE: PostAuthorConnectionWhere
+              authorConnection_SINGLE: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SOME: PostAuthorConnectionWhere
+              authorConnection_SOME: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              author_ALL: UserWhere
+              author_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              author_NONE: UserWhere
+              author_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              author_SINGLE: UserWhere
+              author_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              author_SOME: UserWhere
+              author_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               content: StringScalarFilters
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String!]
-              content_STARTS_WITH: String
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -619,38 +619,38 @@ describe("Apollo Federation", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               posts: UserPostsRelationshipFilters
               postsAggregate: UserPostsAggregateInput
               postsConnection: UserPostsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_ALL: UserPostsConnectionWhere
+              postsConnection_ALL: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_NONE: UserPostsConnectionWhere
+              postsConnection_NONE: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_SINGLE: UserPostsConnectionWhere
+              postsConnection_SINGLE: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_SOME: UserPostsConnectionWhere
+              postsConnection_SOME: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Posts match this filter\\"\\"\\"
-              posts_ALL: PostWhere
+              posts_ALL: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
-              posts_NONE: PostWhere
+              posts_NONE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
-              posts_SINGLE: PostWhere
+              posts_SINGLE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
-              posts_SOME: PostWhere
+              posts_SOME: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  some: ... }' instead.\\")
             }
 
             type UsersConnection @shareable {
@@ -969,33 +969,33 @@ describe("Apollo Federation", () => {
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_ALL: PostAuthorConnectionWhere
+              authorConnection_ALL: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_NONE: PostAuthorConnectionWhere
+              authorConnection_NONE: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SINGLE: PostAuthorConnectionWhere
+              authorConnection_SINGLE: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related PostAuthorConnections match this filter
               \\"\\"\\"
-              authorConnection_SOME: PostAuthorConnectionWhere
+              authorConnection_SOME: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              author_ALL: UserWhere
+              author_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              author_NONE: UserWhere
+              author_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              author_SINGLE: UserWhere
+              author_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              author_SOME: UserWhere
+              author_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
               content: StringScalarFilters
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String!]
-              content_STARTS_WITH: String
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -1113,11 +1113,11 @@ describe("Apollo Federation", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type UsersConnection {

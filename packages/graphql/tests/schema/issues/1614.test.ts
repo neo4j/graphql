@@ -244,27 +244,27 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: CrewMemberMoviesConnectionWhere
+              moviesConnection_ALL: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return CrewMembers where none of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: CrewMemberMoviesConnectionWhere
+              moviesConnection_NONE: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return CrewMembers where one of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: CrewMemberMoviesConnectionWhere
+              moviesConnection_SINGLE: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return CrewMembers where some of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: CrewMemberMoviesConnectionWhere
+              moviesConnection_SOME: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return CrewMembers where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return CrewMembers where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return CrewMembers where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return CrewMembers where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type CrewMembersConnection {
@@ -316,8 +316,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: CrewPositionWhere
               OR: [CrewPositionWhere!]
               position: CrewPositionTypeEnumScalarFilters
-              position_EQ: CrewPositionType
-              position_IN: [CrewPositionType]
+              position_EQ: CrewPositionType @deprecated(reason: \\"Please use the relevant generic filter position: { eq: ... }\\")
+              position_IN: [CrewPositionType] @deprecated(reason: \\"Please use the relevant generic filter position: { in: ... }\\")
             }
 
             \\"\\"\\"
@@ -387,11 +387,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type MoviesConnection {

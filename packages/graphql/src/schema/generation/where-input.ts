@@ -176,7 +176,13 @@ export function withSourceWhereInputType({
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
-    augmentWhereInputWithRelationshipFilters({ whereInput, relationshipAdapter, deprecatedDirectives, composer });
+    augmentWhereInputWithRelationshipFilters({
+        whereInput,
+        relationshipAdapter,
+        deprecatedDirectives,
+        composer,
+        features,
+    });
 
     // TODO: Current unions are not supported as relationship targets beyond the above fields
     if (relationshipTarget instanceof UnionEntityAdapter) {

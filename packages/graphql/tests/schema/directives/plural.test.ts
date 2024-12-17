@@ -156,17 +156,17 @@ describe("Plural option", () => {
               NOT: TechWhere
               OR: [TechWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }
 
             type TechsConnection {
@@ -325,17 +325,17 @@ describe("Plural option", () => {
               NOT: TechWhere
               OR: [TechWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }
 
             type TechsConnection {
@@ -494,17 +494,17 @@ describe("Plural option", () => {
               NOT: TechWhere
               OR: [TechWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }
 
             type TechnologiesConnection {
@@ -663,11 +663,11 @@ describe("Plural option", () => {
               NOT: TechsWhere
               OR: [TechsWhere!]
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }
 
             \\"\\"\\"
@@ -835,11 +835,11 @@ describe("Plural option", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }"
         `);
     });
@@ -986,11 +986,11 @@ describe("Plural option", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }
 
             type UsersConnection {
@@ -1149,11 +1149,11 @@ describe("Plural option", () => {
               NOT: UsersWhere
               OR: [UsersWhere!]
               value: StringScalarFilters
-              value_CONTAINS: String
-              value_ENDS_WITH: String
-              value_EQ: String
-              value_IN: [String]
-              value_STARTS_WITH: String
+              value_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter value: { contains: ... }\\")
+              value_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { endsWith: ... }\\")
+              value_EQ: String @deprecated(reason: \\"Please use the relevant generic filter value: { eq: ... }\\")
+              value_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter value: { in: ... }\\")
+              value_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter value: { startsWith: ... }\\")
             }"
         `);
     });

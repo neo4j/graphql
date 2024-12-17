@@ -139,12 +139,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               NOT: FOLLOWSWhere
               OR: [FOLLOWSWhere!]
               since: DateTimeScalarFilters
-              since_EQ: DateTime
-              since_GT: DateTime
-              since_GTE: DateTime
-              since_IN: [DateTime!]
-              since_LT: DateTime
-              since_LTE: DateTime
+              since_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { eq: ... }\\")
+              since_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { gt: ... }\\")
+              since_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { gte: ... }\\")
+              since_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter since: { in: ... }\\")
+              since_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { lt: ... }\\")
+              since_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { lte: ... }\\")
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
@@ -259,18 +259,18 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               NOT: ProfileWhere
               OR: [ProfileWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               typename_IN: [ProfileImplementation!]
               userName: StringScalarFilters
-              userName_CONTAINS: String
-              userName_ENDS_WITH: String
-              userName_EQ: String
-              userName_IN: [String!]
-              userName_STARTS_WITH: String
+              userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
+              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")
+              userName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter userName: { eq: ... }\\")
+              userName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter userName: { in: ... }\\")
+              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { startsWith: ... }\\")
             }
 
             type ProfilesConnection {
@@ -546,39 +546,39 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_ALL: UserFollowingConnectionWhere
+              followingConnection_ALL: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_NONE: UserFollowingConnectionWhere
+              followingConnection_NONE: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_SINGLE: UserFollowingConnectionWhere
+              followingConnection_SINGLE: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_SOME: UserFollowingConnectionWhere
+              followingConnection_SOME: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
-              following_ALL: ProfileWhere
+              following_ALL: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
-              following_NONE: ProfileWhere
+              following_NONE: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
-              following_SINGLE: ProfileWhere
+              following_SINGLE: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
-              following_SOME: ProfileWhere
+              following_SOME: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               userName: StringScalarFilters
-              userName_CONTAINS: String
-              userName_ENDS_WITH: String
-              userName_EQ: String
-              userName_IN: [String!]
-              userName_STARTS_WITH: String
+              userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
+              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")
+              userName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter userName: { eq: ... }\\")
+              userName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter userName: { in: ... }\\")
+              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { startsWith: ... }\\")
             }
 
             type UsersConnection {

@@ -150,18 +150,18 @@ describe("Localtime", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               time: LocalTimeScalarFilters
-              time_EQ: LocalTime
-              time_GT: LocalTime
-              time_GTE: LocalTime
-              time_IN: [LocalTime]
-              time_LT: LocalTime
-              time_LTE: LocalTime
+              time_EQ: LocalTime @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
+              time_GT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter time: { gt: ... }\\")
+              time_GTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter time: { gte: ... }\\")
+              time_IN: [LocalTime] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
+              time_LT: LocalTime @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
+              time_LTE: LocalTime @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
             }
 
             type MoviesConnection {

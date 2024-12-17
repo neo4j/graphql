@@ -162,20 +162,20 @@ describe("Scalar", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               myCustomArrayScalar: CustomScalarListScalarFilters
-              myCustomArrayScalar_EQ: [CustomScalar!]
-              myCustomArrayScalar_INCLUDES: CustomScalar
+              myCustomArrayScalar_EQ: [CustomScalar!] @deprecated(reason: \\"Please use the relevant generic filter myCustomArrayScalar: { eq: ... }\\")
+              myCustomArrayScalar_INCLUDES: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myCustomArrayScalar: { includes: ... }\\")
               myCustomScalar: CustomScalarScalarFilters
-              myCustomScalar_EQ: CustomScalar
-              myCustomScalar_IN: [CustomScalar]
+              myCustomScalar_EQ: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myCustomScalar: { eq: ... }\\")
+              myCustomScalar_IN: [CustomScalar] @deprecated(reason: \\"Please use the relevant generic filter myCustomScalar: { in: ... }\\")
               myRequiredCustomArrayScalar: CustomScalarListScalarFilters
-              myRequiredCustomArrayScalar_EQ: [CustomScalar!]
-              myRequiredCustomArrayScalar_INCLUDES: CustomScalar
+              myRequiredCustomArrayScalar_EQ: [CustomScalar!] @deprecated(reason: \\"Please use the relevant generic filter myRequiredCustomArrayScalar: { eq: ... }\\")
+              myRequiredCustomArrayScalar_INCLUDES: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myRequiredCustomArrayScalar: { includes: ... }\\")
             }
 
             type MoviesConnection {

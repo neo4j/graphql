@@ -132,18 +132,18 @@ describe("Bigint", () => {
               NOT: FileWhere
               OR: [FileWhere!]
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               size: BigIntScalarFilters
-              size_EQ: BigInt
-              size_GT: BigInt
-              size_GTE: BigInt
-              size_IN: [BigInt!]
-              size_LT: BigInt
-              size_LTE: BigInt
+              size_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { eq: ... }\\")
+              size_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { gt: ... }\\")
+              size_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { gte: ... }\\")
+              size_IN: [BigInt!] @deprecated(reason: \\"Please use the relevant generic filter size: { in: ... }\\")
+              size_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { lt: ... }\\")
+              size_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { lte: ... }\\")
             }
 
             type FilesConnection {

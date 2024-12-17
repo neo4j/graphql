@@ -100,32 +100,32 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               dob: DateTimeScalarFilters
-              dob_EQ: DateTime
-              dob_GT: DateTime
-              dob_GTE: DateTime
-              dob_IN: [DateTime!]
-              dob_LT: DateTime
-              dob_LTE: DateTime
+              dob_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter dob: { eq: ... }\\")
+              dob_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter dob: { gt: ... }\\")
+              dob_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter dob: { gte: ... }\\")
+              dob_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter dob: { in: ... }\\")
+              dob_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter dob: { lt: ... }\\")
+              dob_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter dob: { lte: ... }\\")
               homeAddress: PointFilters
-              homeAddress_DISTANCE: PointDistance
-              homeAddress_EQ: PointInput
-              homeAddress_GT: PointDistance
-              homeAddress_GTE: PointDistance
-              homeAddress_IN: [PointInput!]
-              homeAddress_LT: PointDistance
-              homeAddress_LTE: PointDistance
+              homeAddress_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { distance: ... }\\")
+              homeAddress_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { eq: ... }\\")
+              homeAddress_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { gt: ... }\\")
+              homeAddress_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { gte: ... }\\")
+              homeAddress_IN: [PointInput!] @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { in: ... }\\")
+              homeAddress_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { lt: ... }\\")
+              homeAddress_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter homeAddress: { lte: ... }\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               name: StringScalarFilters
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -440,39 +440,39 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
               id: IDScalarFilters
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               title: StringScalarFilters
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
