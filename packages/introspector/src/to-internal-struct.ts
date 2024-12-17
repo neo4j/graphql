@@ -117,7 +117,6 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
             const relationshipsRes = await conSession.readTransaction((tx) =>
                 tx.run(`
             MATCH (n)-[r:${escapedType}]->(m)
-            WITH n, r, m LIMIT 100
             WITH DISTINCT labels(n) AS from, labels(m) AS to
             WITH from, to WHERE SIZE(from) > 0 AND SIZE(to) > 0
             RETURN from, to, "${relType.replace(/"/g, '\\"')}" AS relType`)

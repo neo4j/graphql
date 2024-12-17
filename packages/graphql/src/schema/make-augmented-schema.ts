@@ -321,6 +321,7 @@ function makeAugmentedSchema({
                     [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                         entityAdapter: unionEntityAdapter,
                         composer,
+                        isLimitRequired: features?.limitRequired,
                     }),
                 });
             }
@@ -615,7 +616,7 @@ function generateObjectType({
         features,
         composer,
     });
-    augmentFulltextSchema({ composer, concreteEntityAdapter });
+    augmentFulltextSchema({ composer, concreteEntityAdapter, features });
     augmentVectorSchema({ composer, concreteEntityAdapter, features });
     withUniqueWhereInputType({ concreteEntityAdapter, composer });
     withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
@@ -647,6 +648,7 @@ function generateObjectType({
             [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                 entityAdapter: concreteEntityAdapter,
                 composer,
+                isLimitRequired: features?.limitRequired,
             }),
         });
         composer.Query.setFieldDirectives(
@@ -659,6 +661,7 @@ function generateObjectType({
                 composer,
                 entityAdapter: concreteEntityAdapter,
                 propagatedDirectives,
+                isLimitRequired: features?.limitRequired,
             }),
         });
         composer.Query.setFieldDirectives(
@@ -783,6 +786,7 @@ function generateInterfaceObjectType({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
                 entityAdapter: interfaceEntityAdapter,
                 composer,
+                isLimitRequired: features?.limitRequired,
             }),
         });
 
@@ -796,6 +800,7 @@ function generateInterfaceObjectType({
                 composer,
                 entityAdapter: interfaceEntityAdapter,
                 propagatedDirectives,
+                isLimitRequired: features?.limitRequired,
             }),
         });
         composer.Query.setFieldDirectives(

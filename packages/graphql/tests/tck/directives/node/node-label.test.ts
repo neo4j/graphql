@@ -361,7 +361,7 @@ describe("Label in Node directive", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node

@@ -454,6 +454,7 @@ export type Neo4jFeaturesSettings = {
         attributeFilters?: boolean;
     };
     vector?: Neo4jVectorSettings;
+    limitRequired?: boolean;
 };
 
 /** Parsed features used in context */

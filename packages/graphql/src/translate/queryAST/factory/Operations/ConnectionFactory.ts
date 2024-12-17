@@ -68,7 +68,6 @@ export class ConnectionFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): CompositeConnectionReadOperation {
-        const directed = resolveTree.args.directed as boolean | undefined;
         const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
 
         let nodeWhere: Record<string, any>;
@@ -85,7 +84,6 @@ export class ConnectionFactory {
             if (relationship) {
                 selection = new RelationshipSelection({
                     relationship,
-                    directed,
                     targetOverride: concreteEntity,
                 });
                 resolveTreeEdgeFields = this.parseConnectionFields({
@@ -165,7 +163,6 @@ export class ConnectionFactory {
         if (relationship) {
             selection = new RelationshipSelection({
                 relationship,
-                directed: resolveTree.args.directed as boolean | undefined,
             });
             resolveTreeEdgeFields = this.parseConnectionFields({
                 entityOrRel: relationship,
@@ -199,9 +196,8 @@ export class ConnectionFactory {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/comma-dangle
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | CompositeConnectionReadOperation
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation,
     >({
         entityOrRel,
         resolveTree,

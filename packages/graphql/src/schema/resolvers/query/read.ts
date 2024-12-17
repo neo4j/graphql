@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
+import { GraphQLInt, GraphQLNonNull, type GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -29,7 +29,15 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { makeSortInput } from "../../generation/sort-and-options-input";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function findResolver({ entityAdapter, composer }: { entityAdapter: EntityAdapter; composer: SchemaComposer }) {
+export function findResolver({
+    entityAdapter,
+    composer,
+    isLimitRequired,
+}: {
+    entityAdapter: EntityAdapter;
+    composer: SchemaComposer;
+    isLimitRequired: boolean | undefined;
+}) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
@@ -60,8 +68,8 @@ export function findResolver({ entityAdapter, composer }: { entityAdapter: Entit
     const whereArgumentType = entityAdapter.operations.whereInputTypeName;
     const args = {
         where: whereArgumentType,
-        limit: "Int",
-        offset: "Int",
+        limit: isLimitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+        offset: GraphQLInt,
         ...extraArgs,
     };
     if (!(entityAdapter instanceof UnionEntityAdapter)) {

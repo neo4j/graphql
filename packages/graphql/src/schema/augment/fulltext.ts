@@ -22,7 +22,7 @@ import type { SchemaComposer } from "graphql-compose";
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import type { FulltextContext } from "../../types";
+import type { FulltextContext, Neo4jFeaturesSettings } from "../../types";
 import {
     withFulltextResultTypeConnection,
     withFulltextSortInputType,
@@ -33,9 +33,11 @@ import { fulltextResolver } from "../resolvers/query/fulltext";
 export function augmentFulltextSchema({
     composer,
     concreteEntityAdapter,
+    features,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
+    features?: Neo4jFeaturesSettings;
 }) {
     if (!concreteEntityAdapter.annotations.fulltext) {
         return;
@@ -55,7 +57,7 @@ export function augmentFulltextSchema({
             phrase: new GraphQLNonNull(GraphQLString),
             where: concreteEntityAdapter.operations.fulltextTypeNames.where,
             sort: withFulltextSortInputType({ concreteEntityAdapter, composer }).NonNull.List,
-            first: GraphQLInt,
+            first: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
             after: GraphQLString,
         };
 

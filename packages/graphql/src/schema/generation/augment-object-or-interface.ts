@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GraphQLInt, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
+import { GraphQLInt, GraphQLNonNull, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
 import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaComposer } from "graphql-compose";
 
 import type { Subgraph } from "../../classes/Subgraph";
@@ -24,7 +24,7 @@ import { DEPRECATED } from "../../constants";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import type { ConnectionQueryArgs } from "../../types";
+import type { ConnectionQueryArgs, Neo4jFeaturesSettings } from "../../types";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import {
@@ -39,11 +39,13 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
     userDefinedFieldDirectives,
     subgraph,
     composer,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     subgraph?: Subgraph | undefined;
     composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
 }): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
     const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
@@ -71,8 +73,8 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
 
         const nodeFieldsArgs = {
             where: whereTypeName,
-            limit: "Int",
-            offset: "Int",
+            limit: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+            offset: GraphQLInt,
         };
         if (!(relationshipTarget instanceof UnionEntityAdapter)) {
             const sortConfig = makeSortInput({
@@ -97,7 +99,8 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
 export function augmentObjectOrInterfaceTypeWithConnectionField(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>,
-    schemaComposer: SchemaComposer
+    schemaComposer: SchemaComposer,
+    features: Neo4jFeaturesSettings | undefined
 ): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
     const deprecatedDirectives = graphqlDirectivesToCompose(
@@ -111,7 +114,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             composer: schemaComposer,
         }),
         first: {
-            type: GraphQLInt,
+            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt): GraphQLInt,
         },
         after: {
             type: GraphQLString,

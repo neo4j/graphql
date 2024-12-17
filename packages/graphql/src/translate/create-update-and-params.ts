@@ -38,7 +38,6 @@ import createConnectAndParams from "./create-connect-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import { assertNonAmbiguousUpdate } from "./utils/assert-non-ambiguous-update";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
@@ -72,7 +71,6 @@ export default function createUpdateAndParams({
     context,
     callbackBucket,
     parameterPrefix,
-    includeRelationshipValidation,
 }: {
     parentVar: string;
     updateInput: any;
@@ -83,7 +81,6 @@ export default function createUpdateAndParams({
     context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     parameterPrefix: string;
-    includeRelationshipValidation?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -305,7 +302,6 @@ export default function createUpdateAndParams({
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
-                                includeRelationshipValidation: true,
                             });
                             res.params = { ...res.params, ...updateAndParams[1] };
                             innerUpdate.push(updateAndParams[0]);
@@ -428,7 +424,6 @@ export default function createUpdateAndParams({
                                 callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
-                                includeRelationshipValidation: false,
                                 ...createNodeInput,
                             });
                             subquery.push(nestedCreate);
@@ -464,16 +459,6 @@ export default function createUpdateAndParams({
                             subquery.push(
                                 ...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries)
                             );
-
-                            const relationshipValidationStr = createRelationshipValidationString({
-                                node: refNode,
-                                context,
-                                varName: nodeName,
-                            });
-                            if (relationshipValidationStr) {
-                                subquery.push(`WITH ${[...withVars, nodeName].join(", ")}`);
-                                subquery.push(relationshipValidationStr);
-                            }
                         });
                     }
 
@@ -625,11 +610,6 @@ export default function createUpdateAndParams({
 
     const preUpdatePredicates = authorizationBeforeStrs;
 
-    const preArrayMethodValidationStr = "";
-    const relationshipValidationStr = includeRelationshipValidation
-        ? createRelationshipValidationString({ node, context, varName })
-        : "";
-
     if (meta.preArrayMethodValidationStrs.length) {
         const nullChecks = meta.preArrayMethodValidationStrs.map((validationStr) => `${validationStr[0]} IS NULL`);
         const propertyNames = meta.preArrayMethodValidationStrs.map((validationStr) => validationStr[1]);
@@ -669,16 +649,7 @@ export default function createUpdateAndParams({
 
     const statements = strs;
 
-    return [
-        [
-            preUpdatePredicatesStr,
-            preArrayMethodValidationStr,
-            ...statements,
-            authorizationAfterStr,
-            ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
-        ].join("\n"),
-        params,
-    ];
+    return [[preUpdatePredicatesStr, ...statements, authorizationAfterStr].join("\n"), params];
 }
 
 function validateNonNullProperty(res: Res, varName: string, field: BaseField) {

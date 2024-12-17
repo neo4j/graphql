@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_targets0_connect0_node
-            			MERGE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
+            			CREATE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
             		}
             	}
             WITH this, this_targets0_connect0_node

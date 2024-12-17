@@ -75,7 +75,6 @@ export class ReadFactory {
             if (relationship) {
                 selection = new RelationshipSelection({
                     relationship,
-                    directed: Boolean(resolveTree.args?.directed ?? true),
                 });
             } else {
                 selection = new NodeSelection({
@@ -105,7 +104,6 @@ export class ReadFactory {
                 if (relationship) {
                     selection = new RelationshipSelection({
                         relationship,
-                        directed: Boolean(resolveTree.args?.directed ?? true),
                         targetOverride: concreteEntity,
                     });
                 } else {

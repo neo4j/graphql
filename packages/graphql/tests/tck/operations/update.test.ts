@@ -272,7 +272,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node
@@ -328,7 +328,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node
@@ -346,7 +346,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect1_node
-            			MERGE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
+            			CREATE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
             		}
             	}
             WITH this, this_actors0_connect1_node

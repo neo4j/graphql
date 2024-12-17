@@ -455,7 +455,7 @@ describe("Cypher Auth Roles", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
-            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			CREATE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		}
             	}
             WITH this, this_posts0_connect0_node
@@ -530,7 +530,7 @@ describe("Cypher Auth Roles", () => {
             				WITH connectedNodes, parentNodes
             				UNWIND parentNodes as this_post0
             				UNWIND connectedNodes as this_post0_creator0_connect0_node
-            				MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            				CREATE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
             			}
             		}
             	WITH this, this_post0, this_post0_creator0_connect0_node

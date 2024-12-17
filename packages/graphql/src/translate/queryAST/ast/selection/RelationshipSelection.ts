@@ -30,13 +30,11 @@ export class RelationshipSelection extends EntitySelection {
     // Overrides relationship target for composite entities
     private targetOverride: ConcreteEntityAdapter | undefined;
     private alias: string | undefined;
-    private directed?: boolean;
     private optional: boolean;
 
     constructor({
         relationship,
         alias,
-        directed,
         targetOverride,
         optional,
     }: {
@@ -49,7 +47,6 @@ export class RelationshipSelection extends EntitySelection {
         super();
         this.relationship = relationship;
         this.alias = alias;
-        this.directed = directed;
         this.targetOverride = targetOverride;
         this.optional = optional ?? false;
     }

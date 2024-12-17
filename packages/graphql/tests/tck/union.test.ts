@@ -338,7 +338,7 @@ describe("Cypher Union", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_search_Genre_connect0_node
-            			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            			CREATE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		}
             	}
             WITH this0, this0_search_Genre_connect0_node
@@ -530,7 +530,7 @@ describe("Cypher Union", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_search_Genre0_connect0_node
-            			MERGE (this)-[:SEARCH]->(this_search_Genre0_connect0_node)
+            			CREATE (this)-[:SEARCH]->(this_search_Genre0_connect0_node)
             		}
             	}
             WITH this, this_search_Genre0_connect0_node

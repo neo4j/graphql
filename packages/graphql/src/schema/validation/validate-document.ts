@@ -64,7 +64,6 @@ import { ValidListInNodeType } from "./custom-rules/valid-types/valid-list-in-no
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
 import { ValidateNeo4jDirectiveArgumentsValue } from "./custom-rules/validate-neo4j-directive-arguments-value";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
-import { WarnPrivateDeprecation } from "./custom-rules/warnings/deprecated-private";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
 import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-fields-without-resolver";
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
@@ -232,7 +231,6 @@ function runValidationRulesOnFilteredDocument({
             }),
             ValidListInNodeType,
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
-            WarnPrivateDeprecation(),
         ],
         schema
     );

@@ -33,7 +33,6 @@ export { mutationDirective } from "./mutation";
 export { nodeDirective } from "./node";
 export { pluralDirective } from "./plural";
 export { populatedByDirective } from "./populatedBy";
-export { privateDirective } from "./private";
 export { queryDirective } from "./query";
 export { relationshipDirective } from "./relationship";
 export { relationshipPropertiesDirective } from "./relationship-properties";

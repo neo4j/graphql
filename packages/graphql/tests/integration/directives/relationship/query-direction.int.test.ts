@@ -48,116 +48,429 @@ describe("query-direction", () => {
         await testHelper.close();
     });
 
-    test("should return related node using the queryDirection DIRECTED", async () => {
-        const typeDefs = /* GraphQL */ `
-            type ${Person} @node {
-                name: String!
-                friends: [${Person}!]! @relationship(type: "HAS_FRIEND", direction: OUT, queryDirection: DIRECTED)
+    describe("DIRECTED", () => {
+        beforeEach(async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${Person} @node {
+                    name: String!
+                    friends: [${Person}!]! @relationship(type: "HAS_FRIEND", direction: OUT, queryDirection: DIRECTED)
+                }
+            `;
+            await testHelper.initNeo4jGraphQL({ typeDefs });
+        });
+
+        test("should return related node using the queryDirection DIRECTED", async () => {
+            const query = /* GraphQL */ `
+                {
+                    ${Person.plural}(where: { name_EQ: "${mike}" }) {
+                        name
+                        friends {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        `;
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-        const query = /* GraphQL */ `
-            {
-                ${Person.plural} {
-                    name
-                    friends {
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.plural]: expect.toIncludeSameMembers([
+                    {
+                        name: mike,
+                        friends: expect.toIncludeSameMembers([
+                            {
+                                name: charlie,
+                            },
+                        ]),
+                    },
+                ]),
+            });
+        });
+
+        test("should return person with friend named Mike (directed out)", async () => {
+            const query = /* GraphQL */ `
+                {
+                    ${Person.plural}(where: { friends_SOME: { name_EQ: "${mike}" } }) {
                         name
                     }
                 }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        `;
 
-        const gqlResult = await testHelper.executeGraphQL(query);
+            expect(gqlResult.errors).toBeUndefined();
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
+            expect(gqlResult.data).toEqual({
+                [Person.plural]: expect.toIncludeSameMembers([
+                    {
+                        name: stefan,
+                    },
+                ]),
+            });
+        });
 
-        expect(gqlResult.errors).toBeUndefined();
+        test("should delete two nodes when performing nested delete under delete (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.delete}(where: { name_EQ: "${mike}" }, delete: { friends: { where: { } } }) {
+                        nodesDeleted
+                    }
+                }
+            `;
 
-        expect(gqlResult.data).toEqual({
-            [Person.plural]: expect.toIncludeSameMembers([
-                {
-                    name: stefan,
-                    friends: expect.toIncludeSameMembers([
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.delete]: {
+                    nodesDeleted: 2,
+                },
+            });
+        });
+
+        test("should only delete one when performing nested delete under update (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { delete: { where: { } } } }) {
+                        ${Person.plural} {
+                            name    
+                            friends {
+                                name
+                            }
+                        }
+                        info {
+                            nodesDeleted
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.update]: {
+                    [Person.plural]: expect.toIncludeSameMembers([
                         {
                             name: mike,
+                            friends: [],
                         },
                     ]),
+                    info: {
+                        nodesDeleted: 1,
+                    },
                 },
-                {
-                    name: mike,
-                    friends: expect.toIncludeSameMembers([
+            });
+        });
+
+        test("should only disconnect one when performing nested disconnect under update (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { disconnect: { where: { } } } }) {
+                        ${Person.plural} {
+                            name    
+                            friends {
+                                name
+                            }
+                        }
+                        info {
+                            relationshipsDeleted
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.update]: {
+                    [Person.plural]: expect.toIncludeSameMembers([
                         {
-                            name: charlie,
+                            name: mike,
+                            friends: [],
+                        },
+                    ]),
+                    info: {
+                        relationshipsDeleted: 1,
+                    },
+                },
+            });
+        });
+
+        test("should only update one when performing nested update under update (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { update: { node: { name_SET: "Bob" } } } }) {
+                        ${Person.plural} {
+                            name    
+                            friends {
+                                name
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.update]: {
+                    [Person.plural]: expect.toIncludeSameMembers([
+                        {
+                            name: mike,
+                            friends: expect.toIncludeSameMembers([{ name: "Bob" }]),
                         },
                     ]),
                 },
-                {
-                    name: charlie,
-                    friends: [],
-                },
-            ]),
+            });
         });
     });
 
-    test("should return related node using the queryDirection UNDIRECTED", async () => {
-        const typeDefs = /* GraphQL */ `
-            type ${Person} @node {
-                name: String!
-                friends: [${Person}!]! @relationship(type: "HAS_FRIEND", direction: OUT, queryDirection: UNDIRECTED)
+    describe("UNDIRECTED", () => {
+        beforeEach(async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${Person} @node {
+                    name: String!
+                    friends: [${Person}!]! @relationship(type: "HAS_FRIEND", direction: OUT, queryDirection: UNDIRECTED)
+                }
+            `;
+            await testHelper.initNeo4jGraphQL({ typeDefs });
+        });
+
+        test("should return related node using the queryDirection UNDIRECTED", async () => {
+            const query = /* GraphQL */ `
+                {
+                    ${Person.plural}(where: { name_EQ: "${mike}" }) {
+                        name
+                        friends {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        `;
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-        const query = /* GraphQL */ `
-            {
-                ${Person.plural} {
-                    name
-                    friends {
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.plural]: expect.toIncludeSameMembers([
+                    {
+                        name: mike,
+                        friends: expect.toIncludeSameMembers([
+                            {
+                                name: stefan,
+                            },
+                            {
+                                name: charlie,
+                            },
+                        ]),
+                    },
+                ]),
+            });
+        });
+
+        test("should return person with friend named Mike (undirected)", async () => {
+            const query = /* GraphQL */ `
+                {
+                    ${Person.plural}(where: { friends_SOME: { name_EQ: "${mike}" } }) {
                         name
                     }
                 }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
             }
-        `;
 
-        const gqlResult = await testHelper.executeGraphQL(query);
+            expect(gqlResult.errors).toBeUndefined();
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
+            expect(gqlResult.data).toEqual({
+                [Person.plural]: expect.toIncludeSameMembers([
+                    {
+                        name: stefan,
+                    },
+                    {
+                        name: charlie,
+                    },
+                ]),
+            });
+        });
 
-        expect(gqlResult.errors).toBeUndefined();
+        test("should delete all three nodes when performing nested delete under delete", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.delete}(where: { name_EQ: "${mike}" }, delete: { friends: { where: { } } }) {
+                        nodesDeleted
+                    }
+                }
+            `;
 
-        expect(gqlResult.data).toEqual({
-            [Person.plural]: expect.toIncludeSameMembers([
-                {
-                    name: stefan,
-                    friends: expect.toIncludeSameMembers([
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.delete]: {
+                    nodesDeleted: 3,
+                },
+            });
+        });
+
+        test("should only delete one when performing nested delete under update (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { delete: { where: { } } } }) {
+                        ${Person.plural} {
+                            name    
+                            friends {
+                                name
+                            }
+                        }
+                        info {
+                            nodesDeleted
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.update]: {
+                    [Person.plural]: expect.toIncludeSameMembers([
                         {
                             name: mike,
+                            friends: expect.toIncludeSameMembers([{ name: stefan }]),
                         },
                     ]),
+                    info: {
+                        nodesDeleted: 1,
+                    },
                 },
-                {
-                    name: mike,
-                    friends: expect.toIncludeSameMembers([
-                        {
-                            name: stefan,
-                        },
-                        {
-                            name: charlie,
-                        },
-                    ]),
-                },
-                {
-                    name: charlie,
-                    friends: expect.toIncludeSameMembers([
+            });
+        });
+
+        test("should only disconnect one when performing nested disconnect under update (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { disconnect: { where: { } } } }) {
+                        ${Person.plural} {
+                            name    
+                            friends {
+                                name
+                            }
+                        }
+                        info {
+                            relationshipsDeleted
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.update]: {
+                    [Person.plural]: expect.toIncludeSameMembers([
                         {
                             name: mike,
+                            friends: expect.toIncludeSameMembers([{ name: stefan }]),
+                        },
+                    ]),
+                    info: {
+                        relationshipsDeleted: 1,
+                    },
+                },
+            });
+        });
+
+        test("should only update one when performing nested update under update (always directed)", async () => {
+            const query = /* GraphQL */ `
+                mutation {
+                    ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { update: { node: { name_SET: "Bob" } } } }) {
+                        ${Person.plural} {
+                            name    
+                            friends {
+                                name
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            if (gqlResult.errors) {
+                console.log(JSON.stringify(gqlResult.errors, null, 2));
+            }
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Person.operations.update]: {
+                    [Person.plural]: expect.toIncludeSameMembers([
+                        {
+                            name: mike,
+                            friends: expect.toIncludeSameMembers([{ name: stefan }, { name: "Bob" }]),
                         },
                     ]),
                 },
-            ]),
+            });
         });
     });
 });

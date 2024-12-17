@@ -26,6 +26,7 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../../../utils/tests-helper";
+import { GraphQLError } from "graphql";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -1158,6 +1159,167 @@ describe("@fulltext directive", () => {
                     },
                 },
             ]);
+        });
+    });
+    describe("Query Tests - limit required", () => {
+        let neoSchema: Neo4jGraphQL;
+        let personType: UniqueType;
+        let movieType: UniqueType;
+        let queryType: string;
+
+        const person1 = {
+            name: "this is a name",
+            born: 1984,
+        };
+        const person2 = {
+            name: "This is a different name",
+            born: 1985,
+        };
+        const person3 = {
+            name: "Another name",
+            born: 1986,
+        };
+        const movie1 = {
+            title: "Some Title",
+            description: "some other description",
+            released: 2001,
+        };
+        const movie2 = {
+            title: "Another Title",
+            description: "this is a description",
+            released: 2002,
+        };
+
+        beforeEach(async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            personType = testHelper.createUniqueType("Person");
+            movieType = testHelper.createUniqueType("Movie");
+            queryType = `${personType.plural}ByName`;
+
+            const typeDefs = generatedTypeDefs(personType, movieType);
+
+            neoSchema = await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    limitRequired: true,
+                },
+            });
+
+            await testHelper.createFulltextIndex(`${personType.name}Index`, personType.name, ["name"]);
+
+            await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                sessionConfig: { database: databaseName },
+            });
+
+            await testHelper.executeCypher(
+                `
+                    CREATE (person1:${personType.name})-[:ACTED_IN]->(movie1:${movieType.name})
+                    CREATE (person1)-[:ACTED_IN]->(movie2:${movieType.name})
+                    CREATE (person2:${personType.name})-[:ACTED_IN]->(movie1)
+                    CREATE (person3:${personType.name})-[:ACTED_IN]->(movie2)
+                    SET person1 = $person1
+                    SET person2 = $person2
+                    SET person3 = $person3
+                    SET movie1 = $movie1
+                    SET movie2 = $movie2
+                `,
+                { person1, person2, person3, movie1, movie2 }
+            );
+        });
+
+        test("Limit argument provided", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const query = /* GraphQL */ `
+                query {
+                    ${queryType}(phrase: "a different name", first: 2) {
+                        edges {
+                            score
+                            node {
+                                name
+                            } 
+                        }
+                    }
+                }
+            `;
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data?.[queryType] as any).edges[0].node).toEqual({
+                name: person2.name,
+            });
+            expect((gqlResult.data?.[queryType] as any).edges[1].node).toEqual({
+                name: person1.name,
+            });
+        });
+
+        test("Limit argument not provided", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const query = /* GraphQL */ `
+                query {
+                    ${queryType}(phrase: "some name") {
+                        edges {
+                            score
+                            node {
+                                name
+                            } 
+                        }
+                    }
+                }
+            `;
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            expect(gqlResult.errors).toHaveLength(1);
+            expect(gqlResult.errors).toIncludeSameMembers([
+                new GraphQLError(`Field "${queryType}" argument "first" of type "Int!" is required, but it was not provided.`),
+             ]);
+        });
+
+        test("Limit not provided on nested field", async () => {
+            // Skip if multi-db not supported
+            if (!MULTIDB_SUPPORT) {
+                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+                return;
+            }
+
+            const query = /* GraphQL */ `
+                query {
+                    ${queryType}(phrase: "a name", first: 10) {
+                        edges {
+                            node {
+                                name
+                                actedInMovies(sort: [{ released: ASC }]) {
+                                    title
+                                    released
+                                }
+                            } 
+                        }
+                    }
+                }
+            `;
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            expect(gqlResult.errors).toHaveLength(1);
+            expect(gqlResult.errors).toIncludeSameMembers([
+                new GraphQLError(`Field "actedInMovies" argument "limit" of type "Int!" is required, but it was not provided.`),
+             ]);
+         
         });
     });
     describe("Query tests with auth", () => {

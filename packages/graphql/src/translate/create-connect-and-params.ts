@@ -33,7 +33,6 @@ import { asArray } from "../utils/utils";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
-import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { createWhereNodePredicate } from "./where/create-where-predicate";
@@ -59,7 +58,6 @@ function createConnectAndParams({
     callbackBucket,
     labelOverride,
     parentNode,
-    includeRelationshipValidation,
     isFirstLevel = true,
     source,
     indexPrefix,
@@ -74,7 +72,6 @@ function createConnectAndParams({
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;
-    includeRelationshipValidation?: boolean;
     isFirstLevel?: boolean;
     source: "CREATE" | "UPDATE" | "CONNECT";
     indexPrefix?: string;
@@ -95,7 +92,6 @@ function createConnectAndParams({
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
         const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
-        const isOverwriteNotAllowed = connect.overwrite === false;
 
         const subquery: string[] = [];
         const labels = relatedNode.getLabelString(context);
@@ -174,8 +170,7 @@ function createConnectAndParams({
         subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
         subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
-        const connectOperator = isOverwriteNotAllowed ? "CREATE" : "MERGE";
-        subquery.push(`\t\t\t${connectOperator} (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        subquery.push(`\t\t\tCREATE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -215,31 +210,6 @@ function createConnectAndParams({
 
         const innerMetaStr = "";
 
-        if (includeRelationshipValidation || isOverwriteNotAllowed) {
-            const relValidationStrs: string[] = [];
-            const matrixItems = [
-                [parentNode, parentVar],
-                [relatedNode, nodeName],
-            ] as [Node, string][];
-
-            matrixItems.forEach((mi) => {
-                const relValidationStr = createRelationshipValidationString({
-                    node: mi[0],
-                    context,
-                    varName: mi[1],
-                    ...(isOverwriteNotAllowed && { relationshipFieldNotOverwritable: relationField.fieldName }),
-                });
-                if (relValidationStr) {
-                    relValidationStrs.push(relValidationStr);
-                }
-            });
-
-            if (relValidationStrs.length) {
-                subquery.push(`\tWITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
-                subquery.push(relValidationStrs.join("\n"));
-            }
-        }
-
         subquery.push(`WITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
 
         if (connect.connect) {
@@ -275,7 +245,6 @@ function createConnectAndParams({
                                 refNodes: [newRefNode],
                                 parentNode: relatedNode,
                                 labelOverride: relField.union ? newRefNode.name : "",
-                                includeRelationshipValidation: true,
                                 isFirstLevel: false,
                                 source: "CONNECT",
                             });

@@ -206,7 +206,6 @@ export class DeleteFactory {
 
         const selection = new RelationshipSelection({
             relationship,
-            directed: true,
             optional: true,
             targetOverride: target,
         });

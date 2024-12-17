@@ -25,12 +25,7 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
-import {
-    declareRelationshipDirective,
-    nodeDirective,
-    privateDirective,
-    relationshipDirective,
-} from "../graphql/directives";
+import { declareRelationshipDirective, nodeDirective, relationshipDirective } from "../graphql/directives";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
 import { isInArray } from "../utils/is-in-array";
@@ -207,11 +202,6 @@ function generateInterfaceEntity(
     );
 
     const fields = (definition.fields || []).map((fieldDefinition) => {
-        const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-
-        if (isPrivateAttribute) {
-            return;
-        }
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, declareRelationshipDirective.name);
         if (isRelationshipAttribute) {
             return;
@@ -438,11 +428,6 @@ function generateRelationshipField(
         propertiesTypeName = properties;
 
         const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
-            const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-
-            if (isPrivateAttribute) {
-                return;
-            }
             return parseAttribute(fieldDefinition, definitionCollection, propertyInterface.fields);
         });
 
@@ -523,13 +508,6 @@ function generateConcreteEntity(
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
     const fields = (definition.fields || []).map((fieldDefinition) => {
-        // If the attribute is the private directive then
-        const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-
-        if (isPrivateAttribute) {
-            return;
-        }
-
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
         if (isRelationshipAttribute) {
             return;

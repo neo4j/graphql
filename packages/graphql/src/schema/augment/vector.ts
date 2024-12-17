@@ -57,7 +57,7 @@ export function augmentVectorSchema({
         const vectorArgs = {
             where: concreteEntityAdapter.operations.vectorTypeNames.where,
             sort: withVectorSortInputType({ concreteEntityAdapter, composer }).NonNull.List,
-            first: GraphQLInt,
+            first: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
             after: GraphQLString,
         };
 

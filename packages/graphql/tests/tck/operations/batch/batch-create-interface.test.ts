@@ -305,7 +305,7 @@ describe("Batch Create, Interface", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect0_node
-            			MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
+            			CREATE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
             		}
             	}
             WITH this3, this3_workers_connect0_node
@@ -322,7 +322,7 @@ describe("Batch Create, Interface", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect1_node
-            			MERGE (this3)<-[this3_workers_connect1_relationship:EMPLOYED]-(this3_workers_connect1_node)
+            			CREATE (this3)<-[this3_workers_connect1_relationship:EMPLOYED]-(this3_workers_connect1_node)
             		}
             	}
             WITH this3, this3_workers_connect1_node

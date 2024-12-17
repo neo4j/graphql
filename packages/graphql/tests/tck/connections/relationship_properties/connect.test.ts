@@ -84,7 +84,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             			SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		}
             	}
@@ -173,7 +173,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             			SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		}
             	}
@@ -255,7 +255,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             			SET this_actors0_connect0_relationship.screenTime = $this_actors0_connect0_relationship_screenTime
             		}
             	}
@@ -334,7 +334,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             			SET this_actors0_connect0_relationship.screenTime = $this_actors0_connect0_relationship_screenTime
             		}
             	}

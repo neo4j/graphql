@@ -66,7 +66,6 @@ export class AggregateFactory {
 
                 const selection = new RelationshipSelection({
                     relationship: entityOrRel,
-                    directed: Boolean(resolveTree.args?.directed ?? true),
                 });
 
                 const operation = new AggregationOperation({
