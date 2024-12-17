@@ -183,7 +183,7 @@ export class AttributeAdapter {
 
     isAggregationWhereField(): boolean {
         const isGraphQLBuiltInScalarWithoutBoolean =
-            this.typeHelper.isGraphQLBuiltInScalar() && !this.typeHelper.isBoolean();
+            this.typeHelper.isGraphQLBuiltInScalar() && !this.typeHelper.isBoolean() && !this.typeHelper.isID();
         const isTemporalWithoutDate = this.typeHelper.isTemporal() && !this.typeHelper.isDate();
         return (
             !this.typeHelper.isList() &&

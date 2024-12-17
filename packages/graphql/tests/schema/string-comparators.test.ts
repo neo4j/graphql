@@ -166,7 +166,6 @@ describe("String Comparators", () => {
               in: [String!]
               lt: String
               lte: String
-              matches: String
               startsWith: String
             }
 
@@ -316,12 +315,7 @@ describe("String Comparators", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -483,11 +477,8 @@ describe("String Comparators", () => {
               endsWith: String
               eq: String
               gt: String
-              gte: String
               in: [String!]
               lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -1203,7 +1194,6 @@ describe("String Comparators", () => {
               in: [String!]
               lt: String
               lte: String
-              matches: String
               startsWith: String
             }
 

@@ -133,8 +133,9 @@ export function getWhereFieldsForAttributes({
                 continue;
             }
         }
+
         result[field.name] = {
-            type: getInputFilterFromAttributeType(field),
+            type: getInputFilterFromAttributeType(field, features),
             directives: deprecatedDirectives,
         };
         if (!shouldAddDeprecatedFields(features, "attributeFilters")) {

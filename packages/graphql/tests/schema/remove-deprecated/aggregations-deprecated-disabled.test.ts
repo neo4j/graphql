@@ -183,12 +183,7 @@ describe("Deprecated Aggregations disabled", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -491,12 +486,7 @@ describe("Deprecated Aggregations disabled", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -751,23 +741,12 @@ describe("Deprecated Aggregations disabled", () => {
               shortest: ID
             }
 
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -833,7 +812,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeScalarAggregationFilters
               someDuration: DurationScalarAggregationFilters
               someFloat: FloatScalarAggregationFilters
-              someId: IDScalarAggregationFilters
               someInt: IntScalarAggregationFilters
               someLocalDateTime: LocalDateTimeScalarAggregationFilters
               someLocalTime: LocalTimeScalarAggregationFilters
@@ -1158,7 +1136,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeScalarAggregationFilters
               someDuration: DurationScalarAggregationFilters
               someFloat: FloatScalarAggregationFilters
-              someId: IDScalarAggregationFilters
               someInt: IntScalarAggregationFilters
               someLocalDateTime: LocalDateTimeScalarAggregationFilters
               someLocalTime: LocalTimeScalarAggregationFilters
@@ -1321,12 +1298,7 @@ describe("Deprecated Aggregations disabled", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -1794,14 +1766,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
-              eq: [IDScalarFilters!]
-              includes: IDScalarFilters
-            }
-
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
+              eq: [ID!]
+              includes: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -1809,12 +1775,7 @@ describe("Deprecated Aggregations disabled", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -2250,7 +2211,6 @@ describe("Deprecated Aggregations disabled", () => {
               someDateTime: DateTimeScalarAggregationFilters
               someDuration: DurationScalarAggregationFilters
               someFloat: FloatScalarAggregationFilters
-              someId: IDScalarAggregationFilters
               someInt: IntScalarAggregationFilters
               someLocalDateTime: LocalDateTimeScalarAggregationFilters
               someLocalTime: LocalTimeScalarAggregationFilters
@@ -2405,12 +2365,7 @@ describe("Deprecated Aggregations disabled", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 

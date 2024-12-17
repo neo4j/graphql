@@ -363,8 +363,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
-              eq: [IDScalarFilters!]
-              includes: IDScalarFilters
+              eq: [ID!]
+              includes: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -372,12 +372,7 @@ describe("Cypher", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -767,12 +762,7 @@ describe("Cypher", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -1292,12 +1282,7 @@ describe("Cypher", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -1589,12 +1574,7 @@ describe("Cypher", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -1847,12 +1827,7 @@ describe("Cypher", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -2012,12 +1987,7 @@ describe("Cypher", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -2129,12 +2099,7 @@ describe("Cypher", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -2341,12 +2306,7 @@ describe("Cypher", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 

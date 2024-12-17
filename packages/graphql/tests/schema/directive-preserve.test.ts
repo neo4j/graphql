@@ -77,12 +77,7 @@ describe("Directive-preserve", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -884,12 +879,7 @@ describe("Directive-preserve", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -2083,12 +2073,7 @@ describe("Directive-preserve", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -3141,12 +3126,7 @@ describe("Directive-preserve", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -4187,12 +4167,7 @@ describe("Directive-preserve", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -4652,12 +4627,7 @@ describe("Directive-preserve", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 

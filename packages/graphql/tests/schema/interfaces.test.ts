@@ -80,23 +80,12 @@ describe("Interfaces", () => {
               shortest: ID
             }
 
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -174,7 +163,6 @@ describe("Interfaces", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieMoviesNodeAggregationWhereInput
             }
 
             input MovieMoviesConnectFieldInput {
@@ -208,23 +196,6 @@ describe("Interfaces", () => {
             input MovieMoviesFieldInput {
               connect: [MovieMoviesConnectFieldInput!]
               create: [MovieMoviesCreateFieldInput!]
-            }
-
-            input MovieMoviesNodeAggregationWhereInput {
-              AND: [MovieMoviesNodeAggregationWhereInput!]
-              NOT: MovieMoviesNodeAggregationWhereInput
-              OR: [MovieMoviesNodeAggregationWhereInput!]
-              id: IDScalarAggregationFilters
-              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
-              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
-              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
-              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
-              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
             }
 
             input MovieMoviesRelationshipFilters {
@@ -282,7 +253,6 @@ describe("Interfaces", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieNodeMoviesNodeAggregationWhereInput
             }
 
             type MovieNodeMoviesConnection {
@@ -329,23 +299,6 @@ describe("Interfaces", () => {
             input MovieNodeMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: MovieNodeMoviesConnectionWhere
-            }
-
-            input MovieNodeMoviesNodeAggregationWhereInput {
-              AND: [MovieNodeMoviesNodeAggregationWhereInput!]
-              NOT: MovieNodeMoviesNodeAggregationWhereInput
-              OR: [MovieNodeMoviesNodeAggregationWhereInput!]
-              id: IDScalarAggregationFilters
-              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
-              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
-              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
-              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
-              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
             }
 
             type MovieNodeMoviesRelationship {
@@ -587,23 +540,12 @@ describe("Interfaces", () => {
               shortest: ID
             }
 
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -681,7 +623,6 @@ describe("Interfaces", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieMoviesNodeAggregationWhereInput
             }
 
             input MovieMoviesConnectFieldInput {
@@ -715,23 +656,6 @@ describe("Interfaces", () => {
             input MovieMoviesFieldInput {
               connect: [MovieMoviesConnectFieldInput!]
               create: [MovieMoviesCreateFieldInput!]
-            }
-
-            input MovieMoviesNodeAggregationWhereInput {
-              AND: [MovieMoviesNodeAggregationWhereInput!]
-              NOT: MovieMoviesNodeAggregationWhereInput
-              OR: [MovieMoviesNodeAggregationWhereInput!]
-              id: IDScalarAggregationFilters
-              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
-              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
-              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
-              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
-              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
             }
 
             input MovieMoviesRelationshipFilters {
@@ -789,7 +713,6 @@ describe("Interfaces", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieNodeMoviesNodeAggregationWhereInput
             }
 
             type MovieNodeMoviesConnection {
@@ -836,23 +759,6 @@ describe("Interfaces", () => {
             input MovieNodeMoviesDisconnectFieldInput {
               disconnect: MovieDisconnectInput
               where: MovieNodeMoviesConnectionWhere
-            }
-
-            input MovieNodeMoviesNodeAggregationWhereInput {
-              AND: [MovieNodeMoviesNodeAggregationWhereInput!]
-              NOT: MovieNodeMoviesNodeAggregationWhereInput
-              OR: [MovieNodeMoviesNodeAggregationWhereInput!]
-              id: IDScalarAggregationFilters
-              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
-              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
-              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
-              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
-              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
             }
 
             type MovieNodeMoviesRelationship {

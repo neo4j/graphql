@@ -180,12 +180,7 @@ describe("Aggregations", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -488,12 +483,7 @@ describe("Aggregations", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -745,23 +735,12 @@ describe("Aggregations", () => {
               shortest: ID
             }
 
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -892,17 +871,6 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { gte: ... } } }' instead.\\")
               someFloat_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { lt: ... } } }' instead.\\")
               someFloat_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { lte: ... } } }' instead.\\")
-              someId: IDScalarAggregationFilters
-              someId_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { eq: ... } } }' instead.\\")
-              someId_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { gt: ... } } }' instead.\\")
-              someId_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { gte: ... } } }' instead.\\")
-              someId_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { lt: ... } } }' instead.\\")
-              someId_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { lte: ... } } }' instead.\\")
-              someId_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { eq: ... } } }' instead.\\")
-              someId_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { gt: ... } } }' instead.\\")
-              someId_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { gte: ... } } }' instead.\\")
-              someId_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { lt: ... } } }' instead.\\")
-              someId_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { lte: ... } } }' instead.\\")
               someInt: IntScalarAggregationFilters
               someInt_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'someInt: { average: { eq: ... } } }' instead.\\")
               someInt_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'someInt: { average: { gt: ... } } }' instead.\\")
@@ -1357,17 +1325,6 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { gte: ... } } }' instead.\\")
               someFloat_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { lt: ... } } }' instead.\\")
               someFloat_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { lte: ... } } }' instead.\\")
-              someId: IDScalarAggregationFilters
-              someId_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { eq: ... } } }' instead.\\")
-              someId_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { gt: ... } } }' instead.\\")
-              someId_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { gte: ... } } }' instead.\\")
-              someId_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { lt: ... } } }' instead.\\")
-              someId_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { lte: ... } } }' instead.\\")
-              someId_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { eq: ... } } }' instead.\\")
-              someId_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { gt: ... } } }' instead.\\")
-              someId_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { gte: ... } } }' instead.\\")
-              someId_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { lt: ... } } }' instead.\\")
-              someId_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { lte: ... } } }' instead.\\")
               someInt: IntScalarAggregationFilters
               someInt_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'someInt: { average: { eq: ... } } }' instead.\\")
               someInt_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'someInt: { average: { gt: ... } } }' instead.\\")
@@ -1595,12 +1552,7 @@ describe("Aggregations", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -2065,14 +2017,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
-              eq: [IDScalarFilters!]
-              includes: IDScalarFilters
-            }
-
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
+              eq: [ID!]
+              includes: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -2080,12 +2026,7 @@ describe("Aggregations", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -2586,17 +2527,6 @@ describe("Aggregations", () => {
               someFloat_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { gte: ... } } }' instead.\\")
               someFloat_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { lt: ... } } }' instead.\\")
               someFloat_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'someFloat: { sum: { lte: ... } } }' instead.\\")
-              someId: IDScalarAggregationFilters
-              someId_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { eq: ... } } }' instead.\\")
-              someId_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { gt: ... } } }' instead.\\")
-              someId_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { gte: ... } } }' instead.\\")
-              someId_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { lt: ... } } }' instead.\\")
-              someId_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { max: { lte: ... } } }' instead.\\")
-              someId_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { eq: ... } } }' instead.\\")
-              someId_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { gt: ... } } }' instead.\\")
-              someId_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { gte: ... } } }' instead.\\")
-              someId_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { lt: ... } } }' instead.\\")
-              someId_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'someId: { min: { lte: ... } } }' instead.\\")
               someInt: IntScalarAggregationFilters
               someInt_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'someInt: { average: { eq: ... } } }' instead.\\")
               someInt_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'someInt: { average: { gt: ... } } }' instead.\\")
@@ -2816,12 +2746,7 @@ describe("Aggregations", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
