@@ -38,7 +38,7 @@ export const FloatListFilters = new GraphQLInputObjectType({
     name: "FloatListFilters",
     description: "Float list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(FloatScalarFilters)) },
-        includes: { type: FloatScalarFilters },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLFloat)) },
+        includes: { type: GraphQLFloat },
     },
 });

@@ -1579,8 +1579,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"BigInt list filters\\"\\"\\"
             input BigIntListFilters {
-              eq: [BigIntScalarFilters!]
-              includes: BigIntScalarFilters
+              eq: [BigInt!]
+              includes: BigInt
             }
 
             \\"\\"\\"Filters for an aggregation of an BigInt field\\"\\"\\"
@@ -1636,8 +1636,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"DateTime list filters\\"\\"\\"
             input DateTimeListFilters {
-              eq: [DateTimeScalarFilters!]
-              includes: DateTimeScalarFilters
+              eq: [DateTime!]
+              includes: DateTime
             }
 
             \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
@@ -1679,8 +1679,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"Duration list filters\\"\\"\\"
             input DurationListFilters {
-              eq: [DurationScalarFilters!]
-              includes: DurationScalarFilters
+              eq: [Duration!]
+              includes: Duration
             }
 
             \\"\\"\\"Filters for an aggregation of a Dutation input field\\"\\"\\"
@@ -1714,8 +1714,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
@@ -2005,8 +2005,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"LocalDateTime list filters\\"\\"\\"
             input LocalDateTimeListFilters {
-              eq: [LocalDateTimeScalarFilters!]
-              includes: LocalDateTimeScalarFilters
+              eq: [LocalDateTime!]
+              includes: LocalDateTime
             }
 
             \\"\\"\\"Filters for an aggregation of an LocalDateTime input field\\"\\"\\"
@@ -2042,8 +2042,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             \\"\\"\\"LocalTime list filters\\"\\"\\"
             input LocalTimeListFilters {
-              eq: [LocalTimeScalarFilters!]
-              includes: LocalTimeScalarFilters
+              eq: [LocalTime!]
+              includes: LocalTime
             }
 
             \\"\\"\\"Filters for an aggregation of an LocalTime input field\\"\\"\\"

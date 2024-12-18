@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering - List", () => {
+describe("cypher directive filtering - List - deprecated", () => {
     const testHelper = new TestHelper();
     let CustomType: UniqueType;
 
@@ -53,7 +53,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: "a" } }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "a" }) {
                     title
                 }
             }
@@ -92,7 +92,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: 2 }}) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: 2 }) {
                     title
                 }
             }
@@ -131,7 +131,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: 20.0 } }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: 20.0 }) {
                     title
                 }
             }
@@ -170,7 +170,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: { latitude: 1, longitude: 2 } } }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: { latitude: 1, longitude: 2 } }) {
                     title
                 }
             }
@@ -209,7 +209,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: { x: 1, y: 2, z: 3 } } }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: { x: 1, y: 2, z: 3 } }) {
                     title
                 }
             }
@@ -248,7 +248,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: "2021-01-01T00:00:00Z" } }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01T00:00:00Z" }) {
                     title
                 }
             }
@@ -287,7 +287,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
         query {
-            ${CustomType.plural}(where: { custom_cypher_list: { includes: "2021-01-01T00:00:00" } }) {
+            ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01T00:00:00" }) {
                 title
             }
         }
@@ -326,7 +326,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: "2021-01-01"} }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "2021-01-01" }) {
                     title
                 }
             }
@@ -365,7 +365,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: "12:00:00" }}) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "12:00:00" }) {
                     title
                 }
             }
@@ -404,7 +404,7 @@ describe("cypher directive filtering - List", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { custom_cypher_list: { includes: "12:00:00" } }) {
+                ${CustomType.plural}(where: { custom_cypher_list_INCLUDES: "12:00:00" }) {
                     title
                 }
             }

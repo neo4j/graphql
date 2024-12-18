@@ -50,7 +50,7 @@ export const CartesianPointListFilters = new GraphQLInputObjectType({
     name: "CartesianPointListFilters",
     description: "CartesianPoint list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(CartesianPointFilters)) },
-        includes: { type: CartesianPointFilters },
+        eq: { type: new GraphQLList(new GraphQLNonNull(CartesianPointInput)) },
+        includes: { type: CartesianPointInput },
     },
 });

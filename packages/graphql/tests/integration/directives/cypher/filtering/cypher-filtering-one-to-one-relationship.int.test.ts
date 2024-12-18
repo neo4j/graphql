@@ -311,7 +311,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(
-                    where: { AND: [{ released: { in:[2003] }, NOT: { actor: null } }] }
+                    where: { AND: [{ released: { in: [2003] }, NOT: { actor: null } }] }
                 ) {
                     title
                 }
@@ -473,7 +473,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Person.plural}(where: { directed: { title: { eq:"The Matrix" } } }) {
+                ${Person.plural}(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -701,7 +701,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Person.plural}(where: { directed: { title: {eq: "The Matrix"} } }) {
+                ${Person.plural}(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {

@@ -39,7 +39,7 @@ export const DateListFilters = new GraphQLInputObjectType({
     name: "DateListFilters",
     description: "Date list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(DateScalarFilters)) },
-        includes: { type: DateScalarFilters },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLDate)) },
+        includes: { type: GraphQLDate },
     },
 });

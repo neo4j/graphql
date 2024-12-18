@@ -245,8 +245,8 @@ describe("Exclude suffix based filtering", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"

@@ -1,10 +1,10 @@
 import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
-import { parseDuration } from "../../../src/graphql/scalars/Duration";
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { parseDuration } from "../../../../../src/graphql/scalars/Duration";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("deprecated types filtering", () => {
+describe("types filtering - deprecated", () => {
     const testHelper = new TestHelper();
     let Movie: UniqueType;
     let File: UniqueType;

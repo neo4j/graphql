@@ -187,8 +187,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"BigInt list filters\\"\\"\\"
             input BigIntListFilters {
-              eq: [BigIntScalarFilters!]
-              includes: BigIntScalarFilters
+              eq: [BigInt!]
+              includes: BigInt
             }
 
             \\"\\"\\"BigInt filters\\"\\"\\"
@@ -203,7 +203,7 @@ describe("Cypher", () => {
 
             \\"\\"\\"Boolean list filters\\"\\"\\"
             input BooleanListFilters {
-              eq: [BooleanScalarFilters!]
+              eq: [Boolean!]
             }
 
             \\"\\"\\"Boolean filters\\"\\"\\"
@@ -253,8 +253,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"CartesianPoint list filters\\"\\"\\"
             input CartesianPointListFilters {
-              eq: [CartesianPointFilters!]
-              includes: CartesianPointFilters
+              eq: [CartesianPointInput!]
+              includes: CartesianPointInput
             }
 
             type CreateActorsMutationResponse {
@@ -280,8 +280,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"Date list filters\\"\\"\\"
             input DateListFilters {
-              eq: [DateScalarFilters!]
-              includes: DateScalarFilters
+              eq: [Date!]
+              includes: Date
             }
 
             \\"\\"\\"Date filters\\"\\"\\"
@@ -299,8 +299,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"DateTime list filters\\"\\"\\"
             input DateTimeListFilters {
-              eq: [DateTimeScalarFilters!]
-              includes: DateTimeScalarFilters
+              eq: [DateTime!]
+              includes: DateTime
             }
 
             \\"\\"\\"DateTime filters\\"\\"\\"
@@ -326,8 +326,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"Duration list filters\\"\\"\\"
             input DurationListFilters {
-              eq: [DurationScalarFilters!]
-              includes: DurationScalarFilters
+              eq: [Duration!]
+              includes: Duration
             }
 
             \\"\\"\\"Duration filters\\"\\"\\"
@@ -342,8 +342,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
@@ -397,8 +397,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"LocalDateTime list filters\\"\\"\\"
             input LocalDateTimeListFilters {
-              eq: [LocalDateTimeScalarFilters!]
-              includes: LocalDateTimeScalarFilters
+              eq: [LocalDateTime!]
+              includes: LocalDateTime
             }
 
             \\"\\"\\"LocalDateTime filters\\"\\"\\"
@@ -418,8 +418,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"LocalTime list filters\\"\\"\\"
             input LocalTimeListFilters {
-              eq: [LocalTimeScalarFilters!]
-              includes: LocalTimeScalarFilters
+              eq: [LocalTime!]
+              includes: LocalTime
             }
 
             \\"\\"\\"LocalTime filters\\"\\"\\"

@@ -39,7 +39,7 @@ export const LocalDateTimeListFilters = new GraphQLInputObjectType({
     name: "LocalDateTimeListFilters",
     description: "LocalDateTime list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(LocalDateTimeScalarFilters)) },
-        includes: { type: LocalDateTimeScalarFilters },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLLocalDateTime)) },
+        includes: { type: GraphQLLocalDateTime },
     },
 });

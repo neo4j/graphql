@@ -39,7 +39,7 @@ export const BigIntListFilters = new GraphQLInputObjectType({
     name: "BigIntListFilters",
     description: "BigInt list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(BigIntScalarFilters)) },
-        includes: { type: BigIntScalarFilters },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLBigInt)) },
+        includes: { type: GraphQLBigInt },
     },
 });

@@ -70,8 +70,8 @@ describe("Arrays", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Float filters\\"\\"\\"

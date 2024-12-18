@@ -33,6 +33,6 @@ export const BooleanListFilters = new GraphQLInputObjectType({
     name: "BooleanListFilters",
     description: "Boolean list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(BooleanScalarFilters)) },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLBoolean)) },
     },
 });
