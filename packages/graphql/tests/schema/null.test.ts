@@ -142,15 +142,10 @@ describe("Null", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID list filters\\"\\"\\"
             input IDListFilters {
-              eq: [IDScalarFilters!]
-              includes: IDScalarFilters
+              eq: [ID!]
+              includes: ID
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -158,12 +153,7 @@ describe("Null", () => {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -272,7 +262,6 @@ describe("Null", () => {
               averageRating: FloatAggregateSelection!
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -528,12 +517,7 @@ describe("Null", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 

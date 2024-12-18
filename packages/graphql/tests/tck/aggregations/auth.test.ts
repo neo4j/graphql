@@ -238,41 +238,6 @@ describe("Cypher Aggregations with Auth", () => {
         `);
     });
 
-    test("Field ID with auth", async () => {
-        const query = /* GraphQL */ `
-            {
-                usersAggregate {
-                    id {
-                        shortest
-                        longest
-                    }
-                }
-            }
-        `;
-
-        const token = createBearerToken("secret", { sub: "super_admin" });
-        const result = await translateQuery(neoSchema, query, { token });
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (this:User)
-                WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                RETURN { shortest: min(this.id), longest: max(this.id) } AS var0
-            }
-            RETURN { id: var0 }"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"sub\\": \\"super_admin\\"
-                }
-            }"
-        `);
-    });
-
     test("Field String with auth", async () => {
         const query = /* GraphQL */ `
             {

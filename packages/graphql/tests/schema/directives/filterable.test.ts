@@ -1539,12 +1539,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -2281,12 +2276,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -3005,12 +2995,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -3698,12 +3683,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -4442,12 +4422,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -5130,12 +5105,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -5822,12 +5792,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -6563,12 +6528,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -7340,12 +7300,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -8081,12 +8036,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -9143,12 +9093,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -10213,12 +10158,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 
@@ -11283,12 +11223,7 @@ describe("@filterable directive", () => {
                       contains: String
                       endsWith: String
                       eq: String
-                      gt: String
-                      gte: String
                       in: [String!]
-                      lt: String
-                      lte: String
-                      matches: String
                       startsWith: String
                     }
 

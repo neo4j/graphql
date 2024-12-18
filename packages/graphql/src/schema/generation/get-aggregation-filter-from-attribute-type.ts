@@ -22,7 +22,6 @@ import { BigIntScalarAggregationFilters } from "../../graphql/input-objects/gene
 import { DateTimeScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/DateTimeScalarAggregationFilters";
 import { DurationScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/DurationScalarAggregationFilters";
 import { FloatScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/FloatScalarAggregationFilters";
-import { IDScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/IDScalarAggregationFilters";
 import { IntScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/IntScalarAggregationFilters";
 import { LocalDateTimeScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/LocalDateTimeScalarAggregationFilters";
 import { LocalTimeScalarAggregationFilters } from "../../graphql/input-objects/generic-aggregation-filters/LocalTimeScalarAggregationFilters";
@@ -35,9 +34,6 @@ export function getAggregationFilterFromAttributeType(attribute: AttributeAdapte
         throw new Error("List types not available for aggregations");
     }
 
-    if (attribute.typeHelper.isID()) {
-        return IDScalarAggregationFilters;
-    }
     if (attribute.typeHelper.isString()) {
         return StringScalarAggregationFilters;
     }

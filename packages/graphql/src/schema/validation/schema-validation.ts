@@ -45,15 +45,16 @@ import { DateListFilters, DateScalarFilters } from "../../graphql/input-objects/
 import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
 import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
 import { FloatListFilters, FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
-import { IDListFilters, IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
+import { getIDScalarFilters, IDListFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
 import { IntListFilters, IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import { LocalTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
 import { PointFilters, PointListFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
 import {
+    getStringScalarFilters,
     StringListFilters,
-    StringScalarFilters,
 } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
 import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { EnricherContext } from "./EnricherContext";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
 import { ValidateAuthorizationLikeDirectives } from "./custom-rules/validate-authorization-like-directives";
@@ -108,21 +109,23 @@ export function validateUserDefinition({
     additionalDirectives = [],
     additionalTypes = [],
     jwt,
+    features,
 }: {
     userDocument: DocumentNode;
     augmentedDocument: DocumentNode;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
     jwt?: ObjectTypeDefinitionNode;
+    features?: Neo4jFeaturesSettings;
 }): void {
     const rules = [...specifiedSDLRules, ValidateAuthorizationLikeDirectives];
     let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwt);
     const genericFiltersName: GraphQLInputObjectType[] = [
         BooleanScalarFilters,
         BooleanListFilters,
-        IDScalarFilters,
+        getIDScalarFilters(features),
         IDListFilters,
-        StringScalarFilters,
+        getStringScalarFilters(features),
         StringListFilters,
         FloatScalarFilters,
         FloatListFilters,
