@@ -652,21 +652,17 @@ export class FilterFactory {
             return this.createAggregationFilter(relationship, value as AggregateWhereInput);
         }
         if (!operator) {
-            const objectEntries = Object.entries(value);
-
-            if (objectEntries.length !== 1) {
-                throw new Error("Expected one quantifier in a relationship predicate");
-            }
-            const [genericOperator, genericValue] = objectEntries[0] as [string, any];
-            const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(genericOperator);
-            return this.createRelatedNodeFilters({
-                relationship,
-                value: genericValue,
-                operator: legacyOperator,
-
-                isConnection,
-                isAggregate,
+            const genericFilters = Object.entries(value).flatMap(([quantifier, predicate]) => {
+                const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(quantifier);
+                return this.createRelatedNodeFilters({
+                    relationship,
+                    value: predicate,
+                    operator: legacyOperator,
+                    isConnection,
+                    isAggregate,
+                });
             });
+            return this.wrapMultipleFiltersInLogical(genericFilters);
         }
 
         if (operator && !isLegacyRelationshipOperator(operator)) {

@@ -183,7 +183,11 @@ export function withMathOperators(): AdditionalFieldsCallback {
             for (const operation of attribute.mathModel.getMathOperations()) {
                 const newFieldDefinition =
                     typeof fieldDefinition === "string" ? { type: fieldDefinition } : { ...fieldDefinition };
-                const newOperationName = operation.split("_")[1]!.toLowerCase();
+                const operationNameUpperCase = operation.split("_")[1];
+                if (!operationNameUpperCase) {
+                    throw new Error(`Invalid operation: ${operation}`);
+                }
+                const newOperationName = operationNameUpperCase.toLowerCase();
                 newFieldDefinition.directives = [DEPRECATE_MATH_MUTATIONS(attribute.name, newOperationName)];
                 fields[operation] = newFieldDefinition;
             }
