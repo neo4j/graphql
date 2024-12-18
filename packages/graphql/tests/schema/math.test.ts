@@ -59,22 +59,12 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -114,7 +104,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -280,22 +269,12 @@ describe("Algebraic", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -311,7 +290,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: BigIntAggregateSelection!
             }
 
@@ -475,22 +453,12 @@ describe("Algebraic", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -506,7 +474,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: FloatAggregateSelection!
             }
 
@@ -762,17 +729,6 @@ describe("Algebraic", () => {
               AND: [DirectorDirectsNodeAggregationWhereInput!]
               NOT: DirectorDirectsNodeAggregationWhereInput
               OR: [DirectorDirectsNodeAggregationWhereInput!]
-              id: IDScalarAggregationFilters
-              id_MAX_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { eq: ... } } }' instead.\\")
-              id_MAX_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gt: ... } } }' instead.\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { gte: ... } } }' instead.\\")
-              id_MAX_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lt: ... } } }' instead.\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { max: { lte: ... } } }' instead.\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { eq: ... } } }' instead.\\")
-              id_MIN_GT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gt: ... } } }' instead.\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { gte: ... } } }' instead.\\")
-              id_MIN_LT: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lt: ... } } }' instead.\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"Please use the relevant generic filter 'id: { min: { lte: ... } } }' instead.\\")
               viewers: IntScalarAggregationFilters
               viewers_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'viewers: { average: { eq: ... } } }' instead.\\")
               viewers_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'viewers: { average: { gt: ... } } }' instead.\\")
@@ -840,7 +796,6 @@ describe("Algebraic", () => {
             }
 
             type DirectorMovieDirectsNodeAggregateSelection {
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -912,28 +867,12 @@ describe("Algebraic", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
-            \\"\\"\\"Filters for an aggregation of an ID input field\\"\\"\\"
-            input IDScalarAggregationFilters {
-              max: IDScalarFilters
-              min: IDScalarFilters
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -984,7 +923,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -1269,12 +1207,7 @@ describe("Algebraic", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -1366,22 +1299,12 @@ describe("Algebraic", () => {
               lte: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -1432,7 +1355,6 @@ describe("Algebraic", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               viewers: IntAggregateSelection!
             }
 
@@ -1999,12 +1921,7 @@ describe("Algebraic", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -2753,12 +2670,7 @@ describe("Algebraic", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 

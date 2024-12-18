@@ -154,22 +154,12 @@ describe("Comments", () => {
               set: Genre
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -223,7 +213,6 @@ describe("Comments", () => {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -468,22 +457,12 @@ describe("Comments", () => {
                   lte: Float
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
                   eq: ID
-                  gt: ID
-                  gte: ID
                   in: [ID!]
-                  lt: ID
-                  lte: ID
-                  matches: ID
                   startsWith: ID
                 }
 
@@ -642,7 +621,6 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -768,12 +746,7 @@ describe("Comments", () => {
                   contains: String
                   endsWith: String
                   eq: String
-                  gt: String
-                  gte: String
                   in: [String!]
-                  lt: String
-                  lte: String
-                  matches: String
                   startsWith: String
                 }
 
@@ -1447,12 +1420,7 @@ describe("Comments", () => {
                   contains: String
                   endsWith: String
                   eq: String
-                  gt: String
-                  gte: String
                   in: [String!]
-                  lt: String
-                  lte: String
-                  matches: String
                   startsWith: String
                 }
 
@@ -1543,7 +1511,6 @@ describe("Comments", () => {
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1589,22 +1556,12 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
                 \\"\\"\\"ID filters\\"\\"\\"
                 input IDScalarFilters {
                   contains: ID
                   endsWith: ID
                   eq: ID
-                  gt: ID
-                  gte: ID
                   in: [ID!]
-                  lt: ID
-                  lte: ID
-                  matches: ID
                   startsWith: ID
                 }
 
@@ -1622,7 +1579,6 @@ describe("Comments", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieConnectInput {

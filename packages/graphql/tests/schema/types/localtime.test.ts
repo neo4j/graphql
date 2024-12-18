@@ -60,22 +60,12 @@ describe("Localtime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -116,7 +106,6 @@ describe("Localtime", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               time: LocalTimeAggregateSelection!
             }
 

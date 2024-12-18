@@ -400,6 +400,7 @@ class Neo4jGraphQL {
                     userDocument: document,
                     augmentedDocument: typeDefs,
                     jwt: jwt?.type,
+                    features: this.features,
                 });
             }
 
@@ -470,6 +471,7 @@ class Neo4jGraphQL {
                 additionalDirectives: directives,
                 additionalTypes: types,
                 jwt: jwt?.type,
+                features: this.features,
             });
         }
 

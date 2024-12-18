@@ -18,25 +18,46 @@
  */
 
 import { GraphQLInputObjectType, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
+import type { Neo4jFeaturesSettings } from "../../../types";
 
-export const StringScalarFilters = new GraphQLInputObjectType({
-    name: "StringScalarFilters",
-    description: "String filters",
-    fields: {
+export function getStringScalarFilters(features?: Neo4jFeaturesSettings): GraphQLInputObjectType {
+    const fields = {
         eq: {
             type: GraphQLString,
         },
-        matches: { type: GraphQLString },
-        gt: { type: GraphQLString }, // GT/LT/GTE etc should not be added all the time
-        gte: { type: GraphQLString },
         in: { type: new GraphQLList(new GraphQLNonNull(GraphQLString)) },
-        lt: { type: GraphQLString },
-        lte: { type: GraphQLString },
         contains: { type: GraphQLString },
         endsWith: { type: GraphQLString },
         startsWith: { type: GraphQLString },
-    },
-});
+    };
+    for (const filter of Object.entries(features?.filters?.String ?? {})) {
+        const [filterName, isEnabled] = filter;
+        if (isEnabled) {
+            switch (filterName) {
+                case "MATCHES":
+                    fields["matches"] = { type: GraphQLString };
+                    break;
+                case "GT":
+                    fields["gt"] = { type: GraphQLString };
+                    break;
+                case "GTE":
+                    fields["gte"] = { type: GraphQLString };
+                    break;
+                case "LT":
+                    fields["lt"] = { type: GraphQLString };
+                    break;
+                case "LTE":
+                    fields["lte"] = { type: GraphQLString };
+                    break;
+            }
+        }
+    }
+    return new GraphQLInputObjectType({
+        name: "StringScalarFilters",
+        description: "String filters",
+        fields,
+    });
+}
 
 export const StringListFilters = new GraphQLInputObjectType({
     name: "StringListFilters",

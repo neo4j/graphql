@@ -40,7 +40,7 @@ import {
     DurationScalarFilters,
 } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
 import { FloatListFilters, FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
-import { IDListFilters, IDScalarFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
+import { getIDScalarFilters, IDListFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
 import { IntListFilters, IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import {
     LocalDateTimeListFilters,
@@ -52,13 +52,17 @@ import {
 } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
 import { PointFilters, PointListFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
 import {
+    getStringScalarFilters,
     StringListFilters,
-    StringScalarFilters,
 } from "../../graphql/input-objects/generic-operators/StringScalarFilters";
 import { TimeListFilters, TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
+import type { Neo4jFeaturesSettings } from "../../types";
 
-export function getInputFilterFromAttributeType(attribute: AttributeAdapter): GraphQLInputType | string {
+export function getInputFilterFromAttributeType(
+    attribute: AttributeAdapter,
+    features?: Neo4jFeaturesSettings
+): GraphQLInputType | string {
     // NOTE: static types returned here must be added to schema-validation > validateUserDefinition
     if (attribute.typeHelper.isBoolean()) {
         if (attribute.typeHelper.isList()) {
@@ -70,13 +74,13 @@ export function getInputFilterFromAttributeType(attribute: AttributeAdapter): Gr
         if (attribute.typeHelper.isList()) {
             return IDListFilters;
         }
-        return IDScalarFilters;
+        return getIDScalarFilters(features);
     }
     if (attribute.typeHelper.isString()) {
         if (attribute.typeHelper.isList()) {
             return StringListFilters;
         }
-        return StringScalarFilters;
+        return getStringScalarFilters(features);
     }
     if (attribute.typeHelper.isInt()) {
         if (attribute.typeHelper.isList()) {

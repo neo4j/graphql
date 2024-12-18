@@ -137,22 +137,12 @@ describe("@default directive", () => {
               subtract: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
             \\"\\"\\"ID filters\\"\\"\\"
             input IDScalarFilters {
               contains: ID
               endsWith: ID
               eq: ID
-              gt: ID
-              gte: ID
               in: [ID!]
-              lt: ID
-              lte: ID
-              matches: ID
               startsWith: ID
             }
 
@@ -243,12 +233,7 @@ describe("@default directive", () => {
               contains: String
               endsWith: String
               eq: String
-              gt: String
-              gte: String
               in: [String!]
-              lt: String
-              lte: String
-              matches: String
               startsWith: String
             }
 
@@ -287,7 +272,6 @@ describe("@default directive", () => {
             type UserAggregateSelection {
               count: Int!
               fromInterface: StringAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               numberOfFriends: IntAggregateSelection!
               rating: FloatAggregateSelection!
