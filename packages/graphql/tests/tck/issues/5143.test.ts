@@ -85,9 +85,9 @@ describe("https://github.com/neo4j/graphql/issues/5143", () => {
             }
             WITH video AS this0
             OPTIONAL MATCH (this0)<-[:PUBLISHER]-(this1:User)
-            WITH *, count(this1) AS publisherCount
+            WITH *, count(this1) AS var2
             WITH *
-            WHERE ($isAuthenticated = true AND (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND (var2 <> 0 AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

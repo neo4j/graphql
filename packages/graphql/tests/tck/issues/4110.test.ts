@@ -72,37 +72,37 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
                 WITH this
                 MATCH (this)-[:CONNECT_TO]->(this0:InBetween)
                 OPTIONAL MATCH (this0)<-[:CONNECT_TO]-(this1:Company)
-                WITH *, count(this1) AS companyCount
+                WITH *, count(this1) AS var2
                 WITH *
-                WHERE (companyCount <> 0 AND ($param0 IS NOT NULL AND this1.id = $param0))
-                RETURN count(this0) = 1 AS var2
+                WHERE (var2 <> 0 AND ($param0 IS NOT NULL AND this1.id = $param0))
+                RETURN count(this0) = 1 AS var3
             }
             WITH *
-            WHERE ($isAuthenticated = true AND var2 = true)
+            WHERE ($isAuthenticated = true AND var3 = true)
             CALL {
                 WITH this
-                MATCH (this)-[this3:CONNECT_TO]->(this4:InBetween)
+                MATCH (this)-[this4:CONNECT_TO]->(this5:InBetween)
                 CALL {
-                    WITH this4
-                    MATCH (this4)<-[this5:CONNECT_TO]-(this6:Company)
+                    WITH this5
+                    MATCH (this5)<-[this6:CONNECT_TO]-(this7:Company)
                     CALL {
-                        WITH this6
-                        MATCH (this6)-[:CONNECT_TO]->(this7:InBetween)
-                        OPTIONAL MATCH (this7)<-[:CONNECT_TO]-(this8:Company)
-                        WITH *, count(this8) AS companyCount
+                        WITH this7
+                        MATCH (this7)-[:CONNECT_TO]->(this8:InBetween)
+                        OPTIONAL MATCH (this8)<-[:CONNECT_TO]-(this9:Company)
+                        WITH *, count(this9) AS var10
                         WITH *
-                        WHERE (companyCount <> 0 AND ($param2 IS NOT NULL AND this8.id = $param2))
-                        RETURN count(this7) = 1 AS var9
+                        WHERE (var10 <> 0 AND ($param2 IS NOT NULL AND this9.id = $param2))
+                        RETURN count(this8) = 1 AS var11
                     }
                     WITH *
-                    WHERE ($isAuthenticated = true AND var9 = true)
-                    WITH this6 { .id } AS this6
-                    RETURN head(collect(this6)) AS var10
+                    WHERE ($isAuthenticated = true AND var11 = true)
+                    WITH this7 { .id } AS this7
+                    RETURN head(collect(this7)) AS var12
                 }
-                WITH this4 { company: var10 } AS this4
-                RETURN head(collect(this4)) AS var11
+                WITH this5 { company: var12 } AS this5
+                RETURN head(collect(this5)) AS var13
             }
-            RETURN this { inBetween: var11 } AS this"
+            RETURN this { inBetween: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

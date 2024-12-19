@@ -672,7 +672,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
-            	WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(authorization__before_this0 IN [(this_posts0)<-[:HAS_POST]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1] WHERE true) AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(authorization_updatebefore_this0 IN [(this_posts0)<-[:HAS_POST]-(authorization_updatebefore_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub) | 1] WHERE true) AND ($jwt.roles IS NOT NULL AND $authorization_updatebefore_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_updatebefore_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	SET this_posts0.id = $this_update_posts0_id
             	WITH this, this_posts0
             	WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND single(authorization__after_this0 IN [(this_posts0)<-[:HAS_POST]-(authorization__after_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__after_this0.id = $jwt.sub) | 1] WHERE true) AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -716,8 +716,8 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"update_param5\\": \\"admin\\",
                 \\"param2\\": \\"user\\",
                 \\"param3\\": \\"admin\\",
-                \\"authorization__before_param2\\": \\"user\\",
-                \\"authorization__before_param3\\": \\"admin\\",
+                \\"authorization_updatebefore_param2\\": \\"user\\",
+                \\"authorization_updatebefore_param3\\": \\"admin\\",
                 \\"this_update_posts0_id\\": \\"new-id\\",
                 \\"authorization__after_param2\\": \\"user\\",
                 \\"authorization__after_param3\\": \\"admin\\",

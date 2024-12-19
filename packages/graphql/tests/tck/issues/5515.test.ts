@@ -84,13 +84,13 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
                 WITH this
                 MATCH (this)<-[:HAS_CATEGORY]-(this0:Cabinet)
                 OPTIONAL MATCH (this0)<-[:HAS_CABINET]-(this1:User)
-                WITH *, count(this1) AS userCount
+                WITH *, count(this1) AS var2
                 WITH *
-                WHERE (userCount <> 0 AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub))
-                RETURN count(this0) = 1 AS var2
+                WHERE (var2 <> 0 AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub))
+                RETURN count(this0) = 1 AS var3
             }
             WITH *
-            WHERE (this.id = $param1 AND ($isAuthenticated = true AND var2 = true))
+            WHERE (this.id = $param1 AND ($isAuthenticated = true AND var3 = true))
             DETACH DELETE this"
         `);
 

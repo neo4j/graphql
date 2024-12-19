@@ -114,8 +114,8 @@ describe("Node Directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Comment)
             OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:Person)
-            WITH *, count(this0) AS creatorCount
-            WHERE ((creatorCount <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH *, count(this0) AS var1
+            WHERE ((var1 <> 0 AND this0.id = $param0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
 

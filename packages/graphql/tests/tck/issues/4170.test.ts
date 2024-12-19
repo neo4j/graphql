@@ -186,28 +186,28 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     WITH authorization_0_0_0_0_0_0_0_0_0_0_after_this1
                     MATCH (authorization_0_0_0_0_0_0_0_0_0_0_after_this1)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this2:Settings)
                     OPTIONAL MATCH (authorization_0_0_0_0_0_0_0_0_0_0_after_this2)<-[:HAS_SETTINGS]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this3:Tenant)
-                    WITH *, count(authorization_0_0_0_0_0_0_0_0_0_0_after_this3) AS tenantCount
+                    WITH *, count(authorization_0_0_0_0_0_0_0_0_0_0_after_this3) AS authorization_0_0_0_0_0_0_0_0_0_0_after_var4
                     WITH *
-                    WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_0_0_0_0_0_after_this3)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_0_0_0_0_0_after_this4.userId = $jwt.id) | 1]) > 0)
-                    RETURN count(authorization_0_0_0_0_0_0_0_0_0_0_after_this2) = 1 AS authorization_0_0_0_0_0_0_0_0_0_0_after_var5
+                    WHERE (authorization_0_0_0_0_0_0_0_0_0_0_after_var4 <> 0 AND size([(authorization_0_0_0_0_0_0_0_0_0_0_after_this3)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_0_0_0_0_0_after_this5:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_0_0_0_0_0_after_this5.userId = $jwt.id) | 1]) > 0)
+                    RETURN count(authorization_0_0_0_0_0_0_0_0_0_0_after_this2) = 1 AS authorization_0_0_0_0_0_0_0_0_0_0_after_var6
                 }
                 WITH *
-                WHERE authorization_0_0_0_0_0_0_0_0_0_0_after_var5 = true
+                WHERE authorization_0_0_0_0_0_0_0_0_0_0_after_var6 = true
                 RETURN count(authorization_0_0_0_0_0_0_0_0_0_0_after_this1) = 1 AS authorization_0_0_0_0_0_0_0_0_0_0_after_var0
             }
             CALL {
                 WITH this0_settings0_node_openingDays0_node
                 MATCH (this0_settings0_node_openingDays0_node)<-[:VALID_GARAGES]-(authorization_0_0_0_0_0_0_0_after_this1:Settings)
                 OPTIONAL MATCH (authorization_0_0_0_0_0_0_0_after_this1)<-[:HAS_SETTINGS]-(authorization_0_0_0_0_0_0_0_after_this2:Tenant)
-                WITH *, count(authorization_0_0_0_0_0_0_0_after_this2) AS tenantCount
+                WITH *, count(authorization_0_0_0_0_0_0_0_after_this2) AS authorization_0_0_0_0_0_0_0_after_var3
                 WITH *
-                WHERE (tenantCount <> 0 AND size([(authorization_0_0_0_0_0_0_0_after_this2)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_0_0_after_this3:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_0_0_after_this3.userId = $jwt.id) | 1]) > 0)
+                WHERE (authorization_0_0_0_0_0_0_0_after_var3 <> 0 AND size([(authorization_0_0_0_0_0_0_0_after_this2)<-[:ADMIN_IN]-(authorization_0_0_0_0_0_0_0_after_this4:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_0_0_0_after_this4.userId = $jwt.id) | 1]) > 0)
                 RETURN count(authorization_0_0_0_0_0_0_0_after_this1) = 1 AS authorization_0_0_0_0_0_0_0_after_var0
             }
-            OPTIONAL MATCH (this0_settings0_node)<-[:HAS_SETTINGS]-(authorization_0_0_0_0_after_this1:Tenant)
-            WITH *, count(authorization_0_0_0_0_after_this1) AS tenantCount
+            OPTIONAL MATCH (this0_settings0_node)<-[:HAS_SETTINGS]-(authorization_0_0_0_0_after_this2:Tenant)
+            WITH *, count(authorization_0_0_0_0_after_this2) AS authorization_0_0_0_0_after_var0
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_0_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (tenantCount <> 0 AND size([(authorization_0_0_0_0_after_this1)<-[:ADMIN_IN]-(authorization_0_0_0_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_after_this0.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:ADMIN_IN]-(authorization_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_after_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_0_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND authorization_0_0_0_0_0_0_0_after_var0 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_0_0_0_0_after_var0 <> 0 AND size([(authorization_0_0_0_0_after_this2)<-[:ADMIN_IN]-(authorization_0_0_0_0_after_this1:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_0_0_0_after_this1.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:ADMIN_IN]-(authorization_0_after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_0_after_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {

@@ -151,26 +151,26 @@ describe("Missing custom Cypher on unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:HierarchicalComponent:Resource)
             OPTIONAL MATCH (this)-[:isContained]->(this0:HierarchicalRoot:Resource)
-            WITH *, count(this0) AS isContainedCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE (this.uri IN $param0 AND (isContainedCount <> 0 AND this0.uri = $param1))
+            WHERE (this.uri IN $param0 AND (var1 <> 0 AND this0.uri = $param1))
             WITH *
             LIMIT $param2
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this1:relatesToChild]->(this2:HierarchicalRoot:Resource)
-                    WITH this2 { __resolveType: \\"HierarchicalRoot\\", __id: id(this2) } AS this2
-                    RETURN this2 AS var3
+                    MATCH (this)-[this2:relatesToChild]->(this3:HierarchicalRoot:Resource)
+                    WITH this3 { __resolveType: \\"HierarchicalRoot\\", __id: id(this3) } AS this3
+                    RETURN this3 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this4:relatesToChild]->(this5:HierarchicalComponent:Resource)
+                    MATCH (this)-[this5:relatesToChild]->(this6:HierarchicalComponent:Resource)
                     CALL {
-                        WITH this5
+                        WITH this6
                         CALL {
-                            WITH this5
-                            WITH this5 AS this
+                            WITH this6
+                            WITH this6 AS this
                             MATCH p=(this)<-[:relatesToChild*..10]-(parent:HierarchicalRoot)
                             WITH p, parent
                             OPTIONAL MATCH (parent) - [:type] -> (parentType)
@@ -192,32 +192,32 @@ describe("Missing custom Cypher on unions", () => {
                             } AS obj
                             RETURN DISTINCT obj as result
                         }
-                        WITH result AS this6
-                        WITH this6 { .hasSortKey, iri: this6.uri } AS this6
-                        RETURN collect(this6) AS var7
+                        WITH result AS this7
+                        WITH this7 { .hasSortKey, iri: this7.uri } AS this7
+                        RETURN collect(this7) AS var8
                     }
-                    WITH this5 { hierarchicalPathNodes: var7, __resolveType: \\"HierarchicalComponent\\", __id: id(this5) } AS this5
-                    RETURN this5 AS var3
+                    WITH this6 { hierarchicalPathNodes: var8, __resolveType: \\"HierarchicalComponent\\", __id: id(this6) } AS this6
+                    RETURN this6 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this8:relatesToChild]->(this9:Expression:MyTenant:Resource)
-                    WITH this9 { __resolveType: \\"Expression\\", __id: id(this9) } AS this9
-                    RETURN this9 AS var3
+                    MATCH (this)-[this9:relatesToChild]->(this10:Expression:MyTenant:Resource)
+                    WITH this10 { __resolveType: \\"Expression\\", __id: id(this10) } AS this10
+                    RETURN this10 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this10:relatesToChild]->(this11:Work:MyTenant:Resource)
-                    WITH this11 { __resolveType: \\"Work\\", __id: id(this11) } AS this11
-                    RETURN this11 AS var3
+                    MATCH (this)-[this11:relatesToChild]->(this12:Work:MyTenant:Resource)
+                    WITH this12 { __resolveType: \\"Work\\", __id: id(this12) } AS this12
+                    RETURN this12 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this12:relatesToChild]->(this13:Fragment:MyTenant:Resource)
-                    WITH this13 { __resolveType: \\"Fragment\\", __id: id(this13) } AS this13
-                    RETURN this13 AS var3
+                    MATCH (this)-[this13:relatesToChild]->(this14:Fragment:MyTenant:Resource)
+                    WITH this14 { __resolveType: \\"Fragment\\", __id: id(this14) } AS this14
+                    RETURN this14 AS var4
                 }
-                WITH var3
-                RETURN collect(var3) AS var3
+                WITH var4
+                RETURN collect(var4) AS var4
             }
-            RETURN this { relatesToChild: var3 } AS this"
+            RETURN this { relatesToChild: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

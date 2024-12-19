@@ -114,18 +114,18 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:PreviewClip)
             OPTIONAL MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this0:Video)
-            WITH *, count(this0) AS clippedFromCount
+            WITH *, count(this0) AS var1
             CALL {
                 WITH this
-                MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this1:Video)
-                OPTIONAL MATCH (this1)<-[:PUBLISHER]-(this2:User)
-                WITH *, count(this2) AS publisherCount
+                MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this2:Video)
+                OPTIONAL MATCH (this2)<-[:PUBLISHER]-(this3:User)
+                WITH *, count(this3) AS var4
                 WITH *
-                WHERE (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))
-                RETURN count(this1) = 1 AS var3
+                WHERE (var4 <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))
+                RETURN count(this2) = 1 AS var5
             }
             WITH *
-            WHERE ((NOT (this.markedAsDone = $param1) AND (clippedFromCount <> 0 AND this0.id = $param2)) AND (($isAuthenticated = true AND var3 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))))
+            WHERE ((NOT (this.markedAsDone = $param1) AND (var1 <> 0 AND this0.id = $param2)) AND (($isAuthenticated = true AND var5 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))))
             RETURN this { .id } AS this"
         `);
 
@@ -161,29 +161,29 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Video)
             OPTIONAL MATCH (this)<-[:PUBLISHER]-(this0:User)
-            WITH *, count(this0) AS publisherCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE (($isAuthenticated = true AND (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($param3 IS NOT NULL AND this.processing = $param3))
+            WHERE (($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($param3 IS NOT NULL AND this.processing = $param3))
             CALL {
                 WITH this
-                MATCH (this)-[this1:VIDEO_HAS_PREVIEW_CLIP]->(this2:PreviewClip)
-                OPTIONAL MATCH (this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this3:Video)
-                WITH *, count(this3) AS clippedFromCount
+                MATCH (this)-[this2:VIDEO_HAS_PREVIEW_CLIP]->(this3:PreviewClip)
+                OPTIONAL MATCH (this3)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this4:Video)
+                WITH *, count(this4) AS var5
                 CALL {
-                    WITH this2
-                    MATCH (this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this4:Video)
-                    OPTIONAL MATCH (this4)<-[:PUBLISHER]-(this5:User)
-                    WITH *, count(this5) AS publisherCount
+                    WITH this3
+                    MATCH (this3)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this6:Video)
+                    OPTIONAL MATCH (this6)<-[:PUBLISHER]-(this7:User)
+                    WITH *, count(this7) AS var8
                     WITH *
-                    WHERE (publisherCount <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub))
-                    RETURN count(this4) = 1 AS var6
+                    WHERE (var8 <> 0 AND ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub))
+                    RETURN count(this6) = 1 AS var9
                 }
                 WITH *
-                WHERE ((NOT (this2.markedAsDone = $param4) AND (clippedFromCount <> 0 AND this3.id = $param5)) AND (($isAuthenticated = true AND var6 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))))
-                WITH this2 { .id } AS this2
-                RETURN collect(this2) AS var7
+                WHERE ((NOT (this3.markedAsDone = $param4) AND (var5 <> 0 AND this4.id = $param5)) AND (($isAuthenticated = true AND var9 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))))
+                WITH this3 { .id } AS this3
+                RETURN collect(this3) AS var10
             }
-            RETURN this { clips: var7 } AS this"
+            RETURN this { clips: var10 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

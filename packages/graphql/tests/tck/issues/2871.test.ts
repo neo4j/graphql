@@ -63,11 +63,11 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:FirstLevel)
             OPTIONAL MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:SecondLevel)
-            WITH *, count(this0) AS secondLevelCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE (secondLevelCount <> 0 AND EXISTS {
-                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:ThirdLevel)
-                WHERE this1.id = $param0
+            WHERE (var1 <> 0 AND EXISTS {
+                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this2:ThirdLevel)
+                WHERE this2.id = $param0
             })
             RETURN this { .id, createdAt: apoc.date.convertFormat(toString(this.createdAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
@@ -94,14 +94,14 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:FirstLevel)
             OPTIONAL MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:SecondLevel)
-            WITH *, count(this0) AS secondLevelCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE (secondLevelCount <> 0 AND (EXISTS {
-                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:ThirdLevel)
-                WHERE this1.id = $param0
+            WHERE (var1 <> 0 AND (EXISTS {
+                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this2:ThirdLevel)
+                WHERE this2.id = $param0
             } AND NOT (EXISTS {
-                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:ThirdLevel)
-                WHERE NOT (this1.id = $param0)
+                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this2:ThirdLevel)
+                WHERE NOT (this2.id = $param0)
             })))
             RETURN this { .id, createdAt: apoc.date.convertFormat(toString(this.createdAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
@@ -128,11 +128,11 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:FirstLevel)
             OPTIONAL MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:SecondLevel)
-            WITH *, count(this0) AS secondLevelCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE (secondLevelCount <> 0 AND NOT (EXISTS {
-                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this1:ThirdLevel)
-                WHERE this1.id = $param0
+            WHERE (var1 <> 0 AND NOT (EXISTS {
+                MATCH (this0)-[:HAS_THIRD_LEVEL]->(this2:ThirdLevel)
+                WHERE this2.id = $param0
             }))
             RETURN this { .id, createdAt: apoc.date.convertFormat(toString(this.createdAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);

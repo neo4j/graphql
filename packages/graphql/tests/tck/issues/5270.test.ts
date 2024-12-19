@@ -93,13 +93,13 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
                 WITH this0
                 MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
                 OPTIONAL MATCH (this1)-[:IS_BLOCKING]->(this2:User)
-                WITH *, count(this2) AS toCount
+                WITH *, count(this2) AS var3
                 WITH *
-                WHERE (toCount <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))
-                RETURN count(this1) > 0 AS var3
+                WHERE (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))
+                RETURN count(this1) > 0 AS var4
             }
             WITH *
-            WHERE ($isAuthenticated = true AND NOT (var3 = true))
+            WHERE ($isAuthenticated = true AND NOT (var4 = true))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

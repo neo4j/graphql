@@ -88,16 +88,16 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
                     WITH this1
                     MATCH (this1)-[:MEMBER_OF]->(this2:Family)
                     OPTIONAL MATCH (this2)<-[:CREATOR_OF]-(this3:User)
-                    WITH *, count(this3) AS creatorCount
+                    WITH *, count(this3) AS var4
                     WITH *
-                    WHERE (creatorCount <> 0 AND ($param0 IS NOT NULL AND $param0 IN this3.roles))
-                    RETURN count(this2) = 1 AS var4
+                    WHERE (var4 <> 0 AND ($param0 IS NOT NULL AND $param0 IN this3.roles))
+                    RETURN count(this2) = 1 AS var5
                 }
                 WITH *
-                WHERE ($isAuthenticated = true AND var4 = true)
-                RETURN count(this1) AS var5
+                WHERE ($isAuthenticated = true AND var5 = true)
+                RETURN count(this1) AS var6
             }
-            RETURN this { .id, membersAggregate: { count: var5 } } AS this"
+            RETURN this { .id, membersAggregate: { count: var6 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

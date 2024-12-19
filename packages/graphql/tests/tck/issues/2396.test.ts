@@ -152,26 +152,26 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Mandate)
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
-            WITH *, count(this0) AS valuationCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE ((valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param0 | 1] WHERE true)) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            WHERE ((var1 <> 0 AND single(this2 IN [(this0)-[:VALUATION_FOR]->(this2:Estate) WHERE this2.floor >= $param0 | 1] WHERE true)) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {
                 WITH this
-                MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
+                MATCH (this)-[this3:HAS_VALUATION]->(this4:Valuation)
                 WITH *
-                WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
+                WHERE ($isAuthenticated = true AND this4.archivedAt IS NULL)
                 CALL {
-                    WITH this3
-                    MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
+                    WITH this4
+                    MATCH (this4)-[this5:VALUATION_FOR]->(this6:Estate)
                     WITH *
-                    WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
-                    WITH this5 { .uuid } AS this5
-                    RETURN head(collect(this5)) AS var6
+                    WHERE ($isAuthenticated = true AND this6.archivedAt IS NULL)
+                    WITH this6 { .uuid } AS this6
+                    RETURN head(collect(this6)) AS var7
                 }
-                WITH this3 { estate: var6 } AS this3
-                RETURN head(collect(this3)) AS var7
+                WITH this4 { estate: var7 } AS this4
+                RETURN head(collect(this4)) AS var8
             }
-            RETURN this { valuation: var7 } AS this"
+            RETURN this { valuation: var8 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -218,26 +218,26 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Mandate)
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
-            WITH *, count(this0) AS valuationCount
+            WITH *, count(this0) AS var1
             WITH *
-            WHERE ((this.price >= $param0 AND (valuationCount <> 0 AND single(this1 IN [(this0)-[:VALUATION_FOR]->(this1:Estate) WHERE this1.floor >= $param1 | 1] WHERE true))) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            WHERE ((this.price >= $param0 AND (var1 <> 0 AND single(this2 IN [(this0)-[:VALUATION_FOR]->(this2:Estate) WHERE this2.floor >= $param1 | 1] WHERE true))) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {
                 WITH this
-                MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
+                MATCH (this)-[this3:HAS_VALUATION]->(this4:Valuation)
                 WITH *
-                WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
+                WHERE ($isAuthenticated = true AND this4.archivedAt IS NULL)
                 CALL {
-                    WITH this3
-                    MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
+                    WITH this4
+                    MATCH (this4)-[this5:VALUATION_FOR]->(this6:Estate)
                     WITH *
-                    WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
-                    WITH this5 { .uuid } AS this5
-                    RETURN head(collect(this5)) AS var6
+                    WHERE ($isAuthenticated = true AND this6.archivedAt IS NULL)
+                    WITH this6 { .uuid } AS this6
+                    RETURN head(collect(this6)) AS var7
                 }
-                WITH this3 { estate: var6 } AS this3
-                RETURN head(collect(this3)) AS var7
+                WITH this4 { estate: var7 } AS this4
+                RETURN head(collect(this4)) AS var8
             }
-            RETURN this { valuation: var7 } AS this"
+            RETURN this { valuation: var8 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -301,38 +301,38 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:Address)
                         OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:PostalCode)
-                        WITH *, count(this3) AS postalCodeCount
+                        WITH *, count(this3) AS var4
                         WITH *
-                        WHERE (postalCodeCount <> 0 AND this3.number IN $param0)
-                        RETURN count(this2) = 1 AS var4
+                        WHERE (var4 <> 0 AND this3.number IN $param0)
+                        RETURN count(this2) = 1 AS var5
                     }
                     WITH *
-                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var4 = true)
-                    RETURN count(this1) = 1 AS var5
+                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var5 = true)
+                    RETURN count(this1) = 1 AS var6
                 }
                 WITH *
-                WHERE var5 = true
-                RETURN count(this0) = 1 AS var6
+                WHERE var6 = true
+                RETURN count(this0) = 1 AS var7
             }
             WITH *
-            WHERE ((this.price >= $param4 AND var6 = true) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            WHERE ((this.price >= $param4 AND var7 = true) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_VALUATION]->(this8:Valuation)
+                MATCH (this)-[this8:HAS_VALUATION]->(this9:Valuation)
                 WITH *
-                WHERE ($isAuthenticated = true AND this8.archivedAt IS NULL)
+                WHERE ($isAuthenticated = true AND this9.archivedAt IS NULL)
                 CALL {
-                    WITH this8
-                    MATCH (this8)-[this9:VALUATION_FOR]->(this10:Estate)
+                    WITH this9
+                    MATCH (this9)-[this10:VALUATION_FOR]->(this11:Estate)
                     WITH *
-                    WHERE ($isAuthenticated = true AND this10.archivedAt IS NULL)
-                    WITH this10 { .uuid } AS this10
-                    RETURN head(collect(this10)) AS var11
+                    WHERE ($isAuthenticated = true AND this11.archivedAt IS NULL)
+                    WITH this11 { .uuid } AS this11
+                    RETURN head(collect(this11)) AS var12
                 }
-                WITH this8 { estate: var11 } AS this8
-                RETURN head(collect(this8)) AS var12
+                WITH this9 { estate: var12 } AS this9
+                RETURN head(collect(this9)) AS var13
             }
-            RETURN this { valuation: var12 } AS this"
+            RETURN this { valuation: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -406,41 +406,41 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:Address)
                         OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:PostalCode)
-                        WITH *, count(this3) AS postalCodeCount
+                        WITH *, count(this3) AS var4
                         WITH *
-                        WHERE (postalCodeCount <> 0 AND this3.number IN $param0)
-                        RETURN count(this2) = 1 AS var4
+                        WHERE (var4 <> 0 AND this3.number IN $param0)
+                        RETURN count(this2) = 1 AS var5
                     }
                     WITH *
-                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var4 = true)
-                    RETURN count(this1) = 1 AS var5
+                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var5 = true)
+                    RETURN count(this1) = 1 AS var6
                 }
                 WITH *
-                WHERE var5 = true
-                RETURN count(this0) = 1 AS var6
+                WHERE var6 = true
+                RETURN count(this0) = 1 AS var7
             }
             WITH *
-            WHERE ((this.price >= $param4 AND var6 = true) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            WHERE ((this.price >= $param4 AND var7 = true) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             WITH *
             SKIP $param6
             LIMIT $param7
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_VALUATION]->(this8:Valuation)
+                MATCH (this)-[this8:HAS_VALUATION]->(this9:Valuation)
                 WITH *
-                WHERE ($isAuthenticated = true AND this8.archivedAt IS NULL)
+                WHERE ($isAuthenticated = true AND this9.archivedAt IS NULL)
                 CALL {
-                    WITH this8
-                    MATCH (this8)-[this9:VALUATION_FOR]->(this10:Estate)
+                    WITH this9
+                    MATCH (this9)-[this10:VALUATION_FOR]->(this11:Estate)
                     WITH *
-                    WHERE ($isAuthenticated = true AND this10.archivedAt IS NULL)
-                    WITH this10 { .uuid } AS this10
-                    RETURN head(collect(this10)) AS var11
+                    WHERE ($isAuthenticated = true AND this11.archivedAt IS NULL)
+                    WITH this11 { .uuid } AS this11
+                    RETURN head(collect(this11)) AS var12
                 }
-                WITH this8 { estate: var11 } AS this8
-                RETURN head(collect(this8)) AS var12
+                WITH this9 { estate: var12 } AS this9
+                RETURN head(collect(this9)) AS var13
             }
-            RETURN this { valuation: var12 } AS this"
+            RETURN this { valuation: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -522,41 +522,41 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                         WITH this1
                         MATCH (this1)-[:HAS_ADDRESS]->(this2:Address)
                         OPTIONAL MATCH (this2)-[:HAS_POSTAL_CODE]->(this3:PostalCode)
-                        WITH *, count(this3) AS postalCodeCount
+                        WITH *, count(this3) AS var4
                         WITH *
-                        WHERE (postalCodeCount <> 0 AND this3.number IN $param0)
-                        RETURN count(this2) = 1 AS var4
+                        WHERE (var4 <> 0 AND this3.number IN $param0)
+                        RETURN count(this2) = 1 AS var5
                     }
                     WITH *
-                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var4 = true)
-                    RETURN count(this1) = 1 AS var5
+                    WHERE (this1.estateType IN $param1 AND this1.area >= $param2 AND this1.floor >= $param3 AND var5 = true)
+                    RETURN count(this1) = 1 AS var6
                 }
                 WITH *
-                WHERE var5 = true
-                RETURN count(this0) = 1 AS var6
+                WHERE var6 = true
+                RETURN count(this0) = 1 AS var7
             }
             WITH *
-            WHERE ((this.price >= $param4 AND var6 = true) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
+            WHERE ((this.price >= $param4 AND var7 = true) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             WITH *
             SKIP $param6
             LIMIT $param7
             CALL {
                 WITH this
-                MATCH (this)-[this7:HAS_VALUATION]->(this8:Valuation)
+                MATCH (this)-[this8:HAS_VALUATION]->(this9:Valuation)
                 WITH *
-                WHERE ($isAuthenticated = true AND this8.archivedAt IS NULL)
+                WHERE ($isAuthenticated = true AND this9.archivedAt IS NULL)
                 CALL {
-                    WITH this8
-                    MATCH (this8)-[this9:VALUATION_FOR]->(this10:Estate)
+                    WITH this9
+                    MATCH (this9)-[this10:VALUATION_FOR]->(this11:Estate)
                     WITH *
-                    WHERE ($isAuthenticated = true AND this10.archivedAt IS NULL)
-                    WITH this10 { .uuid } AS this10
-                    RETURN head(collect(this10)) AS var11
+                    WHERE ($isAuthenticated = true AND this11.archivedAt IS NULL)
+                    WITH this11 { .uuid } AS this11
+                    RETURN head(collect(this11)) AS var12
                 }
-                WITH this8 { estate: var11 } AS this8
-                RETURN head(collect(this8)) AS var12
+                WITH this9 { estate: var12 } AS this9
+                RETURN head(collect(this9)) AS var13
             }
-            RETURN this { valuation: var12 } AS this"
+            RETURN this { valuation: var13 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

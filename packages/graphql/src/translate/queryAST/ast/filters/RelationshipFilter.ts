@@ -59,9 +59,6 @@ export class RelationshipFilter extends Filter {
         this.isNot = isNot;
         this.operator = operator;
         this.target = target;
-
-        // Note: This is just to keep naming with previous Cypher, it is safe to remove
-        this.countVariable = new Cypher.NamedVariable(`${this.relationship.name}Count`);
     }
 
     public getChildren(): QueryASTNode[] {
