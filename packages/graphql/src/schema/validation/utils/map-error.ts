@@ -74,7 +74,8 @@ function mapCustomRuleError(error: GraphQLError): GraphQLError {
     return error;
 }
 
-const RENAMED_DIRECTIVE_OR_TYPE = /(\s?"([^\s]*?([sS]ubscriptionsAuthorization|Authorization|Authentication)[^\s]*?)")/;
+const RENAMED_DIRECTIVE_OR_TYPE =
+    /(\s?"((?!requireAuthentication)[^\s]*?([sS]ubscriptionsAuthorization|Authorization|Authentication)[^\s]*?)")/;
 const WHERE_TYPE = /type(\s\\?".+?\\?")/; // <typename>Where / JwtPayloadWhere
 const JWT_PAYLOAD_DUMMY_VALUE_ERROR =
     /(?:(?:String)|(?:Int)|(?:Float)|(?:Boolean))(?: cannot represent a?\s?)(?:(?:non string)|(?:non-integer)|(?:non numeric)|(?:non boolean))(?: value)(:.+)/;
