@@ -1,5 +1,15 @@
 # @neo4j/introspector
 
+## 5.0.0-alpha.0
+
+### Major Changes
+
+-   [#5789](https://github.com/neo4j/graphql/pull/5789) [`1a07d40`](https://github.com/neo4j/graphql/commit/1a07d40888e89c5cd9a40edc16f1742e27bff687) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library and Introspector now required Node.js 22 or greater.
+
+### Patch Changes
+
+-   [#5837](https://github.com/neo4j/graphql/pull/5837) [`721691a`](https://github.com/neo4j/graphql/commit/721691a84eaa34996c0c97edb7ede1ae4775dd2f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Changed how "@neo4j/introspector" generates list fields that now are generated as a list of non-nullable elements, as a list of nullable elements is not supported by Neo4j.
+
 ## 4.0.1
 
 ### Patch Changes
