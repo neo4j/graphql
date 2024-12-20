@@ -166,13 +166,13 @@ describe("inheritance", () => {
             }
 
             input ActorFriendsRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
               all: PersonWhere
-              \\"\\"\\"Return Actors where none of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
               none: PersonWhere
-              \\"\\"\\"Return Actors where one of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
               single: PersonWhere
-              \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
               some: PersonWhere
             }
 
@@ -586,13 +586,13 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsRelationshipFilters {
-              \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
               all: PersonWhere
-              \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
               none: PersonWhere
-              \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
               single: PersonWhere
-              \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
               some: PersonWhere
             }
 

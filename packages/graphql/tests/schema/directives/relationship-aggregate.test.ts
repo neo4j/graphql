@@ -457,13 +457,13 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -902,13 +902,13 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -1338,13 +1338,13 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                       all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                       none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                       single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                       some: PersonWhere
                     }
 
@@ -1844,13 +1844,13 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                       all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                       none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                       single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                       some: PersonWhere
                     }
 
@@ -2373,13 +2373,13 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where all of the related CastMembers match this filter\\"\\"\\"
                       all: CastMemberWhere
-                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where none of the related CastMembers match this filter\\"\\"\\"
                       none: CastMemberWhere
-                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where one of the related CastMembers match this filter\\"\\"\\"
                       single: CastMemberWhere
-                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where some of the related CastMembers match this filter\\"\\"\\"
                       some: CastMemberWhere
                     }
 
@@ -2866,13 +2866,13 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where all of the related CastMembers match this filter\\"\\"\\"
                       all: CastMemberWhere
-                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where none of the related CastMembers match this filter\\"\\"\\"
                       none: CastMemberWhere
-                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where one of the related CastMembers match this filter\\"\\"\\"
                       single: CastMemberWhere
-                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
+                      \\"\\"\\"Filter type where some of the related CastMembers match this filter\\"\\"\\"
                       some: CastMemberWhere
                     }
 

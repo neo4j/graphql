@@ -188,13 +188,13 @@ describe("Interfaces", () => {
             }
 
             input MovieMoviesRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -295,13 +295,13 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeMoviesRelationshipFilters {
-              \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -358,6 +358,17 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -375,6 +386,7 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              customQuery: MovieRelationshipFilters
               customQuery_ALL: MovieWhere
               customQuery_NONE: MovieWhere
               customQuery_SINGLE: MovieWhere
@@ -636,13 +648,13 @@ describe("Interfaces", () => {
             }
 
             input MovieMoviesRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -743,13 +755,13 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeMoviesRelationshipFilters {
-              \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -806,6 +818,17 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -823,6 +846,7 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              customQuery: MovieRelationshipFilters
               customQuery_ALL: MovieWhere
               customQuery_NONE: MovieWhere
               customQuery_SINGLE: MovieWhere

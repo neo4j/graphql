@@ -328,13 +328,13 @@ describe("Union Interface Relationships", () => {
             }
 
             input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -777,13 +777,13 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -988,13 +988,13 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieDirectorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Directors match this filter\\"\\"\\"
               all: DirectorWhere
-              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Directors match this filter\\"\\"\\"
               none: DirectorWhere
-              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Directors match this filter\\"\\"\\"
               single: DirectorWhere
-              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Directors match this filter\\"\\"\\"
               some: DirectorWhere
             }
 
@@ -1159,13 +1159,13 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieReviewersRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Reviewers match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Reviewers match this filter\\"\\"\\"
               all: ReviewerWhere
-              \\"\\"\\"Return Movies where none of the related Reviewers match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Reviewers match this filter\\"\\"\\"
               none: ReviewerWhere
-              \\"\\"\\"Return Movies where one of the related Reviewers match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Reviewers match this filter\\"\\"\\"
               single: ReviewerWhere
-              \\"\\"\\"Return Movies where some of the related Reviewers match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Reviewers match this filter\\"\\"\\"
               some: ReviewerWhere
             }
 
@@ -1527,13 +1527,13 @@ describe("Union Interface Relationships", () => {
             }
 
             input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 

@@ -448,13 +448,13 @@ describe("Directive-preserve", () => {
             }
 
             input GenreMoviesRelationshipFilters {
-              \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -715,13 +715,13 @@ describe("Directive-preserve", () => {
             }
 
             input MovieGenresRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
               all: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
               none: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
               single: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
               some: GenreWhere @deprecated(reason: \\"Do not use\\")
             }
 
@@ -1123,13 +1123,13 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -1409,13 +1409,13 @@ describe("Directive-preserve", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere @deprecated(reason: \\"Do not use\\")
             }
 
@@ -1697,13 +1697,13 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionActorsRelationshipFilters {
-              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -1927,13 +1927,13 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -2320,13 +2320,13 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -2641,13 +2641,13 @@ describe("Directive-preserve", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere @deprecated(reason: \\"Do not use\\")
             }
 
@@ -2980,13 +2980,13 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -3361,13 +3361,13 @@ describe("Directive-preserve", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -3682,13 +3682,13 @@ describe("Directive-preserve", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -4021,13 +4021,13 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -4372,13 +4372,13 @@ describe("Directive-preserve", () => {
             }
 
             input BlogPostsRelationshipFilters {
-              \\"\\"\\"Return Blogs where all of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
               all: PostWhere
-              \\"\\"\\"Return Blogs where none of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
               none: PostWhere
-              \\"\\"\\"Return Blogs where one of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
               single: PostWhere
-              \\"\\"\\"Return Blogs where some of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
               some: PostWhere
             }
 
@@ -4797,13 +4797,13 @@ describe("Directive-preserve", () => {
             }
 
             input UserContentRelationshipFilters {
-              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
               all: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
               none: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
               single: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
               some: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
             }
 

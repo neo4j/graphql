@@ -19,7 +19,7 @@
 
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("cypher directive filtering - relationship auth filter", () => {
+describe("cypher directive filtering - relationship auth filter -deprecated", () => {
     const testHelper = new TestHelper();
 
     afterEach(async () => {
@@ -31,7 +31,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node @authorization(filter: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]) {
+            type ${Movie} @node @authorization(filter: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 rating: Float
                 actors: [${Actor}!]!
@@ -91,7 +91,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        rating: { gt: 7.0 }
+                        rating_GT: 7.0
                     }
                 ) {
                     edges {
@@ -124,7 +124,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node @authorization(filter: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]) {
+            type ${Movie} @node @authorization(filter: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 rating: Float
                 actors: [${Actor}!]!
@@ -184,7 +184,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        rating:{ gt: 7.0}
+                        rating_GT: 7.0
                     }
                 ) {
                     edges {
@@ -211,7 +211,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node @authorization(validate: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]) {
+            type ${Movie} @node @authorization(validate: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 rating: Float
                 actors: [${Actor}!]!
@@ -271,7 +271,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        rating: { lt: 7.0 }
+                        rating_LT: 7.0
                     }
                 ) {
                     edges {
@@ -304,7 +304,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @node @authorization(validate: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]) {
+            type ${Movie} @node @authorization(validate: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
                 title: String
                 rating: Float
                 actors: [${Actor}!]!
@@ -364,7 +364,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        rating: { gt: 7.0 }
+                        rating_GT: 7.0
                     }
                 ) {
                     edges {

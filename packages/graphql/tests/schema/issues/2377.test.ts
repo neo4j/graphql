@@ -379,13 +379,13 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             input ResourceContainedByRelationshipFilters {
-              \\"\\"\\"Return Resources where all of the related Resources match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Resources match this filter\\"\\"\\"
               all: ResourceWhere
-              \\"\\"\\"Return Resources where none of the related Resources match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Resources match this filter\\"\\"\\"
               none: ResourceWhere
-              \\"\\"\\"Return Resources where one of the related Resources match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Resources match this filter\\"\\"\\"
               single: ResourceWhere
-              \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Resources match this filter\\"\\"\\"
               some: ResourceWhere
             }
 

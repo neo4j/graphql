@@ -300,13 +300,13 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             input PersonFriendsRelationshipFilters {
-              \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
               all: PersonWhere
-              \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
               none: PersonWhere
-              \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
               single: PersonWhere
-              \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
               some: PersonWhere
             }
 

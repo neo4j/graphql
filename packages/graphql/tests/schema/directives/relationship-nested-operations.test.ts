@@ -194,13 +194,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -585,13 +585,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -983,13 +983,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -1377,13 +1377,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -1774,13 +1774,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -2171,13 +2171,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -2561,13 +2561,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -2946,13 +2946,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -3362,13 +3362,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -3502,13 +3502,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieProducersRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -3913,13 +3913,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -4041,13 +4041,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieProducersRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -4406,13 +4406,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -4833,13 +4833,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -5267,13 +5267,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -5696,13 +5696,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -6121,13 +6121,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -6545,13 +6545,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -6948,13 +6948,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -7347,13 +7347,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -7840,13 +7840,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -7941,13 +7941,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieProducersRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -8399,13 +8399,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -8496,13 +8496,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieProducersRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -8983,13 +8983,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -9517,13 +9517,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -10063,13 +10063,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -10600,13 +10600,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -11145,13 +11145,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -11685,13 +11685,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -12242,13 +12242,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -12382,13 +12382,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieProducersRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -12951,13 +12951,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 
@@ -13084,13 +13084,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieProducersRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
                   all: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
                   none: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
                   single: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
                   some: PersonWhere
                 }
 

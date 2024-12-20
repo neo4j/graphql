@@ -249,17 +249,13 @@ describe("Unions", () => {
             }
 
             input AuthorPublicationsRelationshipFilters {
-              \\"\\"\\"Return Authors where all of the related Publications match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Publications match this filter\\"\\"\\"
               all: PublicationWhere
-              \\"\\"\\"
-              Return Authors where none of the related Publications match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Publications match this filter\\"\\"\\"
               none: PublicationWhere
-              \\"\\"\\"Return Authors where one of the related Publications match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Publications match this filter\\"\\"\\"
               single: PublicationWhere
-              \\"\\"\\"
-              Return Authors where some of the related Publications match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Publications match this filter\\"\\"\\"
               some: PublicationWhere
             }
 
@@ -462,13 +458,13 @@ describe("Unions", () => {
             }
 
             input BookAuthorRelationshipFilters {
-              \\"\\"\\"Return Books where all of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Authors match this filter\\"\\"\\"
               all: AuthorWhere
-              \\"\\"\\"Return Books where none of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Authors match this filter\\"\\"\\"
               none: AuthorWhere
-              \\"\\"\\"Return Books where one of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Authors match this filter\\"\\"\\"
               single: AuthorWhere
-              \\"\\"\\"Return Books where some of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Authors match this filter\\"\\"\\"
               some: AuthorWhere
             }
 
@@ -776,13 +772,13 @@ describe("Unions", () => {
             }
 
             input JournalAuthorRelationshipFilters {
-              \\"\\"\\"Return Journals where all of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Authors match this filter\\"\\"\\"
               all: AuthorWhere
-              \\"\\"\\"Return Journals where none of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Authors match this filter\\"\\"\\"
               none: AuthorWhere
-              \\"\\"\\"Return Journals where one of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Authors match this filter\\"\\"\\"
               single: AuthorWhere
-              \\"\\"\\"Return Journals where some of the related Authors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Authors match this filter\\"\\"\\"
               some: AuthorWhere
             }
 

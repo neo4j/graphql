@@ -172,6 +172,23 @@ export class AuthFilterFactory extends FilterFactory {
                 if (operator && !isLegacyRelationshipOperator(operator)) {
                     throw new Error(`Invalid operator ${operator} for relationship`);
                 }
+                // path for generic filters input, in v8 it will be the only path
+                if (!operator && attribute.typeHelper.isList()) {
+                    const genericFilters = Object.entries(comparisonValue as any).flatMap(([quantifier, predicate]) => {
+                        const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(quantifier);
+                        return this.createCypherRelationshipFilter({
+                            where: predicate as any,
+                            selection,
+                            target: entityAdapter,
+                            operator: legacyOperator,
+                            attribute,
+                        });
+                    });
+                    return new LogicalFilter({
+                        operation: "AND",
+                        filters: genericFilters,
+                    });
+                }
 
                 return new LogicalFilter({
                     operation: "AND",

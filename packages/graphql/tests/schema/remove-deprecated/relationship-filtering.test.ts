@@ -1100,13 +1100,13 @@ describe("Exclude suffix based filtering", () => {
             }
 
             input typeAActedInRelationshipFilters {
-              \\"\\"\\"Return typeAS where all of the related typeBS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related typeBS match this filter\\"\\"\\"
               all: typeBWhere
-              \\"\\"\\"Return typeAS where none of the related typeBS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related typeBS match this filter\\"\\"\\"
               none: typeBWhere
-              \\"\\"\\"Return typeAS where one of the related typeBS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related typeBS match this filter\\"\\"\\"
               single: typeBWhere
-              \\"\\"\\"Return typeAS where some of the related typeBS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related typeBS match this filter\\"\\"\\"
               some: typeBWhere
             }
 
@@ -1379,13 +1379,13 @@ describe("Exclude suffix based filtering", () => {
             }
 
             input typeBRelsRelationshipFilters {
-              \\"\\"\\"Return typeBS where all of the related typeAS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related typeAS match this filter\\"\\"\\"
               all: typeAWhere
-              \\"\\"\\"Return typeBS where none of the related typeAS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related typeAS match this filter\\"\\"\\"
               none: typeAWhere
-              \\"\\"\\"Return typeBS where one of the related typeAS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related typeAS match this filter\\"\\"\\"
               single: typeAWhere
-              \\"\\"\\"Return typeBS where some of the related typeAS match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related typeAS match this filter\\"\\"\\"
               some: typeAWhere
             }
 

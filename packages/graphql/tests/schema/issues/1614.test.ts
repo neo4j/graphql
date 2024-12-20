@@ -206,13 +206,13 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             input CrewMemberMoviesRelationshipFilters {
-              \\"\\"\\"Return CrewMembers where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return CrewMembers where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return CrewMembers where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return CrewMembers where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 

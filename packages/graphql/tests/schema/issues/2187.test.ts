@@ -300,13 +300,13 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input GenreMoviesRelationshipFilters {
-              \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -567,13 +567,13 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input MovieGenresRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
               all: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
               none: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
               single: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
               some: GenreWhere @deprecated(reason: \\"Do not use genre\\")
             }
 

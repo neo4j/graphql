@@ -198,21 +198,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input CreatureMoviesRelationshipFilters {
-              \\"\\"\\"
-              Return Creatures where all of the related Productions match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"
-              Return Creatures where none of the related Productions match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"
-              Return Creatures where one of the related Productions match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"
-              Return Creatures where some of the related Productions match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -418,13 +410,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input MovieDirectorRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
               all: CreatureWhere
-              \\"\\"\\"Return Movies where none of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
               none: CreatureWhere
-              \\"\\"\\"Return Movies where one of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
               single: CreatureWhere
-              \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
               some: CreatureWhere
             }
 
@@ -628,13 +620,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -793,21 +785,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input ProductionDirectorRelationshipFilters {
-              \\"\\"\\"
-              Return Productions where all of the related Creatures match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
               all: CreatureWhere
-              \\"\\"\\"
-              Return Productions where none of the related Creatures match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
               none: CreatureWhere
-              \\"\\"\\"
-              Return Productions where one of the related Creatures match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
               single: CreatureWhere
-              \\"\\"\\"
-              Return Productions where some of the related Creatures match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
               some: CreatureWhere
             }
 
@@ -1027,13 +1011,13 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesDirectorRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
               all: CreatureWhere
-              \\"\\"\\"Return Series where none of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
               none: CreatureWhere
-              \\"\\"\\"Return Series where one of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
               single: CreatureWhere
-              \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
               some: CreatureWhere
             }
 

@@ -758,13 +758,13 @@ describe("Algebraic", () => {
             }
 
             input DirectorDirectsRelationshipFilters {
-              \\"\\"\\"Return Directors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Directors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Directors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -1045,13 +1045,13 @@ describe("Algebraic", () => {
             }
 
             input MovieDirectedByRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Directors match this filter\\"\\"\\"
               all: DirectorWhere
-              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Directors match this filter\\"\\"\\"
               none: DirectorWhere
-              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Directors match this filter\\"\\"\\"
               single: DirectorWhere
-              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Directors match this filter\\"\\"\\"
               some: DirectorWhere
             }
 
@@ -1547,13 +1547,13 @@ describe("Algebraic", () => {
             }
 
             input MovieWorkersRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
               all: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
               none: PersonWhere
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
               single: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
               some: PersonWhere
             }
 
@@ -1801,13 +1801,13 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -2245,13 +2245,13 @@ describe("Algebraic", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
               all: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
               none: PersonWhere
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
               single: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
               some: PersonWhere
             }
 
@@ -2509,13 +2509,13 @@ describe("Algebraic", () => {
             }
 
             input PersonActedInMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 

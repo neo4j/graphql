@@ -596,13 +596,13 @@ describe("Comments", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -987,13 +987,13 @@ describe("Comments", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -1748,13 +1748,13 @@ describe("Comments", () => {
                 }
 
                 input MovieSearchRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
                   all: SearchWhere
-                  \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
                   none: SearchWhere
-                  \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
                   single: SearchWhere
-                  \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
                   some: SearchWhere
                 }
 

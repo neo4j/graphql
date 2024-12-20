@@ -432,13 +432,13 @@ describe("lower case type names", () => {
             }
 
             input actorMoviesRelationshipFilters {
-              \\"\\"\\"Return actors where all of the related movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related movies match this filter\\"\\"\\"
               all: movieWhere
-              \\"\\"\\"Return actors where none of the related movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related movies match this filter\\"\\"\\"
               none: movieWhere
-              \\"\\"\\"Return actors where one of the related movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related movies match this filter\\"\\"\\"
               single: movieWhere
-              \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related movies match this filter\\"\\"\\"
               some: movieWhere
             }
 
@@ -684,13 +684,13 @@ describe("lower case type names", () => {
             }
 
             input movieActorsRelationshipFilters {
-              \\"\\"\\"Return movies where all of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related actors match this filter\\"\\"\\"
               all: actorWhere
-              \\"\\"\\"Return movies where none of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related actors match this filter\\"\\"\\"
               none: actorWhere
-              \\"\\"\\"Return movies where one of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related actors match this filter\\"\\"\\"
               single: actorWhere
-              \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related actors match this filter\\"\\"\\"
               some: actorWhere
             }
 

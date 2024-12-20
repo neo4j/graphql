@@ -238,13 +238,13 @@ describe("Authorization", () => {
             }
 
             input PostAuthorRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 
@@ -556,13 +556,13 @@ describe("Authorization", () => {
             }
 
             input UserPostsRelationshipFilters {
-              \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 

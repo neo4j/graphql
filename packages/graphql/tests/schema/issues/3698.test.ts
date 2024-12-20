@@ -310,13 +310,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input GenreProductRelationshipFilters {
-              \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related IProducts match this filter\\"\\"\\"
               all: IProductWhere
-              \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related IProducts match this filter\\"\\"\\"
               none: IProductWhere
-              \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related IProducts match this filter\\"\\"\\"
               single: IProductWhere
-              \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related IProducts match this filter\\"\\"\\"
               some: IProductWhere
             }
 
@@ -657,13 +657,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input MovieGenreRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
               all: GenreWhere
-              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
               none: GenreWhere
-              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
               single: GenreWhere
-              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
               some: GenreWhere
             }
 

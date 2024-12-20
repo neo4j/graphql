@@ -351,21 +351,13 @@ describe("Pluralize consistency", () => {
             }
 
             input super_userMy_friendRelationshipFilters {
-              \\"\\"\\"
-              Return super_users where all of the related super_friends match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related super_friends match this filter\\"\\"\\"
               all: super_friendWhere
-              \\"\\"\\"
-              Return super_users where none of the related super_friends match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related super_friends match this filter\\"\\"\\"
               none: super_friendWhere
-              \\"\\"\\"
-              Return super_users where one of the related super_friends match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related super_friends match this filter\\"\\"\\"
               single: super_friendWhere
-              \\"\\"\\"
-              Return super_users where some of the related super_friends match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related super_friends match this filter\\"\\"\\"
               some: super_friendWhere
             }
 

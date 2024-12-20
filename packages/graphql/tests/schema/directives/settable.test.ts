@@ -694,13 +694,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
                   all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
                   none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
                   single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
                   some: MovieWhere
                 }
 
@@ -1134,13 +1134,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
                   all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
                   none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
                   single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
                   some: MovieWhere
                 }
 
@@ -1567,13 +1567,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
                   all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
                   none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
                   single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
                   some: MovieWhere
                 }
 
@@ -1839,13 +1839,13 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -2184,13 +2184,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
                   all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
                   none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
                   single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
                   some: MovieWhere
                 }
 
@@ -2469,13 +2469,13 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -2787,13 +2787,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -3271,13 +3271,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -3754,13 +3754,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -4048,13 +4048,13 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -4460,13 +4460,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -4767,13 +4767,13 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -5205,13 +5205,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -5800,13 +5800,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -6383,13 +6383,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -6628,13 +6628,13 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -6858,13 +6858,13 @@ describe("@settable", () => {
                 }
 
                 input ProductionActorsRelationshipFilters {
-                  \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -7066,13 +7066,13 @@ describe("@settable", () => {
                 }
 
                 input SeriesActorsRelationshipFilters {
-                  \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -7390,13 +7390,13 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
                   all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
                   none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
                   single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
                   some: ProductionWhere
                 }
 
@@ -7648,13 +7648,13 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -7882,13 +7882,13 @@ describe("@settable", () => {
                 }
 
                 input ProductionActorsRelationshipFilters {
-                  \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 
@@ -8111,13 +8111,13 @@ describe("@settable", () => {
                 }
 
                 input SeriesActorsRelationshipFilters {
-                  \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
                   all: ActorWhere
-                  \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
                   none: ActorWhere
-                  \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
                   single: ActorWhere
-                  \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
                   some: ActorWhere
                 }
 

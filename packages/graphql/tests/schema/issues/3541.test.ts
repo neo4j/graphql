@@ -217,13 +217,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -633,13 +633,13 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 

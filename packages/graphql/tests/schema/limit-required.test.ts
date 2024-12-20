@@ -220,13 +220,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -388,13 +388,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -738,13 +738,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -1015,13 +1015,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input PersonActedInRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -1177,13 +1177,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -1718,13 +1718,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -1854,13 +1854,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorContactRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Contacts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Contacts match this filter\\"\\"\\"
               all: ContactWhere
-              \\"\\"\\"Return Actors where none of the related Contacts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Contacts match this filter\\"\\"\\"
               none: ContactWhere
-              \\"\\"\\"Return Actors where one of the related Contacts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Contacts match this filter\\"\\"\\"
               single: ContactWhere
-              \\"\\"\\"Return Actors where some of the related Contacts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Contacts match this filter\\"\\"\\"
               some: ContactWhere
             }
 
@@ -2078,13 +2078,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -2524,13 +2524,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -3232,13 +3232,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 
@@ -3844,13 +3844,13 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
               all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
               none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
               single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
               some: MovieWhere
             }
 

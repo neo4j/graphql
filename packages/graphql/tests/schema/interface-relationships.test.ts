@@ -231,13 +231,13 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -922,13 +922,13 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -1245,13 +1245,13 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeSeriesRelationshipFilters {
-              \\"\\"\\"Return Episodes where all of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
               all: SeriesWhere
-              \\"\\"\\"Return Episodes where none of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
               none: SeriesWhere
-              \\"\\"\\"Return Episodes where one of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
               single: SeriesWhere
-              \\"\\"\\"Return Episodes where some of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
               some: SeriesWhere
             }
 
@@ -1475,13 +1475,13 @@ describe("Interface Relationships", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -1766,13 +1766,13 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsRelationshipFilters {
-              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -2002,13 +2002,13 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -2184,13 +2184,13 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesEpisodesRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
               all: EpisodeWhere
-              \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
               none: EpisodeWhere
-              \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
               single: EpisodeWhere
-              \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
               some: EpisodeWhere
             }
 
@@ -2590,13 +2590,13 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
               all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
               none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
               single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
               some: ProductionWhere
             }
 
@@ -2913,13 +2913,13 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeSeriesRelationshipFilters {
-              \\"\\"\\"Return Episodes where all of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
               all: SeriesWhere
-              \\"\\"\\"Return Episodes where none of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
               none: SeriesWhere
-              \\"\\"\\"Return Episodes where one of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
               single: SeriesWhere
-              \\"\\"\\"Return Episodes where some of the related Series match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
               some: SeriesWhere
             }
 
@@ -3143,13 +3143,13 @@ describe("Interface Relationships", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -3454,13 +3454,13 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsRelationshipFilters {
-              \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -3690,13 +3690,13 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -3872,13 +3872,13 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesEpisodesRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
               all: EpisodeWhere
-              \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
               none: EpisodeWhere
-              \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
               single: EpisodeWhere
-              \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
               some: EpisodeWhere
             }
 
@@ -4356,21 +4356,13 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -4816,21 +4808,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Type1Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -4875,13 +4859,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1RelationshipFilters {
-              \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
               all: Interface1Where
-              \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
               none: Interface1Where
-              \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
               single: Interface1Where
-              \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
               some: Interface1Where
             }
 
@@ -5181,21 +5165,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Type2Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -5685,21 +5661,13 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -6220,21 +6188,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Type1Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -6280,13 +6240,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1RelationshipFilters {
-              \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
               all: Interface1Where
-              \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
               none: Interface1Where
-              \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
               single: Interface1Where
-              \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
               some: Interface1Where
             }
 
@@ -6594,21 +6554,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Type2Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -7125,21 +7077,13 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -7596,21 +7540,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Type1Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Type1Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -7656,13 +7592,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1RelationshipFilters {
-              \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
               all: Interface1Where
-              \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
               none: Interface1Where
-              \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
               single: Interface1Where
-              \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
               some: Interface1Where
             }
 
@@ -8033,21 +7969,13 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Interface2RelationshipFilters {
-              \\"\\"\\"
-              Return Type2Interface1s where all of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
               all: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where none of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
               none: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where one of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
               single: Interface2Where
-              \\"\\"\\"
-              Return Type2Interface1s where some of the related Interface2s match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
               some: Interface2Where
             }
 
@@ -8423,13 +8351,13 @@ describe("Interface Relationships", () => {
             }
 
             input CommentCreatorRelationshipFilters {
-              \\"\\"\\"Return Comments where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Comments where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Comments where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Comments where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 
@@ -8571,13 +8499,13 @@ describe("Interface Relationships", () => {
             }
 
             input CommentPostRelationshipFilters {
-              \\"\\"\\"Return Comments where all of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
               all: PostWhere
-              \\"\\"\\"Return Comments where none of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
               none: PostWhere
-              \\"\\"\\"Return Comments where one of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
               single: PostWhere
-              \\"\\"\\"Return Comments where some of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
               some: PostWhere
             }
 
@@ -8819,13 +8747,13 @@ describe("Interface Relationships", () => {
             }
 
             input ContentCreatorRelationshipFilters {
-              \\"\\"\\"Return Contents where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Contents where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Contents where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Contents where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 
@@ -9139,13 +9067,13 @@ describe("Interface Relationships", () => {
             }
 
             input PostCommentsRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Comments match this filter\\"\\"\\"
               all: CommentWhere
-              \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Comments match this filter\\"\\"\\"
               none: CommentWhere
-              \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Comments match this filter\\"\\"\\"
               single: CommentWhere
-              \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Comments match this filter\\"\\"\\"
               some: CommentWhere
             }
 
@@ -9247,13 +9175,13 @@ describe("Interface Relationships", () => {
             }
 
             input PostCreatorRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 
@@ -9594,13 +9522,13 @@ describe("Interface Relationships", () => {
             }
 
             input UserContentRelationshipFilters {
-              \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
               all: ContentWhere
-              \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
               none: ContentWhere
-              \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
               single: ContentWhere
-              \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
               some: ContentWhere
             }
 
@@ -9930,13 +9858,13 @@ describe("Interface Relationships", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Shows match this filter\\"\\"\\"
               all: ShowWhere
-              \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Shows match this filter\\"\\"\\"
               none: ShowWhere
-              \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Shows match this filter\\"\\"\\"
               single: ShowWhere
-              \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Shows match this filter\\"\\"\\"
               some: ShowWhere
             }
 
@@ -10224,13 +10152,13 @@ describe("Interface Relationships", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -10517,13 +10445,13 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -10805,13 +10733,13 @@ describe("Interface Relationships", () => {
             }
 
             input ShowActorsRelationshipFilters {
-              \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 

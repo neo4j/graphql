@@ -214,13 +214,13 @@ describe("Sort", () => {
             }
 
             input Node1RelatedToRelationshipFilters {
-              \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Node2s match this filter\\"\\"\\"
               all: Node2Where
-              \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Node2s match this filter\\"\\"\\"
               none: Node2Where
-              \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Node2s match this filter\\"\\"\\"
               single: Node2Where
-              \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Node2s match this filter\\"\\"\\"
               some: Node2Where
             }
 
@@ -440,13 +440,13 @@ describe("Sort", () => {
             }
 
             input Node2RelatedToRelationshipFilters {
-              \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Node1s match this filter\\"\\"\\"
               all: Node1Where
-              \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Node1s match this filter\\"\\"\\"
               none: Node1Where
-              \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Node1s match this filter\\"\\"\\"
               single: Node1Where
-              \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Node1s match this filter\\"\\"\\"
               some: Node1Where
             }
 

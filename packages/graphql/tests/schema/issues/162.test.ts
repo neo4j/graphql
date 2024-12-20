@@ -338,19 +338,19 @@ describe("162", () => {
 
             input TigerJawLevel2Part1RelationshipFilters {
               \\"\\"\\"
-              Return TigerJawLevel2s where all of the related TigerJawLevel2Part1s match this filter
+              Filter type where all of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               all: TigerJawLevel2Part1Where
               \\"\\"\\"
-              Return TigerJawLevel2s where none of the related TigerJawLevel2Part1s match this filter
+              Filter type where none of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               none: TigerJawLevel2Part1Where
               \\"\\"\\"
-              Return TigerJawLevel2s where one of the related TigerJawLevel2Part1s match this filter
+              Filter type where one of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               single: TigerJawLevel2Part1Where
               \\"\\"\\"
-              Return TigerJawLevel2s where some of the related TigerJawLevel2Part1s match this filter
+              Filter type where some of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               some: TigerJawLevel2Part1Where
             }
@@ -465,21 +465,13 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1TigerRelationshipFilters {
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where all of the related Tigers match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Tigers match this filter\\"\\"\\"
               all: TigerWhere
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where none of the related Tigers match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Tigers match this filter\\"\\"\\"
               none: TigerWhere
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where one of the related Tigers match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Tigers match this filter\\"\\"\\"
               single: TigerWhere
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where some of the related Tigers match this filter
-              \\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Tigers match this filter\\"\\"\\"
               some: TigerWhere
             }
 

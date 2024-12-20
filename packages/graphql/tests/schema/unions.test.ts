@@ -315,13 +315,13 @@ describe("Unions", () => {
             }
 
             input MovieSearchRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
               all: SearchWhere
-              \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
               none: SearchWhere
-              \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
               single: SearchWhere
-              \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
               some: SearchWhere
             }
 

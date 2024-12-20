@@ -242,13 +242,13 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Shows match this filter\\"\\"\\"
               all: ShowWhere
-              \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Shows match this filter\\"\\"\\"
               none: ShowWhere
-              \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Shows match this filter\\"\\"\\"
               single: ShowWhere
-              \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Shows match this filter\\"\\"\\"
               some: ShowWhere
             }
 
@@ -560,13 +560,13 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -816,13 +816,13 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 
@@ -1084,13 +1084,13 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input ShowActorsRelationshipFilters {
-              \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
-              \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
               none: ActorWhere
-              \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
               single: ActorWhere
-              \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
               some: ActorWhere
             }
 

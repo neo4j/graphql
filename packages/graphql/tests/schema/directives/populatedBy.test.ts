@@ -966,13 +966,13 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieGenresRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
                   all: GenreWhere
-                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
                   none: GenreWhere
-                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
                   single: GenreWhere
-                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
                   some: GenreWhere
                 }
 
@@ -1538,13 +1538,13 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieGenresRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
                   all: GenreWhere
-                  \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
                   none: GenreWhere
-                  \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
                   single: GenreWhere
-                  \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
+                  \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
                   some: GenreWhere
                 }
 

@@ -449,13 +449,13 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input UserFollowingRelationshipFilters {
-              \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Profiles match this filter\\"\\"\\"
               all: ProfileWhere
-              \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Profiles match this filter\\"\\"\\"
               none: ProfileWhere
-              \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Profiles match this filter\\"\\"\\"
               single: ProfileWhere
-              \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Profiles match this filter\\"\\"\\"
               some: ProfileWhere
             }
 

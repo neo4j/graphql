@@ -17,80 +17,34 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, GraphQLInputType } from "graphql";
-import type { Directive } from "graphql-compose";
+import type { DirectiveNode } from "graphql";
+import type { Directive, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
+import { fieldConfigsToFieldConfigMap, getRelationshipFilters } from "./generation/augment-where-input";
 import { getInputFilterFromAttributeType } from "./generation/get-input-filter-from-attribute-type";
 import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
-function addCypherListFieldFilters({
-    field,
-    type,
-    result,
-    deprecatedDirectives,
-}: {
-    field: AttributeAdapter;
-    type: string;
-    result: Record<
-        string,
-        {
-            type: string | GraphQLInputType;
-            directives: Directive[];
-        }
-    >;
-    deprecatedDirectives: Directive[];
-}) {
-    result[`${field.name}_ALL`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-
-    result[`${field.name}_NONE`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-
-    result[`${field.name}_SINGLE`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-
-    result[`${field.name}_SOME`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-}
-
 // TODO: refactoring needed!
 // isWhereField, isFilterable, ... extracted out into attributes category
+// even more now as Cypher filters and generic input object are added in the mix
 export function getWhereFieldsForAttributes({
     attributes,
     userDefinedFieldDirectives,
     features,
     ignoreCypherFieldFilters,
+    composer,
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
-}): Record<
-    string,
-    {
-        type: string | GraphQLInputType;
-        directives: Directive[];
-    }
-> {
-    const result: Record<
-        string,
-        {
-            type: string | GraphQLInputType;
-            directives: Directive[];
-        }
-    > = {};
+    composer: SchemaComposer;
+}): InputTypeComposerFieldConfigMapDefinition {
+    const result: InputTypeComposerFieldConfigMapDefinition = {};
 
     // Add the where fields for each attribute
     for (const field of attributes) {
@@ -116,12 +70,14 @@ export function getWhereFieldsForAttributes({
 
                 // Add list where field filters (e.g. name_ALL, name_NONE, name_SINGLE, name_SOME)
                 if (field.typeHelper.isList()) {
-                    addCypherListFieldFilters({
+                    addCypherRelationshipLegacyFilters({
                         field,
                         type,
                         result,
                         deprecatedDirectives,
                     });
+
+                    addCypherRelationshipFilter({ field, type, result, deprecatedDirectives, composer });
                 } else {
                     // Add base where field filter (e.g. name)
                     result[field.name] = {
@@ -276,5 +232,63 @@ function getAttributeDeprecationDirective(
         default: {
             throw new Error(`Unknown comparator: ${comparator}`);
         }
+    }
+}
+
+function addCypherRelationshipFilter({
+    field,
+    type,
+    result,
+    deprecatedDirectives,
+    composer,
+}: {
+    field: AttributeAdapter;
+    type: string;
+    result: InputTypeComposerFieldConfigMapDefinition;
+    deprecatedDirectives: Directive[];
+    composer: SchemaComposer;
+}) {
+    const targetName = field.annotations.cypher?.targetEntity?.name;
+    if (!targetName) {
+        throw new Error("Target entity is not defined for the cypher field");
+    }
+
+    // Relationship filters
+    const relationshipFiltersFields = fieldConfigsToFieldConfigMap({
+        deprecatedDirectives: [],
+        fields: getRelationshipFilters({
+            relationshipInfo: { targetName, inputTypeName: type },
+        }),
+    });
+    // this mimic the adapter RelationshipOperation field "relationshipFiltersTypeName"
+    const relationshipType = `${targetName}RelationshipFilters`;
+
+    composer.getOrCreateITC(relationshipType, (itc) => {
+        itc.addFields(relationshipFiltersFields);
+    });
+
+    result[field.name] = {
+        type: relationshipType,
+        directives: deprecatedDirectives,
+    };
+}
+
+function addCypherRelationshipLegacyFilters({
+    field,
+    type,
+    result,
+    deprecatedDirectives,
+}: {
+    field: AttributeAdapter;
+    type: string;
+    result: InputTypeComposerFieldConfigMapDefinition;
+    deprecatedDirectives: Directive[];
+}) {
+    const quantifiers = ["ALL", "NONE", "SINGLE", "SOME"] as const;
+    for (const quantifier of quantifiers) {
+        result[`${field.name}_${quantifier}`] = {
+            type,
+            directives: deprecatedDirectives,
+        };
     }
 }

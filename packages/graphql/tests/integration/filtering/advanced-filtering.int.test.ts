@@ -1056,7 +1056,7 @@ describe("Advanced Filtering", () => {
 
                 const query = /* GraphQL */ `
                     {
-                        ${randomType1.plural}(where: { ${randomType2.plural}: { some: {id: { eq: "${relationId}" }} } }) {
+                        ${randomType1.plural}(where: { ${randomType2.plural}: { some: { id: { eq: "${relationId}" }} } }) {
                             id
                             ${randomType2.plural} {
                                 id

@@ -245,13 +245,13 @@ describe("Apollo Federation", () => {
             }
 
             input PostAuthorRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 
@@ -573,13 +573,13 @@ describe("Apollo Federation", () => {
             }
 
             input UserPostsRelationshipFilters {
-              \\"\\"\\"Return Users where all of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
               all: PostWhere
-              \\"\\"\\"Return Users where none of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
               none: PostWhere
-              \\"\\"\\"Return Users where one of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
               single: PostWhere
-              \\"\\"\\"Return Users where some of the related Posts match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
               some: PostWhere
             }
 
@@ -895,13 +895,13 @@ describe("Apollo Federation", () => {
             }
 
             input PostAuthorRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
               all: UserWhere
-              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
               none: UserWhere
-              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
               single: UserWhere
-              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
               some: UserWhere
             }
 
