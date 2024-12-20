@@ -222,6 +222,17 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User
             }
 
+            input ProfileRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Profiles match this filter\\"\\"\\"
+              all: ProfileWhere
+              \\"\\"\\"Filter type where none of the related Profiles match this filter\\"\\"\\"
+              none: ProfileWhere
+              \\"\\"\\"Filter type where one of the related Profiles match this filter\\"\\"\\"
+              single: ProfileWhere
+              \\"\\"\\"Filter type where some of the related Profiles match this filter\\"\\"\\"
+              some: ProfileWhere
+            }
+
             \\"\\"\\"
             Fields to sort Profiles by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProfileSort object.
             \\"\\"\\"
@@ -448,17 +459,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               properties: FOLLOWS!
             }
 
-            input UserFollowingRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Profiles match this filter\\"\\"\\"
-              all: ProfileWhere
-              \\"\\"\\"Filter type where none of the related Profiles match this filter\\"\\"\\"
-              none: ProfileWhere
-              \\"\\"\\"Filter type where one of the related Profiles match this filter\\"\\"\\"
-              single: ProfileWhere
-              \\"\\"\\"Filter type where some of the related Profiles match this filter\\"\\"\\"
-              some: ProfileWhere
-            }
-
             input UserFollowingUpdateConnectionInput {
               edge: FOLLOWSUpdateInput
               node: ProfileUpdateInput
@@ -505,7 +505,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              following: UserFollowingRelationshipFilters
+              following: ProfileRelationshipFilters
               followingAggregate: UserFollowingAggregateInput
               followingConnection: UserFollowingConnectionFilters
               \\"\\"\\"

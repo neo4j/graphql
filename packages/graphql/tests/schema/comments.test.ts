@@ -391,6 +391,17 @@ describe("Comments", () => {
                   node: Actor!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -595,17 +606,6 @@ describe("Comments", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -654,7 +654,7 @@ describe("Comments", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -986,17 +986,6 @@ describe("Comments", () => {
                   properties: ActedIn!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInUpdateConnectionInput {
                   edge: ActedInUpdateInput
                   node: ProductionUpdateInput
@@ -1061,7 +1050,7 @@ describe("Comments", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -1284,6 +1273,17 @@ describe("Comments", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
+                }
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 \\"\\"\\"
@@ -1747,17 +1747,6 @@ describe("Comments", () => {
                   node: Search!
                 }
 
-                input MovieSearchRelationshipFilters {
-                  \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
-                  all: SearchWhere
-                  \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
-                  none: SearchWhere
-                  \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
-                  single: SearchWhere
-                  \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
-                  some: SearchWhere
-                }
-
                 input MovieSearchUpdateInput {
                   Genre: [MovieSearchGenreUpdateFieldInput!]
                   Movie: [MovieSearchMovieUpdateFieldInput!]
@@ -1786,7 +1775,7 @@ describe("Comments", () => {
                   id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-                  search: MovieSearchRelationshipFilters
+                  search: SearchRelationshipFilters
                   searchConnection: MovieSearchConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieSearchConnections match this filter
@@ -1848,6 +1837,17 @@ describe("Comments", () => {
                 }
 
                 union Search = Genre | Movie
+
+                input SearchRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
+                  all: SearchWhere
+                  \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
+                  none: SearchWhere
+                  \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
+                  single: SearchWhere
+                  \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
+                  some: SearchWhere
+                }
 
                 input SearchWhere {
                   Genre: GenreWhere

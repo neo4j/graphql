@@ -75,6 +75,17 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               node: Actor!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -343,17 +354,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
             }
@@ -404,7 +404,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"

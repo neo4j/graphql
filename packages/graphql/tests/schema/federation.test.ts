@@ -244,17 +244,6 @@ describe("Apollo Federation", () => {
               node: User!
             }
 
-            input PostAuthorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -294,6 +283,17 @@ describe("Apollo Federation", () => {
               node: Post!
             }
 
+            input PostRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
+            }
+
             \\"\\"\\"
             Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
             \\"\\"\\"
@@ -320,7 +320,7 @@ describe("Apollo Federation", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              author: PostAuthorRelationshipFilters
+              author: UserRelationshipFilters
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionFilters
               \\"\\"\\"
@@ -572,17 +572,6 @@ describe("Apollo Federation", () => {
               node: Post!
             }
 
-            input UserPostsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
-              all: PostWhere
-              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
-              none: PostWhere
-              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
-              single: PostWhere
-              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
-              some: PostWhere
-            }
-
             input UserPostsUpdateConnectionInput {
               node: PostUpdateInput
             }
@@ -594,6 +583,17 @@ describe("Apollo Federation", () => {
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
               where: UserPostsConnectionWhere
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -619,7 +619,7 @@ describe("Apollo Federation", () => {
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-              posts: UserPostsRelationshipFilters
+              posts: PostRelationshipFilters
               postsAggregate: UserPostsAggregateInput
               postsConnection: UserPostsConnectionFilters
               \\"\\"\\"
@@ -894,17 +894,6 @@ describe("Apollo Federation", () => {
               node: User!
             }
 
-            input PostAuthorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -958,7 +947,7 @@ describe("Apollo Federation", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              author: PostAuthorRelationshipFilters
+              author: UserRelationshipFilters
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionFilters
               \\"\\"\\"
@@ -1084,6 +1073,17 @@ describe("Apollo Federation", () => {
             type UserEdge {
               cursor: String!
               node: User!
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"

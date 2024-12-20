@@ -447,17 +447,6 @@ describe("Directive-preserve", () => {
               node: Movie!
             }
 
-            input GenreMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -469,6 +458,17 @@ describe("Directive-preserve", () => {
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
               where: GenreMoviesConnectionWhere
+            }
+
+            input GenreRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere @deprecated(reason: \\"Do not use\\")
             }
 
             \\"\\"\\"
@@ -488,7 +488,7 @@ describe("Directive-preserve", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              movies: GenreMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: GenreMoviesAggregateInput
               moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
@@ -714,17 +714,6 @@ describe("Directive-preserve", () => {
               node: Genre!
             }
 
-            input MovieGenresRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
-              all: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
-              none: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
-              single: GenreWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
-              some: GenreWhere @deprecated(reason: \\"Do not use\\")
-            }
-
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -736,6 +725,17 @@ describe("Directive-preserve", () => {
               disconnect: [MovieGenresDisconnectFieldInput!]
               update: MovieGenresUpdateConnectionInput
               where: MovieGenresConnectionWhere
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -767,7 +767,7 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              genres: MovieGenresRelationshipFilters
+              genres: GenreRelationshipFilters
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use\\")
               genresConnection: MovieGenresConnectionFilters
               \\"\\"\\"
@@ -1122,17 +1122,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -1192,6 +1181,17 @@ describe("Directive-preserve", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -1209,7 +1209,7 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -1408,17 +1408,6 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere @deprecated(reason: \\"Do not use\\")
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -1476,7 +1465,7 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -1696,17 +1685,6 @@ describe("Directive-preserve", () => {
               properties: ProductionActorsRelationshipProperties!
             }
 
-            input ProductionActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             union ProductionActorsRelationshipProperties = ActedIn
 
             input ProductionActorsUpdateConnectionInput {
@@ -1759,6 +1737,17 @@ describe("Directive-preserve", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -1776,7 +1765,7 @@ describe("Directive-preserve", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              actors: ProductionActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
@@ -1926,17 +1915,6 @@ describe("Directive-preserve", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -2000,7 +1978,7 @@ describe("Directive-preserve", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -2319,17 +2297,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -2389,6 +2356,17 @@ describe("Directive-preserve", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere @deprecated(reason: \\"Do not use\\")
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -2406,7 +2384,7 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -2640,17 +2618,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere @deprecated(reason: \\"Do not use\\")
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere @deprecated(reason: \\"Do not use\\")
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -2708,7 +2675,7 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -2803,6 +2770,17 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -2979,17 +2957,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3053,7 +3020,7 @@ describe("Directive-preserve", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -3360,17 +3327,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -3430,6 +3386,17 @@ describe("Directive-preserve", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -3447,7 +3414,7 @@ describe("Directive-preserve", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -3681,17 +3648,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3749,7 +3705,7 @@ describe("Directive-preserve", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -3844,6 +3800,17 @@ describe("Directive-preserve", () => {
             enum ProductionImplementation {
               Movie
               Series
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -4020,17 +3987,6 @@ describe("Directive-preserve", () => {
               properties: ActedIn!
             }
 
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -4094,7 +4050,7 @@ describe("Directive-preserve", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -4371,17 +4327,6 @@ describe("Directive-preserve", () => {
               node: Post!
             }
 
-            input BlogPostsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
-              all: PostWhere
-              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
-              none: PostWhere
-              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
-              single: PostWhere
-              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
-              some: PostWhere
-            }
-
             input BlogPostsUpdateConnectionInput {
               node: PostUpdateInput
             }
@@ -4412,7 +4357,7 @@ describe("Directive-preserve", () => {
               AND: [BlogWhere!]
               NOT: BlogWhere
               OR: [BlogWhere!]
-              posts: BlogPostsRelationshipFilters
+              posts: PostRelationshipFilters
               postsAggregate: BlogPostsAggregateInput
               postsConnection: BlogPostsConnectionFilters
               \\"\\"\\"
@@ -4454,6 +4399,17 @@ describe("Directive-preserve", () => {
             }
 
             union Content = Blog | Post
+
+            input ContentRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
+              all: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
+              none: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
+              single: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
+              some: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
+            }
 
             input ContentWhere {
               Blog: BlogWhere
@@ -4551,6 +4507,17 @@ describe("Directive-preserve", () => {
             type PostEdge {
               cursor: String!
               node: Post!
+            }
+
+            input PostRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
             }
 
             \\"\\"\\"
@@ -4796,17 +4763,6 @@ describe("Directive-preserve", () => {
               node: Content!
             }
 
-            input UserContentRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
-              all: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
-              none: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
-              single: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
-              some: ContentWhere @deprecated(reason: \\"Do not use user.content\\")
-            }
-
             input UserContentUpdateInput {
               Blog: [UserContentBlogUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
               Post: [UserContentPostUpdateFieldInput!] @deprecated(reason: \\"Do not use user.content\\")
@@ -4843,7 +4799,7 @@ describe("Directive-preserve", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              content: UserContentRelationshipFilters
+              content: ContentRelationshipFilters
               contentConnection: UserContentConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter

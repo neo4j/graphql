@@ -287,17 +287,6 @@ describe("Query Direction", () => {
               node: User!
             }
 
-            input UserFriendsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -309,6 +298,17 @@ describe("Query Direction", () => {
               disconnect: [UserFriendsDisconnectFieldInput!]
               update: UserFriendsUpdateConnectionInput
               where: UserFriendsConnectionWhere
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -337,7 +337,7 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              friends: UserFriendsRelationshipFilters
+              friends: UserRelationshipFilters
               friendsAggregate: UserFriendsAggregateInput
               friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
@@ -644,17 +644,6 @@ describe("Query Direction", () => {
               node: User!
             }
 
-            input UserFriendsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -666,6 +655,17 @@ describe("Query Direction", () => {
               disconnect: [UserFriendsDisconnectFieldInput!]
               update: UserFriendsUpdateConnectionInput
               where: UserFriendsConnectionWhere
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -694,7 +694,7 @@ describe("Query Direction", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              friends: UserFriendsRelationshipFilters
+              friends: UserRelationshipFilters
               friendsAggregate: UserFriendsAggregateInput
               friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"

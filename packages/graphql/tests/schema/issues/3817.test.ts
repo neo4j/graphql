@@ -299,17 +299,6 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               properties: FriendOf!
             }
 
-            input PersonFriendsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
-              all: PersonWhere
-              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
-              none: PersonWhere
-              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
-              single: PersonWhere
-              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
-              some: PersonWhere
-            }
-
             input PersonFriendsUpdateConnectionInput {
               edge: FriendOfUpdateInput
               node: PersonUpdateInput
@@ -333,6 +322,17 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               id: StringAggregateSelection!
             }
 
+            input PersonRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
+            }
+
             \\"\\"\\"
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
@@ -348,7 +348,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              friends: PersonFriendsRelationshipFilters
+              friends: PersonRelationshipFilters
               friendsAggregate: PersonFriendsAggregateInput
               friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"

@@ -230,17 +230,6 @@ describe("Interface Relationships", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -305,7 +294,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -528,6 +517,17 @@ describe("Interface Relationships", () => {
             enum ProductionImplementation {
               Movie
               Series
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -921,17 +921,6 @@ describe("Interface Relationships", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -991,6 +980,17 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -1008,7 +1008,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -1121,6 +1121,17 @@ describe("Interface Relationships", () => {
             type EpisodeEdge {
               cursor: String!
               node: Episode!
+            }
+
+            input EpisodeRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
+              all: EpisodeWhere
+              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
+              none: EpisodeWhere
+              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
+              single: EpisodeWhere
+              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
+              some: EpisodeWhere
             }
 
             input EpisodeSeriesAggregateInput {
@@ -1244,17 +1255,6 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
-            input EpisodeSeriesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
-              all: SeriesWhere
-              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
-              none: SeriesWhere
-              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
-              single: SeriesWhere
-              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
-              some: SeriesWhere
-            }
-
             type EpisodeSeriesSeriesAggregationSelection {
               count: Int!
               node: EpisodeSeriesSeriesNodeAggregateSelection
@@ -1304,7 +1304,7 @@ describe("Interface Relationships", () => {
               runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
               runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
-              series: EpisodeSeriesRelationshipFilters
+              series: SeriesRelationshipFilters
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
@@ -1474,17 +1474,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -1542,7 +1531,7 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -1765,17 +1754,6 @@ describe("Interface Relationships", () => {
               properties: ProductionActorsRelationshipProperties!
             }
 
-            input ProductionActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             union ProductionActorsRelationshipProperties = ActedIn
 
             input ProductionActorsUpdateConnectionInput {
@@ -1828,6 +1806,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -1845,7 +1834,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              actors: ProductionActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
@@ -1999,17 +1988,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
               name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
-            }
-
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -2183,17 +2161,6 @@ describe("Interface Relationships", () => {
               node: Episode!
             }
 
-            input SeriesEpisodesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
-              all: EpisodeWhere
-              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
-              none: EpisodeWhere
-              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
-              single: EpisodeWhere
-              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
-              some: EpisodeWhere
-            }
-
             input SeriesEpisodesUpdateConnectionInput {
               node: EpisodeUpdateInput
             }
@@ -2205,6 +2172,17 @@ describe("Interface Relationships", () => {
               disconnect: [SeriesEpisodesDisconnectFieldInput!]
               update: SeriesEpisodesUpdateConnectionInput
               where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
+              all: SeriesWhere
+              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
+              none: SeriesWhere
+              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
+              single: SeriesWhere
+              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
+              some: SeriesWhere
             }
 
             \\"\\"\\"
@@ -2230,7 +2208,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -2264,7 +2242,7 @@ describe("Interface Relationships", () => {
               episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
               episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
               episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
-              episodes: SeriesEpisodesRelationshipFilters
+              episodes: EpisodeRelationshipFilters
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
@@ -2589,17 +2567,6 @@ describe("Interface Relationships", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -2659,6 +2626,17 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -2676,7 +2654,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -2789,6 +2767,17 @@ describe("Interface Relationships", () => {
             type EpisodeEdge {
               cursor: String!
               node: Episode!
+            }
+
+            input EpisodeRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
+              all: EpisodeWhere
+              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
+              none: EpisodeWhere
+              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
+              single: EpisodeWhere
+              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
+              some: EpisodeWhere
             }
 
             input EpisodeSeriesAggregateInput {
@@ -2912,17 +2901,6 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
-            input EpisodeSeriesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
-              all: SeriesWhere
-              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
-              none: SeriesWhere
-              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
-              single: SeriesWhere
-              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
-              some: SeriesWhere
-            }
-
             type EpisodeSeriesSeriesAggregationSelection {
               count: Int!
               node: EpisodeSeriesSeriesNodeAggregateSelection
@@ -2972,7 +2950,7 @@ describe("Interface Relationships", () => {
               runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
               runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
-              series: EpisodeSeriesRelationshipFilters
+              series: SeriesRelationshipFilters
               seriesAggregate: EpisodeSeriesAggregateInput
               seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
@@ -3142,17 +3120,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3210,7 +3177,7 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -3453,17 +3420,6 @@ describe("Interface Relationships", () => {
               properties: ProductionActorsRelationshipProperties!
             }
 
-            input ProductionActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             union ProductionActorsRelationshipProperties = ActedIn | StarredIn
 
             input ProductionActorsUpdateConnectionInput {
@@ -3516,6 +3472,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -3533,7 +3500,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              actors: ProductionActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
@@ -3687,17 +3654,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
               name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
-            }
-
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -3871,17 +3827,6 @@ describe("Interface Relationships", () => {
               node: Episode!
             }
 
-            input SeriesEpisodesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
-              all: EpisodeWhere
-              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
-              none: EpisodeWhere
-              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
-              single: EpisodeWhere
-              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
-              some: EpisodeWhere
-            }
-
             input SeriesEpisodesUpdateConnectionInput {
               node: EpisodeUpdateInput
             }
@@ -3893,6 +3838,17 @@ describe("Interface Relationships", () => {
               disconnect: [SeriesEpisodesDisconnectFieldInput!]
               update: SeriesEpisodesUpdateConnectionInput
               where: SeriesEpisodesConnectionWhere
+            }
+
+            input SeriesRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
+              all: SeriesWhere
+              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
+              none: SeriesWhere
+              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
+              single: SeriesWhere
+              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
+              some: SeriesWhere
             }
 
             \\"\\"\\"
@@ -3918,7 +3874,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -3952,7 +3908,7 @@ describe("Interface Relationships", () => {
               episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
               episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
               episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
-              episodes: SeriesEpisodesRelationshipFilters
+              episodes: EpisodeRelationshipFilters
               episodesAggregate: SeriesEpisodesAggregateInput
               episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
@@ -4355,17 +4311,6 @@ describe("Interface Relationships", () => {
               node: Interface2!
             }
 
-            input Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
             }
@@ -4377,6 +4322,17 @@ describe("Interface Relationships", () => {
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
+              all: Interface1Where
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
+              none: Interface1Where
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
+              single: Interface1Where
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
+              some: Interface1Where
             }
 
             \\"\\"\\"
@@ -4402,7 +4358,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -4472,6 +4428,17 @@ describe("Interface Relationships", () => {
             enum Interface2Implementation {
               Type1Interface2
               Type2Interface2
+            }
+
+            input Interface2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
+              all: Interface2Where
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
+              none: Interface2Where
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
+              single: Interface2Where
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
+              some: Interface2Where
             }
 
             \\"\\"\\"
@@ -4807,17 +4774,6 @@ describe("Interface Relationships", () => {
               field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input Type1Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Type1Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
             }
@@ -4858,17 +4814,6 @@ describe("Interface Relationships", () => {
               node: Interface1!
             }
 
-            input Type1Interface1RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
-              all: Interface1Where
-              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
-              none: Interface1Where
-              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
-              single: Interface1Where
-              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
-              some: Interface1Where
-            }
-
             \\"\\"\\"
             Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
             \\"\\"\\"
@@ -4905,7 +4850,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Type1Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -5019,7 +4964,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface1: Type1Interface1RelationshipFilters
+              interface1: Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
@@ -5164,17 +5109,6 @@ describe("Interface Relationships", () => {
               field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input Type2Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Type2Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
             }
@@ -5211,7 +5145,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Type2Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -5660,17 +5594,6 @@ describe("Interface Relationships", () => {
               properties: Interface1Interface2RelationshipProperties!
             }
 
-            input Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             union Interface1Interface2RelationshipProperties = Props
 
             input Interface1Interface2UpdateConnectionInput {
@@ -5685,6 +5608,17 @@ describe("Interface Relationships", () => {
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
+              all: Interface1Where
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
+              none: Interface1Where
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
+              single: Interface1Where
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
+              some: Interface1Where
             }
 
             \\"\\"\\"
@@ -5710,7 +5644,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -5780,6 +5714,17 @@ describe("Interface Relationships", () => {
             enum Interface2Implementation {
               Type1Interface2
               Type2Interface2
+            }
+
+            input Interface2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
+              all: Interface2Where
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
+              none: Interface2Where
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
+              single: Interface2Where
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
+              some: Interface2Where
             }
 
             \\"\\"\\"
@@ -6187,17 +6132,6 @@ describe("Interface Relationships", () => {
               field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input Type1Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Type1Interface1Interface2UpdateConnectionInput {
               edge: PropsUpdateInput
               node: Interface2UpdateInput
@@ -6239,17 +6173,6 @@ describe("Interface Relationships", () => {
               node: Interface1!
             }
 
-            input Type1Interface1RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
-              all: Interface1Where
-              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
-              none: Interface1Where
-              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
-              single: Interface1Where
-              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
-              some: Interface1Where
-            }
-
             \\"\\"\\"
             Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
             \\"\\"\\"
@@ -6286,7 +6209,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Type1Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -6400,7 +6323,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface1: Type1Interface1RelationshipFilters
+              interface1: Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
@@ -6553,17 +6476,6 @@ describe("Interface Relationships", () => {
               field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input Type2Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Type2Interface1Interface2UpdateConnectionInput {
               edge: PropsUpdateInput
               node: Interface2UpdateInput
@@ -6601,7 +6513,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Type2Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -7076,17 +6988,6 @@ describe("Interface Relationships", () => {
               properties: Interface1Interface2RelationshipProperties!
             }
 
-            input Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             union Interface1Interface2RelationshipProperties = Type1Props | Type2Props
 
             input Interface1Interface2UpdateConnectionInput {
@@ -7101,6 +7002,17 @@ describe("Interface Relationships", () => {
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
               where: Interface1Interface2ConnectionWhere
+            }
+
+            input Interface1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
+              all: Interface1Where
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
+              none: Interface1Where
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
+              single: Interface1Where
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
+              some: Interface1Where
             }
 
             \\"\\"\\"
@@ -7126,7 +7038,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -7196,6 +7108,17 @@ describe("Interface Relationships", () => {
             enum Interface2Implementation {
               Type1Interface2
               Type2Interface2
+            }
+
+            input Interface2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
+              all: Interface2Where
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
+              none: Interface2Where
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
+              single: Interface2Where
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
+              some: Interface2Where
             }
 
             \\"\\"\\"
@@ -7539,17 +7462,6 @@ describe("Interface Relationships", () => {
               field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input Type1Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Type1Interface1Interface2UpdateConnectionInput {
               edge: Type1PropsUpdateInput
               node: Interface2UpdateInput
@@ -7591,17 +7503,6 @@ describe("Interface Relationships", () => {
               node: Interface1!
             }
 
-            input Type1Interface1RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
-              all: Interface1Where
-              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
-              none: Interface1Where
-              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
-              single: Interface1Where
-              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
-              some: Interface1Where
-            }
-
             \\"\\"\\"
             Fields to sort Type1Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Type1Interface1Sort object.
             \\"\\"\\"
@@ -7638,7 +7539,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Type1Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -7815,7 +7716,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface1: Type1Interface1RelationshipFilters
+              interface1: Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
@@ -7968,17 +7869,6 @@ describe("Interface Relationships", () => {
               field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input Type2Interface1Interface2RelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
-              all: Interface2Where
-              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
-              none: Interface2Where
-              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
-              single: Interface2Where
-              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
-              some: Interface2Where
-            }
-
             input Type2Interface1Interface2UpdateConnectionInput {
               edge: Type2PropsUpdateInput
               node: Interface2UpdateInput
@@ -8016,7 +7906,7 @@ describe("Interface Relationships", () => {
               field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
-              interface2: Type2Interface1Interface2RelationshipFilters
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
@@ -8350,17 +8240,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input CommentCreatorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input CommentCreatorUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -8498,17 +8377,6 @@ describe("Interface Relationships", () => {
               node: Post!
             }
 
-            input CommentPostRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
-              all: PostWhere
-              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
-              none: PostWhere
-              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
-              single: PostWhere
-              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
-              some: PostWhere
-            }
-
             input CommentPostUpdateConnectionInput {
               node: PostUpdateInput
             }
@@ -8520,6 +8388,17 @@ describe("Interface Relationships", () => {
               disconnect: [CommentPostDisconnectFieldInput!]
               update: CommentPostUpdateConnectionInput
               where: CommentPostConnectionWhere
+            }
+
+            input CommentRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Comments match this filter\\"\\"\\"
+              all: CommentWhere
+              \\"\\"\\"Filter type where none of the related Comments match this filter\\"\\"\\"
+              none: CommentWhere
+              \\"\\"\\"Filter type where one of the related Comments match this filter\\"\\"\\"
+              single: CommentWhere
+              \\"\\"\\"Filter type where some of the related Comments match this filter\\"\\"\\"
+              some: CommentWhere
             }
 
             \\"\\"\\"
@@ -8558,7 +8437,7 @@ describe("Interface Relationships", () => {
               content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
-              creator: CommentCreatorRelationshipFilters
+              creator: UserRelationshipFilters
               creatorAggregate: CommentCreatorAggregateInput
               creatorConnection: CommentCreatorConnectionFilters
               \\"\\"\\"
@@ -8591,7 +8470,7 @@ describe("Interface Relationships", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              post: CommentPostRelationshipFilters
+              post: PostRelationshipFilters
               postAggregate: CommentPostAggregateInput
               postConnection: CommentPostConnectionFilters
               \\"\\"\\"
@@ -8746,17 +8625,6 @@ describe("Interface Relationships", () => {
               node: User!
             }
 
-            input ContentCreatorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input ContentCreatorUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -8788,6 +8656,17 @@ describe("Interface Relationships", () => {
               Post
             }
 
+            input ContentRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
+              all: ContentWhere
+              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
+              none: ContentWhere
+              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
+              single: ContentWhere
+              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
+              some: ContentWhere
+            }
+
             \\"\\"\\"
             Fields to sort Contents by. The order in which sorts are applied is not guaranteed when specifying many fields in one ContentSort object.
             \\"\\"\\"
@@ -8814,7 +8693,7 @@ describe("Interface Relationships", () => {
               content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
-              creator: ContentCreatorRelationshipFilters
+              creator: UserRelationshipFilters
               creatorAggregate: ContentCreatorAggregateInput
               creatorConnection: ContentCreatorConnectionFilters
               \\"\\"\\"
@@ -9066,17 +8945,6 @@ describe("Interface Relationships", () => {
               node: Comment!
             }
 
-            input PostCommentsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Comments match this filter\\"\\"\\"
-              all: CommentWhere
-              \\"\\"\\"Filter type where none of the related Comments match this filter\\"\\"\\"
-              none: CommentWhere
-              \\"\\"\\"Filter type where one of the related Comments match this filter\\"\\"\\"
-              single: CommentWhere
-              \\"\\"\\"Filter type where some of the related Comments match this filter\\"\\"\\"
-              some: CommentWhere
-            }
-
             input PostCommentsUpdateConnectionInput {
               node: CommentUpdateInput
             }
@@ -9174,17 +9042,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input PostCreatorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostCreatorUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -9211,6 +9068,17 @@ describe("Interface Relationships", () => {
             type PostEdge {
               cursor: String!
               node: Post!
+            }
+
+            input PostRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
             }
 
             \\"\\"\\"
@@ -9243,7 +9111,7 @@ describe("Interface Relationships", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              comments: PostCommentsRelationshipFilters
+              comments: CommentRelationshipFilters
               commentsAggregate: PostCommentsAggregateInput
               commentsConnection: PostCommentsConnectionFilters
               \\"\\"\\"
@@ -9276,7 +9144,7 @@ describe("Interface Relationships", () => {
               content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
-              creator: PostCreatorRelationshipFilters
+              creator: UserRelationshipFilters
               creatorAggregate: PostCreatorAggregateInput
               creatorConnection: PostCreatorConnectionFilters
               \\"\\"\\"
@@ -9521,17 +9389,6 @@ describe("Interface Relationships", () => {
               node: Content!
             }
 
-            input UserContentRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
-              all: ContentWhere
-              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
-              none: ContentWhere
-              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
-              single: ContentWhere
-              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
-              some: ContentWhere
-            }
-
             input UserContentUpdateConnectionInput {
               node: ContentUpdateInput
             }
@@ -9564,6 +9421,17 @@ describe("Interface Relationships", () => {
               node: User!
             }
 
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
+            }
+
             \\"\\"\\"
             Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
             \\"\\"\\"
@@ -9584,7 +9452,7 @@ describe("Interface Relationships", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              content: UserContentRelationshipFilters
+              content: ContentRelationshipFilters
               contentAggregate: UserContentAggregateInput
               contentConnection: UserContentConnectionFilters
               \\"\\"\\"
@@ -9857,17 +9725,6 @@ describe("Interface Relationships", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Shows match this filter\\"\\"\\"
-              all: ShowWhere
-              \\"\\"\\"Filter type where none of the related Shows match this filter\\"\\"\\"
-              none: ShowWhere
-              \\"\\"\\"Filter type where one of the related Shows match this filter\\"\\"\\"
-              single: ShowWhere
-              \\"\\"\\"Filter type where some of the related Shows match this filter\\"\\"\\"
-              some: ShowWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ShowUpdateInput
@@ -9913,6 +9770,17 @@ describe("Interface Relationships", () => {
               node: Actor!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             type ActorShowActedInAggregationSelection {
               count: Int!
               edge: ActorShowActedInEdgeAggregateSelection
@@ -9944,7 +9812,7 @@ describe("Interface Relationships", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ShowRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -10151,17 +10019,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -10219,7 +10076,7 @@ describe("Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -10444,17 +10301,6 @@ describe("Interface Relationships", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input SeriesActorsUpdateConnectionInput {
               edge: StarredInUpdateInput
               node: ActorUpdateInput
@@ -10518,7 +10364,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -10732,17 +10578,6 @@ describe("Interface Relationships", () => {
               properties: ShowActorsRelationshipProperties!
             }
 
-            input ShowActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             union ShowActorsRelationshipProperties = ActedIn | StarredIn
 
             input ShowActorsUpdateConnectionInput {
@@ -10795,6 +10630,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ShowRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Shows match this filter\\"\\"\\"
+              all: ShowWhere
+              \\"\\"\\"Filter type where none of the related Shows match this filter\\"\\"\\"
+              none: ShowWhere
+              \\"\\"\\"Filter type where one of the related Shows match this filter\\"\\"\\"
+              single: ShowWhere
+              \\"\\"\\"Filter type where some of the related Shows match this filter\\"\\"\\"
+              some: ShowWhere
+            }
+
             \\"\\"\\"
             Fields to sort Shows by. The order in which sorts are applied is not guaranteed when specifying many fields in one ShowSort object.
             \\"\\"\\"
@@ -10812,7 +10658,7 @@ describe("Interface Relationships", () => {
               AND: [ShowWhere!]
               NOT: ShowWhere
               OR: [ShowWhere!]
-              actors: ShowActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: ShowActorsAggregateInput
               actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"

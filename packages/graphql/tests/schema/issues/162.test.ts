@@ -464,17 +464,6 @@ describe("162", () => {
               node: Tiger!
             }
 
-            input TigerJawLevel2Part1TigerRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Tigers match this filter\\"\\"\\"
-              all: TigerWhere
-              \\"\\"\\"Filter type where none of the related Tigers match this filter\\"\\"\\"
-              none: TigerWhere
-              \\"\\"\\"Filter type where one of the related Tigers match this filter\\"\\"\\"
-              single: TigerWhere
-              \\"\\"\\"Filter type where some of the related Tigers match this filter\\"\\"\\"
-              some: TigerWhere
-            }
-
             type TigerJawLevel2Part1TigerTigerAggregationSelection {
               count: Int!
               node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
@@ -526,7 +515,7 @@ describe("162", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              tiger: TigerJawLevel2Part1TigerRelationshipFilters
+              tiger: TigerRelationshipFilters
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionFilters
               \\"\\"\\"
@@ -637,6 +626,17 @@ describe("162", () => {
               edges: [TigerJawLevel2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input TigerRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Tigers match this filter\\"\\"\\"
+              all: TigerWhere
+              \\"\\"\\"Filter type where none of the related Tigers match this filter\\"\\"\\"
+              none: TigerWhere
+              \\"\\"\\"Filter type where one of the related Tigers match this filter\\"\\"\\"
+              single: TigerWhere
+              \\"\\"\\"Filter type where some of the related Tigers match this filter\\"\\"\\"
+              some: TigerWhere
             }
 
             \\"\\"\\"

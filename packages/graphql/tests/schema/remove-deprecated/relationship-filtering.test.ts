@@ -1099,17 +1099,6 @@ describe("Exclude suffix based filtering", () => {
               properties: relType!
             }
 
-            input typeAActedInRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related typeBS match this filter\\"\\"\\"
-              all: typeBWhere
-              \\"\\"\\"Filter type where none of the related typeBS match this filter\\"\\"\\"
-              none: typeBWhere
-              \\"\\"\\"Filter type where one of the related typeBS match this filter\\"\\"\\"
-              single: typeBWhere
-              \\"\\"\\"Filter type where some of the related typeBS match this filter\\"\\"\\"
-              some: typeBWhere
-            }
-
             input typeAActedInUpdateConnectionInput {
               edge: relTypeUpdateInput
               node: typeBUpdateInput
@@ -1155,6 +1144,17 @@ describe("Exclude suffix based filtering", () => {
               node: typeA!
             }
 
+            input typeARelationshipFilters {
+              \\"\\"\\"Filter type where all of the related typeAS match this filter\\"\\"\\"
+              all: typeAWhere
+              \\"\\"\\"Filter type where none of the related typeAS match this filter\\"\\"\\"
+              none: typeAWhere
+              \\"\\"\\"Filter type where one of the related typeAS match this filter\\"\\"\\"
+              single: typeAWhere
+              \\"\\"\\"Filter type where some of the related typeAS match this filter\\"\\"\\"
+              some: typeAWhere
+            }
+
             \\"\\"\\"
             Fields to sort TypeAS by. The order in which sorts are applied is not guaranteed when specifying many fields in one typeASort object.
             \\"\\"\\"
@@ -1172,7 +1172,7 @@ describe("Exclude suffix based filtering", () => {
               AND: [typeAWhere!]
               NOT: typeAWhere
               OR: [typeAWhere!]
-              actedIn: typeAActedInRelationshipFilters
+              actedIn: typeBRelationshipFilters
               actedInAggregate: typeAActedInAggregateInput
               actedInConnection: typeAActedInConnectionFilters
               name: StringScalarFilters
@@ -1270,6 +1270,17 @@ describe("Exclude suffix based filtering", () => {
             type typeBEdge {
               cursor: String!
               node: typeB!
+            }
+
+            input typeBRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related typeBS match this filter\\"\\"\\"
+              all: typeBWhere
+              \\"\\"\\"Filter type where none of the related typeBS match this filter\\"\\"\\"
+              none: typeBWhere
+              \\"\\"\\"Filter type where one of the related typeBS match this filter\\"\\"\\"
+              single: typeBWhere
+              \\"\\"\\"Filter type where some of the related typeBS match this filter\\"\\"\\"
+              some: typeBWhere
             }
 
             input typeBRelsAggregateInput {
@@ -1376,17 +1387,6 @@ describe("Exclude suffix based filtering", () => {
               cursor: String!
               node: typeA!
               properties: relType!
-            }
-
-            input typeBRelsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related typeAS match this filter\\"\\"\\"
-              all: typeAWhere
-              \\"\\"\\"Filter type where none of the related typeAS match this filter\\"\\"\\"
-              none: typeAWhere
-              \\"\\"\\"Filter type where one of the related typeAS match this filter\\"\\"\\"
-              single: typeAWhere
-              \\"\\"\\"Filter type where some of the related typeAS match this filter\\"\\"\\"
-              some: typeAWhere
             }
 
             input typeBRelsUpdateConnectionInput {
@@ -1529,7 +1529,7 @@ describe("Exclude suffix based filtering", () => {
               ratings: FloatListFilters
               ratings_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter ratings: { eq: ... }\\")
               ratings_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter ratings: { includes: ... }\\")
-              rels: typeBRelsRelationshipFilters
+              rels: typeARelationshipFilters
               relsAggregate: typeBRelsAggregateInput
               relsConnection: typeBRelsConnectionFilters
               time: TimeScalarFilters

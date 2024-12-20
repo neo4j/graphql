@@ -203,6 +203,17 @@ describe("Pluralize consistency", () => {
               node: super_friend!
             }
 
+            input super_friendRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related super_friends match this filter\\"\\"\\"
+              all: super_friendWhere
+              \\"\\"\\"Filter type where none of the related super_friends match this filter\\"\\"\\"
+              none: super_friendWhere
+              \\"\\"\\"Filter type where one of the related super_friends match this filter\\"\\"\\"
+              single: super_friendWhere
+              \\"\\"\\"Filter type where some of the related super_friends match this filter\\"\\"\\"
+              some: super_friendWhere
+            }
+
             \\"\\"\\"
             Fields to sort SuperFriends by. The order in which sorts are applied is not guaranteed when specifying many fields in one super_friendSort object.
             \\"\\"\\"
@@ -350,17 +361,6 @@ describe("Pluralize consistency", () => {
               node: super_friend!
             }
 
-            input super_userMy_friendRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related super_friends match this filter\\"\\"\\"
-              all: super_friendWhere
-              \\"\\"\\"Filter type where none of the related super_friends match this filter\\"\\"\\"
-              none: super_friendWhere
-              \\"\\"\\"Filter type where one of the related super_friends match this filter\\"\\"\\"
-              single: super_friendWhere
-              \\"\\"\\"Filter type where some of the related super_friends match this filter\\"\\"\\"
-              some: super_friendWhere
-            }
-
             input super_userMy_friendUpdateConnectionInput {
               node: super_friendUpdateInput
             }
@@ -391,7 +391,7 @@ describe("Pluralize consistency", () => {
               AND: [super_userWhere!]
               NOT: super_userWhere
               OR: [super_userWhere!]
-              my_friend: super_userMy_friendRelationshipFilters
+              my_friend: super_friendRelationshipFilters
               my_friendAggregate: super_userMy_friendAggregateInput
               my_friendConnection: super_userMy_friendConnectionFilters
               \\"\\"\\"

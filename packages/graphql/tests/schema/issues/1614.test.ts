@@ -205,17 +205,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               properties: CrewPosition!
             }
 
-            input CrewMemberMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input CrewMemberMoviesUpdateConnectionInput {
               edge: CrewPositionUpdateInput
               node: MovieUpdateInput
@@ -238,7 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               AND: [CrewMemberWhere!]
               NOT: CrewMemberWhere
               OR: [CrewMemberWhere!]
-              movies: CrewMemberMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: CrewMemberMoviesAggregateInput
               moviesConnection: CrewMemberMoviesConnectionFilters
               \\"\\"\\"
@@ -368,6 +357,17 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"

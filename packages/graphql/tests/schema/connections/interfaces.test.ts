@@ -196,17 +196,6 @@ describe("Connection with interfaces", () => {
               node: Production!
             }
 
-            input CreatureMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input CreatureMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -218,6 +207,17 @@ describe("Connection with interfaces", () => {
               disconnect: [CreatureMoviesDisconnectFieldInput!]
               update: CreatureMoviesUpdateConnectionInput
               where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
+              all: CreatureWhere
+              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
+              none: CreatureWhere
+              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
+              single: CreatureWhere
+              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
+              some: CreatureWhere
             }
 
             \\"\\"\\"
@@ -243,7 +243,7 @@ describe("Connection with interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: CreatureMoviesRelationshipFilters
+              movies: ProductionRelationshipFilters
               moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionFilters
               \\"\\"\\"
@@ -415,17 +415,6 @@ describe("Connection with interfaces", () => {
               create: [MovieDirectorCreateFieldInput!]
             }
 
-            input MovieDirectorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
-              all: CreatureWhere
-              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
-              none: CreatureWhere
-              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
-              single: CreatureWhere
-              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
-              some: CreatureWhere
-            }
-
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -464,7 +453,7 @@ describe("Connection with interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              director: MovieDirectorRelationshipFilters
+              director: CreatureRelationshipFilters
               directorAggregate: MovieDirectorAggregateInput
               directorConnection: MovieDirectorConnectionFilters
               \\"\\"\\"
@@ -617,17 +606,6 @@ describe("Connection with interfaces", () => {
               create: [PersonMoviesCreateFieldInput!]
             }
 
-            input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -668,7 +646,7 @@ describe("Connection with interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: PersonMoviesRelationshipFilters
+              movies: ProductionRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
@@ -796,17 +774,6 @@ describe("Connection with interfaces", () => {
               node: Creature!
             }
 
-            input ProductionDirectorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
-              all: CreatureWhere
-              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
-              none: CreatureWhere
-              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
-              single: CreatureWhere
-              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
-              some: CreatureWhere
-            }
-
             input ProductionDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -834,6 +801,17 @@ describe("Connection with interfaces", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -851,7 +829,7 @@ describe("Connection with interfaces", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              director: ProductionDirectorRelationshipFilters
+              director: CreatureRelationshipFilters
               directorAggregate: ProductionDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionFilters
               \\"\\"\\"
@@ -1010,17 +988,6 @@ describe("Connection with interfaces", () => {
               create: [SeriesDirectorCreateFieldInput!]
             }
 
-            input SeriesDirectorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
-              all: CreatureWhere
-              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
-              none: CreatureWhere
-              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
-              single: CreatureWhere
-              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
-              some: CreatureWhere
-            }
-
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -1064,7 +1031,7 @@ describe("Connection with interfaces", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              director: SeriesDirectorRelationshipFilters
+              director: CreatureRelationshipFilters
               directorAggregate: SeriesDirectorAggregateInput
               directorConnection: SeriesDirectorConnectionFilters
               \\"\\"\\"

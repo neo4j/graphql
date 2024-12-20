@@ -213,17 +213,6 @@ describe("Sort", () => {
               node: Node2!
             }
 
-            input Node1RelatedToRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Node2s match this filter\\"\\"\\"
-              all: Node2Where
-              \\"\\"\\"Filter type where none of the related Node2s match this filter\\"\\"\\"
-              none: Node2Where
-              \\"\\"\\"Filter type where one of the related Node2s match this filter\\"\\"\\"
-              single: Node2Where
-              \\"\\"\\"Filter type where some of the related Node2s match this filter\\"\\"\\"
-              some: Node2Where
-            }
-
             input Node1RelatedToUpdateConnectionInput {
               node: Node2UpdateInput
             }
@@ -235,6 +224,17 @@ describe("Sort", () => {
               disconnect: [Node1RelatedToDisconnectFieldInput!]
               update: Node1RelatedToUpdateConnectionInput
               where: Node1RelatedToConnectionWhere
+            }
+
+            input Node1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Node1s match this filter\\"\\"\\"
+              all: Node1Where
+              \\"\\"\\"Filter type where none of the related Node1s match this filter\\"\\"\\"
+              none: Node1Where
+              \\"\\"\\"Filter type where one of the related Node1s match this filter\\"\\"\\"
+              single: Node1Where
+              \\"\\"\\"Filter type where some of the related Node1s match this filter\\"\\"\\"
+              some: Node1Where
             }
 
             \\"\\"\\"
@@ -260,7 +260,7 @@ describe("Sort", () => {
               property_EQ: String @deprecated(reason: \\"Please use the relevant generic filter property: { eq: ... }\\")
               property_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter property: { in: ... }\\")
               property_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { startsWith: ... }\\")
-              relatedTo: Node1RelatedToRelationshipFilters
+              relatedTo: Node2RelationshipFilters
               relatedToAggregate: Node1RelatedToAggregateInput
               relatedToConnection: Node1RelatedToConnectionFilters
               \\"\\"\\"
@@ -439,17 +439,6 @@ describe("Sort", () => {
               node: Node1!
             }
 
-            input Node2RelatedToRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Node1s match this filter\\"\\"\\"
-              all: Node1Where
-              \\"\\"\\"Filter type where none of the related Node1s match this filter\\"\\"\\"
-              none: Node1Where
-              \\"\\"\\"Filter type where one of the related Node1s match this filter\\"\\"\\"
-              single: Node1Where
-              \\"\\"\\"Filter type where some of the related Node1s match this filter\\"\\"\\"
-              some: Node1Where
-            }
-
             input Node2RelatedToUpdateConnectionInput {
               node: Node1UpdateInput
             }
@@ -463,6 +452,17 @@ describe("Sort", () => {
               where: Node2RelatedToConnectionWhere
             }
 
+            input Node2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Node2s match this filter\\"\\"\\"
+              all: Node2Where
+              \\"\\"\\"Filter type where none of the related Node2s match this filter\\"\\"\\"
+              none: Node2Where
+              \\"\\"\\"Filter type where one of the related Node2s match this filter\\"\\"\\"
+              single: Node2Where
+              \\"\\"\\"Filter type where some of the related Node2s match this filter\\"\\"\\"
+              some: Node2Where
+            }
+
             input Node2UpdateInput {
               relatedTo: [Node2RelatedToUpdateFieldInput!]
             }
@@ -471,7 +471,7 @@ describe("Sort", () => {
               AND: [Node2Where!]
               NOT: Node2Where
               OR: [Node2Where!]
-              relatedTo: Node2RelatedToRelationshipFilters
+              relatedTo: Node1RelationshipFilters
               relatedToAggregate: Node2RelatedToAggregateInput
               relatedToConnection: Node2RelatedToConnectionFilters
               \\"\\"\\"

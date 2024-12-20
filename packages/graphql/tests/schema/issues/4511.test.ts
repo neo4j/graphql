@@ -197,17 +197,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               node: Production!
             }
 
-            input CreatureMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input CreatureMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -221,6 +210,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: CreatureMoviesConnectionWhere
             }
 
+            input CreatureRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
+              all: CreatureWhere
+              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
+              none: CreatureWhere
+              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
+              single: CreatureWhere
+              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
+              some: CreatureWhere
+            }
+
             input CreatureUpdateInput {
               movies: [CreatureMoviesUpdateFieldInput!]
             }
@@ -229,7 +229,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
-              movies: CreatureMoviesRelationshipFilters
+              movies: ProductionRelationshipFilters
               moviesAggregate: CreatureMoviesAggregateInput
               moviesConnection: CreatureMoviesConnectionFilters
               \\"\\"\\"
@@ -409,17 +409,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               create: [MovieDirectorCreateFieldInput!]
             }
 
-            input MovieDirectorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
-              all: CreatureWhere
-              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
-              none: CreatureWhere
-              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
-              single: CreatureWhere
-              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
-              some: CreatureWhere
-            }
-
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -458,7 +447,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              director: MovieDirectorRelationshipFilters
+              director: CreatureRelationshipFilters
               directorAggregate: MovieDirectorAggregateInput
               directorConnection: MovieDirectorConnectionFilters
               \\"\\"\\"
@@ -619,17 +608,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               create: [PersonMoviesCreateFieldInput!]
             }
 
-            input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -660,7 +638,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              movies: PersonMoviesRelationshipFilters
+              movies: ProductionRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
@@ -784,17 +762,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               node: Creature!
             }
 
-            input ProductionDirectorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
-              all: CreatureWhere
-              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
-              none: CreatureWhere
-              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
-              single: CreatureWhere
-              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
-              some: CreatureWhere
-            }
-
             input ProductionDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -822,6 +789,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -839,7 +817,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              director: ProductionDirectorRelationshipFilters
+              director: CreatureRelationshipFilters
               directorAggregate: ProductionDirectorAggregateInput
               directorConnection: ProductionDirectorConnectionFilters
               \\"\\"\\"
@@ -1010,17 +988,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               create: [SeriesDirectorCreateFieldInput!]
             }
 
-            input SeriesDirectorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
-              all: CreatureWhere
-              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
-              none: CreatureWhere
-              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
-              single: CreatureWhere
-              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
-              some: CreatureWhere
-            }
-
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
             }
@@ -1102,7 +1069,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              director: SeriesDirectorRelationshipFilters
+              director: CreatureRelationshipFilters
               directorAggregate: SeriesDirectorAggregateInput
               directorConnection: SeriesDirectorConnectionFilters
               \\"\\"\\"

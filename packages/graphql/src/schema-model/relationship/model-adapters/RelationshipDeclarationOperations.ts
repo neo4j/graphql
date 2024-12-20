@@ -38,7 +38,7 @@ export class RelationshipDeclarationOperations extends RelationshipBaseOperation
     }
 
     public get relationshipFiltersTypeName(): string {
-        return `${this.prefixForTypename}RelationshipFilters`;
+        return `${this.relationship.target.name}RelationshipFilters`;
     }
 
     public get connectionFiltersTypeName(): string {

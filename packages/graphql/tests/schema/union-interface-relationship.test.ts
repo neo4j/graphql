@@ -327,17 +327,6 @@ describe("Union Interface Relationships", () => {
               properties: ActedIn!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -350,6 +339,17 @@ describe("Union Interface Relationships", () => {
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             \\"\\"\\"
@@ -381,7 +381,7 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_LT: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lt: ... }\\")
               id_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lte: ... }\\")
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -495,6 +495,17 @@ describe("Union Interface Relationships", () => {
             }
 
             union Director = Actor | Person
+
+            input DirectorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Directors match this filter\\"\\"\\"
+              all: DirectorWhere
+              \\"\\"\\"Filter type where none of the related Directors match this filter\\"\\"\\"
+              none: DirectorWhere
+              \\"\\"\\"Filter type where one of the related Directors match this filter\\"\\"\\"
+              single: DirectorWhere
+              \\"\\"\\"Filter type where some of the related Directors match this filter\\"\\"\\"
+              some: DirectorWhere
+            }
 
             input DirectorWhere {
               Actor: ActorWhere
@@ -776,17 +787,6 @@ describe("Union Interface Relationships", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -987,17 +987,6 @@ describe("Union Interface Relationships", () => {
               properties: Directed!
             }
 
-            input MovieDirectorsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Directors match this filter\\"\\"\\"
-              all: DirectorWhere
-              \\"\\"\\"Filter type where none of the related Directors match this filter\\"\\"\\"
-              none: DirectorWhere
-              \\"\\"\\"Filter type where one of the related Directors match this filter\\"\\"\\"
-              single: DirectorWhere
-              \\"\\"\\"Filter type where some of the related Directors match this filter\\"\\"\\"
-              some: DirectorWhere
-            }
-
             input MovieDirectorsUpdateInput {
               Actor: [MovieDirectorsActorUpdateFieldInput!]
               Person: [MovieDirectorsPersonUpdateFieldInput!]
@@ -1012,6 +1001,17 @@ describe("Union Interface Relationships", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             type MovieReviewerReviewersAggregationSelection {
@@ -1158,17 +1158,6 @@ describe("Union Interface Relationships", () => {
               properties: Review!
             }
 
-            input MovieReviewersRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Reviewers match this filter\\"\\"\\"
-              all: ReviewerWhere
-              \\"\\"\\"Filter type where none of the related Reviewers match this filter\\"\\"\\"
-              none: ReviewerWhere
-              \\"\\"\\"Filter type where one of the related Reviewers match this filter\\"\\"\\"
-              single: ReviewerWhere
-              \\"\\"\\"Filter type where some of the related Reviewers match this filter\\"\\"\\"
-              some: ReviewerWhere
-            }
-
             input MovieReviewersUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: ReviewerUpdateInput
@@ -1207,7 +1196,7 @@ describe("Union Interface Relationships", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -1234,7 +1223,7 @@ describe("Union Interface Relationships", () => {
               actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
               actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
-              directors: MovieDirectorsRelationshipFilters
+              directors: DirectorRelationshipFilters
               directorsConnection: MovieDirectorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectorsConnections match this filter
@@ -1267,7 +1256,7 @@ describe("Union Interface Relationships", () => {
               imdbId_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter imdbId: { in: ... }\\")
               imdbId_LT: Int @deprecated(reason: \\"Please use the relevant generic filter imdbId: { lt: ... }\\")
               imdbId_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter imdbId: { lte: ... }\\")
-              reviewers: MovieReviewersRelationshipFilters
+              reviewers: ReviewerRelationshipFilters
               reviewersAggregate: MovieReviewersAggregateInput
               reviewersConnection: MovieReviewersConnectionFilters
               \\"\\"\\"
@@ -1526,17 +1515,6 @@ describe("Union Interface Relationships", () => {
               properties: Review!
             }
 
-            input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: MovieUpdateInput
@@ -1590,7 +1568,7 @@ describe("Union Interface Relationships", () => {
               id_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_LT: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lt: ... }\\")
               id_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lte: ... }\\")
-              movies: PersonMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
@@ -1750,6 +1728,17 @@ describe("Union Interface Relationships", () => {
             enum ReviewerImplementation {
               Influencer
               Person
+            }
+
+            input ReviewerRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Reviewers match this filter\\"\\"\\"
+              all: ReviewerWhere
+              \\"\\"\\"Filter type where none of the related Reviewers match this filter\\"\\"\\"
+              none: ReviewerWhere
+              \\"\\"\\"Filter type where one of the related Reviewers match this filter\\"\\"\\"
+              single: ReviewerWhere
+              \\"\\"\\"Filter type where some of the related Reviewers match this filter\\"\\"\\"
+              some: ReviewerWhere
             }
 
             \\"\\"\\"

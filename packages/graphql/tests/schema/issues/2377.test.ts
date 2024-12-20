@@ -378,17 +378,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               node: Resource!
             }
 
-            input ResourceContainedByRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Resources match this filter\\"\\"\\"
-              all: ResourceWhere
-              \\"\\"\\"Filter type where none of the related Resources match this filter\\"\\"\\"
-              none: ResourceWhere
-              \\"\\"\\"Filter type where one of the related Resources match this filter\\"\\"\\"
-              single: ResourceWhere
-              \\"\\"\\"Filter type where some of the related Resources match this filter\\"\\"\\"
-              some: ResourceWhere
-            }
-
             input ResourceContainedByUpdateConnectionInput {
               node: ResourceUpdateInput
             }
@@ -493,6 +482,17 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               typename_IN: [ResourceEntityImplementation!]
             }
 
+            input ResourceRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Resources match this filter\\"\\"\\"
+              all: ResourceWhere
+              \\"\\"\\"Filter type where none of the related Resources match this filter\\"\\"\\"
+              none: ResourceWhere
+              \\"\\"\\"Filter type where one of the related Resources match this filter\\"\\"\\"
+              single: ResourceWhere
+              \\"\\"\\"Filter type where some of the related Resources match this filter\\"\\"\\"
+              some: ResourceWhere
+            }
+
             type ResourceResourceContainedByAggregationSelection {
               count: Int!
               node: ResourceResourceContainedByNodeAggregateSelection
@@ -556,7 +556,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceWhere!]
               NOT: ResourceWhere
               OR: [ResourceWhere!]
-              containedBy: ResourceContainedByRelationshipFilters
+              containedBy: ResourceRelationshipFilters
               containedByAggregate: ResourceContainedByAggregateInput
               containedByConnection: ResourceContainedByConnectionFilters
               \\"\\"\\"

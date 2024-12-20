@@ -314,17 +314,6 @@ describe("Unions", () => {
               node: Search!
             }
 
-            input MovieSearchRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
-              all: SearchWhere
-              \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
-              none: SearchWhere
-              \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
-              single: SearchWhere
-              \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
-              some: SearchWhere
-            }
-
             input MovieSearchUpdateInput {
               Genre: [MovieSearchGenreUpdateFieldInput!]
               Movie: [MovieSearchMovieUpdateFieldInput!]
@@ -353,7 +342,7 @@ describe("Unions", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              search: MovieSearchRelationshipFilters
+              search: SearchRelationshipFilters
               searchConnection: MovieSearchConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieSearchConnections match this filter
@@ -415,6 +404,17 @@ describe("Unions", () => {
             }
 
             union Search = Genre | Movie
+
+            input SearchRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
+              all: SearchWhere
+              \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
+              none: SearchWhere
+              \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
+              single: SearchWhere
+              \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
+              some: SearchWhere
+            }
 
             input SearchWhere {
               Genre: GenreWhere

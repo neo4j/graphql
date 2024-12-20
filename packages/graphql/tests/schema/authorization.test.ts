@@ -237,17 +237,6 @@ describe("Authorization", () => {
               node: User!
             }
 
-            input PostAuthorRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -305,7 +294,7 @@ describe("Authorization", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              author: PostAuthorRelationshipFilters
+              author: UserRelationshipFilters
               authorAggregate: PostAuthorAggregateInput
               authorConnection: PostAuthorConnectionFilters
               \\"\\"\\"
@@ -555,17 +544,6 @@ describe("Authorization", () => {
               node: User!
             }
 
-            input UserPostsRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input UserPostsUpdateConnectionInput {
               node: UserUpdateInput
             }
@@ -577,6 +555,17 @@ describe("Authorization", () => {
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
               where: UserPostsConnectionWhere
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -620,7 +609,7 @@ describe("Authorization", () => {
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-              posts: UserPostsRelationshipFilters
+              posts: UserRelationshipFilters
               postsAggregate: UserPostsAggregateInput
               postsConnection: UserPostsConnectionFilters
               \\"\\"\\"

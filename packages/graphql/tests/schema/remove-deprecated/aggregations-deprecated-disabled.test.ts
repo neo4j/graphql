@@ -1138,17 +1138,6 @@ describe("Deprecated Aggregations disabled", () => {
               properties: Likes!
             }
 
-            input PostLikesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
@@ -1210,7 +1199,7 @@ describe("Deprecated Aggregations disabled", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              likes: PostLikesRelationshipFilters
+              likes: UserRelationshipFilters
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
@@ -1389,6 +1378,17 @@ describe("Deprecated Aggregations disabled", () => {
             type UserEdge {
               cursor: String!
               node: User!
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -2205,17 +2205,6 @@ describe("Deprecated Aggregations disabled", () => {
               properties: Likes!
             }
 
-            input PostLikesRelationshipFilters {
-              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
@@ -2264,7 +2253,7 @@ describe("Deprecated Aggregations disabled", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              likes: PostLikesRelationshipFilters
+              likes: UserRelationshipFilters
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
@@ -2455,6 +2444,17 @@ describe("Deprecated Aggregations disabled", () => {
             type UserEdge {
               cursor: String!
               node: User!
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
