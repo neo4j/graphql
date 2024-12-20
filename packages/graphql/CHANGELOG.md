@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 5.11.3
+
+### Patch Changes
+
+-   [#5890](https://github.com/neo4j/graphql/pull/5890) [`f7358d0`](https://github.com/neo4j/graphql/commit/f7358d0aee04775d74bd36933e411db4a4054a1e) Thanks [@Masadow](https://github.com/Masadow)! - Fixed a bug that appears when filtering on interface relationships
+
+-   [#5901](https://github.com/neo4j/graphql/pull/5901) [`06478b8`](https://github.com/neo4j/graphql/commit/06478b897f4f69bbcc68efc8f733e7c727ccdf55) Thanks [@a-alle](https://github.com/a-alle)! - Fix error message for wrong `requireAuthentication` argument on `@authorization` directive
+
 ## 5.11.2
 
 ### Patch Changes
