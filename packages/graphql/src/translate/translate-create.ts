@@ -64,11 +64,7 @@ export default async function translateCreate({
 
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
-            const varName = varNameStrs[index];
-            if (!varName) {
-                throw new Error("Expected varName to be defined");
-            }
-
+            const varName = varNameStrs[index] as string;
             const create = [`CALL {`];
             const withVars = [varName];
             projectionWith.push(varName);
@@ -84,6 +80,7 @@ export default async function translateCreate({
                 context,
                 varName,
                 withVars,
+                includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
                 callbackBucket,
             });
