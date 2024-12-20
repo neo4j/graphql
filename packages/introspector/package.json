@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/introspector",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
@@ -34,7 +34,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@neo4j/graphql": "^6.0.0",
+        "@neo4j/graphql": "^6.2.2",
         "@types/jest": "29.5.14",
         "@types/node": "22.9.2",
         "@types/pluralize": "0.0.33",

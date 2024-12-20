@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 6.2.2
+
+### Patch Changes
+
+-   [#5888](https://github.com/neo4j/graphql/pull/5888) [`3037bb9`](https://github.com/neo4j/graphql/commit/3037bb95fd029cdf74c0aaf5c5f85244da55ed26) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix discrepancy of relationship direction when filtering
+
+-   [#5869](https://github.com/neo4j/graphql/pull/5869) [`34725f6`](https://github.com/neo4j/graphql/commit/34725f68cd041975ffecc9145139cfc15ba8d83e) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecates `@private` directive. The private directive was aimed to be used in conjunction with the OGM, which is no longer supported.
+
+-   [#5888](https://github.com/neo4j/graphql/pull/5888) [`3037bb9`](https://github.com/neo4j/graphql/commit/3037bb95fd029cdf74c0aaf5c5f85244da55ed26) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix incorrect relationship direction when performing a delete operation nested under a delete operation
+
 ## 6.2.1
 
 ### Patch Changes

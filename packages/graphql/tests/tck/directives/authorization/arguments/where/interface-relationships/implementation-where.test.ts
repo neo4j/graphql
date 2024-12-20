@@ -449,7 +449,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	WHERE ($isAuthenticated = true AND size([(this_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0)
+            	WHERE ($isAuthenticated = true AND size([(this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub) | 1]) > 0)
             	SET this_content0.id = $this_update_content0_id_SET
             	RETURN count(*) AS update_this_content0
             }

@@ -1,5 +1,11 @@
 # @neo4j/introspector
 
+## 4.0.1
+
+### Patch Changes
+
+-   [#5886](https://github.com/neo4j/graphql/pull/5886) [`f234487`](https://github.com/neo4j/graphql/commit/f2344879babb23b7f7862e4569aaae9eecb2f0fe) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove limit on relationships introspection
+
 ## 4.0.0
 
 ### Major Changes

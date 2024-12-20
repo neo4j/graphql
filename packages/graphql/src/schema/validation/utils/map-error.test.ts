@@ -510,6 +510,31 @@ describe("mapError", () => {
                 'Unknown argument "wrongFilter" on directive "@authorization". Did you mean "filter"?'
             );
         });
+
+        test("unknown argument requireAuthentication on directive", () => {
+            const errorOpts = {
+                nodes: [argumentNode],
+                extensions: undefined,
+                path: undefined,
+                source: undefined,
+                positions: undefined,
+                originalError: undefined,
+            };
+
+            // TODO: replace constructor to use errorOpts when dropping support for GraphQL15
+            const error = new GraphQLError(
+                'Unknown argument "requireAuthentication" on directive "@UserAuthorization".',
+                errorOpts.nodes,
+                errorOpts.source,
+                errorOpts.positions,
+                errorOpts.path,
+                errorOpts.originalError,
+                errorOpts.extensions
+            );
+            const mappedError = mapError(error);
+            expect(mappedError).toHaveProperty("message");
+            expect(mappedError.message).toBe('Unknown argument "requireAuthentication" on directive "@authorization".');
+        });
     });
 
     describe("UniqueDirectivesPerLocationRule", () => {

@@ -150,6 +150,7 @@ function createDeleteAndParams({
                             },
                         ],
                         operations: ["DELETE"],
+                        indexPrefix: "delete",
                     });
 
                     if (authorizationAndParams) {
