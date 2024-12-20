@@ -175,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_transaction_connect0_node
-            			CREATE (this0)-[:ITEM_TRANSACTED]->(this0_transaction_connect0_node)
+            			MERGE (this0)-[:ITEM_TRANSACTED]->(this0_transaction_connect0_node)
             		}
             	}
             WITH this0, this0_transaction_connect0_node

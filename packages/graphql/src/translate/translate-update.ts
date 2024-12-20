@@ -29,6 +29,7 @@ import createConnectAndParams from "./create-connect-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
+import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import createUpdateAndParams from "./create-update-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
@@ -61,6 +62,7 @@ export default async function translateUpdate({
     const disconnectStrs: string[] = [];
     const createStrs: string[] = [];
     let deleteStr = "";
+    const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName);
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
     const matchPattern = new Cypher.Pattern(matchNode, { labels: node.getLabels(context) });
@@ -170,6 +172,7 @@ export default async function translateUpdate({
             parentVar: varName,
             withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
+            includeRelationshipValidation: false,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -234,6 +237,7 @@ export default async function translateUpdate({
                     withVars,
                     parentNode: node,
                     labelOverride: "",
+                    includeRelationshipValidation: !!assumeReconnecting,
                     source: "UPDATE",
                 });
                 connectStrs.push(connectAndParams[0]);
@@ -348,6 +352,7 @@ export default async function translateUpdate({
                         input: create.node,
                         varName: nodeName,
                         withVars: [...withVars, nodeName],
+                        includeRelationshipValidation: false,
                     });
                     createStrs.push(nestedCreate);
                     cypherParams = { ...cypherParams, ...params };
@@ -406,6 +411,8 @@ export default async function translateUpdate({
         ? Cypher.utils.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
+    const relationshipValidationStr = createRelationshipValidationString({ node, context, varName });
+
     const updateQuery = new Cypher.Raw((env) => {
         const cypher = [
             matchAndWhereStr,
@@ -423,6 +430,7 @@ export default async function translateUpdate({
                 ? [`WITH *`]
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
+            ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
             compileCypher(projectionStatements, env),
