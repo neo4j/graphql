@@ -100,12 +100,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("STARTS_WITH", async () => {
+    test("startsWith", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_STARTS_WITH: "Tom" } }) {
+                    actorsConnection(where: { node: { name: { startsWith: "Tom" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -147,12 +147,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("ENDS_WITH", async () => {
+    test("endsWith", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_ENDS_WITH: "Hanks" } }) {
+                    actorsConnection(where: { node: { name: { endsWith: "Hanks" } } }) {
                         edges {
                             properties {
                                 screenTime

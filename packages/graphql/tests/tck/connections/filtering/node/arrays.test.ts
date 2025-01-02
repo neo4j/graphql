@@ -102,7 +102,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { favouriteColours_INCLUDES: "Blue" } }) {
+                    actorsConnection(where: { node: { favouriteColours: { includes: "Blue" } } }) {
                         edges {
                             properties {
                                 screenTime

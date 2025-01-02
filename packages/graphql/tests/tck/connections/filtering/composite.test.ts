@@ -50,12 +50,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection(
                         where: {
-                            node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] }
-                            edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] }
+                            node: { AND: [{ firstName: { eq: "Tom" } }, { lastName: { eq: "Hanks" } }] }
+                            edge: { AND: [{ screenTime: { gt: 30 } }, { screenTime: { lt: 90 } }] }
                         }
                     ) {
                         edges {
@@ -114,12 +114,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite NOT", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection(
                         where: {
-                            node: { NOT: { firstName_EQ: "Tom", lastName_EQ: "Hanks" } }
-                            edge: { NOT: { screenTime_GT: 30, screenTime_LT: 90 } }
+                            node: { NOT: { firstName_EQ: "Tom", lastName: { eq: "Hanks" } } }
+                            edge: { NOT: { screenTime_GT: 30, screenTime: { lt: 90 } } }
                         }
                     ) {
                         edges {
@@ -178,13 +178,13 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite OR (edge and node)", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection(
                         where: {
                             OR: [
-                                { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }
-                                { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
+                                { node: { AND: [{ firstName: { eq: "Tom" } }, { lastName: { eq: "Hanks" } }] } }
+                                { edge: { AND: [{ screenTime: { gt: 30 } }, { screenTime: { lt: 90 } }] } }
                             ]
                         }
                     ) {
@@ -244,14 +244,14 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite NOT with nested OR (edge and node)", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection(
                         where: {
                             NOT: {
                                 OR: [
-                                    { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }
-                                    { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
+                                    { node: { AND: [{ firstName: { eq: "Tom" } }, { lastName: { eq: "Hanks" } }] } }
+                                    { edge: { AND: [{ screenTime: { gt: 30 } }, { screenTime: { lt: 90 } }] } }
                                 ]
                             }
                         }
@@ -312,7 +312,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
     test("Composite NOT with complex nested filters", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection(
                         where: {
@@ -320,11 +320,15 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                                 AND: [
                                     {
                                         OR: [
-                                            { node: { AND: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }
-                                            { edge: { AND: [{ screenTime_GT: 30 }, { screenTime_LT: 90 }] } }
+                                            {
+                                                node: {
+                                                    AND: [{ firstName: { eq: "Tom" } }, { lastName: { eq: "Hanks" } }]
+                                                }
+                                            }
+                                            { edge: { AND: [{ screenTime: { gt: 30 } }, { screenTime: { lt: 90 } }] } }
                                         ]
                                     }
-                                    { node: { AND: [{ firstName_EQ: "Tommy" }, { lastName_EQ: "Ford" }] } }
+                                    { node: { AND: [{ firstName: { eq: "Tommy" } }, { lastName: { eq: "Ford" } }] } }
                                 ]
                             }
                         }

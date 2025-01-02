@@ -49,16 +49,16 @@ describe("Mixed nesting", () => {
     test("Connection -> Relationship", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
-                    actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
+                    actorsConnection(where: { node: { name: { eq: "Tom Hanks" } } }) {
                         edges {
                             properties {
                                 screenTime
                             }
                             node {
                                 name
-                                movies(where: { NOT: { title_EQ: "Forrest Gump" } }) {
+                                movies(where: { NOT: { title: { eq: "Forrest Gump" } } }) {
                                     title
                                 }
                             }
@@ -109,20 +109,20 @@ describe("Mixed nesting", () => {
     test("Connection -> Connection -> Relationship", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
-                    actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
+                    actorsConnection(where: { node: { name: { eq: "Tom Hanks" } } }) {
                         edges {
                             properties {
                                 screenTime
                             }
                             node {
                                 name
-                                moviesConnection(where: { node: { NOT: { title_EQ: "Forrest Gump" } } }) {
+                                moviesConnection(where: { node: { NOT: { title: { eq: "Forrest Gump" } } } }) {
                                     edges {
                                         node {
                                             title
-                                            actors(where: { NOT: { name_EQ: "Tom Hanks" } }) {
+                                            actors(where: { NOT: { name: { eq: "Tom Hanks" } } }) {
                                                 name
                                             }
                                         }
@@ -191,11 +191,11 @@ describe("Mixed nesting", () => {
     test("Relationship -> Connection", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
-                    actors(where: { name_EQ: "Tom Hanks" }) {
+                    actors(where: { name: { eq: "Tom Hanks" } }) {
                         name
-                        moviesConnection(where: { node: { NOT: { title_EQ: "Forrest Gump" } } }) {
+                        moviesConnection(where: { node: { NOT: { title: { eq: "Forrest Gump" } } } }) {
                             edges {
                                 properties {
                                     screenTime

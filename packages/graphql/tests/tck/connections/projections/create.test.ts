@@ -173,7 +173,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                 createMovies(input: [{ title: "Forrest Gump" }, { title: "Toy Story" }]) {
                     movies {
                         title
-                        actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
+                        actorsConnection(where: { node: { name: { eq: "Tom Hanks" } } }) {
                             edges {
                                 properties {
                                     screenTime
