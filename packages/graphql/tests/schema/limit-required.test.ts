@@ -219,17 +219,6 @@ describe("limitRequired constructor option", () => {
               title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -387,17 +376,6 @@ describe("limitRequired constructor option", () => {
               title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -426,6 +404,17 @@ describe("limitRequired constructor option", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -447,7 +436,7 @@ describe("limitRequired constructor option", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -480,7 +469,7 @@ describe("limitRequired constructor option", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -737,17 +726,6 @@ describe("limitRequired constructor option", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -796,6 +774,17 @@ describe("limitRequired constructor option", () => {
               node: Movie!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -821,7 +810,7 @@ describe("limitRequired constructor option", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -1014,17 +1003,6 @@ describe("limitRequired constructor option", () => {
               properties: PersonActedInRelationshipProperties!
             }
 
-            input PersonActedInRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             union PersonActedInRelationshipProperties = ActedIn
 
             type PersonAggregateSelection {
@@ -1176,17 +1154,6 @@ describe("limitRequired constructor option", () => {
               properties: PersonMoviesRelationshipProperties!
             }
 
-            input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             union PersonMoviesRelationshipProperties = ActedIn
 
             \\"\\"\\"
@@ -1201,7 +1168,7 @@ describe("limitRequired constructor option", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              actedIn: PersonActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: PersonActedInAggregateInput
               actedInConnection: PersonActedInConnectionFilters
               \\"\\"\\"
@@ -1234,7 +1201,7 @@ describe("limitRequired constructor option", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: PersonMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
@@ -1297,6 +1264,17 @@ describe("limitRequired constructor option", () => {
             enum ProductionImplementation {
               Movie
               Series
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -1717,17 +1695,6 @@ describe("limitRequired constructor option", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
@@ -1851,17 +1818,6 @@ describe("limitRequired constructor option", () => {
             type ActorContactRelationship {
               cursor: String!
               node: Contact!
-            }
-
-            input ActorContactRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Contacts match this filter\\"\\"\\"
-              all: ContactWhere
-              \\"\\"\\"Return Actors where none of the related Contacts match this filter\\"\\"\\"
-              none: ContactWhere
-              \\"\\"\\"Return Actors where one of the related Contacts match this filter\\"\\"\\"
-              single: ContactWhere
-              \\"\\"\\"Return Actors where some of the related Contacts match this filter\\"\\"\\"
-              some: ContactWhere
             }
 
             input ActorContactTelephoneConnectFieldInput {
@@ -2077,17 +2033,6 @@ describe("limitRequired constructor option", () => {
               properties: ActedIn!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -2116,6 +2061,17 @@ describe("limitRequired constructor option", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -2138,7 +2094,7 @@ describe("limitRequired constructor option", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -2165,7 +2121,7 @@ describe("limitRequired constructor option", () => {
               actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
               actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
-              contact: ActorContactRelationshipFilters
+              contact: ContactRelationshipFilters
               contactConnection: ActorContactConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorContactConnections match this filter
@@ -2197,7 +2153,7 @@ describe("limitRequired constructor option", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -2239,6 +2195,17 @@ describe("limitRequired constructor option", () => {
             }
 
             union Contact = Email | Telephone
+
+            input ContactRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Contacts match this filter\\"\\"\\"
+              all: ContactWhere
+              \\"\\"\\"Filter type where none of the related Contacts match this filter\\"\\"\\"
+              none: ContactWhere
+              \\"\\"\\"Filter type where one of the related Contacts match this filter\\"\\"\\"
+              single: ContactWhere
+              \\"\\"\\"Filter type where some of the related Contacts match this filter\\"\\"\\"
+              some: ContactWhere
+            }
 
             input ContactWhere {
               Email: EmailWhere
@@ -2523,17 +2490,6 @@ describe("limitRequired constructor option", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -2582,6 +2538,17 @@ describe("limitRequired constructor option", () => {
               node: Movie!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -2607,7 +2574,7 @@ describe("limitRequired constructor option", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -2714,6 +2681,17 @@ describe("limitRequired constructor option", () => {
             enum ProductionImplementation {
               Movie
               Series
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -3231,17 +3209,6 @@ describe("limitRequired constructor option", () => {
               properties: ActedIn!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -3282,7 +3249,7 @@ describe("limitRequired constructor option", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -3452,6 +3419,17 @@ describe("limitRequired constructor option", () => {
             input MovieIndexWhere {
               node: MovieWhere
               score: FloatWhere
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -3843,17 +3821,6 @@ describe("limitRequired constructor option", () => {
               properties: ActedIn!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -3894,7 +3861,7 @@ describe("limitRequired constructor option", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -4064,6 +4031,17 @@ describe("limitRequired constructor option", () => {
             input MovieIndexWhere {
               node: MovieWhere
               score: FloatWhere
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"

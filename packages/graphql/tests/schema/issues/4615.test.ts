@@ -241,17 +241,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
-              all: ShowWhere
-              \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
-              none: ShowWhere
-              \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
-              single: ShowWhere
-              \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
-              some: ShowWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ShowUpdateInput
@@ -297,6 +286,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               node: Actor!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             type ActorShowActedInAggregationSelection {
               count: Int!
               edge: ActorShowActedInEdgeAggregateSelection
@@ -328,7 +328,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: ShowRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -559,17 +559,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -632,7 +621,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -815,17 +804,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input SeriesActorsRelationshipFilters {
-              \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -889,7 +867,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              actors: SeriesActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
@@ -1083,17 +1061,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               properties: ShowActorsRelationshipProperties!
             }
 
-            input ShowActorsRelationshipFilters {
-              \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             union ShowActorsRelationshipProperties = ActedIn
 
             input ShowActorsUpdateConnectionInput {
@@ -1146,6 +1113,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Series
             }
 
+            input ShowRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Shows match this filter\\"\\"\\"
+              all: ShowWhere
+              \\"\\"\\"Filter type where none of the related Shows match this filter\\"\\"\\"
+              none: ShowWhere
+              \\"\\"\\"Filter type where one of the related Shows match this filter\\"\\"\\"
+              single: ShowWhere
+              \\"\\"\\"Filter type where some of the related Shows match this filter\\"\\"\\"
+              some: ShowWhere
+            }
+
             \\"\\"\\"
             Fields to sort Shows by. The order in which sorts are applied is not guaranteed when specifying many fields in one ShowSort object.
             \\"\\"\\"
@@ -1163,7 +1141,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               AND: [ShowWhere!]
               NOT: ShowWhere
               OR: [ShowWhere!]
-              actors: ShowActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: ShowActorsAggregateInput
               actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"

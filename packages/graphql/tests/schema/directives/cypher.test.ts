@@ -112,6 +112,15 @@ describe("Cypher", () => {
                         columnName: "list_of_durations"
                     )
                 actor: Actor @cypher(statement: "MATCH (this)-[:ACTED_IN]->(a:Actor) RETURN a", columnName: "a")
+                actors_no_args: [Actor]
+                    @cypher(
+                        statement: """
+                        MATCH (a:Actor {title: $title})
+                        RETURN a
+                        LIMIT 1
+                        """
+                        columnName: "a"
+                    )
                 actors(title: String): [Actor]
                     @cypher(
                         statement: """
@@ -148,6 +157,17 @@ describe("Cypher", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             \\"\\"\\"
@@ -187,8 +207,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"BigInt list filters\\"\\"\\"
             input BigIntListFilters {
-              eq: [BigIntScalarFilters!]
-              includes: BigIntScalarFilters
+              eq: [BigInt!]
+              includes: BigInt
             }
 
             \\"\\"\\"BigInt filters\\"\\"\\"
@@ -203,7 +223,7 @@ describe("Cypher", () => {
 
             \\"\\"\\"Boolean list filters\\"\\"\\"
             input BooleanListFilters {
-              eq: [BooleanScalarFilters!]
+              eq: [Boolean!]
             }
 
             \\"\\"\\"Boolean filters\\"\\"\\"
@@ -253,8 +273,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"CartesianPoint list filters\\"\\"\\"
             input CartesianPointListFilters {
-              eq: [CartesianPointFilters!]
-              includes: CartesianPointFilters
+              eq: [CartesianPointInput!]
+              includes: CartesianPointInput
             }
 
             type CreateActorsMutationResponse {
@@ -280,8 +300,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"Date list filters\\"\\"\\"
             input DateListFilters {
-              eq: [DateScalarFilters!]
-              includes: DateScalarFilters
+              eq: [Date!]
+              includes: Date
             }
 
             \\"\\"\\"Date filters\\"\\"\\"
@@ -299,8 +319,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"DateTime list filters\\"\\"\\"
             input DateTimeListFilters {
-              eq: [DateTimeScalarFilters!]
-              includes: DateTimeScalarFilters
+              eq: [DateTime!]
+              includes: DateTime
             }
 
             \\"\\"\\"DateTime filters\\"\\"\\"
@@ -326,8 +346,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"Duration list filters\\"\\"\\"
             input DurationListFilters {
-              eq: [DurationScalarFilters!]
-              includes: DurationScalarFilters
+              eq: [Duration!]
+              includes: Duration
             }
 
             \\"\\"\\"Duration filters\\"\\"\\"
@@ -342,8 +362,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Float filters\\"\\"\\"
@@ -397,8 +417,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"LocalDateTime list filters\\"\\"\\"
             input LocalDateTimeListFilters {
-              eq: [LocalDateTimeScalarFilters!]
-              includes: LocalDateTimeScalarFilters
+              eq: [LocalDateTime!]
+              includes: LocalDateTime
             }
 
             \\"\\"\\"LocalDateTime filters\\"\\"\\"
@@ -418,8 +438,8 @@ describe("Cypher", () => {
 
             \\"\\"\\"LocalTime list filters\\"\\"\\"
             input LocalTimeListFilters {
-              eq: [LocalTimeScalarFilters!]
-              includes: LocalTimeScalarFilters
+              eq: [LocalTime!]
+              includes: LocalTime
             }
 
             \\"\\"\\"LocalTime filters\\"\\"\\"
@@ -435,6 +455,7 @@ describe("Cypher", () => {
             type Movie {
               actor: Actor
               actors(title: String): [Actor]
+              actors_no_args: [Actor]
               custom_big_int: BigInt
               custom_boolean: Boolean
               custom_cartesian_point: CartesianPoint
@@ -510,6 +531,11 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actor: ActorWhere
+              actors_no_args: ActorRelationshipFilters
+              actors_no_args_ALL: ActorWhere
+              actors_no_args_NONE: ActorWhere
+              actors_no_args_SINGLE: ActorWhere
+              actors_no_args_SOME: ActorWhere
               custom_big_int: BigIntScalarFilters
               custom_big_int_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { eq: ... }\\")
               custom_big_int_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter custom_big_int: { gt: ... }\\")
@@ -1132,6 +1158,7 @@ describe("Cypher", () => {
               NOT: BlogWhere
               OR: [BlogWhere!]
               post: PostWhere
+              posts: PostRelationshipFilters
               posts_ALL: PostWhere
               posts_NONE: PostWhere
               posts_SINGLE: PostWhere
@@ -1216,6 +1243,17 @@ describe("Cypher", () => {
             type PostEdge {
               cursor: String!
               node: Post!
+            }
+
+            input PostRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
             }
 
             \\"\\"\\"
@@ -1384,6 +1422,17 @@ describe("Cypher", () => {
               node: Actor!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -1401,6 +1450,7 @@ describe("Cypher", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movie: MovieWhere
+              movies: MovieRelationshipFilters
               movies_ALL: MovieWhere
               movies_NONE: MovieWhere
               movies_SINGLE: MovieWhere
@@ -1466,6 +1516,17 @@ describe("Cypher", () => {
               node: Movie!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input MovieUpdateInput {
               \\"\\"\\"
               Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
@@ -1478,6 +1539,7 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actor: ActorWhere
+              actors: ActorRelationshipFilters
               actors_ALL: ActorWhere
               actors_NONE: ActorWhere
               actors_SINGLE: ActorWhere
@@ -1671,6 +1733,17 @@ describe("Cypher", () => {
               node: Actor!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -1688,6 +1761,7 @@ describe("Cypher", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movie: MovieWhere
+              movies: MovieRelationshipFilters
               movies_ALL: MovieWhere
               movies_NONE: MovieWhere
               movies_SINGLE: MovieWhere
@@ -1753,6 +1827,17 @@ describe("Cypher", () => {
               node: Movie!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             input MovieUpdateInput {
               \\"\\"\\"
               Appears because this input type would be empty otherwise because this type is composed of just generated and/or relationship properties. See https://neo4j.com/docs/graphql-manual/current/troubleshooting/faqs/
@@ -1765,6 +1850,7 @@ describe("Cypher", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actor: ActorWhere
+              actors: ActorRelationshipFilters
               actors_ALL: ActorWhere
               actors_NONE: ActorWhere
               actors_SINGLE: ActorWhere

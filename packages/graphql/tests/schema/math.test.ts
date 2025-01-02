@@ -757,17 +757,6 @@ describe("Algebraic", () => {
               node: Movie!
             }
 
-            input DirectorDirectsRelationshipFilters {
-              \\"\\"\\"Return Directors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Directors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Directors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Directors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input DirectorDirectsUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -799,6 +788,17 @@ describe("Algebraic", () => {
               viewers: IntAggregateSelection!
             }
 
+            input DirectorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Directors match this filter\\"\\"\\"
+              all: DirectorWhere
+              \\"\\"\\"Filter type where none of the related Directors match this filter\\"\\"\\"
+              none: DirectorWhere
+              \\"\\"\\"Filter type where one of the related Directors match this filter\\"\\"\\"
+              single: DirectorWhere
+              \\"\\"\\"Filter type where some of the related Directors match this filter\\"\\"\\"
+              some: DirectorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Directors by. The order in which sorts are applied is not guaranteed when specifying many fields in one DirectorSort object.
             \\"\\"\\"
@@ -816,7 +816,7 @@ describe("Algebraic", () => {
               AND: [DirectorWhere!]
               NOT: DirectorWhere
               OR: [DirectorWhere!]
-              directs: DirectorDirectsRelationshipFilters
+              directs: MovieRelationshipFilters
               directsAggregate: DirectorDirectsAggregateInput
               directsConnection: DirectorDirectsConnectionFilters
               \\"\\"\\"
@@ -1044,17 +1044,6 @@ describe("Algebraic", () => {
               node: Director!
             }
 
-            input MovieDirectedByRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Directors match this filter\\"\\"\\"
-              all: DirectorWhere
-              \\"\\"\\"Return Movies where none of the related Directors match this filter\\"\\"\\"
-              none: DirectorWhere
-              \\"\\"\\"Return Movies where one of the related Directors match this filter\\"\\"\\"
-              single: DirectorWhere
-              \\"\\"\\"Return Movies where some of the related Directors match this filter\\"\\"\\"
-              some: DirectorWhere
-            }
-
             input MovieDirectedByUpdateConnectionInput {
               node: DirectorUpdateInput
             }
@@ -1086,6 +1075,17 @@ describe("Algebraic", () => {
               node: Movie!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -1108,7 +1108,7 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              directedBy: MovieDirectedByRelationshipFilters
+              directedBy: DirectorRelationshipFilters
               directedByAggregate: MovieDirectedByAggregateInput
               directedByConnection: MovieDirectedByConnectionFilters
               \\"\\"\\"
@@ -1417,7 +1417,7 @@ describe("Algebraic", () => {
               viewers_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter viewers: { in: ... }\\")
               viewers_LT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { lt: ... }\\")
               viewers_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { lte: ... }\\")
-              workers: MovieWorkersRelationshipFilters
+              workers: PersonRelationshipFilters
               workersAggregate: MovieWorkersAggregateInput
               workersConnection: MovieWorkersConnectionFilters
               \\"\\"\\"
@@ -1546,17 +1546,6 @@ describe("Algebraic", () => {
               node: Person!
             }
 
-            input MovieWorkersRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-              all: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-              none: PersonWhere
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-              single: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-              some: PersonWhere
-            }
-
             input MovieWorkersUpdateConnectionInput {
               node: PersonUpdateInput
             }
@@ -1646,6 +1635,17 @@ describe("Algebraic", () => {
               viewers: IntAggregateSelection!
             }
 
+            input PersonRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
+            }
+
             \\"\\"\\"
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
@@ -1669,7 +1669,7 @@ describe("Algebraic", () => {
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-              worksInProduction: PersonWorksInProductionRelationshipFilters
+              worksInProduction: ProductionRelationshipFilters
               worksInProductionAggregate: PersonWorksInProductionAggregateInput
               worksInProductionConnection: PersonWorksInProductionConnectionFilters
               \\"\\"\\"
@@ -1800,17 +1800,6 @@ describe("Algebraic", () => {
               node: Production!
             }
 
-            input PersonWorksInProductionRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
-              all: ProductionWhere
-              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
-              none: ProductionWhere
-              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
-              single: ProductionWhere
-              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
-              some: ProductionWhere
-            }
-
             input PersonWorksInProductionUpdateConnectionInput {
               node: ProductionUpdateInput
             }
@@ -1848,6 +1837,17 @@ describe("Algebraic", () => {
 
             enum ProductionImplementation {
               Movie
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -2244,17 +2244,6 @@ describe("Algebraic", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-              all: PersonWhere
-              \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-              none: PersonWhere
-              \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-              single: PersonWhere
-              \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-              some: PersonWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: PersonUpdateInput
@@ -2314,6 +2303,17 @@ describe("Algebraic", () => {
               name: StringAggregateSelection!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -2331,7 +2331,7 @@ describe("Algebraic", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: PersonRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -2508,17 +2508,6 @@ describe("Algebraic", () => {
               properties: ActedIn!
             }
 
-            input PersonActedInMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input PersonActedInMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -2578,6 +2567,17 @@ describe("Algebraic", () => {
               title: StringAggregateSelection!
             }
 
+            input PersonRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
+            }
+
             \\"\\"\\"
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
@@ -2595,7 +2595,7 @@ describe("Algebraic", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              actedInMovies: PersonActedInMoviesRelationshipFilters
+              actedInMovies: MovieRelationshipFilters
               actedInMoviesAggregate: PersonActedInMoviesAggregateInput
               actedInMoviesConnection: PersonActedInMoviesConnectionFilters
               \\"\\"\\"

@@ -188,17 +188,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               node: Movie!
             }
 
-            input Actor2MoviesRelationshipFilters {
-              \\"\\"\\"Return Actor2s where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actor2s where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actor2s where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actor2s where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input Actor2MoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -229,7 +218,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [Actor2Where!]
               NOT: Actor2Where
               OR: [Actor2Where!]
-              movies: Actor2MoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: Actor2MoviesAggregateInput
               moviesConnection: Actor2MoviesConnectionFilters
               \\"\\"\\"
@@ -395,17 +384,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               node: Movie!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -436,7 +414,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -558,6 +536,17 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"

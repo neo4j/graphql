@@ -252,6 +252,17 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -456,17 +467,6 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -516,7 +516,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -684,6 +684,17 @@ describe("@relationship directive, aggregate argument", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
+                }
+
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
                 }
 
                 \\"\\"\\"
@@ -901,17 +912,6 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -961,7 +961,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -1337,17 +1337,6 @@ describe("@relationship directive, aggregate argument", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -1397,7 +1386,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -1487,6 +1476,17 @@ describe("@relationship directive, aggregate argument", () => {
 
                     enum PersonImplementation {
                       Actor
+                    }
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
                     }
 
                     \\"\\"\\"
@@ -1843,17 +1843,6 @@ describe("@relationship directive, aggregate argument", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -1913,7 +1902,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -2003,6 +1992,17 @@ describe("@relationship directive, aggregate argument", () => {
 
                     enum PersonImplementation {
                       Actor
+                    }
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
                     }
 
                     \\"\\"\\"
@@ -2203,6 +2203,17 @@ describe("@relationship directive, aggregate argument", () => {
 
                     union CastMember = Actor | Person
 
+                    input CastMemberRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related CastMembers match this filter\\"\\"\\"
+                      all: CastMemberWhere
+                      \\"\\"\\"Filter type where none of the related CastMembers match this filter\\"\\"\\"
+                      none: CastMemberWhere
+                      \\"\\"\\"Filter type where one of the related CastMembers match this filter\\"\\"\\"
+                      single: CastMemberWhere
+                      \\"\\"\\"Filter type where some of the related CastMembers match this filter\\"\\"\\"
+                      some: CastMemberWhere
+                    }
+
                     input CastMemberWhere {
                       Actor: ActorWhere
                       Person: PersonWhere
@@ -2372,17 +2383,6 @@ describe("@relationship directive, aggregate argument", () => {
                       node: CastMember!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
-                      all: CastMemberWhere
-                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
-                      none: CastMemberWhere
-                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
-                      single: CastMemberWhere
-                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
-                      some: CastMemberWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Person: [MovieActorsPersonUpdateFieldInput!]
@@ -2424,7 +2424,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: CastMemberRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2696,6 +2696,17 @@ describe("@relationship directive, aggregate argument", () => {
 
                     union CastMember = Actor | Person
 
+                    input CastMemberRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related CastMembers match this filter\\"\\"\\"
+                      all: CastMemberWhere
+                      \\"\\"\\"Filter type where none of the related CastMembers match this filter\\"\\"\\"
+                      none: CastMemberWhere
+                      \\"\\"\\"Filter type where one of the related CastMembers match this filter\\"\\"\\"
+                      single: CastMemberWhere
+                      \\"\\"\\"Filter type where some of the related CastMembers match this filter\\"\\"\\"
+                      some: CastMemberWhere
+                    }
+
                     input CastMemberWhere {
                       Actor: ActorWhere
                       Person: PersonWhere
@@ -2865,17 +2876,6 @@ describe("@relationship directive, aggregate argument", () => {
                       node: CastMember!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
-                      all: CastMemberWhere
-                      \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
-                      none: CastMemberWhere
-                      \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
-                      single: CastMemberWhere
-                      \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
-                      some: CastMemberWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Person: [MovieActorsPersonUpdateFieldInput!]
@@ -2917,7 +2917,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: CastMemberRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter

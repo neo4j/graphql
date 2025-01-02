@@ -236,17 +236,6 @@ describe("Enums", () => {
               properties: ActedIn!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -259,6 +248,17 @@ describe("Enums", () => {
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             \\"\\"\\"
@@ -278,7 +278,7 @@ describe("Enums", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -486,17 +486,6 @@ describe("Enums", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -542,6 +531,17 @@ describe("Enums", () => {
               node: Movie!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -559,7 +559,7 @@ describe("Enums", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"

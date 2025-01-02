@@ -17,28 +17,19 @@
  * limitations under the License.
  */
 
-import neo4jDriver from "neo4j-driver";
+import { Time } from "neo4j-driver";
 import { generate } from "randomstring";
-import { parseLocalTime } from "../../../src/graphql/scalars/LocalTime";
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { parseTime } from "../../../../../src/graphql/scalars/Time";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("LocalTime - deprecated filters", () => {
+describe("Time - deprecated filters", () => {
     const testHelper = new TestHelper();
+
     let Movie: UniqueType;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         Movie = testHelper.createUniqueType("Movie");
-
-        const typeDefs = /* GraphQL */ `
-        type ${Movie} @node {
-            id: ID!
-            time: LocalTime
-            times: [LocalTime!]
-        }
-        `;
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
     afterEach(async () => {
@@ -46,11 +37,20 @@ describe("LocalTime - deprecated filters", () => {
     });
 
     test("should filter based on time equality", async () => {
+        const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    id: ID!
+                    time: Time!
+                }
+            `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
         const id = generate({ readable: false });
-        const date = new Date("2024-09-17T11:49:48.322Z");
-        const time = date.toISOString().split("T")[1]?.split("Z")[0];
-        const neo4jTime = neo4jDriver.types.LocalTime.fromStandardDate(date);
-        const parsedTime = parseLocalTime(time);
+        const date = new Date("2024-02-17T11:49:48.322Z");
+        const time = date.toISOString().split("T")[1];
+        const neo4jTime = Time.fromStandardDate(date);
+        const parsedTime = parseTime(time);
 
         await testHelper.executeCypher(
             `
@@ -61,7 +61,7 @@ describe("LocalTime - deprecated filters", () => {
         );
 
         const query = /* GraphQL */ `
-                    query ($time: LocalTime!) {
+                    query ($time: Time!) {
                         ${Movie.plural}(where: { time_EQ: $time }) {
                             id
                             time
@@ -69,46 +69,57 @@ describe("LocalTime - deprecated filters", () => {
                     }
                 `;
 
-        const graphqlResult = await testHelper.executeGraphQL(query, {
-            variableValues: { id, time },
-        });
+        const graphqlResult = await testHelper.executeGraphQL(query, { variableValues: { time } });
 
         expect(graphqlResult.errors).toBeFalsy();
 
         const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)[Movie.plural][0];
         expect(graphqlMovie).toBeDefined();
         expect(graphqlMovie.id).toEqual(id);
-        expect(parseLocalTime(graphqlMovie.time)).toStrictEqual(parsedTime);
+        expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
     });
-    test.each(["LT", "LTE", "GT", "GTE"])("should filter based on time comparison, for filter %s", async (filter) => {
+
+    test.each(["LT", "LTE", "GT", "GTE"])("should filter based on time comparison for filter: %s", async (filter) => {
+        const typeDefs = /* GraphQL */ `
+                        type ${Movie} @node {
+                            id: ID!
+                            time: Time!
+                        }
+                    `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
         const futureId = generate({ readable: false });
         const future = "13:00:00";
-        const parsedFuture = parseLocalTime(future);
-        const neo4jFuture = new neo4jDriver.types.LocalTime(
+        const parsedFuture = parseTime(future);
+        const neo4jFuture = new Time(
             parsedFuture.hour,
             parsedFuture.minute,
             parsedFuture.second,
-            parsedFuture.nanosecond
+            parsedFuture.nanosecond,
+            parsedFuture.timeZoneOffsetSeconds
         );
 
         const presentId = generate({ readable: false });
         const present = "12:00:00";
-        const parsedPresent = parseLocalTime(present);
-        const neo4jPresent = new neo4jDriver.types.LocalTime(
+        const parsedPresent = parseTime(present);
+        const neo4jPresent = new Time(
             parsedPresent.hour,
             parsedPresent.minute,
             parsedPresent.second,
-            parsedPresent.nanosecond
+            parsedPresent.nanosecond,
+            parsedPresent.timeZoneOffsetSeconds
         );
 
         const pastId = generate({ readable: false });
         const past = "11:00:00";
-        const parsedPast = parseLocalTime(past);
-        const neo4jPast = new neo4jDriver.types.LocalTime(
+        const parsedPast = parseTime(past);
+        const neo4jPast = new Time(
             parsedPast.hour,
             parsedPast.minute,
             parsedPast.second,
-            parsedPast.nanosecond
+            parsedPast.nanosecond,
+            parsedPast.timeZoneOffsetSeconds
         );
 
         await testHelper.executeCypher(
@@ -128,13 +139,16 @@ describe("LocalTime - deprecated filters", () => {
         );
 
         const query = /* GraphQL */ `
-                            query ($where: ${Movie.name}Where!) {
-                                ${Movie.plural}(where: $where, sort: [{ time: ASC }]) {
-                                    id
-                                    time
-                                }
-                            }
-                        `;
+                    query ($where: ${Movie.name}Where!) {
+                        ${Movie.plural}(
+                            where: $where
+                            sort: [{ time: ASC }]
+                        ) {
+                            id
+                            time
+                        }
+                    }
+                `;
 
         const graphqlResult = await testHelper.executeGraphQL(query, {
             variableValues: {
@@ -151,31 +165,31 @@ describe("LocalTime - deprecated filters", () => {
         if (filter === "LT") {
             expect(graphqlMovies).toHaveLength(1);
             expect(graphqlMovies[0]?.id).toBe(pastId);
-            expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
+            expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
         }
 
         if (filter === "LTE") {
             expect(graphqlMovies).toHaveLength(2);
             expect(graphqlMovies[0]?.id).toBe(pastId);
-            expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
+            expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
 
             expect(graphqlMovies[1]?.id).toBe(presentId);
-            expect(parseLocalTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
+            expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
         }
 
         if (filter === "GT") {
             expect(graphqlMovies).toHaveLength(1);
             expect(graphqlMovies[0]?.id).toBe(futureId);
-            expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedFuture);
+            expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedFuture);
         }
 
         if (filter === "GTE") {
             expect(graphqlMovies).toHaveLength(2);
             expect(graphqlMovies[0]?.id).toBe(presentId);
-            expect(parseLocalTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPresent);
+            expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPresent);
 
             expect(graphqlMovies[1]?.id).toBe(futureId);
-            expect(parseLocalTime(graphqlMovies[1]?.time)).toStrictEqual(parsedFuture);
+            expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedFuture);
         }
         /* eslint-enable jest/no-conditional-expect */
     });

@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("[Point] - deprecated filter", () => {
+describe("[Point] - deprecated filter - deprecated", () => {
     const testHelper = new TestHelper();
     let Route: UniqueType;
 

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("cypher directive filtering - Scalar - deprecated", () => {
     let CustomType: UniqueType;

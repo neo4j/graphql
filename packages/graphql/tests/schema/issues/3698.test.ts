@@ -309,17 +309,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: IProduct!
             }
 
-            input GenreProductRelationshipFilters {
-              \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
-              all: IProductWhere
-              \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
-              none: IProductWhere
-              \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
-              single: IProductWhere
-              \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
-              some: IProductWhere
-            }
-
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
             }
@@ -331,6 +320,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
               where: GenreProductConnectionWhere
+            }
+
+            input GenreRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere
             }
 
             \\"\\"\\"
@@ -375,7 +375,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-              product: GenreProductRelationshipFilters
+              product: IProductRelationshipFilters
               productAggregate: GenreProductAggregateInput
               productConnection: GenreProductConnectionFilters
               \\"\\"\\"
@@ -439,6 +439,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             enum IProductImplementation {
               Movie
+            }
+
+            input IProductRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related IProducts match this filter\\"\\"\\"
+              all: IProductWhere
+              \\"\\"\\"Filter type where none of the related IProducts match this filter\\"\\"\\"
+              none: IProductWhere
+              \\"\\"\\"Filter type where one of the related IProducts match this filter\\"\\"\\"
+              single: IProductWhere
+              \\"\\"\\"Filter type where some of the related IProducts match this filter\\"\\"\\"
+              some: IProductWhere
             }
 
             \\"\\"\\"
@@ -656,17 +667,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               node: Genre!
             }
 
-            input MovieGenreRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-              all: GenreWhere
-              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-              none: GenreWhere
-              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-              single: GenreWhere
-              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-              some: GenreWhere
-            }
-
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -725,7 +725,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              genre: MovieGenreRelationshipFilters
+              genre: GenreRelationshipFilters
               genreAggregate: MovieGenreAggregateInput
               genreConnection: MovieGenreConnectionFilters
               \\"\\"\\"

@@ -431,17 +431,6 @@ describe("lower case type names", () => {
               node: movie!
             }
 
-            input actorMoviesRelationshipFilters {
-              \\"\\"\\"Return actors where all of the related movies match this filter\\"\\"\\"
-              all: movieWhere
-              \\"\\"\\"Return actors where none of the related movies match this filter\\"\\"\\"
-              none: movieWhere
-              \\"\\"\\"Return actors where one of the related movies match this filter\\"\\"\\"
-              single: movieWhere
-              \\"\\"\\"Return actors where some of the related movies match this filter\\"\\"\\"
-              some: movieWhere
-            }
-
             input actorMoviesUpdateConnectionInput {
               node: movieUpdateInput
             }
@@ -453,6 +442,17 @@ describe("lower case type names", () => {
               disconnect: [actorMoviesDisconnectFieldInput!]
               update: actorMoviesUpdateConnectionInput
               where: actorMoviesConnectionWhere
+            }
+
+            input actorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related actors match this filter\\"\\"\\"
+              all: actorWhere
+              \\"\\"\\"Filter type where none of the related actors match this filter\\"\\"\\"
+              none: actorWhere
+              \\"\\"\\"Filter type where one of the related actors match this filter\\"\\"\\"
+              single: actorWhere
+              \\"\\"\\"Filter type where some of the related actors match this filter\\"\\"\\"
+              some: actorWhere
             }
 
             \\"\\"\\"
@@ -487,7 +487,7 @@ describe("lower case type names", () => {
               createdAt_IN: [DateTime] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
               createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
               createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
-              movies: actorMoviesRelationshipFilters
+              movies: movieRelationshipFilters
               moviesAggregate: actorMoviesAggregateInput
               moviesConnection: actorMoviesConnectionFilters
               \\"\\"\\"
@@ -683,17 +683,6 @@ describe("lower case type names", () => {
               node: actor!
             }
 
-            input movieActorsRelationshipFilters {
-              \\"\\"\\"Return movies where all of the related actors match this filter\\"\\"\\"
-              all: actorWhere
-              \\"\\"\\"Return movies where none of the related actors match this filter\\"\\"\\"
-              none: actorWhere
-              \\"\\"\\"Return movies where one of the related actors match this filter\\"\\"\\"
-              single: actorWhere
-              \\"\\"\\"Return movies where some of the related actors match this filter\\"\\"\\"
-              some: actorWhere
-            }
-
             input movieActorsUpdateConnectionInput {
               node: actorUpdateInput
             }
@@ -744,6 +733,17 @@ describe("lower case type names", () => {
               node: movie!
             }
 
+            input movieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related movies match this filter\\"\\"\\"
+              all: movieWhere
+              \\"\\"\\"Filter type where none of the related movies match this filter\\"\\"\\"
+              none: movieWhere
+              \\"\\"\\"Filter type where one of the related movies match this filter\\"\\"\\"
+              single: movieWhere
+              \\"\\"\\"Filter type where some of the related movies match this filter\\"\\"\\"
+              some: movieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one movieSort object.
             \\"\\"\\"
@@ -772,7 +772,7 @@ describe("lower case type names", () => {
               AND: [movieWhere!]
               NOT: movieWhere
               OR: [movieWhere!]
-              actors: movieActorsRelationshipFilters
+              actors: actorRelationshipFilters
               actorsAggregate: movieActorsAggregateInput
               actorsConnection: movieActorsConnectionFilters
               \\"\\"\\"

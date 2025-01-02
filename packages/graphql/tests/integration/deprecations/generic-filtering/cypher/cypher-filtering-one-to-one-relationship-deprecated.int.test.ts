@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("cypher directive filtering - One To One Relationship - deprecated", () => {
     const testHelper = new TestHelper();

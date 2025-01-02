@@ -338,19 +338,19 @@ describe("162", () => {
 
             input TigerJawLevel2Part1RelationshipFilters {
               \\"\\"\\"
-              Return TigerJawLevel2s where all of the related TigerJawLevel2Part1s match this filter
+              Filter type where all of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               all: TigerJawLevel2Part1Where
               \\"\\"\\"
-              Return TigerJawLevel2s where none of the related TigerJawLevel2Part1s match this filter
+              Filter type where none of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               none: TigerJawLevel2Part1Where
               \\"\\"\\"
-              Return TigerJawLevel2s where one of the related TigerJawLevel2Part1s match this filter
+              Filter type where one of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               single: TigerJawLevel2Part1Where
               \\"\\"\\"
-              Return TigerJawLevel2s where some of the related TigerJawLevel2Part1s match this filter
+              Filter type where some of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
               some: TigerJawLevel2Part1Where
             }
@@ -464,25 +464,6 @@ describe("162", () => {
               node: Tiger!
             }
 
-            input TigerJawLevel2Part1TigerRelationshipFilters {
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where all of the related Tigers match this filter
-              \\"\\"\\"
-              all: TigerWhere
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where none of the related Tigers match this filter
-              \\"\\"\\"
-              none: TigerWhere
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where one of the related Tigers match this filter
-              \\"\\"\\"
-              single: TigerWhere
-              \\"\\"\\"
-              Return TigerJawLevel2Part1s where some of the related Tigers match this filter
-              \\"\\"\\"
-              some: TigerWhere
-            }
-
             type TigerJawLevel2Part1TigerTigerAggregationSelection {
               count: Int!
               node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
@@ -534,7 +515,7 @@ describe("162", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              tiger: TigerJawLevel2Part1TigerRelationshipFilters
+              tiger: TigerRelationshipFilters
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
               tigerConnection: TigerJawLevel2Part1TigerConnectionFilters
               \\"\\"\\"
@@ -645,6 +626,17 @@ describe("162", () => {
               edges: [TigerJawLevel2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input TigerRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Tigers match this filter\\"\\"\\"
+              all: TigerWhere
+              \\"\\"\\"Filter type where none of the related Tigers match this filter\\"\\"\\"
+              none: TigerWhere
+              \\"\\"\\"Filter type where one of the related Tigers match this filter\\"\\"\\"
+              single: TigerWhere
+              \\"\\"\\"Filter type where some of the related Tigers match this filter\\"\\"\\"
+              some: TigerWhere
             }
 
             \\"\\"\\"

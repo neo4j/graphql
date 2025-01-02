@@ -299,17 +299,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               node: Movie!
             }
 
-            input GenreMoviesRelationshipFilters {
-              \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -321,6 +310,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
               where: GenreMoviesConnectionWhere
+            }
+
+            input GenreRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere @deprecated(reason: \\"Do not use genre\\")
             }
 
             \\"\\"\\"
@@ -340,7 +340,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              movies: GenreMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: GenreMoviesAggregateInput
               moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
@@ -566,17 +566,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               node: Genre!
             }
 
-            input MovieGenresRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-              all: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-              none: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-              single: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-              some: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-            }
-
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
             }
@@ -588,6 +577,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               disconnect: [MovieGenresDisconnectFieldInput!]
               update: MovieGenresUpdateConnectionInput
               where: MovieGenresConnectionWhere
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -619,7 +619,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              genres: MovieGenresRelationshipFilters
+              genres: GenreRelationshipFilters
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use genre\\")
               genresConnection: MovieGenresConnectionFilters
               \\"\\"\\"

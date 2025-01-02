@@ -245,17 +245,6 @@ describe("nested aggregation on interface", () => {
               properties: ActedIn!
             }
 
-            input ActorActedInRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
@@ -322,7 +311,7 @@ describe("nested aggregation on interface", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              actedIn: ActorActedInRelationshipFilters
+              actedIn: MovieRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
@@ -481,6 +470,17 @@ describe("nested aggregation on interface", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"

@@ -1392,17 +1392,6 @@ describe("Aggregations", () => {
               properties: Likes!
             }
 
-            input PostLikesRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
@@ -1464,7 +1453,7 @@ describe("Aggregations", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              likes: PostLikesRelationshipFilters
+              likes: UserRelationshipFilters
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
@@ -1643,6 +1632,17 @@ describe("Aggregations", () => {
             type UserEdge {
               cursor: String!
               node: User!
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -1830,8 +1830,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"BigInt list filters\\"\\"\\"
             input BigIntListFilters {
-              eq: [BigIntScalarFilters!]
-              includes: BigIntScalarFilters
+              eq: [BigInt!]
+              includes: BigInt
             }
 
             \\"\\"\\"Filters for an aggregation of an BigInt field\\"\\"\\"
@@ -1887,8 +1887,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"DateTime list filters\\"\\"\\"
             input DateTimeListFilters {
-              eq: [DateTimeScalarFilters!]
-              includes: DateTimeScalarFilters
+              eq: [DateTime!]
+              includes: DateTime
             }
 
             \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
@@ -1930,8 +1930,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Duration list filters\\"\\"\\"
             input DurationListFilters {
-              eq: [DurationScalarFilters!]
-              includes: DurationScalarFilters
+              eq: [Duration!]
+              includes: Duration
             }
 
             \\"\\"\\"Filters for an aggregation of a Dutation input field\\"\\"\\"
@@ -1965,8 +1965,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
@@ -2256,8 +2256,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"LocalDateTime list filters\\"\\"\\"
             input LocalDateTimeListFilters {
-              eq: [LocalDateTimeScalarFilters!]
-              includes: LocalDateTimeScalarFilters
+              eq: [LocalDateTime!]
+              includes: LocalDateTime
             }
 
             \\"\\"\\"Filters for an aggregation of an LocalDateTime input field\\"\\"\\"
@@ -2293,8 +2293,8 @@ describe("Aggregations", () => {
 
             \\"\\"\\"LocalTime list filters\\"\\"\\"
             input LocalTimeListFilters {
-              eq: [LocalTimeScalarFilters!]
-              includes: LocalTimeScalarFilters
+              eq: [LocalTime!]
+              includes: LocalTime
             }
 
             \\"\\"\\"Filters for an aggregation of an LocalTime input field\\"\\"\\"
@@ -2586,17 +2586,6 @@ describe("Aggregations", () => {
               properties: Likes!
             }
 
-            input PostLikesRelationshipFilters {
-              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              all: UserWhere
-              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              none: UserWhere
-              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              single: UserWhere
-              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              some: UserWhere
-            }
-
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
@@ -2645,7 +2634,7 @@ describe("Aggregations", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              likes: PostLikesRelationshipFilters
+              likes: UserRelationshipFilters
               likesAggregate: PostLikesAggregateInput
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
@@ -2836,6 +2825,17 @@ describe("Aggregations", () => {
             type UserEdge {
               cursor: String!
               node: User!
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"

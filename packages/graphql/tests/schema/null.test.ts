@@ -52,12 +52,7 @@ describe("Null", () => {
 
             \\"\\"\\"Boolean list filters\\"\\"\\"
             input BooleanListFilters {
-              eq: [BooleanScalarFilters!]
-            }
-
-            \\"\\"\\"Boolean filters\\"\\"\\"
-            input BooleanScalarFilters {
-              eq: Boolean
+              eq: [Boolean!]
             }
 
             \\"\\"\\"
@@ -83,8 +78,8 @@ describe("Null", () => {
 
             \\"\\"\\"DateTime list filters\\"\\"\\"
             input DateTimeListFilters {
-              eq: [DateTimeScalarFilters!]
-              includes: DateTimeScalarFilters
+              eq: [DateTime!]
+              includes: DateTime
             }
 
             \\"\\"\\"DateTime filters\\"\\"\\"
@@ -119,8 +114,8 @@ describe("Null", () => {
 
             \\"\\"\\"Float list filters\\"\\"\\"
             input FloatListFilters {
-              eq: [FloatScalarFilters!]
-              includes: FloatScalarFilters
+              eq: [Float!]
+              includes: Float
             }
 
             \\"\\"\\"Float filters\\"\\"\\"

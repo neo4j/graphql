@@ -36,11 +36,11 @@ describe("cypher directive filtering - Scalar", () => {
     test.each([
         {
             title: "Int cypher field: exact match",
-            filter: `special_count: {eq: 1}`,
+            filter: `special_count: { eq: 1 }`,
         },
         {
             title: "Int cypher field: GT",
-            filter: `special_count: { gt: 0}`,
+            filter: `special_count: { gt: 0 }`,
         },
         {
             title: "Int cypher field: GTE",
@@ -184,7 +184,7 @@ describe("cypher directive filtering - Scalar", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { special_count_GTE: 1, title_EQ: "CustomType One" }) {
+                ${CustomType.plural}(where: { special_count: { gte: 1 }, title: { eq: "CustomType One"} }) {
                     special_count
                 }
             }

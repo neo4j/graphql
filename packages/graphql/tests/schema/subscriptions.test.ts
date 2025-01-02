@@ -91,6 +91,17 @@ describe("Subscriptions", () => {
               name: String!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -364,17 +375,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
             }
@@ -504,7 +504,7 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
               actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
               actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -857,17 +857,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -879,6 +868,17 @@ describe("Subscriptions", () => {
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input ActorUpdateInput {
@@ -894,7 +894,7 @@ describe("Subscriptions", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -1140,17 +1140,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
             }
@@ -1216,6 +1205,17 @@ describe("Subscriptions", () => {
               averageRating: Float
               id: ID
               isActive: Boolean
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -1292,7 +1292,7 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
               actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
               actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -1444,6 +1444,17 @@ describe("Subscriptions", () => {
             }
 
             union Actor = Person | Star
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
 
             input ActorWhere {
               Person: PersonWhere
@@ -1687,17 +1698,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsStarConnectFieldInput {
               connect: [StarConnectInput!]
               where: StarConnectWhere
@@ -1801,6 +1801,17 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -1875,7 +1886,7 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
               actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
               actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -2131,17 +2142,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -2168,7 +2168,7 @@ describe("Subscriptions", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              movies: PersonMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
@@ -2399,17 +2399,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input StarMoviesRelationshipFilters {
-              \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -2436,7 +2425,7 @@ describe("Subscriptions", () => {
               AND: [StarWhere!]
               NOT: StarWhere
               OR: [StarWhere!]
-              movies: StarMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: StarMoviesAggregateInput
               moviesConnection: StarMoviesConnectionFilters
               \\"\\"\\"
@@ -2789,17 +2778,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input ActorMoviesRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -2811,6 +2789,17 @@ describe("Subscriptions", () => {
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
               where: ActorMoviesConnectionWhere
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input ActorUpdateInput {
@@ -2826,7 +2815,7 @@ describe("Subscriptions", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              movies: ActorMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: ActorMoviesAggregateInput
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
@@ -3086,17 +3075,6 @@ describe("Subscriptions", () => {
               properties: ActedIn!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
@@ -3163,6 +3141,17 @@ describe("Subscriptions", () => {
               averageRating: Float
               id: ID
               isActive: Boolean
+            }
+
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -3239,7 +3228,7 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
               actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
               actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -3419,6 +3408,17 @@ describe("Subscriptions", () => {
 
             type ActorEventPayload {
               name: String!
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             \\"\\"\\"
@@ -3694,17 +3694,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
             }
@@ -3780,7 +3769,7 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
               actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
               actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
@@ -3955,6 +3944,17 @@ describe("Subscriptions", () => {
             }
 
             union Actor = Person | Star
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
 
             input ActorWhere {
               Person: PersonWhere
@@ -4198,17 +4198,6 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
-            input MovieActorsRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              all: ActorWhere
-              \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              none: ActorWhere
-              \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              single: ActorWhere
-              \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              some: ActorWhere
-            }
-
             input MovieActorsStarConnectFieldInput {
               connect: [StarConnectInput!]
               where: StarConnectWhere
@@ -4312,6 +4301,17 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -4386,7 +4386,7 @@ describe("Subscriptions", () => {
               actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
               actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
               actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              actors: MovieActorsRelationshipFilters
+              actors: ActorRelationshipFilters
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -4642,17 +4642,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input PersonMoviesRelationshipFilters {
-              \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -4679,7 +4668,7 @@ describe("Subscriptions", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              movies: PersonMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: PersonMoviesAggregateInput
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
@@ -4900,17 +4889,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input StarMoviesRelationshipFilters {
-              \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -4932,7 +4910,7 @@ describe("Subscriptions", () => {
               AND: [StarWhere!]
               NOT: StarWhere
               OR: [StarWhere!]
-              movies: StarMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: StarMoviesAggregateInput
               moviesConnection: StarMoviesConnectionFilters
               \\"\\"\\"

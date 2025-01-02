@@ -533,15 +533,6 @@ describe("Point", () => {
               mutation: Mutation
             }
 
-            \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
-            input CartesianDistancePointFilters {
-              from: CartesianPointInput!
-              gt: Float
-              gte: Float
-              lt: Float
-              lte: Float
-            }
-
             \\"\\"\\"
             A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
             \\"\\"\\"
@@ -553,13 +544,6 @@ describe("Point", () => {
               z: Float
             }
 
-            \\"\\"\\"Cartesian Point filters\\"\\"\\"
-            input CartesianPointFilters {
-              distance: CartesianDistancePointFilters
-              eq: CartesianPointInput
-              in: [CartesianPointInput!]
-            }
-
             \\"\\"\\"Input type for a cartesian point\\"\\"\\"
             input CartesianPointInput {
               x: Float!
@@ -569,8 +553,8 @@ describe("Point", () => {
 
             \\"\\"\\"CartesianPoint list filters\\"\\"\\"
             input CartesianPointListFilters {
-              eq: [CartesianPointFilters!]
-              includes: CartesianPointFilters
+              eq: [CartesianPointInput!]
+              includes: CartesianPointInput
             }
 
             \\"\\"\\"

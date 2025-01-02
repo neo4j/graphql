@@ -187,17 +187,6 @@ describe("Interfaces", () => {
               create: [MovieMoviesCreateFieldInput!]
             }
 
-            input MovieMoviesRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input MovieMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -294,17 +283,6 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            input MovieNodeMoviesRelationshipFilters {
-              \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             \\"\\"\\"
             Fields to sort MovieNodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieNodeSort object.
             \\"\\"\\"
@@ -322,7 +300,7 @@ describe("Interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: MovieNodeMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: MovieNodeMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
@@ -358,6 +336,17 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -375,6 +364,7 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              customQuery: MovieRelationshipFilters
               customQuery_ALL: MovieWhere
               customQuery_NONE: MovieWhere
               customQuery_SINGLE: MovieWhere
@@ -385,7 +375,7 @@ describe("Interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: MovieMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
@@ -635,17 +625,6 @@ describe("Interfaces", () => {
               create: [MovieMoviesCreateFieldInput!]
             }
 
-            input MovieMoviesRelationshipFilters {
-              \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             input MovieMoviesUpdateConnectionInput {
               node: MovieUpdateInput
             }
@@ -742,17 +721,6 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            input MovieNodeMoviesRelationshipFilters {
-              \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
-              all: MovieWhere
-              \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
-              none: MovieWhere
-              \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
-              single: MovieWhere
-              \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
-              some: MovieWhere
-            }
-
             \\"\\"\\"
             Fields to sort MovieNodes by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieNodeSort object.
             \\"\\"\\"
@@ -770,7 +738,7 @@ describe("Interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: MovieNodeMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: MovieNodeMoviesAggregateInput
               moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
@@ -806,6 +774,17 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -823,6 +802,7 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              customQuery: MovieRelationshipFilters
               customQuery_ALL: MovieWhere
               customQuery_NONE: MovieWhere
               customQuery_SINGLE: MovieWhere
@@ -833,7 +813,7 @@ describe("Interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              movies: MovieMoviesRelationshipFilters
+              movies: MovieRelationshipFilters
               moviesAggregate: MovieMoviesAggregateInput
               moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"

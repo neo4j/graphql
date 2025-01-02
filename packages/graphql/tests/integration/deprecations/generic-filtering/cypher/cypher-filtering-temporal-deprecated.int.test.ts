@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering - Temporal", () => {
+describe("cypher directive filtering - Temporal - deprecated", () => {
     let CustomType: UniqueType;
 
     const testHelper = new TestHelper();
@@ -62,7 +62,7 @@ describe("cypher directive filtering - Temporal", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_time: { gt: "2024-09-02T00:00:00Z"}
+                        special_time_GT: "2024-09-02T00:00:00Z"
                     }
                 ) {
                     special_time
@@ -116,7 +116,7 @@ describe("cypher directive filtering - Temporal", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_duration: { eq: "P14DT16H12M" }
+                        special_duration_EQ: "P14DT16H12M"
                     }
                 ) {
                     title
@@ -165,7 +165,7 @@ describe("cypher directive filtering - Temporal", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_duration: { lt: "P14DT16H13M" }
+                        special_duration_LT: "P14DT16H13M"
                     }
                 ) {
                     title
@@ -217,7 +217,7 @@ describe("cypher directive filtering - Temporal", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_duration: { lte: "P14DT16H12M"}
+                        special_duration_LTE: "P14DT16H12M"
                     }
                 ) {
                     title
@@ -269,7 +269,7 @@ describe("cypher directive filtering - Temporal", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_duration: { gt: "P14DT16H11M"}
+                        special_duration_GT: "P14DT16H11M"
                     }
                 ) {
                     title
@@ -321,7 +321,7 @@ describe("cypher directive filtering - Temporal", () => {
             query {
                 ${CustomType.plural}(
                     where: {
-                        special_duration: { gte: "P14DT16H12M"}
+                        special_duration_GTE: "P14DT16H12M"
                     }
                 ) {
                     title

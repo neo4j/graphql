@@ -57,7 +57,7 @@ export function augmentWhereInputWithRelationshipFilters({
     // Relationship filters
     const relationshipFiltersFields = fieldConfigsToFieldConfigMap({
         deprecatedDirectives,
-        fields: getRelationshipFilters(relationshipAdapter),
+        fields: getRelationshipFilters({ relationshipAdapter }),
     });
 
     composer.getOrCreateITC(relationshipAdapter.operations.relationshipFiltersTypeName, (itc) => {
@@ -101,41 +101,55 @@ export function augmentWhereInputWithRelationshipFilters({
         whereInput.addFields(legacyConnection);
     }
 }
+// exported as reused by Cypher filters
+export function getRelationshipFilters({
+    relationshipInfo,
+    relationshipAdapter,
+}: {
+    relationshipInfo?: { targetName: string; inputTypeName: string };
+    relationshipAdapter?: RelationshipAdapter | RelationshipDeclarationAdapter;
+}): FieldConfig[] {
+    if (relationshipAdapter) {
+        return getRelationshipFiltersUsingOptions({
+            targetName: relationshipAdapter.target.name,
+            inputTypeName: relationshipAdapter.target.operations.whereInputTypeName,
+        });
+    } else if (relationshipInfo) {
+        return getRelationshipFiltersUsingOptions(relationshipInfo);
+    }
+    throw new Error("Either relationshipInfo or relationshipAdapter must be provided to getRelationshipFilters method");
+}
 
-function getRelationshipFilters(
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
-): FieldConfig[] {
+function getRelationshipFiltersUsingOptions({
+    targetName,
+    inputTypeName,
+}: {
+    targetName: string;
+    inputTypeName: string;
+}): FieldConfig[] {
     return [
         {
             name: "all",
-            typeName: relationshipAdapter.target.operations.whereInputTypeName,
-            description: `Return ${pluralize(
-                relationshipAdapter.source.name
-            )} where all of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+            typeName: inputTypeName,
+            description: `Filter type where all of the related ${pluralize(targetName)} match this filter`,
         },
 
         {
             name: "none",
-            typeName: relationshipAdapter.target.operations.whereInputTypeName,
-            description: `Return ${pluralize(
-                relationshipAdapter.source.name
-            )} where none of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+            typeName: inputTypeName,
+            description: `Filter type where none of the related ${pluralize(targetName)} match this filter`,
         },
 
         {
             name: "single",
-            typeName: relationshipAdapter.target.operations.whereInputTypeName,
-            description: `Return ${pluralize(
-                relationshipAdapter.source.name
-            )} where one of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+            typeName: inputTypeName,
+            description: `Filter type where one of the related ${pluralize(targetName)} match this filter`,
         },
 
         {
             name: "some",
-            typeName: relationshipAdapter.target.operations.whereInputTypeName,
-            description: `Return ${pluralize(
-                relationshipAdapter.source.name
-            )} where some of the related ${pluralize(relationshipAdapter.target.name)} match this filter`,
+            typeName: inputTypeName,
+            description: `Filter type where some of the related ${pluralize(targetName)} match this filter`,
         },
     ];
 }
@@ -259,7 +273,7 @@ function getRelationshipConnectionFiltersLegacy(
 
 // NOTE: This used to be a specialized function used specifically to generate relationship fields,
 // but now after this refactor, it could be used as schema composer utility if needed.
-function fieldConfigsToFieldConfigMap({
+export function fieldConfigsToFieldConfigMap({
     deprecatedDirectives,
     fields,
 }: {

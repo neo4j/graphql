@@ -693,17 +693,6 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                  all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                  none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                  single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                  some: MovieWhere
-                }
-
                 input ActorActedInUpdateConnectionInput {
                   node: MovieUpdateInput
                 }
@@ -762,7 +751,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: MovieRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -872,6 +861,17 @@ describe("@settable", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
+                }
+
+                input MovieRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
                 }
 
                 \\"\\"\\"
@@ -1133,17 +1133,6 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                  all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                  none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                  single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                  some: MovieWhere
-                }
-
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -1189,7 +1178,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: MovieRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -1299,6 +1288,17 @@ describe("@settable", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
+                }
+
+                input MovieRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
                 }
 
                 \\"\\"\\"
@@ -1566,17 +1566,6 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                  all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                  none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                  single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                  some: MovieWhere
-                }
-
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -1618,6 +1607,17 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -1634,7 +1634,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: MovieRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -1838,17 +1838,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -1895,6 +1884,17 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
+                input MovieRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -1915,7 +1915,7 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -2183,17 +2183,6 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                  all: MovieWhere
-                  \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                  none: MovieWhere
-                  \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                  single: MovieWhere
-                  \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                  some: MovieWhere
-                }
-
                 input ActorActedInUpdateConnectionInput {
                   node: MovieUpdateInput
                 }
@@ -2247,6 +2236,17 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -2264,7 +2264,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: MovieRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -2468,17 +2468,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -2525,6 +2514,17 @@ describe("@settable", () => {
                   node: Movie!
                 }
 
+                input MovieRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -2545,7 +2545,7 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -2786,17 +2786,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInSeriesConnectFieldInput {
                   where: SeriesConnectWhere
                 }
@@ -2873,7 +2862,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3029,6 +3018,17 @@ describe("@settable", () => {
                 }
 
                 union Production = Movie | Series
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
 
                 input ProductionWhere {
                   Movie: MovieWhere
@@ -3270,17 +3270,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInSeriesConnectFieldInput {
                   where: SeriesConnectWhere
                 }
@@ -3340,7 +3329,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3496,6 +3485,17 @@ describe("@settable", () => {
                 }
 
                 union Production = Movie | Series
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
 
                 input ProductionWhere {
                   Movie: MovieWhere
@@ -3753,17 +3753,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInSeriesConnectFieldInput {
                   where: SeriesConnectWhere
                 }
@@ -3823,6 +3812,17 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -3839,7 +3839,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -4047,17 +4047,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -4124,7 +4113,7 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -4192,6 +4181,17 @@ describe("@settable", () => {
                 }
 
                 union Production = Movie | Series
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
 
                 input ProductionWhere {
                   Movie: MovieWhere
@@ -4459,17 +4459,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInSeriesConnectFieldInput {
                   where: SeriesConnectWhere
                 }
@@ -4541,6 +4530,17 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -4558,7 +4558,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -4766,17 +4766,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -4843,7 +4832,7 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -4911,6 +4900,17 @@ describe("@settable", () => {
                 }
 
                 union Production = Movie | Series
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
 
                 input ProductionWhere {
                   Movie: MovieWhere
@@ -5204,17 +5204,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInUpdateConnectionInput {
                   node: ProductionUpdateInput
                 }
@@ -5273,7 +5262,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -5473,6 +5462,17 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
+                }
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 \\"\\"\\"
@@ -5799,17 +5799,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -5855,7 +5844,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -6055,6 +6044,17 @@ describe("@settable", () => {
                 enum ProductionImplementation {
                   Movie
                   Series
+                }
+
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 \\"\\"\\"
@@ -6382,17 +6382,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -6434,6 +6423,17 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -6450,7 +6450,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -6627,17 +6627,6 @@ describe("@settable", () => {
                   name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -6692,7 +6681,7 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -6857,17 +6846,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input ProductionActorsRelationshipFilters {
-                  \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 type ProductionAggregateSelection {
                   count: Int!
                   description: StringAggregateSelection!
@@ -6905,6 +6883,17 @@ describe("@settable", () => {
                   Series
                 }
 
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
                 \\"\\"\\"
@@ -6917,7 +6906,7 @@ describe("@settable", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  actors: ProductionActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionFilters
                   \\"\\"\\"
@@ -7065,17 +7054,6 @@ describe("@settable", () => {
                   name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
-                input SeriesActorsRelationshipFilters {
-                  \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input SeriesActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -7136,7 +7114,7 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  actors: SeriesActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: SeriesActorsAggregateInput
                   actorsConnection: SeriesActorsConnectionFilters
                   \\"\\"\\"
@@ -7389,17 +7367,6 @@ describe("@settable", () => {
                   node: Production!
                 }
 
-                input ActorActedInRelationshipFilters {
-                  \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  all: ProductionWhere
-                  \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  none: ProductionWhere
-                  \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  single: ProductionWhere
-                  \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  some: ProductionWhere
-                }
-
                 input ActorActedInUpdateConnectionInput {
                   node: ProductionUpdateInput
                 }
@@ -7453,6 +7420,17 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -7470,7 +7448,7 @@ describe("@settable", () => {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedIn: ActorActedInRelationshipFilters
+                  actedIn: ProductionRelationshipFilters
                   actedInAggregate: ActorActedInAggregateInput
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
@@ -7647,17 +7625,6 @@ describe("@settable", () => {
                   name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
-                input MovieActorsRelationshipFilters {
-                  \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -7712,7 +7679,7 @@ describe("@settable", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actors: MovieActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
@@ -7881,17 +7848,6 @@ describe("@settable", () => {
                   node: Actor!
                 }
 
-                input ProductionActorsRelationshipFilters {
-                  \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input ProductionActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -7942,6 +7898,17 @@ describe("@settable", () => {
                   Series
                 }
 
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
                 \\"\\"\\"
@@ -7962,7 +7929,7 @@ describe("@settable", () => {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  actors: ProductionActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: ProductionActorsAggregateInput
                   actorsConnection: ProductionActorsConnectionFilters
                   \\"\\"\\"
@@ -8110,17 +8077,6 @@ describe("@settable", () => {
                   name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
-                input SeriesActorsRelationshipFilters {
-                  \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-                  all: ActorWhere
-                  \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-                  none: ActorWhere
-                  \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-                  single: ActorWhere
-                  \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-                  some: ActorWhere
-                }
-
                 input SeriesActorsUpdateConnectionInput {
                   node: ActorUpdateInput
                 }
@@ -8181,7 +8137,7 @@ describe("@settable", () => {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  actors: SeriesActorsRelationshipFilters
+                  actors: ActorRelationshipFilters
                   actorsAggregate: SeriesActorsAggregateInput
                   actorsConnection: SeriesActorsConnectionFilters
                   \\"\\"\\"

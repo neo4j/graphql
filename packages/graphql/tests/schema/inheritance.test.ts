@@ -165,17 +165,6 @@ describe("inheritance", () => {
               name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            input ActorFriendsRelationshipFilters {
-              \\"\\"\\"Return Actors where all of the related People match this filter\\"\\"\\"
-              all: PersonWhere
-              \\"\\"\\"Return Actors where none of the related People match this filter\\"\\"\\"
-              none: PersonWhere
-              \\"\\"\\"Return Actors where one of the related People match this filter\\"\\"\\"
-              single: PersonWhere
-              \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
-              some: PersonWhere
-            }
-
             input ActorFriendsUpdateConnectionInput {
               edge: FriendsWithUpdateInput
               node: PersonUpdateInput
@@ -221,7 +210,7 @@ describe("inheritance", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              friends: ActorFriendsRelationshipFilters
+              friends: PersonRelationshipFilters
               friendsAggregate: ActorFriendsAggregateInput
               friendsConnection: ActorFriendsConnectionFilters
               \\"\\"\\"
@@ -585,17 +574,6 @@ describe("inheritance", () => {
               properties: PersonFriendsRelationshipProperties!
             }
 
-            input PersonFriendsRelationshipFilters {
-              \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
-              all: PersonWhere
-              \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
-              none: PersonWhere
-              \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
-              single: PersonWhere
-              \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
-              some: PersonWhere
-            }
-
             union PersonFriendsRelationshipProperties = FriendsWith
 
             input PersonFriendsUpdateConnectionInput {
@@ -616,6 +594,17 @@ describe("inheritance", () => {
               Actor
             }
 
+            input PersonRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
+            }
+
             \\"\\"\\"
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
@@ -633,7 +622,7 @@ describe("inheritance", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              friends: PersonFriendsRelationshipFilters
+              friends: PersonRelationshipFilters
               friendsAggregate: PersonFriendsAggregateInput
               friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"

@@ -39,7 +39,7 @@ export const DurationListFilters = new GraphQLInputObjectType({
     name: "DurationListFilters",
     description: "Duration list filters",
     fields: {
-        eq: { type: new GraphQLList(new GraphQLNonNull(DurationScalarFilters)) },
-        includes: { type: DurationScalarFilters },
+        eq: { type: new GraphQLList(new GraphQLNonNull(GraphQLDuration)) },
+        includes: { type: GraphQLDuration },
     },
 });

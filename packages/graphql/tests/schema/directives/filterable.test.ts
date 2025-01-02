@@ -1037,17 +1037,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -1059,6 +1048,17 @@ describe("@filterable directive", () => {
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
                       where: ActorMoviesConnectionWhere
+                    }
+
+                    input ActorRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                      all: ActorWhere
+                      \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                      none: ActorWhere
+                      \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                      single: ActorWhere
+                      \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                      some: ActorWhere
                     }
 
                     \\"\\"\\"
@@ -1106,7 +1106,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -1340,17 +1340,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                      all: ActorWhere
-                      \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                      none: ActorWhere
-                      \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                      single: ActorWhere
-                      \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                      some: ActorWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -1411,6 +1400,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -1447,7 +1447,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: ActorRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -1774,17 +1774,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -1796,6 +1785,17 @@ describe("@filterable directive", () => {
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
                       where: ActorMoviesConnectionWhere
+                    }
+
+                    input ActorRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                      all: ActorWhere
+                      \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                      none: ActorWhere
+                      \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                      single: ActorWhere
+                      \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                      some: ActorWhere
                     }
 
                     \\"\\"\\"
@@ -1843,7 +1843,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -2077,17 +2077,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                      all: ActorWhere
-                      \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                      none: ActorWhere
-                      \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                      single: ActorWhere
-                      \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                      some: ActorWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -2148,6 +2137,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -2184,7 +2184,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: ActorRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -2511,17 +2511,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -2533,6 +2522,17 @@ describe("@filterable directive", () => {
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
                       where: ActorMoviesConnectionWhere
+                    }
+
+                    input ActorRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                      all: ActorWhere
+                      \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                      none: ActorWhere
+                      \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                      single: ActorWhere
+                      \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                      some: ActorWhere
                     }
 
                     \\"\\"\\"
@@ -2580,7 +2580,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -2814,17 +2814,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                      all: ActorWhere
-                      \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                      none: ActorWhere
-                      \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                      single: ActorWhere
-                      \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                      some: ActorWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -2885,6 +2874,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -2909,7 +2909,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: ActorRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -3233,17 +3233,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -3255,6 +3244,17 @@ describe("@filterable directive", () => {
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
                       where: ActorMoviesConnectionWhere
+                    }
+
+                    input ActorRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                      all: ActorWhere
+                      \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                      none: ActorWhere
+                      \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                      single: ActorWhere
+                      \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                      some: ActorWhere
                     }
 
                     \\"\\"\\"
@@ -3302,7 +3302,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -3485,17 +3485,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                      all: ActorWhere
-                      \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                      none: ActorWhere
-                      \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                      single: ActorWhere
-                      \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                      some: ActorWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -3556,6 +3545,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -3592,7 +3592,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: ActorRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -3920,17 +3920,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -3942,6 +3931,17 @@ describe("@filterable directive", () => {
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
                       where: ActorMoviesConnectionWhere
+                    }
+
+                    input ActorRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                      all: ActorWhere
+                      \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                      none: ActorWhere
+                      \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                      single: ActorWhere
+                      \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                      some: ActorWhere
                     }
 
                     \\"\\"\\"
@@ -3989,7 +3989,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -4223,17 +4223,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                      all: ActorWhere
-                      \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                      none: ActorWhere
-                      \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                      single: ActorWhere
-                      \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                      some: ActorWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -4294,6 +4283,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -4330,7 +4330,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: ActorRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -4659,17 +4659,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -4728,7 +4717,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -5001,6 +4990,17 @@ describe("@filterable directive", () => {
 
                     type MovieEventPayload {
                       title: String
+                    }
+
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
                     }
 
                     \\"\\"\\"
@@ -5342,17 +5342,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -5364,6 +5353,17 @@ describe("@filterable directive", () => {
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
                       where: ActorMoviesConnectionWhere
+                    }
+
+                    input ActorRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                      all: ActorWhere
+                      \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                      none: ActorWhere
+                      \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                      single: ActorWhere
+                      \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                      some: ActorWhere
                     }
 
                     \\"\\"\\"
@@ -5411,7 +5411,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -5594,17 +5594,6 @@ describe("@filterable directive", () => {
                       node: Actor!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                      all: ActorWhere
-                      \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                      none: ActorWhere
-                      \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                      single: ActorWhere
-                      \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                      some: ActorWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
                     }
@@ -5665,6 +5654,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -5701,7 +5701,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: ActorRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -6022,17 +6022,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -6091,7 +6080,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -6261,17 +6250,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -6341,6 +6319,17 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -6377,7 +6366,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -6464,6 +6453,17 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
+                    }
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
                     }
 
                     \\"\\"\\"
@@ -6758,17 +6758,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -6827,7 +6816,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -7032,17 +7021,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -7112,6 +7090,17 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -7148,7 +7137,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
@@ -7236,6 +7225,17 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
+                    }
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
                     }
 
                     \\"\\"\\"
@@ -7530,17 +7530,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -7599,7 +7588,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -7769,17 +7758,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
                     }
@@ -7849,6 +7827,17 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -7885,7 +7874,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -7972,6 +7961,17 @@ describe("@filterable directive", () => {
 
                     enum PersonImplementation {
                       Actor
+                    }
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
                     }
 
                     \\"\\"\\"
@@ -8282,17 +8282,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -8351,7 +8340,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -8565,17 +8554,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input AppearanceMoviesRelationshipFilters {
-                      \\"\\"\\"Return Appearances where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Appearances where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Appearances where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -8634,7 +8612,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: AppearanceMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: AppearanceMoviesAggregateInput
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
@@ -8889,17 +8867,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
@@ -8952,6 +8919,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -8988,7 +8966,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -9049,6 +9027,17 @@ describe("@filterable directive", () => {
                     }
 
                     union Person = Actor | Appearance
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
 
                     input PersonWhere {
                       Actor: ActorWhere
@@ -9347,17 +9336,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -9416,7 +9394,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -9630,17 +9608,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input AppearanceMoviesRelationshipFilters {
-                      \\"\\"\\"Return Appearances where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Appearances where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Appearances where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -9699,7 +9666,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: AppearanceMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: AppearanceMoviesAggregateInput
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
@@ -9954,17 +9921,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
@@ -10017,6 +9973,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -10053,7 +10020,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -10114,6 +10081,17 @@ describe("@filterable directive", () => {
                     }
 
                     union Person = Actor | Appearance
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
 
                     input PersonWhere {
                       Actor: ActorWhere
@@ -10412,17 +10390,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input ActorMoviesRelationshipFilters {
-                      \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -10481,7 +10448,7 @@ describe("@filterable directive", () => {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      movies: ActorMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: ActorMoviesAggregateInput
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
@@ -10695,17 +10662,6 @@ describe("@filterable directive", () => {
                       node: Movie!
                     }
 
-                    input AppearanceMoviesRelationshipFilters {
-                      \\"\\"\\"Return Appearances where all of the related Movies match this filter\\"\\"\\"
-                      all: MovieWhere
-                      \\"\\"\\"Return Appearances where none of the related Movies match this filter\\"\\"\\"
-                      none: MovieWhere
-                      \\"\\"\\"Return Appearances where one of the related Movies match this filter\\"\\"\\"
-                      single: MovieWhere
-                      \\"\\"\\"Return Appearances where some of the related Movies match this filter\\"\\"\\"
-                      some: MovieWhere
-                    }
-
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
                     }
@@ -10764,7 +10720,7 @@ describe("@filterable directive", () => {
                       AND: [AppearanceWhere!]
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
-                      movies: AppearanceMoviesRelationshipFilters
+                      movies: MovieRelationshipFilters
                       moviesAggregate: AppearanceMoviesAggregateInput
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
@@ -11019,17 +10975,6 @@ describe("@filterable directive", () => {
                       node: Person!
                     }
 
-                    input MovieActorsRelationshipFilters {
-                      \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      all: PersonWhere
-                      \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      none: PersonWhere
-                      \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      single: PersonWhere
-                      \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      some: PersonWhere
-                    }
-
                     input MovieActorsUpdateInput {
                       Actor: [MovieActorsActorUpdateFieldInput!]
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
@@ -11082,6 +11027,17 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    input MovieRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                      all: MovieWhere
+                      \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                      none: MovieWhere
+                      \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                      single: MovieWhere
+                      \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                      some: MovieWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                     \\"\\"\\"
@@ -11118,7 +11074,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actors: MovieActorsRelationshipFilters
+                      actors: PersonRelationshipFilters
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -11179,6 +11135,17 @@ describe("@filterable directive", () => {
                     }
 
                     union Person = Actor | Appearance
+
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
 
                     input PersonWhere {
                       Actor: ActorWhere

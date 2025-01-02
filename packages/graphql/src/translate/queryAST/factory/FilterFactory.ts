@@ -182,8 +182,6 @@ export class FilterFactory {
         comparisonValue: GraphQLWhereArg;
         operator: FilterOperator | undefined;
     }): Filter | Filter[] {
-        const filterOperator = operator || "EQ";
-
         const selection = new CustomCypherSelection({
             operationField: attribute,
             rawArguments: {},
@@ -196,12 +194,26 @@ export class FilterFactory {
             if (operator && !isLegacyRelationshipOperator(operator)) {
                 throw new Error(`Invalid operator ${operator} for relationship`);
             }
+            // path for generic filters input, in v8 it will be the only path
+            if (!operator && attribute.typeHelper.isList()) {
+                const genericFilters = Object.entries(comparisonValue).flatMap(([quantifier, predicate]) => {
+                    const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(quantifier);
+                    return this.createCypherRelationshipFilter({
+                        where: predicate,
+                        selection,
+                        target: entityAdapter,
+                        operator: legacyOperator,
+                        attribute,
+                    });
+                });
+                return this.wrapMultipleFiltersInLogical(genericFilters);
+            }
 
             return this.createCypherRelationshipFilter({
                 where: comparisonValue,
                 selection,
                 target: entityAdapter,
-                operator,
+                operator: operator ?? "SOME",
                 attribute,
             });
         }
@@ -212,7 +224,7 @@ export class FilterFactory {
             selection,
             attribute,
             comparisonValue: comparisonValueParam,
-            operator: filterOperator,
+            operator: operator ?? "EQ",
         });
     }
 
@@ -287,7 +299,7 @@ export class FilterFactory {
             const relationshipFilter = this.createRelationshipFilterTreeNode({
                 relationship,
                 target: concreteEntity,
-                operator: operator || "SOME",
+                operator: operator ?? "SOME",
             });
 
             if (!isNull) {
@@ -324,7 +336,7 @@ export class FilterFactory {
         if (!isNull && Object.keys(where).length === 0) {
             return [];
         }
-
+        // TODO the below logic is unnecessary, Cypher relationship are not supported for Composite Entities
         const filteredEntities = getConcreteEntities(target, where);
         const filters: (CypherOneToOneRelationshipFilter | CypherRelationshipFilter)[] = [];
         for (const concreteEntity of filteredEntities) {
@@ -333,7 +345,7 @@ export class FilterFactory {
             const options = {
                 selection,
                 isNull,
-                operator: operator || "SOME",
+                operator: operator ?? "SOME",
                 attribute,
                 returnVariable,
             };
@@ -619,7 +631,7 @@ export class FilterFactory {
         }
     }
 
-    private convertRelationshipOperatorToLegacyOperator(operator: string): RelationshipWhereOperator {
+    protected convertRelationshipOperatorToLegacyOperator(operator: string): RelationshipWhereOperator {
         switch (operator) {
             case "some":
                 return "SOME";
@@ -842,8 +854,9 @@ export class FilterFactory {
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);
 
             const attr = entity.findAttribute(fieldName);
-            if (!attr) throw new Error(`Attribute ${fieldName} not found`);
-
+            if (!attr) {
+                throw new Error(`Attribute ${fieldName} not found`);
+            }
             const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
 
             if (!aggregationOperator) {
