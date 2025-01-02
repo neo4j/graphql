@@ -316,8 +316,8 @@ describe("Batch Create", () => {
             mutation {
                 createMovies(
                     input: [
-                        { id: "1", actors: { connect: { where: { node: { id_EQ: "3" } } } } }
-                        { id: "2", actors: { connect: { where: { node: { id_EQ: "4" } } } } }
+                        { id: "1", actors: { connect: { where: { node: { id: { eq: "3" } } } } } }
+                        { id: "2", actors: { connect: { where: { node: { id: { eq: "4" } } } } } }
                     ]
                 ) {
                     movies {
