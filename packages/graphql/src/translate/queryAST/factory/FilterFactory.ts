@@ -491,7 +491,7 @@ export class FilterFactory {
                     isAggregate,
                 });
             }
-            if (key === "typename_IN") {
+            if (key === "typename") {
                 const acceptedEntities = entity.concreteEntities.filter((concreteEntity) => {
                     return valueAsArray.some((typenameFilterValue) => typenameFilterValue === concreteEntity.name);
                 });

@@ -128,7 +128,7 @@ export function withWhereInputType({
                 name: entityAdapter.operations.implementationEnumTypename,
                 values: enumValues,
             });
-            whereInputType.addFields({ typename_IN: { type: interfaceImplementation.NonNull.List } });
+            whereInputType.addFields({ typename: { type: interfaceImplementation.NonNull.List } });
         }
     }
     return whereInputType;
