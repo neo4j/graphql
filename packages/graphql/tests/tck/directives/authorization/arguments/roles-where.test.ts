@@ -50,28 +50,33 @@ describe("Cypher Auth Where with Roles", () => {
             extend type User
                 @authorization(
                     validate: [
-                        { where: { node: { id_EQ: "$jwt.sub" }, jwt: { roles_INCLUDES: "user" } } }
-                        { where: { jwt: { roles_INCLUDES: "admin" } } }
+                        { where: { node: { id: { eq: "$jwt.sub" } }, jwt: { roles: { includes: "user" } } } }
+                        { where: { jwt: { roles: { includes: "admin" } } } }
                     ]
                 )
 
             extend type User {
                 password: String!
-                    @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
+                    @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
             }
 
             extend type Post {
                 secretKey: String!
                     @authorization(
-                        filter: [{ operations: [READ], where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } } }]
+                        filter: [{ operations: [READ], where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
                     )
             }
 
             extend type Post
                 @authorization(
                     validate: [
-                        { where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } }, jwt: { roles_INCLUDES: "user" } } }
-                        { where: { jwt: { roles_INCLUDES: "admin" } } }
+                        {
+                            where: {
+                                node: { creator_SOME: { id: { eq: "$jwt.sub" } } }
+                                jwt: { roles: { includes: "user" } }
+                            }
+                        }
+                        { where: { jwt: { roles: { includes: "admin" } } } }
                     ]
                 )
         `;
@@ -121,7 +126,7 @@ describe("Cypher Auth Where with Roles", () => {
     test("Read Node + User Defined Where", async () => {
         const query = /* GraphQL */ `
             {
-                users(where: { name_EQ: "bob" }) {
+                users(where: { name: { eq: "bob" } }) {
                     id
                 }
             }
@@ -274,7 +279,7 @@ describe("Cypher Auth Where with Roles", () => {
             {
                 users {
                     id
-                    postsConnection(where: { node: { id_EQ: "some-id" } }) {
+                    postsConnection(where: { node: { id: { eq: "some-id" } } }) {
                         edges {
                             node {
                                 content
@@ -337,7 +342,7 @@ describe("Cypher Auth Where with Roles", () => {
             {
                 users {
                     id
-                    posts(where: { content_EQ: "cool" }) {
+                    posts(where: { content: { eq: "cool" } }) {
                         content
                     }
                 }
@@ -511,7 +516,7 @@ describe("Cypher Auth Where with Roles", () => {
             {
                 users {
                     id
-                    contentConnection(where: { Post: { node: { id_EQ: "some-id" } } }) {
+                    contentConnection(where: { Post: { node: { id: { eq: "some-id" } } } }) {
                         edges {
                             node {
                                 ... on Post {
@@ -622,7 +627,7 @@ describe("Cypher Auth Where with Roles", () => {
     test("Update Node + User Defined Where", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { name_EQ: "bob" }, update: { name_SET: "Bob" }) {
+                updateUsers(where: { name: { eq: "bob" } }, update: { name_SET: "Bob" }) {
                     users {
                         id
                     }
@@ -934,7 +939,7 @@ describe("Cypher Auth Where with Roles", () => {
                             id: "123"
                             name: "Bob"
                             password: "password"
-                            posts: { connect: { where: { node: { id_EQ: "post-id" } } } }
+                            posts: { connect: { where: { node: { id: { eq: "post-id" } } } } }
                         }
                     ]
                 ) {
@@ -1099,7 +1104,7 @@ describe("Cypher Auth Where with Roles", () => {
     test("Connect Node + User Defined Where (from update update)", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(update: { posts: { connect: { where: { node: { id_EQ: "new-id" } } } } }) {
+                updateUsers(update: { posts: { connect: { where: { node: { id: { eq: "new-id" } } } } } }) {
                     users {
                         id
                     }
@@ -1253,7 +1258,7 @@ describe("Cypher Auth Where with Roles", () => {
     test("Disconnect Node + User Defined Where (from update update)", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(update: { posts: [{ disconnect: { where: { node: { id_EQ: "new-id" } } } }] }) {
+                updateUsers(update: { posts: [{ disconnect: { where: { node: { id: { eq: "new-id" } } } } }] }) {
                     users {
                         id
                     }
@@ -1329,7 +1334,9 @@ describe("Cypher Auth Where with Roles", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"new-id\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"new-id\\"
+                                                    }
                                                 }
                                             }
                                         }

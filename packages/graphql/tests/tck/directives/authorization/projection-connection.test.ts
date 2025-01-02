@@ -39,9 +39,11 @@ describe("Cypher Auth Projection On Connections", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id: { eq: "$jwt.sub" } } } }])
             extend type Post
-                @authorization(validate: [{ when: BEFORE, where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } } }])
+                @authorization(
+                    validate: [{ when: BEFORE, where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                )
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -206,9 +208,11 @@ describe("Cypher Auth Projection On top-level connections", () => {
                 posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
-            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id: { eq: "$jwt.sub" } } } }])
             extend type Post
-                @authorization(validate: [{ when: BEFORE, where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } } }])
+                @authorization(
+                    validate: [{ when: BEFORE, where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                )
         `;
 
         neoSchema = new Neo4jGraphQL({
