@@ -355,7 +355,7 @@ describe("Cypher Points", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePointContainers(
-                    where: { id_EQ: "id" }
+                    where: { id: { eq: "id" } }
                     update: { point_SET: { longitude: 1.0, latitude: 2.0 } }
                 ) {
                     pointContainers {
