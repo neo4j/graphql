@@ -44,7 +44,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("AND", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
+                posts(where: { likesAggregate: { AND: [{ count: { gt: 10 } }, { count: { lt: 20 } }] } }) {
                     content
                 }
             }
@@ -81,7 +81,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("OR", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { OR: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
+                posts(where: { likesAggregate: { OR: [{ count: { gt: 10 } }, { count: { lt: 20 } }] } }) {
                     content
                 }
             }
@@ -118,7 +118,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("NOT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { NOT: { count_GT: 10 } } }) {
+                posts(where: { likesAggregate: { NOT: { count: { gt: 10 } } } }) {
                     content
                 }
             }
@@ -154,8 +154,8 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 posts(
                     where: {
                         likesAggregate: {
-                            AND: [{ count_GT: 10 }, { count_LT: 20 }]
-                            OR: [{ count_GT: 10 }, { count_LT: 20 }]
+                            AND: [{ count: { gt: 10 } }, { count: { lt: 20 } }]
+                            OR: [{ count: { gt: 10 } }, { count: { lt: 20 } }]
                         }
                     }
                 ) {
@@ -208,7 +208,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                         likesAggregate: {
                             count_GT: 10
                             count_LT: 20
-                            OR: [{ count_GT: 10 }, { count_LT: 20 }, { count_LT: 54 }]
+                            OR: [{ count: { gt: 10 } }, { count: { lt: 20 } }, { count: { lt: 54 } }]
                         }
                     }
                 ) {

@@ -122,7 +122,7 @@ describe("Cypher Aggregations String", () => {
     test("Shortest with filter", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate(where: { testId_EQ: "10" }) {
+                moviesAggregate(where: { testId: { eq: "10" } }) {
                     title {
                         shortest
                     }

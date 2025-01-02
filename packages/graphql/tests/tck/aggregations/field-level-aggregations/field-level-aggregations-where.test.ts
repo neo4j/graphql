@@ -50,7 +50,7 @@ describe("Field Level Aggregations Where", () => {
             query {
                 movies {
                     title
-                    actorsAggregate(where: { age_GT: 40 }) {
+                    actorsAggregate(where: { age: { gt: 40 } }) {
                         count
                     }
                 }
