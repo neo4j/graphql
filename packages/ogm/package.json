@@ -46,7 +46,7 @@
     "devDependencies": {
         "@types/jest": "29.5.14",
         "@types/node": "20.17.6",
-        "camelcase": "6.3.0",
+        "camelcase": "8.0.0",
         "jest": "29.7.0",
         "jsonwebtoken": "9.0.2",
         "pluralize": "8.0.0",
