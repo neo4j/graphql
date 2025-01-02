@@ -44,7 +44,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field_STARTS_WITH: "The Matrix" }, sort: [{ custom_field: DESC }]) {
+                movies(where: { custom_field: { startsWith: "The Matrix" } }, sort: [{ custom_field: DESC }]) {
                     title
                     actors {
                         name

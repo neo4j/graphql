@@ -37,7 +37,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_time_GT: "2024-09-02T00:00:00Z" }) {
+                movies(where: { special_time: { gt: "2024-09-02T00:00:00Z" } }) {
                     special_time
                     title
                 }
@@ -108,7 +108,7 @@ describe("cypher directive filtering - Auth", () => {
         `;
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_duration_EQ: "P14DT16H12M" }) {
+                movies(where: { special_duration: { eq: "P14DT16H12M" } }) {
                     title
                 }
             }

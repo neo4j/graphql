@@ -65,7 +65,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_LT: 7.0 }) {
+                moviesConnection(where: { rating: { lt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -157,7 +157,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_LT: 7.0 }) {
+                moviesConnection(where: { rating: { lt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -249,7 +249,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_LT: 7.0 }) {
+                moviesConnection(where: { rating: { lt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -341,7 +341,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_GT: 7.0 }) {
+                moviesConnection(where: { rating: { gt: 7.0 } }) {
                     edges {
                         node {
                             title

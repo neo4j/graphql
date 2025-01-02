@@ -54,7 +54,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { NOT: { actors_SOME: { name_EQ: "Jada Pinkett Smith" } } }) {
+                movies(where: { NOT: { actors_SOME: { name: { eq: "Jada Pinkett Smith" } } } }) {
                     title
                 }
             }
@@ -119,7 +119,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_ALL: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actors_ALL: { name: { eq: "Keanu Reeves" } } }) {
                     title
                 }
             }
@@ -184,7 +184,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_SINGLE: { name_EQ: "Carrie-Anne Moss" } }) {
+                movies(where: { actors_SINGLE: { name: { eq: "Carrie-Anne Moss" } } }) {
                     title
                 }
             }
@@ -249,7 +249,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_SOME: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
                     title
                 }
             }
@@ -313,7 +313,7 @@ describe("cypher directive filtering - Relationship", () => {
         });
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_NONE: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actors_NONE: { name: { eq: "Keanu Reeves" } } }) {
                     title
                 }
             }
@@ -401,8 +401,8 @@ describe("cypher directive filtering - Relationship", () => {
                 movies(
                     where: {
                         OR: [
-                            { actors_SOME: { name_EQ: "Jada Pinkett Smith" } }
-                            { genres_SOME: { name_EQ: "Romance" } }
+                            { actors_SOME: { name: { eq: "Jada Pinkett Smith" } } }
+                            { genres_SOME: { name: { eq: "Romance" } } }
                         ]
                     }
                 ) {

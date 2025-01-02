@@ -61,7 +61,7 @@ describe("Interface Relationships - Delete delete", () => {
     test("Delete delete an interface relationship", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteActors(delete: { actedIn: { where: { node: { title_STARTS_WITH: "The " } } } }) {
+                deleteActors(delete: { actedIn: { where: { node: { title: { startsWith: "The " } } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -113,8 +113,8 @@ describe("Interface Relationships - Delete delete", () => {
                 deleteActors(
                     delete: {
                         actedIn: {
-                            where: { node: { title_STARTS_WITH: "The " } }
-                            delete: { actors: { where: { node: { name_EQ: "Actor" } } } }
+                            where: { node: { title: { startsWith: "The " } } }
+                            delete: { actors: { where: { node: { name: { eq: "Actor" } } } } }
                         }
                     }
                 ) {

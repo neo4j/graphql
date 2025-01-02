@@ -63,7 +63,10 @@ describe("Interface Relationships - Create connect", () => {
                         {
                             name: "Actor Name"
                             actedIn: {
-                                connect: { edge: { screenTime: 90 }, where: { node: { title_STARTS_WITH: "The " } } }
+                                connect: {
+                                    edge: { screenTime: 90 }
+                                    where: { node: { title: { startsWith: "The " } } }
+                                }
                             }
                         }
                     ]

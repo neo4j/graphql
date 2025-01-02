@@ -64,7 +64,7 @@ describe("Cypher coalesce()", () => {
                     where: {
                         id_EQ: $id
                         name_MATCHES: $name
-                        NOT: { verified_EQ: $verified }
+                        NOT: { verified: { eq: $verified } }
                         numberOfFriends_GT: $numberOfFriends
                         rating_LT: $rating
                         fromInterface_EQ: $fromInterface
@@ -135,7 +135,7 @@ describe("Cypher coalesce()", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { status_EQ: ACTIVE }) {
+                movies(where: { status: { eq: ACTIVE } }) {
                     id
                     status
                 }
@@ -187,7 +187,7 @@ describe("Cypher coalesce()", () => {
         const query = /* GraphQL */ `
             query Actors {
                 actors {
-                    moviesConnection(where: { node: { status_EQ: ACTIVE } }) {
+                    moviesConnection(where: { node: { status: { eq: ACTIVE } } }) {
                         edges {
                             node {
                                 id

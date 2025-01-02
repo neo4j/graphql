@@ -43,7 +43,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field_EQ: "hello world!", actors_SOME: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { custom_field_EQ: "hello world!", actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
                     custom_field
                     title
                     actors {
@@ -127,7 +127,7 @@ describe("cypher directive filtering - Auth", () => {
             query {
                 actors {
                     name
-                    movies(where: { custom_field_EQ: "hello world!"}) {
+                    movies(where: { custom_field_EQ: "hello world!" }) {
                         title
                     }
                 }
@@ -194,7 +194,7 @@ describe("cypher directive filtering - Auth", () => {
             query {
                 movies(where: { custom_field_EQ: "hello world!" }) {
                     title
-                    actors(where: { name_EQ: "Keanu Reeves" }) {
+                    actors(where: { name: { eq: "Keanu Reeves" } }) {
                         name
                     }
                 }
@@ -275,7 +275,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field_EQ: "hello world!", another_custom_field_GT: 50 }) {
+                movies(where: { custom_field_EQ: "hello world!", another_custom_field: { gt: 50 } }) {
                     title
                     actors {
                         name
@@ -365,7 +365,7 @@ describe("cypher directive filtering - Auth", () => {
             query {
                 movies(where: { custom_field_EQ: "hello world!" }) {
                     title
-                    actors(where: { another_custom_field_EQ: "goodbye!", name_EQ: "Keanu Reeves" }) {
+                    actors(where: { another_custom_field_EQ: "goodbye!", name: { eq: "Keanu Reeves" } }) {
                         name
                     }
                 }
