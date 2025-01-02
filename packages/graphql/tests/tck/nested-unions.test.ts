@@ -60,13 +60,13 @@ describe("Nested Unions", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Movie" }
+                    where: { title: { eq: "Movie" } }
                     update: {
                         actors: {
                             LeadActor: {
                                 connect: {
-                                    where: { node: { name_EQ: "Actor" } }
-                                    connect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                    where: { node: { name: { eq: "Actor" } } }
+                                    connect: { actedIn: { Series: { where: { node: { name: { eq: "Series" } } } } } }
                                 }
                             }
                         }
@@ -179,13 +179,13 @@ describe("Nested Unions", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Movie" }
+                    where: { title: { eq: "Movie" } }
                     update: {
                         actors: {
                             LeadActor: {
                                 disconnect: {
-                                    where: { node: { name_EQ: "Actor" } }
-                                    disconnect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                    where: { node: { name: { eq: "Actor" } } }
+                                    disconnect: { actedIn: { Series: { where: { node: { name: { eq: "Series" } } } } } }
                                 }
                             }
                         }
@@ -289,7 +289,9 @@ describe("Nested Unions", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"Actor\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Actor\\"
+                                                        }
                                                     }
                                                 },
                                                 \\"disconnect\\": {
@@ -298,7 +300,9 @@ describe("Nested Unions", () => {
                                                             {
                                                                 \\"where\\": {
                                                                     \\"node\\": {
-                                                                        \\"name_EQ\\": \\"Series\\"
+                                                                        \\"name\\": {
+                                                                            \\"eq\\": \\"Series\\"
+                                                                        }
                                                                     }
                                                                 }
                                                             }
