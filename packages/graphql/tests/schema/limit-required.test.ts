@@ -1234,7 +1234,7 @@ describe("limitRequired constructor option", () => {
               name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-              typename_IN: [PersonImplementation!]
+              typename: [PersonImplementation!]
             }
 
             interface Production {
@@ -1308,7 +1308,7 @@ describe("limitRequired constructor option", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -2725,7 +2725,7 @@ describe("limitRequired constructor option", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {

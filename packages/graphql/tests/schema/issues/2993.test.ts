@@ -258,7 +258,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              typename_IN: [ProfileImplementation!]
+              typename: [ProfileImplementation!]
               userName: StringScalarFilters
               userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
               userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")

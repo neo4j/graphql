@@ -479,7 +479,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               type: ResourceTypeEnumScalarFilters
               type_EQ: ResourceType @deprecated(reason: \\"Please use the relevant generic filter type: { eq: ... }\\")
               type_IN: [ResourceType!] @deprecated(reason: \\"Please use the relevant generic filter type: { in: ... }\\")
-              typename_IN: [ResourceEntityImplementation!]
+              typename: [ResourceEntityImplementation!]
             }
 
             input ResourceRelationshipFilters {

@@ -139,9 +139,9 @@ describe("delete interface relationships", () => {
     });
 
     test("should delete one nested concrete entity", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation DeleteActorAndMovie($name: String, $title: String) {
-                ${actorType.operations.delete}(where: { name_EQ: $name }, delete: { actedIn:  { where: { node: { typename_IN: [${movieType}], title_EQ: $title } } } } ) {
+                ${actorType.operations.delete}(where: { name: { eq: $name } }, delete: { actedIn:  { where: { node: { typename: [${movieType}], title: { eq: $title} } } } } ) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -163,13 +163,13 @@ describe("delete interface relationships", () => {
     });
 
     test("should delete one nested concrete entity using interface relationship fields", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int) {
                 ${actorType.operations.delete}(
-                    where: { name_EQ: $name1 }
+                    where: { name: { eq: $name1 } }
                     delete: {
                         actedIn: {
-                            where: { edge: { screenTime_EQ: $movieScreenTime1 } }
+                            where: { edge: { screenTime: { eq: $movieScreenTime1 } } }
                         }
                     }
                 ) {
@@ -194,13 +194,13 @@ describe("delete interface relationships", () => {
     });
 
     test("should delete two nested concrete entity using interface relationship fields", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation DeleteActorAndMovie($name1: String, $movieScreenTime1: Int, $movieScreenTime2: Int) {
                 ${actorType.operations.delete}(
-                    where: { name_EQ: $name1 }
+                    where: { name: { eq: $name1 } }
                     delete: {
                         actedIn: {
-                            where: { edge: { OR: [ {screenTime_EQ: $movieScreenTime1 }, { screenTime_EQ: $movieScreenTime2 } ]} } 
+                            where: { edge: { OR: [ {screenTime: { eq: $movieScreenTime1 } }, { screenTime: { eq: $movieScreenTime2 } } ]} } 
                         }
                     }
                 ) {
@@ -229,16 +229,16 @@ describe("delete interface relationships", () => {
     });
 
     test("should be possible to double nested delete", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation DeleteActorAndMovie($name1: String, $movieTitle2: String, $name2: String) {
                 ${actorType.operations.delete}(
-                    where: { name_EQ: $name1 }
+                    where: { name: { eq: $name1 } }
                     delete: {
                         actedIn: {
-                            where: { node: { title_EQ: $movieTitle2 } }
+                            where: { node: { title: { eq: $movieTitle2 }} }
                             delete: {
                                 actors: {
-                                    where: { node: { name_EQ: $name2 } }
+                                    where: { node: { name: { eq: $name2} } }
                                 }
                             }
                         }

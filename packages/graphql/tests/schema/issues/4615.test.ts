@@ -1174,7 +1174,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ShowImplementation!]
+              typename: [ShowImplementation!]
             }
 
             type ShowsConnection {

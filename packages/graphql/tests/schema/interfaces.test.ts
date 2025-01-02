@@ -327,7 +327,7 @@ describe("Interfaces", () => {
               movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
-              typename_IN: [MovieNodeImplementation!]
+              typename: [MovieNodeImplementation!]
             }
 
             type MovieNodesConnection {
@@ -765,7 +765,7 @@ describe("Interfaces", () => {
               movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
-              typename_IN: [MovieNodeImplementation!]
+              typename: [MovieNodeImplementation!]
             }
 
             type MovieNodesConnection {

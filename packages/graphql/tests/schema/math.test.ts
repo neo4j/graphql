@@ -1868,7 +1868,7 @@ describe("Algebraic", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
               viewers: IntScalarFilters
               viewers_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { eq: ... }\\")
               viewers_GT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { gt: ... }\\")

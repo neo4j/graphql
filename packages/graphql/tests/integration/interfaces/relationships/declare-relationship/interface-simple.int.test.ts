@@ -1902,7 +1902,7 @@ describe("interface with declared relationships", () => {
                 actedIn: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}] } }
+                    where: { node: { title_EQ: "${movieTitle}", typename: [${Movie.name}] } }
                   }
                 }
               }
