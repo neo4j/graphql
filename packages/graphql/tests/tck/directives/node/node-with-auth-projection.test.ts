@@ -42,7 +42,7 @@ describe("Cypher Auth Projection On Connections", () => {
             extend type User @authorization(validate: [{ when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }])
             extend type Post
                 @authorization(
-                    validate: [{ when: [BEFORE], where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                    validate: [{ when: [BEFORE], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }]
                 )
         `;
 

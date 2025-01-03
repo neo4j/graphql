@@ -43,7 +43,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field_EQ: "hello world!", actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
+                movies(where: { custom_field_EQ: "hello world!", actors: { some: { name: { eq: "Keanu Reeves" } } } }) {
                     custom_field
                     title
                     actors {

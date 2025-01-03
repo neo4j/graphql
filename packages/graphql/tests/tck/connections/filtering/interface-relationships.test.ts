@@ -54,7 +54,7 @@ describe.skip("interface relationships with aliased fields", () => {
                 @node
                 @authorization(
                     validate: [
-                        { where: { node: { actedInConnection_SOME: { node: { title: { eq: "$jwt.title" } } } } } }
+                        { where: { node: { actedInConnection: { some: { node: { title: { eq: "$jwt.title" } } } } } } }
                     ]
                 ) {
                 name: String! @alias(property: "dbName")
@@ -70,7 +70,7 @@ describe.skip("interface relationships with aliased fields", () => {
     test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
         const query = /* GraphQL */ `
             query Actors($title: String) {
-                actors(where: { actedInConnection_SOME: { node: { title: { eq: $title } } } }) {
+                actors(where: { actedInConnection: { some: { node: { title: { eq: $title } } } } }) {
                     name
                     actedIn {
                         title
@@ -128,7 +128,7 @@ describe.skip("interface relationships with aliased fields", () => {
     test("delete", async () => {
         const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
-                deleteActors(where: { actedInConnection_SOME: { node: { title: { eq: $title } } } }) {
+                deleteActors(where: { actedInConnection: { some: { node: { title: { eq: $title } } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }

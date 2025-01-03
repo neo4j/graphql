@@ -42,7 +42,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             type Movie
                 @node
                 @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
-                @authorization(filter: [{ where: { node: { director_SOME: { id: { eq: "$jwt.sub" } } } } }]) {
+                @authorization(filter: [{ where: { node: { director: { some: { id: { eq: "$jwt.sub" } } } } } }]) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -113,7 +113,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @node
                 @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
                 @authorization(
-                    validate: [{ when: [BEFORE], where: { node: { director_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                    validate: [{ when: [BEFORE], where: { node: { director: { some: { id: { eq: "$jwt.sub" } } } } } }]
                 ) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
@@ -185,7 +185,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 @node
                 @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
                 @authorization(
-                    validate: [{ when: [BEFORE], where: { node: { director_ALL: { id: { eq: "$jwt.sub" } } } } }]
+                    validate: [{ when: [BEFORE], where: { node: { director: { all: { id: { eq: "$jwt.sub" } } } } } }]
                 ) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
@@ -263,7 +263,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     validate: [
                         {
                             when: [BEFORE]
-                            where: { node: { directorConnection_SOME: { node: { id: { eq: "$jwt.sub" } } } } }
+                            where: { node: { directorConnection: { some: { node: { id: { eq: "$jwt.sub" } } } } } }
                         }
                     ]
                 ) {
@@ -340,7 +340,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     validate: [
                         {
                             when: [BEFORE]
-                            where: { node: { directorConnection_ALL: { node: { id: { eq: "$jwt.sub" } } } } }
+                            where: { node: { directorConnection: { all: { node: { id: { eq: "$jwt.sub" } } } } } }
                         }
                     ]
                 ) {
@@ -420,7 +420,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     validate: [
                         {
                             when: [BEFORE]
-                            where: { node: { directorConnection_SOME: { edge: { year: { eq: 2020 } } } } }
+                            where: { node: { directorConnection: { some: { edge: { year: { eq: 2020 } } } } } }
                         }
                     ]
                 ) {
@@ -498,7 +498,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                     validate: [
                         {
                             when: [BEFORE]
-                            where: { node: { directorConnection_ALL: { edge: { year: { eq: 2020 } } } } }
+                            where: { node: { directorConnection: { all: { edge: { year: { eq: 2020 } } } } } }
                         }
                     ]
                 ) {

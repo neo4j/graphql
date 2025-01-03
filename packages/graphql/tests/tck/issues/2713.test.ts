@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     test("should not find genresConnection_ALL where NONE true", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { genresConnection_ALL: { node: { moviesAggregate: { count: { eq: 0 } } } } }) {
+                movies(where: { genresConnection: { all: { node: { moviesAggregate: { count: { eq: 0 } } } } } }) {
                     title
                 }
             }
@@ -174,7 +174,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     test("should not find genresConnection_ALL by genre title", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { genresConnection_ALL: { node: { name: { eq: "Thriller" } } } }) {
+                movies(where: { genresConnection: { all: { node: { name: { eq: "Thriller" } } } } }) {
                     title
                 }
             }

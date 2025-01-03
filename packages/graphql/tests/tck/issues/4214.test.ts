@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                 { jwt: { roles: { includes: "store-owner" } } }
                                 { jwt: { roles: { includes: "employee" } } }
                             ]
-                            node: { store_SOME: { id: { eq: "$jwt.store" } } }
+                            node: { store: { some: { id: { eq: "$jwt.store" } } } }
                         }
                     }
                 ]
@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                 { jwt: { roles: { includes: "store-owner" } } }
                                 { jwt: { roles: { includes: "employee" } } }
                             ]
-                            node: { store_SOME: { id: { eq: "$jwt.store" } } }
+                            node: { store: { some: { id: { eq: "$jwt.store" } } } }
                         }
                     }
                 ]
@@ -107,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                 { jwt: { roles: { includes: "store-owner" } } }
                                 { jwt: { roles: { includes: "employee" } } }
                             ]
-                            node: { transaction_SOME: { store_SOME: { id: { eq: "$jwt.store" } } } }
+                            node: { transaction: { some: { store: { some: { id: { eq: "$jwt.store" } } } } } }
                         }
                     }
                 ]
@@ -122,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                                 { jwt: { roles: { includes: "store-owner" } } }
                                 { jwt: { roles: { includes: "employee" } } }
                             ]
-                            node: { transaction_SOME: { store_SOME: { id: { eq: "$jwt.store" } } } }
+                            node: { transaction: { some: { store: { some: { id: { eq: "$jwt.store" } } } } } }
                         }
                     }
                 ]

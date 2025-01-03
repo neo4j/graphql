@@ -52,7 +52,7 @@ describe("Cypher Auth Where", () => {
                     filter: [
                         {
                             operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 ) {
@@ -79,7 +79,9 @@ describe("Cypher Auth Where", () => {
             extend type Post {
                 secretKey: String!
                     @authorization(
-                        filter: [{ operations: [READ], where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                        filter: [
+                            { operations: [READ], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }
+                        ]
                     )
             }
         `;

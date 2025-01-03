@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             }
 
             type Tenant
-                @authorization(validate: [{ where: { node: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }])
+                @authorization(validate: [{ where: { node: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }])
                 @node {
                 id: ID! @id
                 admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
@@ -68,7 +68,9 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
                 @node
                 @mutation(operations: [UPDATE])
                 @authorization(
-                    validate: [{ where: { node: { owner_SOME: { admins_SOME: { userId: { eq: "$jwt.id" } } } } } }]
+                    validate: [
+                        { where: { node: { owner: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                    ]
                 ) {
                 id: ID! @id
                 owner: [Tenant!]! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
@@ -81,7 +83,9 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
                 @node
                 @mutation(operations: [UPDATE])
                 @authorization(
-                    validate: [{ where: { node: { owner_SOME: { admins_SOME: { userId: { eq: "$jwt.id" } } } } } }]
+                    validate: [
+                        { where: { node: { owner: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                    ]
                 ) {
                 id: ID! @id
                 owner: [Tenant!]! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)

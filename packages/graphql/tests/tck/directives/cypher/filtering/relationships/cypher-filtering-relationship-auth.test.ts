@@ -26,7 +26,9 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { actors_SOME: { name: { eq: "$jwt.custom_value" } } } } }]) {
+                @authorization(
+                    filter: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 title: String
                 rating: Float
                 actors: [Actor!]!
@@ -118,7 +120,9 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { actors_SOME: { name: { eq: "$jwt.custom_value" } } } } }]) {
+                @authorization(
+                    filter: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 title: String
                 rating: Float
                 actors: [Actor!]!
@@ -211,7 +215,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
             type Movie
                 @node
                 @authorization(
-                    validate: [{ where: { node: { actors_SOME: { name: { eq: "$jwt.custom_value" } } } } }]
+                    validate: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
                 ) {
                 title: String
                 rating: Float
@@ -305,7 +309,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
             type Movie
                 @node
                 @authorization(
-                    validate: [{ where: { node: { actors_SOME: { name: { eq: "$jwt.custom_value" } } } } }]
+                    validate: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
                 ) {
                 title: String
                 rating: Float

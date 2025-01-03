@@ -78,7 +78,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )
@@ -89,7 +89,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )

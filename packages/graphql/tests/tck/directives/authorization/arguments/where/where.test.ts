@@ -57,10 +57,13 @@ describe("Cypher Auth Where", () => {
             extend type Post {
                 secretKey: String!
                     @authorization(
-                        filter: [{ operations: [READ], where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                        filter: [
+                            { operations: [READ], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }
+                        ]
                     )
             }
-            extend type Post @authorization(filter: [{ where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }])
+            extend type Post
+                @authorization(filter: [{ where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({

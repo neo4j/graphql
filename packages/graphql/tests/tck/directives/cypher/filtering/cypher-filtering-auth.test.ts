@@ -240,7 +240,7 @@ describe("cypher directive filtering - Auth", () => {
             type Actor
                 @node
                 @authorization(
-                    filter: [{ where: { node: { movies_SOME: { custom_field: { eq: "$jwt.custom_value" } } } } }]
+                    filter: [{ where: { node: { movies: { some: { custom_field: { eq: "$jwt.custom_value" } } } } } }]
                 ) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)

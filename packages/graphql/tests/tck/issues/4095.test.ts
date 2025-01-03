@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/4095", () => {
             }
 
             type Person
-                @authorization(filter: [{ where: { node: { creator_SOME: { id: { eq: "$jwt.uid" } } } } }])
+                @authorization(filter: [{ where: { node: { creator: { some: { id: { eq: "$jwt.uid" } } } } } }])
                 @node {
                 id: ID! @id
                 creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])

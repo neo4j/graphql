@@ -43,7 +43,11 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
                 @node
                 @authorization(
                     filter: [
-                        { where: { node: { family_SOME: { creator_SOME: { roles: { includes: "plan:paid" } } } } } }
+                        {
+                            where: {
+                                node: { family: { some: { creator: { some: { roles: { includes: "plan:paid" } } } } } }
+                            }
+                        }
                     ]
                 ) {
                 id: ID! @id

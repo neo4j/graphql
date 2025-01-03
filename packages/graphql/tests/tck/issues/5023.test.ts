@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             }
 
             type Tenant
-                @authorization(validate: [{ where: { node: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }])
+                @authorization(validate: [{ where: { node: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }])
                 @node {
                 id: ID! @id
                 admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
@@ -46,7 +46,9 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             type Settings
                 @node
                 @authorization(
-                    validate: [{ where: { node: { tenant_SOME: { admins_SOME: { userId: { eq: "$jwt.id" } } } } } }]
+                    validate: [
+                        { where: { node: { tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                    ]
                 ) {
                 tenant: [Tenant!]! @relationship(type: "HAS_SETTINGS", direction: IN, aggregate: false)
                 extendedOpeningHours: [OpeningDay!]!
@@ -59,7 +61,11 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                     validate: [
                         {
                             where: {
-                                node: { settings_SOME: { tenant_SOME: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }
+                                node: {
+                                    settings: {
+                                        some: { tenant: { some: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }
+                                    }
+                                }
                             }
                         }
                     ]
@@ -78,7 +84,9 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                             where: {
                                 node: {
                                     openingDay_SOME: {
-                                        settings_SOME: { tenant_SOME: { admins_SOME: { userId: { eq: "$jwt.id" } } } }
+                                        settings: {
+                                            some: { tenant: { some: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }
+                                        }
                                     }
                                 }
                             }

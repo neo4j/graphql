@@ -53,15 +53,23 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     validate: [
                         {
                             operations: [CREATE]
-                            where: { node: { group_SOME: { creator_SOME: { roles: { includes: "plan:paid" } } } } }
+                            where: {
+                                node: { group: { some: { creator: { some: { roles: { includes: "plan:paid" } } } } } }
+                            }
                         }
                         {
                             operations: [DELETE]
                             where: {
                                 OR: [
-                                    { node: { creator_SOME: { id: { eq: "$jwt.uid" } } } }
-                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id: { eq: "$jwt.uid" } } } } } }
-                                    { node: { group_SOME: { creator_SOME: { id: { eq: "$jwt.uid" } } } } }
+                                    { node: { creator: { some: { id: { eq: "$jwt.uid" } } } } }
+                                    {
+                                        node: {
+                                            group: {
+                                                some: { admins: { some: { user_SOME: { id: { eq: "$jwt.uid" } } } } }
+                                            }
+                                        }
+                                    }
+                                    { node: { group: { some: { creator: { some: { id: { eq: "$jwt.uid" } } } } } } }
                                 ]
                             }
                         }
@@ -69,14 +77,24 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                             operations: [READ, UPDATE]
                             where: {
                                 OR: [
-                                    { node: { creator_SOME: { id: { eq: "$jwt.uid" } } } }
-                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id: { eq: "$jwt.uid" } } } } } }
+                                    { node: { creator: { some: { id: { eq: "$jwt.uid" } } } } }
                                     {
                                         node: {
-                                            group_SOME: { contributors_SOME: { user_SOME: { id: { eq: "$jwt.uid" } } } }
+                                            group: {
+                                                some: { admins: { some: { user_SOME: { id: { eq: "$jwt.uid" } } } } }
+                                            }
                                         }
                                     }
-                                    { node: { group_SOME: { creator_SOME: { id: { eq: "$jwt.uid" } } } } }
+                                    {
+                                        node: {
+                                            group: {
+                                                some: {
+                                                    contributors: { some: { user_SOME: { id: { eq: "$jwt.uid" } } } }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    { node: { group: { some: { creator: { some: { id: { eq: "$jwt.uid" } } } } } } }
                                 ]
                             }
                         }

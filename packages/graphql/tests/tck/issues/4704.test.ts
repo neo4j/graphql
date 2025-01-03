@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
                 actors(
                     where: {
                         actedInConnection_ALL: {
-                            node: { actorsConnection_ALL: { node: { name: { eq: "Keanu Reeves" } } } }
+                            node: { actorsConnection: { all: { node: { name: { eq: "Keanu Reeves" } } } } }
                         }
                     }
                 ) {
@@ -155,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
                 actors(
                     where: {
                         actedInConnection_SINGLE: {
-                            node: { actorsConnection_SINGLE: { node: { name: { eq: "Keanu Reeves" } } } }
+                            node: { actorsConnection: { single: { node: { name: { eq: "Keanu Reeves" } } } } }
                         }
                     }
                 ) {
@@ -204,7 +204,7 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
                 actors(
                     where: {
                         actedInConnection_NONE: {
-                            node: { actorsConnection_NONE: { node: { name: { eq: "Keanu Reeves" } } } }
+                            node: { actorsConnection: { none: { node: { name: { eq: "Keanu Reeves" } } } } }
                         }
                     }
                 ) {

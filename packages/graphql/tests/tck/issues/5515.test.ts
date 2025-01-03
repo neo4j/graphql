@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
             }
 
             type Cabinet
-                @authorization(filter: [{ where: { node: { user_SOME: { id: { eq: "$jwt.sub" } } } } }])
+                @authorization(filter: [{ where: { node: { user: { some: { id: { eq: "$jwt.sub" } } } } } }])
                 @node {
                 id: ID! @id
                 categories: [Category!]! @relationship(type: "HAS_CATEGORY", direction: OUT)
@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
 
             type Category
                 @authorization(
-                    filter: [{ where: { node: { cabinet_SOME: { user_SOME: { id: { eq: "$jwt.sub" } } } } } }]
+                    filter: [{ where: { node: { cabinet: { some: { user: { some: { id: { eq: "$jwt.sub" } } } } } } } }]
                 )
                 @node {
                 id: ID! @id

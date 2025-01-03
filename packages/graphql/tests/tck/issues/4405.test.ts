@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
                         {
                             when: [BEFORE]
                             operations: [READ]
-                            where: { node: { actedInConnection_SOME: { node: { title: { in: ["Matrix"] } } } } }
+                            where: { node: { actedInConnection: { some: { node: { title: { in: ["Matrix"] } } } } } }
                         }
                     ]
                 ) {

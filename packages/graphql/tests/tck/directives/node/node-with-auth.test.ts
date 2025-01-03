@@ -102,7 +102,7 @@ describe("Node Directive", () => {
     test("Admin Deletes Post", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deletePosts(where: { creator_SOME: { id: { eq: "123" } } }) {
+                deletePosts(where: { creator: { some: { id: { eq: "123" } } } }) {
                     nodesDeleted
                 }
             }

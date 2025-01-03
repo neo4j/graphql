@@ -63,7 +63,9 @@ describe("Cypher Auth Where with Roles", () => {
             extend type Post {
                 secretKey: String!
                     @authorization(
-                        filter: [{ operations: [READ], where: { node: { creator_SOME: { id: { eq: "$jwt.sub" } } } } }]
+                        filter: [
+                            { operations: [READ], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }
+                        ]
                     )
             }
 
@@ -72,7 +74,7 @@ describe("Cypher Auth Where with Roles", () => {
                     validate: [
                         {
                             where: {
-                                node: { creator_SOME: { id: { eq: "$jwt.sub" } } }
+                                node: { creator: { some: { id: { eq: "$jwt.sub" } } } }
                                 jwt: { roles: { includes: "user" } }
                             }
                         }

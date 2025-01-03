@@ -42,8 +42,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                             operations: [READ]
                             where: {
                                 OR: [
-                                    { node: { members_SOME: { authId: { eq: "$jwt.sub" } } } }
-                                    { node: { admins_SOME: { authId: { eq: "$jwt.sub" } } } }
+                                    { node: { members: { some: { authId: { eq: "$jwt.sub" } } } } }
+                                    { node: { admins: { some: { authId: { eq: "$jwt.sub" } } } } }
                                 ]
                             }
                         }
@@ -66,15 +66,15 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                             where: {
                                 node: {
                                     OR: [
-                                        { owner_SOME: { authId: { eq: "$jwt.sub" } } }
+                                        { owner: { some: { authId: { eq: "$jwt.sub" } } } }
                                         {
                                             AND: [
                                                 { shared: { eq: true } }
                                                 {
                                                     workspace_ALL: {
                                                         OR: [
-                                                            { members_SOME: { authId: { eq: "$jwt.sub" } } }
-                                                            { admins_SOME: { authId: { eq: "$jwt.sub" } } }
+                                                            { members: { some: { authId: { eq: "$jwt.sub" } } } }
+                                                            { admins: { some: { authId: { eq: "$jwt.sub" } } } }
                                                         ]
                                                     }
                                                 }
@@ -231,7 +231,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     test("Pages query", async () => {
         const query = /* GraphQL */ `
             query Pages {
-                pages(where: { workspace_ALL: { id: { eq: "my-workspace-id" } } }) {
+                pages(where: { workspace: { all: { id: { eq: "my-workspace-id" } } } }) {
                     id
                 }
             }

@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
     test("should not use a node label so it covers all nodes implementing the interface for connection rel", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { distributionConnection_SOME: { node: { name: { eq: "test4" } } } }) {
+                movies(where: { distributionConnection: { some: { node: { name: { eq: "test4" } } } } }) {
                     title
                 }
             }
@@ -221,7 +221,9 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
         const query = /* GraphQL */ `
             query {
                 movies(
-                    where: { OR: [{ distributionConnection_SOME: { Netflix: { node: { name: { eq: "test" } } } } }] }
+                    where: {
+                        OR: [{ distributionConnection: { some: { Netflix: { node: { name: { eq: "test" } } } } } }]
+                    }
                 ) {
                     title
                 }
@@ -249,7 +251,9 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
         const query = /* GraphQL */ `
             query {
                 movies(
-                    where: { OR: [{ distributionConnection_SOME: { Dishney: { node: { name: { eq: "test2" } } } } }] }
+                    where: {
+                        OR: [{ distributionConnection: { some: { Dishney: { node: { name: { eq: "test2" } } } } } }]
+                    }
                 ) {
                     title
                 }
@@ -276,7 +280,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
     test("should use the correct node label for connection rel when defined in node _on - without OR operator", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { distributionConnection_SOME: { Dishney: { node: { name: { eq: "test3" } } } } }) {
+                movies(where: { distributionConnection: { some: { Dishney: { node: { name: { eq: "test3" } } } } } }) {
                     title
                 }
             }
