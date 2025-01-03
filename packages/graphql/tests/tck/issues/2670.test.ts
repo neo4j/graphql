@@ -176,8 +176,8 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             {
                 movies(
                     where: {
-                        genresConnection_SOME: {
-                            node: { moviesAggregate: { node: { title: { shortestLength: { eq: 5 } } } } }
+                        genresConnection: {
+                            some: { node: { moviesAggregate: { node: { title: { shortestLength: { eq: 5 } } } } } }
                         }
                     }
                 ) {
@@ -222,8 +222,8 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             {
                 movies(
                     where: {
-                        genresConnection_SOME: {
-                            node: { moviesAggregate: { node: { title: { averageLength: { eq: 1 } } } } }
+                        genresConnection: {
+                            some: { node: { moviesAggregate: { node: { title: { averageLength: { eq: 1 } } } } } }
                         }
                     }
                 ) {
@@ -265,8 +265,8 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             {
                 movies(
                     where: {
-                        genresConnection_SOME: {
-                            node: { moviesAggregate: { edge: { intValue: { max: { lt: 983 } } } } }
+                        genresConnection: {
+                            some: { node: { moviesAggregate: { edge: { intValue: { max: { lt: 983 } } } } } }
                         }
                     }
                 ) {
@@ -533,11 +533,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             {
                 movies(
                     where: {
-                        genresConnection_SOME: {
-                            AND: [
-                                { node: { moviesAggregate: { count: { eq: 2 } } } }
-                                { node: { seriesAggregate: { node: { name: { shortestLength: { eq: 1 } } } } } }
-                            ]
+                        genresConnection: {
+                            some: {
+                                AND: [
+                                    { node: { moviesAggregate: { count: { eq: 2 } } } }
+                                    { node: { seriesAggregate: { node: { name: { shortestLength: { eq: 1 } } } } } }
+                                ]
+                            }
                         }
                     }
                 ) {
@@ -591,11 +593,13 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             {
                 movies(
                     where: {
-                        genresConnection_SOME: {
-                            OR: [
-                                { node: { moviesAggregate: { count: { eq: 3 } } } }
-                                { node: { seriesAggregate: { node: { name: { shortestLength: { eq: 983 } } } } } }
-                            ]
+                        genresConnection: {
+                            some: {
+                                OR: [
+                                    { node: { moviesAggregate: { count: { eq: 3 } } } }
+                                    { node: { seriesAggregate: { node: { name: { shortestLength: { eq: 983 } } } } } }
+                                ]
+                            }
                         }
                     }
                 ) {
@@ -649,10 +653,12 @@ describe("https://github.com/neo4j/graphql/issues/2670", () => {
             {
                 movies(
                     where: {
-                        genresConnection_SOME: {
-                            node: {
-                                moviesAggregate: { count: { eq: 2 } }
-                                seriesAggregate: { node: { name: { shortestLength: { eq: 983 } } } }
+                        genresConnection: {
+                            some: {
+                                node: {
+                                    moviesAggregate: { count: { eq: 2 } }
+                                    seriesAggregate: { node: { name: { shortestLength: { eq: 983 } } } }
+                                }
                             }
                         }
                     }

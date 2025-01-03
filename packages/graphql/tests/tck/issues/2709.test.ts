@@ -122,8 +122,8 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
             query {
                 movies(
                     where: {
-                        distributionConnection_SOME: {
-                            node: { OR: [{ name: { eq: "test4" } }, { name: { eq: "test1" } }] }
+                        distributionConnection: {
+                            some: { node: { OR: [{ name: { eq: "test4" } }, { name: { eq: "test1" } }] } }
                         }
                     }
                 ) {

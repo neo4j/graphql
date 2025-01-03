@@ -71,11 +71,13 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                                             AND: [
                                                 { shared: { eq: true } }
                                                 {
-                                                    workspace_ALL: {
-                                                        OR: [
-                                                            { members: { some: { authId: { eq: "$jwt.sub" } } } }
-                                                            { admins: { some: { authId: { eq: "$jwt.sub" } } } }
-                                                        ]
+                                                    workspace: {
+                                                        all: {
+                                                            OR: [
+                                                                { members: { some: { authId: { eq: "$jwt.sub" } } } }
+                                                                { admins: { some: { authId: { eq: "$jwt.sub" } } } }
+                                                            ]
+                                                        }
                                                     }
                                                 }
                                             ]

@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                             where: {
                                 node: {
                                     settings: {
-                                        some: { tenant: { some: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }
+                                        some: { tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }
                                     }
                                 }
                             }
@@ -83,9 +83,15 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                         {
                             where: {
                                 node: {
-                                    openingDay_SOME: {
-                                        settings: {
-                                            some: { tenant: { some: { admins_SOME: { userId: { eq: "$jwt.id" } } } } }
+                                    openingDay: {
+                                        some: {
+                                            settings: {
+                                                some: {
+                                                    tenant: {
+                                                        some: { admins: { some: { userId: { eq: "$jwt.id" } } } }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -114,9 +114,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SOME: {
-                            actors: { all: { moviesAggregate: { count: { gt: 1 } } } }
-                            actorsAggregate: { count: { eq: 1 } }
+                        movies: {
+                            some: {
+                                actors: { all: { moviesAggregate: { count: { gt: 1 } } } }
+                                actorsAggregate: { count: { eq: 1 } }
+                            }
                         }
                     }
                 ) {
@@ -194,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 movies(
                     where: {
                         actors: {
-                            some: { movies: { some: { actors_ALL: { moviesAggregate: { count: { gt: 2 } } } } } }
+                            some: { movies: { some: { actors: { all: { moviesAggregate: { count: { gt: 2 } } } } } } }
                         }
                     }
                 ) {
@@ -269,12 +271,16 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actors_SINGLE: {
-                            movies_SOME: {
-                                actors: { all: { moviesAggregate: { count: { gt: 1 } } } }
-                                actorsAggregate: { node: { name: { averageLength: { lt: 10 } } } }
+                        actors: {
+                            single: {
+                                movies: {
+                                    some: {
+                                        actors: { all: { moviesAggregate: { count: { gt: 1 } } } }
+                                        actorsAggregate: { node: { name: { averageLength: { lt: 10 } } } }
+                                    }
+                                }
+                                moviesAggregate: { node: { released: { average: { eq: 25 } } } }
                             }
-                            moviesAggregate: { node: { released: { average: { eq: 25 } } } }
                         }
                         actorsAggregate: { node: { name: { averageLength: { gte: 3 } } } }
                     }
@@ -368,8 +374,10 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        moviesConnection_SOME: {
-                            node: { actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } } }
+                        moviesConnection: {
+                            some: {
+                                node: { actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } } }
+                            }
                         }
                     }
                 ) {
@@ -437,9 +445,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SOME: {
-                            actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } }
-                            actorsAggregate: { count: { eq: 1 } }
+                        movies: {
+                            some: {
+                                actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } }
+                                actorsAggregate: { count: { eq: 1 } }
+                            }
                         }
                     }
                 ) {
@@ -516,11 +526,17 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            node: {
-                                moviesConnection_SOME: {
-                                    node: {
-                                        actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 2 } } } } }
+                        actorsConnection: {
+                            some: {
+                                node: {
+                                    moviesConnection: {
+                                        some: {
+                                            node: {
+                                                actorsConnection: {
+                                                    all: { node: { moviesAggregate: { count: { gt: 2 } } } }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -598,15 +614,21 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            node: {
-                                moviesConnection_SOME: {
-                                    node: {
-                                        actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } }
-                                        actorsAggregate: { node: { name: { averageLength: { lt: 10 } } } }
+                        actorsConnection: {
+                            some: {
+                                node: {
+                                    moviesConnection: {
+                                        some: {
+                                            node: {
+                                                actorsConnection: {
+                                                    all: { node: { moviesAggregate: { count: { gt: 1 } } } }
+                                                }
+                                                actorsAggregate: { node: { name: { averageLength: { lt: 10 } } } }
+                                            }
+                                        }
                                     }
+                                    moviesAggregate: { node: { released: { average: { eq: 25 } } } }
                                 }
-                                moviesAggregate: { node: { released: { average: { eq: 25 } } } }
                             }
                         }
                         actorsAggregate: { node: { name: { averageLength: { gte: 3 } } } }
@@ -839,10 +861,16 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            node: {
-                                movies_SINGLE: {
-                                    actorsConnection: { none: { node: { moviesAggregate: { count: { gt: 2 } } } } }
+                        actorsConnection: {
+                            some: {
+                                node: {
+                                    movies: {
+                                        single: {
+                                            actorsConnection: {
+                                                none: { node: { moviesAggregate: { count: { gt: 2 } } } }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -903,9 +931,13 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SINGLE: {
-                            actors: { none: { moviesAggregate: { edge: { screenTime: { average: { lte: 1000 } } } } } }
-                            actorsAggregate: { edge: { screenTime: { average: { lte: 1000 } } } }
+                        movies: {
+                            single: {
+                                actors: {
+                                    none: { moviesAggregate: { edge: { screenTime: { average: { lte: 1000 } } } } }
+                                }
+                                actorsAggregate: { edge: { screenTime: { average: { lte: 1000 } } } }
+                            }
                         }
                     }
                 ) {
@@ -960,14 +992,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_NONE: {
-                                    node: { moviesAggregate: { count: { gt: 1 } } }
-                                    edge: { roles: { includes: "a role" } }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        none: {
+                                            node: { moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "a role" } }
+                                        }
+                                    }
                                 }
+                                edge: { roles: { includes: "another role" } }
                             }
-                            edge: { roles: { includes: "another role" } }
                         }
                     }
                 ) {
@@ -1021,11 +1057,15 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_SOME: {
-                                    node: { name: { eq: "actor name" }, moviesAggregate: { count: { gt: 1 } } }
-                                    edge: { roles: { includes: "actor role" } }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        some: {
+                                            node: { name: { eq: "actor name" }, moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "actor role" } }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1159,9 +1199,13 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_ALL: {
-                            actors_SOME: {
-                                OR: [{ name: { eq: "some name" } }, { moviesAggregate: { count: { gt: 1 } } }]
+                        movies: {
+                            all: {
+                                actors: {
+                                    some: {
+                                        OR: [{ name: { eq: "some name" } }, { moviesAggregate: { count: { gt: 1 } } }]
+                                    }
+                                }
                             }
                         }
                     }
@@ -1239,9 +1283,13 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_ALL: {
-                            actors_SOME: {
-                                AND: [{ name: { eq: "some name" } }, { moviesAggregate: { count: { gt: 1 } } }]
+                        movies: {
+                            all: {
+                                actors: {
+                                    some: {
+                                        AND: [{ name: { eq: "some name" } }, { moviesAggregate: { count: { gt: 1 } } }]
+                                    }
+                                }
                             }
                         }
                     }
@@ -1319,14 +1367,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             mutation {
                 updateActors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_NONE: {
-                                    node: { moviesAggregate: { count: { gt: 1 } } }
-                                    edge: { roles: { includes: "some role" } }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        none: {
+                                            node: { moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "some role" } }
+                                        }
+                                    }
                                 }
+                                edge: { roles: { includes: "another role" } }
                             }
-                            edge: { roles: { includes: "another role" } }
                         }
                     }
                     update: { name_SET: "Exciting new name!" }
@@ -1386,11 +1438,15 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             mutation {
                 deleteActors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_SOME: {
-                                    node: { name: { eq: "a name" }, moviesAggregate: { count: { gt: 1 } } }
-                                    edge: { roles: { includes: "some-role" } }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        some: {
+                                            node: { name: { eq: "a name" }, moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "some-role" } }
+                                        }
+                                    }
                                 }
                             }
                         }

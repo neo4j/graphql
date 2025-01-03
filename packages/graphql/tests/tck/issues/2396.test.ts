@@ -138,9 +138,13 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             limit: null,
             offset: null,
             where: {
-                valuation_SOME: {
-                    estate_SOME: {
-                        floor: { gte: 0 },
+                valuation: {
+                    some: {
+                        estate: {
+                            some: {
+                                floor: { gte: 0 },
+                            },
+                        },
                     },
                 },
             },
@@ -210,9 +214,13 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             offset: null,
             where: {
                 price: { gte: 0 },
-                valuation_SOME: {
-                    estate_SOME: {
-                        floor: { gte: 0 },
+                valuation: {
+                    some: {
+                        estate: {
+                            some: {
+                                floor: { gte: 0 },
+                            },
+                        },
                     },
                 },
             },
@@ -283,16 +291,24 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             offset: null,
             where: {
                 price: { gte: 0 },
-                valuation_SOME: {
-                    estate_SOME: {
-                        address_SOME: {
-                            postalCode_SOME: {
-                                number: { in: ["13001"] },
+                valuation: {
+                    some: {
+                        estate: {
+                            some: {
+                                address: {
+                                    some: {
+                                        postalCode: {
+                                            some: {
+                                                number: { in: ["13001"] },
+                                            },
+                                        },
+                                    },
+                                },
+                                area: { gte: 0 },
+                                estateType: { in: ["APARTMENT"] },
+                                floor: { gte: 0 },
                             },
                         },
-                        area: { gte: 0 },
-                        estateType: { in: ["APARTMENT"] },
-                        floor: { gte: 0 },
                     },
                 },
             },
@@ -376,16 +392,24 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             sort: null,
             where: {
                 price: { gte: 0 },
-                valuation_SOME: {
-                    estate_SOME: {
-                        address_SOME: {
-                            postalCode_SOME: {
-                                number: { in: ["13001"] },
+                valuation: {
+                    some: {
+                        estate: {
+                            some: {
+                                address: {
+                                    some: {
+                                        postalCode: {
+                                            some: {
+                                                number: { in: ["13001"] },
+                                            },
+                                        },
+                                    },
+                                },
+                                area: { gte: 0 },
+                                estateType: { in: ["APARTMENT"] },
+                                floor: { gte: 0 },
                             },
                         },
-                        area: { gte: 0 },
-                        estateType: { in: ["APARTMENT"] },
-                        floor: { gte: 0 },
                     },
                 },
             },
@@ -480,16 +504,24 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             sort: null,
             where: {
                 price: { gte: 0 },
-                valuation_SOME: {
-                    estate_SOME: {
-                        address_SOME: {
-                            postalCode_SOME: {
-                                number: { in: ["13001"] },
+                valuation: {
+                    some: {
+                        estate: {
+                            some: {
+                                address: {
+                                    some: {
+                                        postalCode: {
+                                            some: {
+                                                number: { in: ["13001"] },
+                                            },
+                                        },
+                                    },
+                                },
+                                area: { gte: 0 },
+                                estateType: { in: ["APARTMENT"] },
+                                floor: { gte: 0 },
                             },
                         },
-                        area: { gte: 0 },
-                        estateType: { in: ["APARTMENT"] },
-                        floor: { gte: 0 },
                     },
                 },
             },

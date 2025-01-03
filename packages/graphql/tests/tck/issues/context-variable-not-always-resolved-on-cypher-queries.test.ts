@@ -72,8 +72,10 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             query {
                 exprs(
                     where: {
-                        realizationOf_SOME: {
-                            hasResourceType: { some: { iri: { eq: "http://data.somesite.com/crown/test-id" } } }
+                        realizationOf: {
+                            some: {
+                                hasResourceType: { some: { iri: { eq: "http://data.somesite.com/crown/test-id" } } }
+                            }
                         }
                     }
                     limit: 1
@@ -122,8 +124,10 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             query {
                 exprs(
                     where: {
-                        realizationOf_SOME: {
-                            hasResourceType: { some: { iri: { eq: "http://data.somesite.com/crown/test-id" } } }
+                        realizationOf: {
+                            some: {
+                                hasResourceType: { some: { iri: { eq: "http://data.somesite.com/crown/test-id" } } }
+                            }
                         }
                     }
                     limit: 1
@@ -193,8 +197,10 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
             query {
                 exprs(
                     where: {
-                        realizationOf_SOME: {
-                            hasResourceType: { some: { iri: { eq: "http://data.somesite.com/crown/test-id" } } }
+                        realizationOf: {
+                            some: {
+                                hasResourceType: { some: { iri: { eq: "http://data.somesite.com/crown/test-id" } } }
+                            }
                         }
                     }
                     limit: 1

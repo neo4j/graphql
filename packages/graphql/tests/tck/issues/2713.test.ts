@@ -112,8 +112,8 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             {
                 movies(
                     where: {
-                        genresConnection_ALL: {
-                            node: { moviesAggregate: { count: { eq: 0 } }, name: { eq: "Thriller" } }
+                        genresConnection: {
+                            all: { node: { moviesAggregate: { count: { eq: 0 } }, name: { eq: "Thriller" } } }
                         }
                     }
                 ) {

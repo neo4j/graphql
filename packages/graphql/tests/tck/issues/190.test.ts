@@ -88,12 +88,14 @@ describe("#190", () => {
             query {
                 users(
                     where: {
-                        demographics_SOME: {
-                            OR: [
-                                { type: { eq: "Gender" }, value: { eq: "Female" } }
-                                { type: { eq: "State" } }
-                                { type: { eq: "Age" } }
-                            ]
+                        demographics: {
+                            some: {
+                                OR: [
+                                    { type: { eq: "Gender" }, value: { eq: "Female" } }
+                                    { type: { eq: "State" } }
+                                    { type: { eq: "Age" } }
+                                ]
+                            }
                         }
                     }
                 ) {

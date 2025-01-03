@@ -65,7 +65,9 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                                     {
                                         node: {
                                             group: {
-                                                some: { admins: { some: { user_SOME: { id: { eq: "$jwt.uid" } } } } }
+                                                some: {
+                                                    admins: { some: { user: { some: { id: { eq: "$jwt.uid" } } } } }
+                                                }
                                             }
                                         }
                                     }
@@ -81,7 +83,9 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                                     {
                                         node: {
                                             group: {
-                                                some: { admins: { some: { user_SOME: { id: { eq: "$jwt.uid" } } } } }
+                                                some: {
+                                                    admins: { some: { user: { some: { id: { eq: "$jwt.uid" } } } } }
+                                                }
                                             }
                                         }
                                     }
@@ -89,7 +93,9 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                                         node: {
                                             group: {
                                                 some: {
-                                                    contributors: { some: { user_SOME: { id: { eq: "$jwt.uid" } } } }
+                                                    contributors: {
+                                                        some: { user: { some: { id: { eq: "$jwt.uid" } } } }
+                                                    }
                                                 }
                                             }
                                         }

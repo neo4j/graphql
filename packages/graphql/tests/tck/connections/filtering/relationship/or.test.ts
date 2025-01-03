@@ -106,8 +106,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            OR: [{ node: { name: { eq: "Harry" } } }, { edge: { role: { eq: "Tom" } } }]
+                        actorsConnection: {
+                            some: { OR: [{ node: { name: { eq: "Harry" } } }, { edge: { role: { eq: "Tom" } } }] }
                         }
                     }
                 ) {

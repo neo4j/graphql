@@ -55,12 +55,16 @@ describe("#582", () => {
             variableValues: {
                 where: {
                     type: { eq: "Cat" },
-                    childrenConnection_SOME: {
-                        node: {
-                            type: { eq: "Dog" },
-                            parentsConnection_SOME: {
-                                node: {
-                                    type: { eq: "Bird" },
+                    childrenConnection: {
+                        some: {
+                            node: {
+                                type: { eq: "Dog" },
+                                parentsConnection: {
+                                    some: {
+                                        node: {
+                                            type: { eq: "Bird" },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -103,15 +107,21 @@ describe("#582", () => {
             variableValues: {
                 where: {
                     type: { eq: "Cat" },
-                    childrenConnection_SOME: {
-                        node: {
-                            type: { eq: "Dog" },
-                            parentsConnection_SOME: {
-                                node: {
-                                    type: { eq: "Bird" },
-                                    childrenConnection_SOME: {
+                    childrenConnection: {
+                        some: {
+                            node: {
+                                type: { eq: "Dog" },
+                                parentsConnection: {
+                                    some: {
                                         node: {
-                                            type: { eq: "Fish" },
+                                            type: { eq: "Bird" },
+                                            childrenConnection: {
+                                                some: {
+                                                    node: {
+                                                        type: { eq: "Fish" },
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                 },
