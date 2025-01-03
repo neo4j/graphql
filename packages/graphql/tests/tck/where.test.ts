@@ -175,7 +175,9 @@ describe("Cypher WHERE", () => {
         const query = /* GraphQL */ `
             {
                 movies(
-                    where: { AND: [{ OR: [{ title: { eq: "some title" } }, { isFavorite: { eq: true } }], id_EQ: 2 }] }
+                    where: {
+                        AND: [{ OR: [{ title: { eq: "some title" } }, { isFavorite: { eq: true } }], id: { eq: 2 } }]
+                    }
                 ) {
                     title
                 }

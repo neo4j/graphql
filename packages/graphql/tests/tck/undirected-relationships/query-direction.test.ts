@@ -68,7 +68,7 @@ describe("queryDirection in relationships", () => {
         test("query with filter", async () => {
             const query = /* GraphQL */ `
                 query {
-                    users(where: { friends_SOME: { name_EQ: "John Smith" } }) {
+                    users(where: { friends_SOME: { name: { eq: "John Smith" } } }) {
                         name
                         friends {
                             name
@@ -105,8 +105,8 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     updateUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
-                        update: { friends: { disconnect: { where: { node: { name_EQ: "Jane Smith" } } } } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
+                        update: { friends: { disconnect: { where: { node: { name: { eq: "Jane Smith" } } } } } }
                     ) {
                         users {
                             name
@@ -162,7 +162,9 @@ describe("queryDirection in relationships", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"Jane Smith\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Jane Smith\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -181,8 +183,8 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     updateUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
-                        update: { friends: { delete: { where: { node: { name_EQ: "Jane Smith" } } } } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
+                        update: { friends: { delete: { where: { node: { name: { eq: "Jane Smith" } } } } } }
                     ) {
                         users {
                             name
@@ -237,7 +239,9 @@ describe("queryDirection in relationships", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"Jane Smith\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Jane Smith\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -256,10 +260,10 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     updateUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
                         update: {
                             friends: {
-                                where: { node: { name_EQ: "Jane Smith" } }
+                                where: { node: { name: { eq: "Jane Smith" } } }
                                 update: { node: { name_SET: "Janet Smith" } }
                             }
                         }
@@ -312,7 +316,9 @@ describe("queryDirection in relationships", () => {
                                     {
                                         \\"where\\": {
                                             \\"node\\": {
-                                                \\"name_EQ\\": \\"Jane Smith\\"
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"Jane Smith\\"
+                                                }
                                             }
                                         },
                                         \\"update\\": {
@@ -334,8 +340,8 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     deleteUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
-                        delete: { friends: { where: { node: { name_EQ: "Jane Smith" } } } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
+                        delete: { friends: { where: { node: { name: { eq: "Jane Smith" } } } } }
                     ) {
                         nodesDeleted
                     }
@@ -422,7 +428,7 @@ describe("queryDirection in relationships", () => {
         test("query with filter", async () => {
             const query = /* GraphQL */ `
                 query {
-                    users(where: { friends_SOME: { name_EQ: "John Smith" } }) {
+                    users(where: { friends_SOME: { name: { eq: "John Smith" } } }) {
                         name
                         friends {
                             name
@@ -459,8 +465,8 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     updateUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
-                        update: { friends: { disconnect: { where: { node: { name_EQ: "Jane Smith" } } } } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
+                        update: { friends: { disconnect: { where: { node: { name: { eq: "Jane Smith" } } } } } }
                     ) {
                         users {
                             name
@@ -516,7 +522,9 @@ describe("queryDirection in relationships", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"Jane Smith\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Jane Smith\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -535,8 +543,8 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     updateUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
-                        update: { friends: { delete: { where: { node: { name_EQ: "Jane Smith" } } } } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
+                        update: { friends: { delete: { where: { node: { name: { eq: "Jane Smith" } } } } } }
                     ) {
                         users {
                             name
@@ -591,7 +599,9 @@ describe("queryDirection in relationships", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"Jane Smith\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Jane Smith\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -610,10 +620,10 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     updateUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
                         update: {
                             friends: {
-                                where: { node: { name_EQ: "Jane Smith" } }
+                                where: { node: { name: { eq: "Jane Smith" } } }
                                 update: { node: { name_SET: "Janet Smith" } }
                             }
                         }
@@ -666,7 +676,9 @@ describe("queryDirection in relationships", () => {
                                     {
                                         \\"where\\": {
                                             \\"node\\": {
-                                                \\"name_EQ\\": \\"Jane Smith\\"
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"Jane Smith\\"
+                                                }
                                             }
                                         },
                                         \\"update\\": {
@@ -688,8 +700,8 @@ describe("queryDirection in relationships", () => {
             const query = /* GraphQL */ `
                 mutation {
                     deleteUsers(
-                        where: { friends_SOME: { name_EQ: "John Smith" } }
-                        delete: { friends: { where: { node: { name_EQ: "Jane Smith" } } } }
+                        where: { friends_SOME: { name: { eq: "John Smith" } } }
+                        delete: { friends: { where: { node: { name: { eq: "Jane Smith" } } } } }
                     ) {
                         nodesDeleted
                     }
