@@ -29,14 +29,17 @@ import {
     withFulltextWhereInputType,
 } from "../generation/fulltext-input";
 import { fulltextResolver } from "../resolvers/query/fulltext";
+import { type ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 
 export function augmentFulltextSchema({
     composer,
     concreteEntityAdapter,
+    complexityEstimatorHelper,
     features,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
+    complexityEstimatorHelper: ComplexityEstimatorHelper
     features?: Neo4jFeaturesSettings;
 }) {
     if (!concreteEntityAdapter.annotations.fulltext) {
@@ -61,6 +64,7 @@ export function augmentFulltextSchema({
             after: GraphQLString,
         };
 
+        complexityEstimatorHelper.registerField("Query", index.queryName);
         composer.Query.addFields({
             [index.queryName]: {
                 type: withFulltextResultTypeConnection({ composer, concreteEntityAdapter }).NonNull,

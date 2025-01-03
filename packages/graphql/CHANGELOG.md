@@ -1,5 +1,237 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.0
+
+### Major Changes
+
+-   [#5899](https://github.com/neo4j/graphql/pull/5899) [`7335d8f`](https://github.com/neo4j/graphql/commit/7335d8f416bbfa08feab0fe4983f89590f984e1c) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Nested mutation operations now follow the relationship direction behaviour as defined in `queryDirection`
+
+-   [#5872](https://github.com/neo4j/graphql/pull/5872) [`925ad8d`](https://github.com/neo4j/graphql/commit/925ad8dedc307200d1c3fd813e531325940d8f8f) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove `@private` directive. This directive was intended to be used with the library `@neo4j/graphql-ogm` which is no longer supported.
+
+-   [#5895](https://github.com/neo4j/graphql/pull/5895) [`6afcadd`](https://github.com/neo4j/graphql/commit/6afcaddbfc62549c6c610a2199513bf4c719486c) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema generation if there are conflicting plural names in types. For example, the following schema will fail, due to ambiguous `Techs` plural
+
+    ```graphql
+    type Tech @node(plural: "Techs") {
+        name: String
+    }
+
+    type Techs {
+        value: String
+    }
+    ```
+
+-   [#5755](https://github.com/neo4j/graphql/pull/5755) [`9c75f92`](https://github.com/neo4j/graphql/commit/9c75f925884de42f64e1b5c3086cc87c114727bd) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove support for `connectOrCreate` operations
+
+-   [#5778](https://github.com/neo4j/graphql/pull/5778) [`56022ba`](https://github.com/neo4j/graphql/commit/56022ba38d8beb6cb5d7bbfb5e856fd57d9660c5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `directed` argument has been removed, and `queryDirection` now only accepts two possible values - `DIRECTED` (default) and `UNDIRECTED`.
+
+    Additionally, the `directedArgument` setting of `excludeDeprecatedFields` has been removed as these deprecated fields have been removed.
+
+-   [#5819](https://github.com/neo4j/graphql/pull/5819) [`ac1fa62`](https://github.com/neo4j/graphql/commit/ac1fa629f1eb8b248116bd9dedaabc02117fdbee) Thanks [@angrykoala](https://github.com/angrykoala)! - Single element relationships have been removed in favor of list relationships:
+
+    Before
+
+    ```graphql
+    type Movie {
+        director: Person @relationship(type: "DIRECTED", direction: "IN")
+    }
+    ```
+
+    After
+
+    ```graphql
+    type Movie {
+        director: [Person!]! @relationship(type: "DIRECTED", direction: "IN")
+    }
+    ```
+
+    This requires updating filters, clients and auth rules to use the list filter operations.
+
+    Single element relationships cannot be reliably enforced, leading to a data inconsistent with the schema. If the GraphQL model requires 1-1 relationships (such as in federations) these can now be achieved with the `@cypher` directive instead:
+
+    ```graphql
+    type Movie {
+        director: Person
+            @cypher(
+                statement: """
+                MATCH(this)-[:ACTED_IN]->(p:Person)
+                RETURN p
+                """
+                columnName: "p"
+            )
+    }
+    ```
+
+-   [#5762](https://github.com/neo4j/graphql/pull/5762) [`87e416b`](https://github.com/neo4j/graphql/commit/87e416b2547b75824d9782fd5da90c003437e7c0) Thanks [@darrellwarde](https://github.com/darrellwarde)! - There have been major changes to the way that full-text search operates.
+
+    The directive now requires the specification of an index name, query name, and indexed fields.
+
+    ```graphql
+    input FulltextInput {
+        indexName: String!
+        queryName: String!
+        fields: [String]!
+    }
+
+    """
+    Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.
+    """
+    directive @fulltext(indexes: [FulltextInput]!) on OBJECT
+    ```
+
+    Here is an example of how this might be used:
+
+    ```graphql
+    type Movie @node @fulltext(indexName: "movieTitleIndex", queryName: "moviesByTitle", fields: ["title"]) {
+        title: String!
+    }
+    ```
+
+    Full-text search was previously available in two different locations.
+
+    The following form has now been completely removed:
+
+    ```graphql
+    # Removed
+    {
+        movies(fulltext: { movieTitleIndex: { phrase: "The Matrix" } }) {
+            title
+        }
+    }
+    ```
+
+    The following form as a root-level query has been changed:
+
+    ```graphql
+    # Old query
+    query {
+        moviesByTitle(phrase: "The Matrix") {
+            score
+            movies {
+                title
+            }
+        }
+    }
+
+    # New query
+    query {
+        moviesByTitle(phrase: "The Matrix") {
+            edges {
+                score
+                node {
+                    title
+                }
+            }
+        }
+    }
+    ```
+
+    The new form is as a Relay connection, which allows for pagination using cursors and access to the `pageInfo` field.
+
+-   [#5820](https://github.com/neo4j/graphql/pull/5820) [`d8d59f8`](https://github.com/neo4j/graphql/commit/d8d59f80480017d27b49b062321a9a15b6494a96) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Change the way how `@node` behaves, `@node` is now required, and GraphQL Object types without the directive `@node` will no longer considered as a Neo4j Nodes representation.
+    Queries and Mutations will be generated only for types with the `@node` directive.
+
+-   [#5801](https://github.com/neo4j/graphql/pull/5801) [`95ce8bb`](https://github.com/neo4j/graphql/commit/95ce8bb884bddaf20d751f2448b5504a7b94d081) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Implicit filtering fields have been removed, please use the explicit versions:
+
+    ```graphql
+    # Old syntax
+    {
+        movies(where: { title: "The Matrix" }) {
+            title
+        }
+    }
+
+    # New syntax
+    {
+        movies(where: { title_EQ: "The Matrix" }) {
+            title
+        }
+    }
+    ```
+
+    The `implicitEqualFilters` option of `excludeDeprecatedFields` has been removed.
+
+-   [#5755](https://github.com/neo4j/graphql/pull/5755) [`9c75f92`](https://github.com/neo4j/graphql/commit/9c75f925884de42f64e1b5c3086cc87c114727bd) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove support for `@unique` directive
+
+-   [#5768](https://github.com/neo4j/graphql/pull/5768) [`e338590`](https://github.com/neo4j/graphql/commit/e338590d25216cced8252cfe3d0789d97952c20d) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove `overwrite` field in connect operations
+
+-   [#5777](https://github.com/neo4j/graphql/pull/5777) [`0ecfd71`](https://github.com/neo4j/graphql/commit/0ecfd71a1431c5f98fde30319eefd5b018a06701) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `options` argument has been removed.
+
+    Consider the following type definitions:
+
+    ```graphql
+    type Movie {
+        title: String!
+    }
+    ```
+
+    The migration is as below:
+
+    ```graphql
+    # Old syntax
+    {
+        movies(options: { first: 10, offset: 10, sort: [{ title: ASC }] }) {
+            title
+        }
+    }
+
+    # New syntax
+    {
+        movies(first: 10, offset: 10, sort: [{ title: ASC }]) {
+            title
+        }
+    }
+    ```
+
+    The `deprecatedOptionsArgument` of `excludeDeprecatedFields` has been removed as it is now a no-op.
+
+-   [#5802](https://github.com/neo4j/graphql/pull/5802) [`99cb9aa`](https://github.com/neo4j/graphql/commit/99cb9aa866eed04224d790bfccab9c3d3add78b7) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Implicit set operations have been removed. For example:
+
+    ```graphql
+    # Old syntax
+    mutation {
+        updateMovies(where: { title_EQ: "Matrix" }, update: { title: "The Matrix" }) {
+            movies {
+                title
+            }
+        }
+    }
+
+    # New syntax
+    mutation {
+        updateMovies(where: { title_EQ: "Matrix" }, update: { title_SET: "The Matrix" }) {
+            movies {
+                title
+            }
+        }
+    }
+    ```
+
+    The `implicitSet` argument of `excludeDeprecatedFields` has been removed.
+
+-   [#5789](https://github.com/neo4j/graphql/pull/5789) [`1a07d40`](https://github.com/neo4j/graphql/commit/1a07d40888e89c5cd9a40edc16f1742e27bff687) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library and Introspector now required Node.js 22 or greater.
+
+### Patch Changes
+
+-   [#5837](https://github.com/neo4j/graphql/pull/5837) [`721691a`](https://github.com/neo4j/graphql/commit/721691a84eaa34996c0c97edb7ede1ae4775dd2f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added a validation rule to avoid defining fields as lists of nullable elements, as Neo4j does not support this.
+
+## 6.2.3
+
+### Patch Changes
+
+-   [#5904](https://github.com/neo4j/graphql/pull/5904) [`64d4da1`](https://github.com/neo4j/graphql/commit/64d4da1de868f4ab1be60d42940f7e4193099387) Thanks [@a-alle](https://github.com/a-alle)! - Fix error message for wrong `requireAuthentication` argument on `@authorization` directive
+
+-   [#5906](https://github.com/neo4j/graphql/pull/5906) [`80df6f3`](https://github.com/neo4j/graphql/commit/80df6f3f8c36d2b8e248c4b5490ae1821844c40f) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fixed a bug that appears when filtering on interface relationships
+
+## 6.2.2
+
+### Patch Changes
+
+-   [#5888](https://github.com/neo4j/graphql/pull/5888) [`3037bb9`](https://github.com/neo4j/graphql/commit/3037bb95fd029cdf74c0aaf5c5f85244da55ed26) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix discrepancy of relationship direction when filtering
+
+-   [#5869](https://github.com/neo4j/graphql/pull/5869) [`34725f6`](https://github.com/neo4j/graphql/commit/34725f68cd041975ffecc9145139cfc15ba8d83e) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecates `@private` directive. The private directive was aimed to be used in conjunction with the OGM, which is no longer supported.
+
+-   [#5888](https://github.com/neo4j/graphql/pull/5888) [`3037bb9`](https://github.com/neo4j/graphql/commit/3037bb95fd029cdf74c0aaf5c5f85244da55ed26) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Fix incorrect relationship direction when performing a delete operation nested under a delete operation
+
 ## 6.2.1
 
 ### Patch Changes

@@ -29,14 +29,17 @@ import {
     withVectorWhereInputType,
 } from "../generation/vector-input";
 import { vectorResolver } from "../resolvers/query/vector";
+import { type ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 
 export function augmentVectorSchema({
     composer,
     concreteEntityAdapter,
+    complexityEstimatorHelper,
     features,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
+    complexityEstimatorHelper: ComplexityEstimatorHelper
     features?: Neo4jFeaturesSettings;
 }) {
     if (!concreteEntityAdapter.annotations.vector) {
@@ -67,6 +70,7 @@ export function augmentVectorSchema({
             vectorArgs["vector"] = new GraphQLList(new GraphQLNonNull(GraphQLFloat));
         }
 
+        complexityEstimatorHelper.registerField("Query", index.queryName);
         composer.Query.addFields({
             [index.queryName]: {
                 type: withVectorResultTypeConnection({ composer, concreteEntityAdapter }).NonNull,

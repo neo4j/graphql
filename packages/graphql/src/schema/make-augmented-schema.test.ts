@@ -32,6 +32,7 @@ import { gql } from "graphql-tag";
 import { Node } from "../classes";
 import { generateModel } from "../schema-model/generate-model";
 import makeAugmentedSchema from "./make-augmented-schema";
+import { ComplexityEstimatorHelper } from "../classes/ComplexityEstimatorHelper";
 
 describe("makeAugmentedSchema", () => {
     test("should be a function", () => {
@@ -52,7 +53,7 @@ describe("makeAugmentedSchema", () => {
         `;
 
         const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-        const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel });
+        const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, complexityEstimatorHelper: new ComplexityEstimatorHelper(false) });
         const document = neoSchema.typeDefs;
         const queryObject = document.definitions.find(
             (x) => x.kind === Kind.OBJECT_TYPE_DEFINITION && x.name.value === "Query"
@@ -96,7 +97,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel });
+            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, complexityEstimatorHelper: new ComplexityEstimatorHelper(false) });
 
             const document = neoSchema.typeDefs;
 
@@ -127,6 +128,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
+                complexityEstimatorHelper: new ComplexityEstimatorHelper(false),
             });
 
             const document = neoSchema.typeDefs;
@@ -159,6 +161,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
+                complexityEstimatorHelper: new ComplexityEstimatorHelper(false),
             });
 
             const document = neoSchema.typeDefs;
@@ -194,6 +197,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
+                complexityEstimatorHelper: new ComplexityEstimatorHelper(false),
             });
 
             const document = neoSchema.typeDefs;
@@ -233,6 +237,7 @@ describe("makeAugmentedSchema", () => {
                     },
                 },
                 schemaModel,
+                complexityEstimatorHelper: new ComplexityEstimatorHelper(false),
             });
 
             const document = neoSchema.typeDefs;
@@ -266,7 +271,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel });
+            const neoSchema = makeAugmentedSchema({ document: typeDefs, schemaModel, complexityEstimatorHelper: new ComplexityEstimatorHelper(false) });
 
             const document = neoSchema.typeDefs;
 
@@ -286,7 +291,7 @@ describe("makeAugmentedSchema", () => {
             `;
 
             const schemaModel = generateModel(mergeTypeDefs(typeDefs));
-            expect(() => makeAugmentedSchema({ document: typeDefs, schemaModel })).not.toThrow(
+            expect(() => makeAugmentedSchema({ document: typeDefs, schemaModel, complexityEstimatorHelper: new ComplexityEstimatorHelper(false) })).not.toThrow(
                 'Error: Type with name "ActionMapping" does not exists'
             );
         });

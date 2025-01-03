@@ -455,6 +455,7 @@ export type Neo4jFeaturesSettings = {
     };
     vector?: Neo4jVectorSettings;
     limitRequired?: boolean;
+    complexityEstimators?: boolean;
 };
 
 /** Parsed features used in context */

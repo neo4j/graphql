@@ -48,6 +48,7 @@ import { withSortInputType } from "../generation/sort-and-options-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput, withUpdateInputType } from "../generation/update-input";
 import { withSourceWhereInputType, withWhereInputType } from "../generation/where-input";
 import { graphqlDirectivesToCompose } from "../to-compose";
+import { type ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 
 function doForRelationshipDeclaration({
     relationshipDeclarationAdapter,
@@ -165,6 +166,7 @@ export function createRelationshipFields({
     userDefinedDirectivesForNode,
     userDefinedFieldDirectivesForNode,
     features,
+    complexityEstimatorHelper,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     schemaComposer: SchemaComposer;
@@ -175,6 +177,7 @@ export function createRelationshipFields({
     userDefinedDirectivesForNode: Map<string, DirectiveNode[]>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     features?: Neo4jFeaturesSettings;
+    complexityEstimatorHelper: ComplexityEstimatorHelper;
 }): void {
     const relationships =
         entityAdapter instanceof ConcreteEntityAdapter
@@ -243,6 +246,7 @@ export function createRelationshipFields({
             userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
             subgraph?: Subgraph;
             features: Neo4jFeaturesSettings | undefined;
+            complexityEstimatorHelper: ComplexityEstimatorHelper;
         } = {
             relationshipAdapter,
             composer: schemaComposer,
@@ -251,6 +255,7 @@ export function createRelationshipFields({
             deprecatedDirectives,
             userDefinedDirectivesOnTargetFields,
             features,
+            complexityEstimatorHelper,
         };
 
         if (relationshipTarget instanceof UnionEntityAdapter) {
@@ -297,6 +302,7 @@ function createRelationshipFieldsForTarget({
     userDefinedDirectivesOnTargetFields,
     subgraph, // only for concrete targets
     features,
+    complexityEstimatorHelper,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
@@ -306,6 +312,7 @@ function createRelationshipFieldsForTarget({
     deprecatedDirectives: Directive[];
     subgraph?: Subgraph;
     features: Neo4jFeaturesSettings | undefined;
+    complexityEstimatorHelper: ComplexityEstimatorHelper;
 }) {
     withSourceWhereInputType({
         relationshipAdapter,
@@ -318,6 +325,8 @@ function createRelationshipFieldsForTarget({
     if (relationshipAdapter.target instanceof InterfaceEntityAdapter) {
         withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
     }
+
+    complexityEstimatorHelper.registerField(composeNode.getTypeName(), relationshipAdapter.name)
     composeNode.addFields(
         augmentObjectOrInterfaceTypeWithRelationshipField({
             relationshipAdapter,
@@ -327,7 +336,8 @@ function createRelationshipFieldsForTarget({
             features,
         })
     );
-
+    
+    complexityEstimatorHelper.registerField(composeNode.getTypeName(), relationshipAdapter.operations.connectionFieldName)
     composeNode.addFields(
         augmentObjectOrInterfaceTypeWithConnectionField(relationshipAdapter, userDefinedFieldDirectives, composer, features)
     );

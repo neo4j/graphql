@@ -17,10 +17,20 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "./ConcreteEntity";
-import type { Entity } from "./Entity";
+import { GraphQLError } from "graphql";
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 
-/** models the concept of an Abstract Type */
-export interface CompositeEntity extends Entity {
-    concreteEntities: ConcreteEntity[];
+export function pluralConflict(schemaModel: Neo4jGraphQLSchemaModel): GraphQLError[] {
+    const entities = schemaModel.entities.values();
+    const errors: GraphQLError[] = [];
+
+    const plurals = new Set<string>();
+    for (const entity of entities) {
+        if (plurals.has(entity.plural)) {
+            errors.push(new GraphQLError(`Ambiguous plural "${entity.plural}" in "${entity.name}"`));
+        }
+        plurals.add(entity.plural);
+    }
+
+    return errors;
 }

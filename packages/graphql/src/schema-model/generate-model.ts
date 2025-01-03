@@ -28,6 +28,7 @@ import { Neo4jGraphQLSchemaValidationError } from "../classes";
 import { declareRelationshipDirective, nodeDirective, relationshipDirective } from "../graphql/directives";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
+import { validateSchemaModel } from "../schema/validation/validate-schema-model";
 import { isInArray } from "../utils/is-in-array";
 import { filterTruthy } from "../utils/utils";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
@@ -104,6 +105,9 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         operations,
         annotations,
     });
+
+    validateSchemaModel(schema);
+
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
 
     hydrateCypherAnnotations(schema, concreteEntities);

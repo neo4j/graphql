@@ -17,10 +17,20 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "./ConcreteEntity";
-import type { Entity } from "./Entity";
+import { RelationshipQueryDirectionOption } from "../../constants";
+import type { RelationField } from "../../types";
 
-/** models the concept of an Abstract Type */
-export interface CompositeEntity extends Entity {
-    concreteEntities: ConcreteEntity[];
+export function getRelationshipDirection(relationshipField: RelationField): { inStr: string; outStr: string } {
+    const inStr =
+        relationshipField.direction === "IN" &&
+        relationshipField.queryDirection !== RelationshipQueryDirectionOption.UNDIRECTED
+            ? "<-"
+            : "-";
+    const outStr =
+        relationshipField.direction === "OUT" &&
+        relationshipField.queryDirection !== RelationshipQueryDirectionOption.UNDIRECTED
+            ? "->"
+            : "-";
+
+    return { inStr, outStr };
 }

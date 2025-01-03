@@ -247,8 +247,8 @@ describe("@auth allow on specific interface implementation", () => {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-            	    MATCH (this_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-            	    WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            	    MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this0:User)
+            	    WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub)
             	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	SET this_content0.id = $this_update_content0_id_SET
             	RETURN count(*) AS update_this_content0

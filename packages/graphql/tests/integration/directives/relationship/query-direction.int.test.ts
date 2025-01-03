@@ -335,7 +335,7 @@ describe("query-direction", () => {
             });
         });
 
-        test("should delete all three nodes when performing nested delete under delete", async () => {
+        test("should delete three nodes when performing nested delete under delete (undirected)", async () => {
             const query = /* GraphQL */ `
                 mutation {
                     ${Person.operations.delete}(where: { name_EQ: "${mike}" }, delete: { friends: { where: { } } }) {
@@ -359,7 +359,7 @@ describe("query-direction", () => {
             });
         });
 
-        test("should only delete one when performing nested delete under update (always directed)", async () => {
+        test("should delete both connected nodes when performing nested delete under update (undirected)", async () => {
             const query = /* GraphQL */ `
                 mutation {
                     ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { delete: { where: { } } } }) {
@@ -386,20 +386,15 @@ describe("query-direction", () => {
 
             expect(gqlResult.data).toEqual({
                 [Person.operations.update]: {
-                    [Person.plural]: expect.toIncludeSameMembers([
-                        {
-                            name: mike,
-                            friends: expect.toIncludeSameMembers([{ name: stefan }]),
-                        },
-                    ]),
+                    [Person.plural]: [{ name: mike, friends: [] }],
                     info: {
-                        nodesDeleted: 1,
+                        nodesDeleted: 2,
                     },
                 },
             });
         });
 
-        test("should only disconnect one when performing nested disconnect under update (always directed)", async () => {
+        test("should disconnect both connected nodes when performing nested disconnect under update (undirected)", async () => {
             const query = /* GraphQL */ `
                 mutation {
                     ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { disconnect: { where: { } } } }) {
@@ -426,20 +421,15 @@ describe("query-direction", () => {
 
             expect(gqlResult.data).toEqual({
                 [Person.operations.update]: {
-                    [Person.plural]: expect.toIncludeSameMembers([
-                        {
-                            name: mike,
-                            friends: expect.toIncludeSameMembers([{ name: stefan }]),
-                        },
-                    ]),
+                    [Person.plural]: [{ name: mike, friends: [] }],
                     info: {
-                        relationshipsDeleted: 1,
+                        relationshipsDeleted: 2,
                     },
                 },
             });
         });
 
-        test("should only update one when performing nested update under update (always directed)", async () => {
+        test("should update both nodes when performing nested update under update (undirected)", async () => {
             const query = /* GraphQL */ `
                 mutation {
                     ${Person.operations.update}(where: { name_EQ: "${mike}" }, update: { friends: { update: { node: { name_SET: "Bob" } } } }) {
@@ -466,7 +456,7 @@ describe("query-direction", () => {
                     [Person.plural]: expect.toIncludeSameMembers([
                         {
                             name: mike,
-                            friends: expect.toIncludeSameMembers([{ name: stefan }, { name: "Bob" }]),
+                            friends: expect.toIncludeSameMembers([{ name: "Bob" }, { name: "Bob" }]),
                         },
                     ]),
                 },

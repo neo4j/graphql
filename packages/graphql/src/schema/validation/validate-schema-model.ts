@@ -17,10 +17,20 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntity } from "./ConcreteEntity";
-import type { Entity } from "./Entity";
+import type { GraphQLError } from "graphql";
+import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
+import { pluralConflict } from "./schema-model-rules/plural-conflict";
 
-/** models the concept of an Abstract Type */
-export interface CompositeEntity extends Entity {
-    concreteEntities: ConcreteEntity[];
+export type SchemaModelValidationRule = (model: Neo4jGraphQLSchemaModel) => GraphQLError[];
+
+export function validateSchemaModel(schemaModel: Neo4jGraphQLSchemaModel): void {
+    const rules: SchemaModelValidationRule[] = [pluralConflict];
+
+    const errors = rules.flatMap((rule) => {
+        return rule(schemaModel);
+    });
+
+    if (errors.length > 0) {
+        throw errors;
+    }
 }

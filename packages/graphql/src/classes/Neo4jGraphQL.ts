@@ -50,6 +50,7 @@ import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLS
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
+import { ComplexityEstimatorHelper } from "./ComplexityEstimatorHelper";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -75,6 +76,7 @@ class Neo4jGraphQL {
     private jwtFieldsMap?: Map<string, string>;
 
     private schemaModel?: Neo4jGraphQLSchemaModel;
+    private complexityEstimatorHelper: ComplexityEstimatorHelper;
 
     private executableSchema?: Promise<GraphQLSchema>;
     private subgraphSchema?: Promise<GraphQLSchema>;
@@ -108,6 +110,8 @@ class Neo4jGraphQL {
 
             this.authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
         }
+
+        this.complexityEstimatorHelper = new ComplexityEstimatorHelper(!!this.features.complexityEstimators);
     }
 
     public async getSchema(): Promise<GraphQLSchema> {
@@ -393,6 +397,7 @@ class Neo4jGraphQL {
                 features: this.features,
                 userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
+                complexityEstimatorHelper: this.complexityEstimatorHelper,
             });
 
             if (this.validate) {
@@ -411,6 +416,7 @@ class Neo4jGraphQL {
                 typeDefs,
                 resolvers,
             });
+            this.complexityEstimatorHelper.hydrateSchemaFromSDLWithASTNodeExtensions(schema);
 
             resolve(this.composeSchema(schema));
         });
@@ -462,6 +468,7 @@ class Neo4jGraphQL {
             userCustomResolvers: this.resolvers,
             subgraph,
             schemaModel: this.schemaModel,
+            complexityEstimatorHelper: this.complexityEstimatorHelper,
         });
 
         if (this.validate) {

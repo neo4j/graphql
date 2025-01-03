@@ -2072,7 +2072,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:^6.0.0, @neo4j/graphql@npm:^6.2.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:^7.0.0-alpha.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2100,6 +2100,7 @@ __metadata:
     graphql-compose: "npm:^9.0.8"
     graphql-middleware: "npm:6.1.35"
     graphql-parse-resolve-info: "npm:^4.12.3"
+    graphql-query-complexity: "npm:^1.0.0"
     graphql-relay: "npm:^0.10.0"
     graphql-tag: "npm:2.12.6"
     graphql-ws: "npm:5.16.0"
@@ -2133,7 +2134,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": "npm:^6.0.0"
+    "@neo4j/graphql": "npm:^7.0.0-alpha.0"
     "@types/jest": "npm:29.5.14"
     "@types/node": "npm:22.9.2"
     "@types/pluralize": "npm:0.0.33"
@@ -3842,7 +3843,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.0"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
-    "@neo4j/graphql": "npm:^6.2.1"
+    "@neo4j/graphql": "npm:^7.0.0-alpha.0"
     fork-ts-checker-webpack-plugin: "npm:9.0.2"
     graphql: "npm:16.9.0"
     graphql-tag: "npm:^2.12.6"
@@ -8637,6 +8638,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql-query-complexity@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "graphql-query-complexity@npm:1.0.0"
+  dependencies:
+    lodash.get: "npm:^4.4.2"
+  peerDependencies:
+    graphql: ^14.6.0 || ^15.0.0 || ^16.0.0
+  checksum: 10c0/94b9e35eb6d504464cac25a077dc403b3c94666874748451b9175027e790216d8b52765f1d7b6a73bef80d8e0ba3a7fad52bf281080bf12be976f7edf1a3e5da
+  languageName: node
+  linkType: hard
+
 "graphql-relay@npm:^0.10.0":
   version: 0.10.2
   resolution: "graphql-relay@npm:0.10.2"
@@ -11204,6 +11216,13 @@ __metadata:
   version: 4.4.0
   resolution: "lodash.flatten@npm:4.4.0"
   checksum: 10c0/97e8f0d6b61fe4723c02ad0c6e67e51784c4a2c48f56ef283483e556ad01594cf9cec9c773e177bbbdbdb5d19e99b09d2487cb6b6e5dc405c2693e93b125bd3a
+  languageName: node
+  linkType: hard
+
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: 10c0/48f40d471a1654397ed41685495acb31498d5ed696185ac8973daef424a749ca0c7871bf7b665d5c14f5cc479394479e0307e781f61d5573831769593411be6e
   languageName: node
   linkType: hard
 
