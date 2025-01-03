@@ -21,7 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { hasTarget } from "../../../utils/context-has-target";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
@@ -100,7 +99,9 @@ export class PropertyFilter extends Filter {
         queryASTContext: QueryASTContext,
         concreteLabelsToAttributeAlias: [string[], string][]
     ): Cypher.Case {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!queryASTContext.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const aliasesCase = new Cypher.Case();
         for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
             aliasesCase
@@ -113,7 +114,9 @@ export class PropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+            if (!queryASTContext.hasTarget()) {
+                throw new Error("No parent node found!");
+            }
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);

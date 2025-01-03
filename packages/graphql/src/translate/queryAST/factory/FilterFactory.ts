@@ -419,7 +419,7 @@ export class FilterFactory {
     }): Filter[] {
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
-                return this.parseEntryFilter(entity, key, value, targetEntity, relationship);
+                return this.parseEntryFilter({ entity, key, value, targetEntity, relationship });
             })
         );
         return this.wrapMultipleFiltersInLogical(filters);
@@ -434,24 +434,38 @@ export class FilterFactory {
         }
         const filters = filterTruthy(
             Object.entries(whereFields).flatMap(([key, value]): Filter | Filter[] | undefined => {
-                return this.parseEntryFilter(entity, key, value);
+                return this.parseEntryFilter({ entity, key, value });
             })
         );
         return this.wrapMultipleFiltersInLogical(filters);
     }
 
-    private parseEntryFilter(
-        entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
-        key: string,
-        value: any,
-        targetEntity?: ConcreteEntityAdapter,
-        relationship?: RelationshipAdapter
-    ): Filter | Filter[] {
+    private parseEntryFilter({
+        entity,
+        key,
+        value,
+        targetEntity,
+        relationship,
+    }: {
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        key: string;
+        value: any;
+        targetEntity?: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+    }): Filter | Filter[] {
         const valueAsArray = asArray(value);
         if (isLogicalOperator(key)) {
             const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
                 const nestedOfNestedFilters = Object.entries(nestedWhere).flatMap(([nestedKey, nestedValue]) => {
-                    return asArray(this.parseEntryFilter(entity, nestedKey, nestedValue, targetEntity, relationship));
+                    return asArray(
+                        this.parseEntryFilter({
+                            entity,
+                            key: nestedKey,
+                            value: nestedValue,
+                            targetEntity,
+                            relationship,
+                        })
+                    );
                 });
 
                 return this.wrapMultipleFiltersInLogical(nestedOfNestedFilters);
@@ -512,7 +526,7 @@ export class FilterFactory {
 
         // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
         if (!operator && !attribute.annotations.cypher?.targetEntity && typeof value === "object") {
-            return this.parseGenericFilters(entity, fieldName, value);
+            return this.parseGenericFilters(entity, fieldName, value, relationship);
         }
 
         return this.createPropertyFilter({
@@ -526,10 +540,11 @@ export class FilterFactory {
     private parseGenericFilters(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
-        value: Record<string, any>
+        value: Record<string, any>,
+        relationship?: RelationshipAdapter
     ): Filter | Filter[] {
         const genericFilters = Object.entries(value).flatMap((filterInput) => {
-            return this.parseGenericFilter(entity, fieldName, filterInput);
+            return this.parseGenericFilter(entity, fieldName, filterInput, relationship);
         });
         return this.wrapMultipleFiltersInLogical(genericFilters);
     }
@@ -537,12 +552,13 @@ export class FilterFactory {
     private parseGenericFilter(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
-        filterInput: [string, any]
+        filterInput: [string, any],
+        relationship?: RelationshipAdapter
     ): Filter | Filter[] {
         const [rawOperator, value] = filterInput;
         if (isLogicalOperator(rawOperator)) {
             const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                return this.parseGenericFilter(entity, fieldName, nestedWhere);
+                return this.parseGenericFilter(entity, fieldName, nestedWhere, relationship);
             });
             return new LogicalFilter({
                 operation: rawOperator,
@@ -553,7 +569,7 @@ export class FilterFactory {
         if (rawOperator === "distance") {
             // Converts new distance filter into the old one to be parsed the same as deprecated syntax
             const desugaredInput = this.desugarGenericDistanceOperations(value);
-            return this.parseGenericFilters(entity, fieldName, desugaredInput);
+            return this.parseGenericFilters(entity, fieldName, desugaredInput, relationship);
         }
 
         const operator = this.parseGenericOperator(rawOperator);
@@ -573,9 +589,9 @@ export class FilterFactory {
         const filters = this.createPropertyFilter({
             attribute,
             comparisonValue: value,
-
             operator,
             attachedTo,
+            relationship,
         });
         return this.wrapMultipleFiltersInLogical(asArray(filters));
     }
@@ -729,7 +745,6 @@ export class FilterFactory {
         return this.createPropertyFilter({
             attribute: idAttribute,
             comparisonValue: id as unknown as GraphQLWhereArg,
-
             operator,
         });
     }

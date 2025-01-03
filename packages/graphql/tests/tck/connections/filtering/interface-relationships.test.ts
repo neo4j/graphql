@@ -19,8 +19,8 @@
 
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
-// TODO: FIXME Generic filtering bug, alias not translated correctly
-describe.skip("interface relationships with aliased fields", () => {
+
+describe("interface relationships with aliased fields", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
