@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 current: Boolean!
             }
 
-            extend type Battery @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
+            extend type Battery @authorization(validate: [{ where: { jwt: { roles: { includes: "admin" } } } }])
 
             type CombustionEngine @node {
                 id: ID!
@@ -70,15 +70,15 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
-                drives(where: { current_EQ: true }) {
+                drives(where: { current: { eq: true } }) {
                     current
-                    driveCompositionsConnection(where: { edge: { current_EQ: true } }) {
+                    driveCompositionsConnection(where: { edge: { current: { eq: true } } }) {
                         edges {
                             node {
                                 driveComponentConnection(
                                     where: {
-                                        Battery: { edge: { current_EQ: true } }
-                                        CombustionEngine: { edge: { current_EQ: true } }
+                                        Battery: { edge: { current: { eq: true } } }
+                                        CombustionEngine: { edge: { current: { eq: true } } }
                                     }
                                 ) {
                                     edges {

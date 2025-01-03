@@ -42,7 +42,9 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
             type Person
                 @node
                 @authorization(
-                    filter: [{ where: { node: { family_SOME: { creator_SOME: { roles_INCLUDES: "plan:paid" } } } } }]
+                    filter: [
+                        { where: { node: { family_SOME: { creator_SOME: { roles: { includes: "plan:paid" } } } } } }
+                    ]
                 ) {
                 id: ID! @id
                 creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])

@@ -48,7 +48,7 @@ describe("#190", () => {
     test("Example 1", async () => {
         const query = /* GraphQL */ `
             query {
-                users(where: { demographics_SOME: { type_EQ: "Gender", value_EQ: "Female" } }) {
+                users(where: { demographics_SOME: { type: { eq: "Gender" }, value: { eq: "Female" } } }) {
                     uid
                     demographics {
                         type
@@ -89,7 +89,11 @@ describe("#190", () => {
                 users(
                     where: {
                         demographics_SOME: {
-                            OR: [{ type_EQ: "Gender", value_EQ: "Female" }, { type_EQ: "State" }, { type_EQ: "Age" }]
+                            OR: [
+                                { type: { eq: "Gender" }, value: { eq: "Female" } }
+                                { type: { eq: "State" } }
+                                { type: { eq: "Age" } }
+                            ]
                         }
                     }
                 ) {

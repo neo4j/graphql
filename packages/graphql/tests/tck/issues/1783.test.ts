@@ -87,10 +87,10 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         const variableValues = {
             where: {
-                current_EQ: true,
+                current: { eq: true },
                 nameDetailsConnection_SOME: {
                     edge: {
-                        current_EQ: true,
+                        current: { eq: true },
                     },
                     node: {
                         fullName_CONTAINS: "1",
@@ -98,22 +98,22 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 },
                 architectureConnection_SINGLE: {
                     edge: {
-                        current_EQ: true,
+                        current: { eq: true },
                     },
                     node: {
                         nameDetailsConnection_SOME: {
                             edge: {
-                                current_EQ: true,
+                                current: { eq: true },
                             },
                             node: {
-                                fullName_EQ: "MHA",
+                                fullName: { eq: "MHA" },
                             },
                         },
                     },
                 },
             },
             connectionWhere: {
-                current_EQ: true,
+                current: { eq: true },
             },
         };
 

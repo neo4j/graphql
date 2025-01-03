@@ -44,7 +44,13 @@ describe("#360", () => {
         const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
                 events(
-                    where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }
+                    where: {
+                        AND: [
+                            { start: { gte: $rangeStart } }
+                            { start: { lte: $rangeEnd } }
+                            { activity: { eq: $activity } }
+                        ]
+                    }
                 ) {
                     start
                     activity
@@ -91,7 +97,15 @@ describe("#360", () => {
     test("Should exclude undefined members in OR", async () => {
         const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                events(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }) {
+                events(
+                    where: {
+                        OR: [
+                            { start: { gte: $rangeStart } }
+                            { start: { lte: $rangeEnd } }
+                            { activity: { eq: $activity } }
+                        ]
+                    }
+                ) {
                     start
                     activity
                 }

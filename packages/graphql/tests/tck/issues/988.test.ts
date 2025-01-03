@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
     test("where with multiple filters and params", async () => {
         const query = /* GraphQL */ `
-            query getSeriesWithRelationFilters($where: SeriesWhere = { current_EQ: true }) {
+            query getSeriesWithRelationFilters($where: SeriesWhere = { current: { eq: true } }) {
                 series(where: $where) {
                     name
                     current
@@ -87,27 +87,27 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    current_EQ: true,
+                    current: { eq: true },
                     AND: [
                         {
                             OR: [
                                 {
                                     manufacturerConnection_SOME: {
                                         edge: {
-                                            current_EQ: true,
+                                            current: { eq: true },
                                         },
                                         node: {
-                                            name_EQ: "C",
+                                            name: { eq: "C" },
                                         },
                                     },
                                 },
                                 {
                                     manufacturerConnection_SOME: {
                                         edge: {
-                                            current_EQ: false,
+                                            current: { eq: false },
                                         },
                                         node: {
-                                            name_EQ: "AM",
+                                            name: { eq: "AM" },
                                         },
                                     },
                                 },
@@ -118,10 +118,10 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                                 {
                                     brandConnection_SOME: {
                                         edge: {
-                                            current_EQ: true,
+                                            current: { eq: true },
                                         },
                                         node: {
-                                            name_EQ: "smart",
+                                            name: { eq: "smart" },
                                         },
                                     },
                                 },

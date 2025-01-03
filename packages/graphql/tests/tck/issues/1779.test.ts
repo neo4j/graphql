@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
             {
                 people {
                     name
-                    attends(where: { students_ALL: { age_GT: 23 } }) {
+                    attends(where: { students_ALL: { age: { gt: 23 } } }) {
                         name
                     }
                 }

@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
         test("should ignore undefined parameters on NOT fields", async () => {
             const query = /* GraphQL */ `
                 query MyQuery($name: String) {
-                    actors(where: { age_GT: 25, NOT: { name_EQ: $name } }) {
+                    actors(where: { age: { gt: 25 }, NOT: { name: { eq: $name } } }) {
                         name
                         age
                     }
@@ -68,7 +68,7 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
         test("should ignore undefined parameters on boolean NOT", async () => {
             const query = /* GraphQL */ `
                 query MyQuery($name: String) {
-                    actors(where: { age_GT: 25, NOT: { name_EQ: $name } }) {
+                    actors(where: { age: { gt: 25 }, NOT: { name: { eq: $name } } }) {
                         name
                         age
                     }

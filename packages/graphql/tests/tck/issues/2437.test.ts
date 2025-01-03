@@ -39,8 +39,8 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             }
             extend type Agent
                 @authorization(
-                    validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }]
-                    filter: [{ where: { node: { archivedAt_EQ: null } } }]
+                    validate: [{ operations: [CREATE], where: { jwt: { roles: { includes: "Admin" } } } }]
+                    filter: [{ where: { node: { archivedAt: { eq: null } } } }]
                 )
 
             type Valuation @mutation(operations: [CREATE, UPDATE]) @node {
@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
 
                 agent: [Agent!]! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
             }
-            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
     test("query and limits nested connections", async () => {
         const query = /* GraphQL */ `
             query Agents {
-                agents(where: { uuid_EQ: "a1" }) {
+                agents(where: { uuid: { eq: "a1" } }) {
                     uuid
                     valuationsConnection(first: 10) {
                         edges {

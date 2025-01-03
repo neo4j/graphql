@@ -54,10 +54,10 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const query = /* GraphQL */ `
             query getAggreationOnTeams {
                 stats: teams {
-                    accepted: ownsRisksAggregate(where: { mitigationState_INCLUDES: Accepted }) {
+                    accepted: ownsRisksAggregate(where: { mitigationState: { includes: Accepted } }) {
                         count
                     }
-                    identified: ownsRisksAggregate(where: { mitigationState_INCLUDES: Identified }) {
+                    identified: ownsRisksAggregate(where: { mitigationState: { includes: Identified } }) {
                         count
                     }
                 }

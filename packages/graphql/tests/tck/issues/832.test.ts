@@ -59,14 +59,14 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["cain"] } } } } }
                         }
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["abel"] } } } } }
                         }
                     ]
                 ) {
@@ -289,9 +289,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["cain"] } } } } }
                         }
                     ]
                 ) {
@@ -419,9 +419,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["abel"] } } } } }
                         }
                     ]
                 ) {
@@ -549,14 +549,14 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["cain"] } } } } }
                         }
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["abel"] } } } } }
                         }
                     ]
                 ) {
@@ -848,7 +848,10 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             mutation {
                 createInteractions(
                     input: [
-                        { subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }, kind: "PARENT_OF" }
+                        {
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
+                            kind: "PARENT_OF"
+                        }
                         { kind: "PARENT_OF" }
                     ]
                 ) {

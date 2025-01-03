@@ -34,23 +34,27 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
                 @node
                 @authorization(
                     validate: [
-                        { operations: [CREATE, DELETE], where: { jwt: { roles_INCLUDES: "admin" } } }
-                        { operations: [READ, UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }
+                        { operations: [CREATE, DELETE], where: { jwt: { roles: { includes: "admin" } } } }
+                        { operations: [READ, UPDATE], where: { node: { id: { eq: "$jwt.sub" } } } }
                     ]
-                    filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]
+                    filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }]
                 ) {
                 id: ID!
                 cabinets: [Cabinet!]! @relationship(type: "HAS_CABINET", direction: OUT)
             }
 
-            type Cabinet @authorization(filter: [{ where: { node: { user_SOME: { id_EQ: "$jwt.sub" } } } }]) @node {
+            type Cabinet
+                @authorization(filter: [{ where: { node: { user_SOME: { id: { eq: "$jwt.sub" } } } } }])
+                @node {
                 id: ID! @id
                 categories: [Category!]! @relationship(type: "HAS_CATEGORY", direction: OUT)
                 user: [User!]! @relationship(type: "HAS_CABINET", direction: IN)
             }
 
             type Category
-                @authorization(filter: [{ where: { node: { cabinet_SOME: { user_SOME: { id_EQ: "$jwt.sub" } } } } }])
+                @authorization(
+                    filter: [{ where: { node: { cabinet_SOME: { user_SOME: { id: { eq: "$jwt.sub" } } } } } }]
+                )
                 @node {
                 id: ID! @id
                 files: [File!]! @relationship(type: "HAS_FILE", direction: OUT)
@@ -71,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
     test("should delete categories with auth filters", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteCategories(where: { id_EQ: "category-video" }) {
+                deleteCategories(where: { id: { eq: "category-video" } }) {
                     __typename
                     nodesDeleted
                     relationshipsDeleted

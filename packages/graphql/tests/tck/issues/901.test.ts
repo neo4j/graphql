@@ -66,20 +66,20 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
                         {
                             manufacturerConnection_SOME: {
                                 edge: {
-                                    current_EQ: true,
+                                    current: { eq: true },
                                 },
                                 node: {
-                                    name_EQ: "abc",
+                                    name: { eq: "abc" },
                                 },
                             },
                         },
                         {
                             brandConnection_SOME: {
                                 edge: {
-                                    current_EQ: true,
+                                    current: { eq: true },
                                 },
                                 node: {
-                                    name_EQ: "smart",
+                                    name: { eq: "smart" },
                                 },
                             },
                         },

@@ -53,15 +53,15 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     validate: [
                         {
                             operations: [CREATE]
-                            where: { node: { group_SOME: { creator_SOME: { roles_INCLUDES: "plan:paid" } } } }
+                            where: { node: { group_SOME: { creator_SOME: { roles: { includes: "plan:paid" } } } } }
                         }
                         {
                             operations: [DELETE]
                             where: {
                                 OR: [
-                                    { node: { creator_SOME: { id_EQ: "$jwt.uid" } } }
-                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id_EQ: "$jwt.uid" } } } } }
-                                    { node: { group_SOME: { creator_SOME: { id_EQ: "$jwt.uid" } } } }
+                                    { node: { creator_SOME: { id: { eq: "$jwt.uid" } } } }
+                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id: { eq: "$jwt.uid" } } } } } }
+                                    { node: { group_SOME: { creator_SOME: { id: { eq: "$jwt.uid" } } } } }
                                 ]
                             }
                         }
@@ -69,14 +69,14 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                             operations: [READ, UPDATE]
                             where: {
                                 OR: [
-                                    { node: { creator_SOME: { id_EQ: "$jwt.uid" } } }
-                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { creator_SOME: { id: { eq: "$jwt.uid" } } } }
+                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id: { eq: "$jwt.uid" } } } } } }
                                     {
                                         node: {
-                                            group_SOME: { contributors_SOME: { user_SOME: { id_EQ: "$jwt.uid" } } }
+                                            group_SOME: { contributors_SOME: { user_SOME: { id: { eq: "$jwt.uid" } } } }
                                         }
                                     }
-                                    { node: { group_SOME: { creator_SOME: { id_EQ: "$jwt.uid" } } } }
+                                    { node: { group_SOME: { creator_SOME: { id: { eq: "$jwt.uid" } } } } }
                                 ]
                             }
                         }
@@ -162,7 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
 
         const query = /* GraphQL */ `
             query Groups {
-                groups(where: { id_EQ: "family_id_1" }) {
+                groups(where: { id: { eq: "family_id_1" } }) {
                     id
                     name
                     members {

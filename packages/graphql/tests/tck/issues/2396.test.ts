@@ -34,7 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 address: [Address!]! @relationship(type: "HAS_POSTAL_CODE", direction: IN)
             }
 
-            extend type PostalCode @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type PostalCode @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
 
             union AddressNode = Estate
 
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 node: [AddressNode!]! @relationship(type: "HAS_ADDRESS", direction: IN)
             }
 
-            extend type Address @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type Address @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
 
             type Mandate @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 valuation: [Valuation!]! @relationship(type: "HAS_VALUATION", direction: OUT)
             }
 
-            extend type Mandate @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type Mandate @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
 
             type Valuation @mutation(operations: [CREATE, UPDATE]) @node {
                 archivedAt: DateTime
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 estate: [Estate!]! @relationship(type: "VALUATION_FOR", direction: OUT)
             }
 
-            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
 
             enum EstateType {
                 APARTMENT
@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                 address: [Address!]! @relationship(type: "HAS_ADDRESS", direction: OUT)
             }
 
-            extend type Estate @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type Estate @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             where: {
                 valuation_SOME: {
                     estate_SOME: {
-                        floor_GTE: 0,
+                        floor: { gte: 0 },
                     },
                 },
             },
@@ -209,10 +209,10 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             limit: null,
             offset: null,
             where: {
-                price_GTE: 0,
+                price: { gte: 0 },
                 valuation_SOME: {
                     estate_SOME: {
-                        floor_GTE: 0,
+                        floor: { gte: 0 },
                     },
                 },
             },
@@ -282,17 +282,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             limit: null,
             offset: null,
             where: {
-                price_GTE: 0,
+                price: { gte: 0 },
                 valuation_SOME: {
                     estate_SOME: {
                         address_SOME: {
                             postalCode_SOME: {
-                                number_IN: ["13001"],
+                                number: { in: ["13001"] },
                             },
                         },
-                        area_GTE: 0,
-                        estateType_IN: ["APARTMENT"],
-                        floor_GTE: 0,
+                        area: { gte: 0 },
+                        estateType: { in: ["APARTMENT"] },
+                        floor: { gte: 0 },
                     },
                 },
             },
@@ -375,17 +375,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             limit: 20,
             sort: null,
             where: {
-                price_GTE: 0,
+                price: { gte: 0 },
                 valuation_SOME: {
                     estate_SOME: {
                         address_SOME: {
                             postalCode_SOME: {
-                                number_IN: ["13001"],
+                                number: { in: ["13001"] },
                             },
                         },
-                        area_GTE: 0,
-                        estateType_IN: ["APARTMENT"],
-                        floor_GTE: 0,
+                        area: { gte: 0 },
+                        estateType: { in: ["APARTMENT"] },
+                        floor: { gte: 0 },
                     },
                 },
             },
@@ -479,17 +479,17 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             limit: 40,
             sort: null,
             where: {
-                price_GTE: 0,
+                price: { gte: 0 },
                 valuation_SOME: {
                     estate_SOME: {
                         address_SOME: {
                             postalCode_SOME: {
-                                number_IN: ["13001"],
+                                number: { in: ["13001"] },
                             },
                         },
-                        area_GTE: 0,
-                        estateType_IN: ["APARTMENT"],
-                        floor_GTE: 0,
+                        area: { gte: 0 },
+                        estateType: { in: ["APARTMENT"] },
+                        floor: { gte: 0 },
                     },
                 },
             },

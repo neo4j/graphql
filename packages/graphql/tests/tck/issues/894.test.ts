@@ -47,11 +47,11 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         const query = /* GraphQL */ `
             mutation SwapSides {
                 updateUsers(
-                    where: { name_EQ: "Luke Skywalker" }
+                    where: { name: { eq: "Luke Skywalker" } }
                     update: {
                         activeOrganization: {
-                            connect: { where: { node: { id_EQ: "test-id" } } }
-                            disconnect: { where: { node: { NOT: { id_EQ: "test-id" } } } }
+                            connect: { where: { node: { id: { eq: "test-id" } } } }
+                            disconnect: { where: { node: { NOT: { id: { eq: "test-id" } } } } }
                         }
                     }
                 ) {
@@ -115,7 +115,9 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"test-id\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"test-id\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -125,7 +127,9 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                                             \\"where\\": {
                                                 \\"node\\": {
                                                     \\"NOT\\": {
-                                                        \\"id_EQ\\": \\"test-id\\"
+                                                        \\"id\\": {
+                                                            \\"eq\\": \\"test-id\\"
+                                                        }
                                                     }
                                                 }
                                             }

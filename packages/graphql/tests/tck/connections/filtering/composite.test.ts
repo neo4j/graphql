@@ -118,8 +118,8 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                     title
                     actorsConnection(
                         where: {
-                            node: { NOT: { firstName_EQ: "Tom", lastName: { eq: "Hanks" } } }
-                            edge: { NOT: { screenTime_GT: 30, screenTime: { lt: 90 } } }
+                            node: { NOT: { firstName: { eq: "Tom" }, lastName: { eq: "Hanks" } } }
+                            edge: { NOT: { screenTime: { gt: 30, lt: 90 } } }
                         }
                     ) {
                         edges {
@@ -144,7 +144,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE (NOT (this1.firstName = $param1 AND this1.lastName = $param2) AND NOT (this0.screenTime < $param3 AND this0.screenTime > $param4))
+                WHERE (NOT (this1.firstName = $param1 AND this1.lastName = $param2) AND NOT (this0.screenTime > $param3 AND this0.screenTime < $param4))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
@@ -164,11 +164,11 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 \\"param1\\": \\"Tom\\",
                 \\"param2\\": \\"Hanks\\",
                 \\"param3\\": {
-                    \\"low\\": 90,
+                    \\"low\\": 30,
                     \\"high\\": 0
                 },
                 \\"param4\\": {
-                    \\"low\\": 30,
+                    \\"low\\": 90,
                     \\"high\\": 0
                 }
             }"

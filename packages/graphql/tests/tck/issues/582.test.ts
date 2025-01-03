@@ -54,13 +54,13 @@ describe("#582", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    type_EQ: "Cat",
+                    type: { eq: "Cat" },
                     childrenConnection_SOME: {
                         node: {
-                            type_EQ: "Dog",
+                            type: { eq: "Dog" },
                             parentsConnection_SOME: {
                                 node: {
-                                    type_EQ: "Bird",
+                                    type: { eq: "Bird" },
                                 },
                             },
                         },
@@ -102,16 +102,16 @@ describe("#582", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    type_EQ: "Cat",
+                    type: { eq: "Cat" },
                     childrenConnection_SOME: {
                         node: {
-                            type_EQ: "Dog",
+                            type: { eq: "Dog" },
                             parentsConnection_SOME: {
                                 node: {
-                                    type_EQ: "Bird",
+                                    type: { eq: "Bird" },
                                     childrenConnection_SOME: {
                                         node: {
-                                            type_EQ: "Fish",
+                                            type: { eq: "Fish" },
                                         },
                                     },
                                 },
