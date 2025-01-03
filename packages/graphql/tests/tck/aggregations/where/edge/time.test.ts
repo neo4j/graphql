@@ -49,7 +49,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MIN_EQUAL: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { min: { eq: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -85,7 +85,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MIN_GT: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { min: { gt: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -121,7 +121,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MIN_GTE: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { min: { gte: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -157,7 +157,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MIN_LT: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { min: { lt: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -193,7 +193,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MIN_LTE: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { min: { lte: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -229,7 +229,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MAX_EQUAL: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { max: { eq: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -265,7 +265,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MAX_GT: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { max: { gt: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -301,7 +301,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MAX_GTE: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { max: { gte: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -337,7 +337,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MAX_LT: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { max: { lt: "12:00:00" } } } } }) {
                     content
                 }
             }
@@ -373,7 +373,7 @@ describe("Cypher Aggregations where edge with Time", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someTime_MAX_LTE: "12:00:00" } } }) {
+                posts(where: { likesAggregate: { edge: { someTime: { max: { lte: "12:00:00" } } } } }) {
                     content
                 }
             }

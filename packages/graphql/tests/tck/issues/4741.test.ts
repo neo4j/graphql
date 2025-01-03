@@ -45,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
     test("Filters by relationship aggregation", async () => {
         const query = /* GraphQL */ `
             query {
-                opportunitiesConnection(first: 10, where: { listsOlisAggregate: { count_GT: 1 } }) {
+                opportunitiesConnection(first: 10, where: { listsOlisAggregate: { count: { gt: 1 } } }) {
                     edges {
                         node {
                             country

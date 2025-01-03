@@ -64,7 +64,7 @@ describe("Interface Relationships - Update connect", () => {
                 updateActors(
                     update: {
                         actedIn: {
-                            connect: { edge: { screenTime: 90 }, where: { node: { title_STARTS_WITH: "The " } } }
+                            connect: { edge: { screenTime: 90 }, where: { node: { title: { startsWith: "The " } } } }
                         }
                     }
                 ) {
@@ -149,11 +149,11 @@ describe("Interface Relationships - Update connect", () => {
                         actedIn: {
                             connect: {
                                 edge: { screenTime: 90 }
-                                where: { node: { title_STARTS_WITH: "The " } }
+                                where: { node: { title: { startsWith: "The " } } }
                                 connect: {
                                     actors: {
                                         edge: { ActedIn: { screenTime: 90 } }
-                                        where: { node: { name_EQ: "Actor" } }
+                                        where: { node: { name: { eq: "Actor" } } }
                                     }
                                 }
                             }

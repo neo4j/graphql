@@ -64,7 +64,7 @@ describe("Interface Relationships - Update update", () => {
                 updateActors(
                     update: {
                         actedIn: {
-                            where: { node: { title_EQ: "Old Title" } }
+                            where: { node: { title: { eq: "Old Title" } } }
                             update: { node: { title_SET: "New Title" } }
                         }
                     }
@@ -119,7 +119,9 @@ describe("Interface Relationships - Update update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"title_EQ\\": \\"Old Title\\"
+                                            \\"title\\": {
+                                                \\"eq\\": \\"Old Title\\"
+                                            }
                                         }
                                     },
                                     \\"update\\": {
@@ -143,7 +145,7 @@ describe("Interface Relationships - Update update", () => {
                 updateActors(
                     update: {
                         actedIn: {
-                            where: { node: { title_EQ: "Old Title" } }
+                            where: { node: { title: { eq: "Old Title" } } }
                             update: { node: { actors: { update: { node: { name_SET: "New Actor Name" } } } } }
                         }
                     }
@@ -210,7 +212,9 @@ describe("Interface Relationships - Update update", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"title_EQ\\": \\"Old Title\\"
+                                            \\"title\\": {
+                                                \\"eq\\": \\"Old Title\\"
+                                            }
                                         }
                                     },
                                     \\"update\\": {

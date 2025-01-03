@@ -87,33 +87,39 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         const variableValues = {
             where: {
-                current_EQ: true,
-                nameDetailsConnection_SOME: {
-                    edge: {
-                        current_EQ: true,
-                    },
-                    node: {
-                        fullName_CONTAINS: "1",
+                current: { eq: true },
+                nameDetailsConnection: {
+                    some: {
+                        edge: {
+                            current: { eq: true },
+                        },
+                        node: {
+                            fullName_CONTAINS: "1",
+                        },
                     },
                 },
-                architectureConnection_SINGLE: {
-                    edge: {
-                        current_EQ: true,
-                    },
-                    node: {
-                        nameDetailsConnection_SOME: {
-                            edge: {
-                                current_EQ: true,
-                            },
-                            node: {
-                                fullName_EQ: "MHA",
+                architectureConnection: {
+                    single: {
+                        edge: {
+                            current: { eq: true },
+                        },
+                        node: {
+                            nameDetailsConnection: {
+                                some: {
+                                    edge: {
+                                        current: { eq: true },
+                                    },
+                                    node: {
+                                        fullName: { eq: "MHA" },
+                                    },
+                                },
                             },
                         },
                     },
                 },
             },
             connectionWhere: {
-                current_EQ: true,
+                current: { eq: true },
             },
         };
 

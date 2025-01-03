@@ -47,7 +47,7 @@ describe("Cypher NULL", () => {
     test("Simple IS NULL", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: null }) {
+                movies(where: { title: { eq: null } }) {
                     title
                 }
             }
@@ -67,7 +67,7 @@ describe("Cypher NULL", () => {
     test("Simple IS NOT NULL", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { NOT: { title_EQ: null } }) {
+                movies(where: { NOT: { title: { eq: null } } }) {
                     title
                 }
             }

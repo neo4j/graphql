@@ -44,7 +44,7 @@ describe("Cypher Auth Allow", () => {
                     validate: {
                         when: AFTER
                         operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                        where: { node: { id_EQ: "$jwt.sub" } }
+                        where: { node: { id: { eq: "$jwt.sub" } } }
                     }
                 )
 
@@ -54,7 +54,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )
@@ -230,7 +230,7 @@ describe("Cypher Auth Allow", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id_EQ: "id-01" }, update: { id_SET: "not bound" }) {
+                updateUsers(where: { id: { eq: "id-01" } }, update: { id_SET: "not bound" }) {
                     users {
                         id
                     }
@@ -272,10 +272,10 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "id-01" }
+                    where: { id: { eq: "id-01" } }
                     update: {
                         posts: {
-                            where: { node: { id_EQ: "post-id" } }
+                            where: { node: { id: { eq: "post-id" } } }
                             update: { node: { creator: { update: { node: { id_SET: "not bound" } } } } }
                         }
                     }
@@ -335,7 +335,9 @@ describe("Cypher Auth Allow", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id_EQ\\": \\"post-id\\"
+                                            \\"id\\": {
+                                                \\"eq\\": \\"post-id\\"
+                                            }
                                         }
                                     },
                                     \\"update\\": {
@@ -365,8 +367,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePosts(
-                    where: { id_EQ: "post-id" }
-                    update: { creator: { connect: { where: { node: { id_EQ: "user-id" } } } } }
+                    where: { id: { eq: "post-id" } }
+                    update: { creator: { connect: { where: { node: { id: { eq: "user-id" } } } } } }
                 ) {
                     posts {
                         id
@@ -429,8 +431,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePosts(
-                    where: { id_EQ: "post-id" }
-                    update: { creator: { disconnect: { where: { node: { id_EQ: "user-id" } } } } }
+                    where: { id: { eq: "post-id" } }
+                    update: { creator: { disconnect: { where: { node: { id: { eq: "user-id" } } } } } }
                 ) {
                     posts {
                         id
@@ -488,7 +490,9 @@ describe("Cypher Auth Allow", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"user-id\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"user-id\\"
+                                                    }
                                                 }
                                             }
                                         }

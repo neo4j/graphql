@@ -81,7 +81,7 @@ describe("Cypher -> fulltext -> Score", () => {
     test("simple match with single property and score and filter", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesByTitle(phrase: "a different name", where: { node: { released_GT: 2000 } }) {
+                moviesByTitle(phrase: "a different name", where: { node: { released: { gt: 2000 } } }) {
                     edges {
                         score
                         node {

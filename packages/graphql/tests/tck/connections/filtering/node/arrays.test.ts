@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_IN: ["Tom Hanks", "Robin Wright"] } }) {
+                    actorsConnection(where: { node: { name: { in: ["Tom Hanks", "Robin Wright"] } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -102,7 +102,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { favouriteColours_INCLUDES: "Blue" } }) {
+                    actorsConnection(where: { node: { favouriteColours: { includes: "Blue" } } }) {
                         edges {
                             properties {
                                 screenTime

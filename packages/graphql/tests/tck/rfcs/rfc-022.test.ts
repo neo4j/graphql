@@ -54,9 +54,9 @@ describe("tck/rfs/022 subquery projection", () => {
         test("Nested query", async () => {
             const query = /* GraphQL */ `
                 query Query {
-                    movies(where: { released_EQ: 1999 }) {
+                    movies(where: { released: { eq: 1999 } }) {
                         title
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                         }
                     }
@@ -92,9 +92,9 @@ describe("tck/rfs/022 subquery projection", () => {
         test("Double nested query", async () => {
             const query = /* GraphQL */ `
                 query Query {
-                    movies(where: { released_EQ: 1999 }) {
+                    movies(where: { released: { eq: 1999 } }) {
                         title
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                             directed {
                                 title
@@ -154,9 +154,12 @@ describe("tck/rfs/022 subquery projection", () => {
                 type Person
                     @node
                     @authorization(
-                        filter: [{ where: { node: { name_EQ: "The Matrix" } } }]
+                        filter: [{ where: { node: { name: { eq: "The Matrix" } } } }]
                         validate: [
-                            { when: [BEFORE], where: { node: { name_EQ: "$jwt.test" }, jwt: { roles_INCLUDES: "admin" } } }
+                            {
+                                when: [BEFORE]
+                                where: { node: { name: { eq: "$jwt.test" } }, jwt: { roles: { includes: "admin" } } }
+                            }
                         ]
                     ) {
                     name: String!
@@ -177,9 +180,9 @@ describe("tck/rfs/022 subquery projection", () => {
         test("Nested query", async () => {
             const query = /* GraphQL */ `
                 query Query {
-                    movies(where: { released_EQ: 1999 }) {
+                    movies(where: { released: { eq: 1999 } }) {
                         title
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                         }
                     }

@@ -51,7 +51,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_LT: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { lt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -101,7 +101,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_LTE: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { lte: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -151,7 +151,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_GT: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { gt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -201,7 +201,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_GTE: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { gte: 60 } } }) {
                         edges {
                             properties {
                                 screenTime

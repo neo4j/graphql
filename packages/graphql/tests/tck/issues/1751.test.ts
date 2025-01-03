@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
 
         const variableValues = {
             where: {
-                title_EQ: "Google",
+                title: { eq: "Google" },
             },
             delete: {
                 admins: [
@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
                         where: {
                             node: {
                                 organizationsAggregate: {
-                                    count_EQ: 1,
+                                    count: { eq: 1 },
                                 },
                             },
                         },

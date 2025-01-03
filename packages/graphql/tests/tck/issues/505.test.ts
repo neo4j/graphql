@@ -42,8 +42,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                             operations: [READ]
                             where: {
                                 OR: [
-                                    { node: { members_SOME: { authId_EQ: "$jwt.sub" } } }
-                                    { node: { admins_SOME: { authId_EQ: "$jwt.sub" } } }
+                                    { node: { members: { some: { authId: { eq: "$jwt.sub" } } } } }
+                                    { node: { admins: { some: { authId: { eq: "$jwt.sub" } } } } }
                                 ]
                             }
                         }
@@ -66,16 +66,18 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                             where: {
                                 node: {
                                     OR: [
-                                        { owner_SOME: { authId_EQ: "$jwt.sub" } }
+                                        { owner: { some: { authId: { eq: "$jwt.sub" } } } }
                                         {
                                             AND: [
-                                                { shared_EQ: true }
+                                                { shared: { eq: true } }
                                                 {
-                                                    workspace_ALL: {
-                                                        OR: [
-                                                            { members_SOME: { authId_EQ: "$jwt.sub" } }
-                                                            { admins_SOME: { authId_EQ: "$jwt.sub" } }
-                                                        ]
+                                                    workspace: {
+                                                        all: {
+                                                            OR: [
+                                                                { members: { some: { authId: { eq: "$jwt.sub" } } } }
+                                                                { admins: { some: { authId: { eq: "$jwt.sub" } } } }
+                                                            ]
+                                                        }
                                                     }
                                                 }
                                             ]
@@ -105,7 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     test("Users query", async () => {
         const query = /* GraphQL */ `
             query Users {
-                users(where: { id_EQ: "my-user-id" }) {
+                users(where: { id: { eq: "my-user-id" } }) {
                     id
                     authId
                     createdPages {
@@ -165,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     test("Workspaces query", async () => {
         const query = /* GraphQL */ `
             query Workspaces {
-                workspaces(where: { id_EQ: "my-workspace-id" }) {
+                workspaces(where: { id: { eq: "my-workspace-id" } }) {
                     id
                     pages {
                         id
@@ -231,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     test("Pages query", async () => {
         const query = /* GraphQL */ `
             query Pages {
-                pages(where: { workspace_ALL: { id_EQ: "my-workspace-id" } }) {
+                pages(where: { workspace: { all: { id: { eq: "my-workspace-id" } } } }) {
                     id
                 }
             }

@@ -45,7 +45,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 ) {
@@ -65,7 +65,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { id_EQ: "$jwt.sub" } }
+                            where: { node: { id: { eq: "$jwt.sub" } } }
                         }
                     ]
                 )
@@ -242,10 +242,10 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "id-01" }
+                    where: { id: { eq: "id-01" } }
                     update: {
                         content: {
-                            where: { node: { id_EQ: "post-id" } }
+                            where: { node: { id: { eq: "post-id" } } }
                             update: { node: { creator: { update: { node: { id_SET: "not bound" } } } } }
                         }
                     }
@@ -335,7 +335,9 @@ describe("Cypher Auth Allow", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id_EQ\\": \\"post-id\\"
+                                            \\"id\\": {
+                                                \\"eq\\": \\"post-id\\"
+                                            }
                                         }
                                     },
                                     \\"update\\": {

@@ -31,34 +31,34 @@ describe("Cypher Aggregations with Auth", () => {
             type User @node {
                 id: ID
                     @authorization(
-                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                     )
                 name: String!
                     @authorization(
-                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                     )
                 imdbRatingInt: Int!
                     @authorization(
-                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                     )
                 imdbRatingFloat: Float!
                     @authorization(
-                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                     )
                 imdbRatingBigInt: BigInt!
                     @authorization(
-                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                     )
                 createdAt: DateTime
                     @authorization(
-                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                        validate: [{ operations: [READ], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                     )
             }
 
             extend type User
                 @authorization(
-                    validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]
-                    filter: [{ operations: [AGGREGATE], where: { node: { id_EQ: "$jwt.sub" } } }]
+                    validate: [{ operations: [AGGREGATE], when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }]
+                    filter: [{ operations: [AGGREGATE], where: { node: { id: { eq: "$jwt.sub" } } } }]
                 )
         `;
 
@@ -103,7 +103,7 @@ describe("Cypher Aggregations with Auth", () => {
     test("Count with WHERE", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate(where: { name_EQ: "some-name" }) {
+                usersAggregate(where: { name: { eq: "some-name" } }) {
                     count
                 }
             }

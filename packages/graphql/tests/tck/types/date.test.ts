@@ -40,7 +40,7 @@ describe("Cypher Date", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { date_EQ: "1970-01-01" }) {
+                movies(where: { date: { eq: "1970-01-01" } }) {
                     date
                 }
             }
@@ -68,7 +68,7 @@ describe("Cypher Date", () => {
     test("GTE Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { date_GTE: "1980-04-08" }) {
+                movies(where: { date: { gte: "1980-04-08" } }) {
                     date
                 }
             }

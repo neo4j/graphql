@@ -75,7 +75,7 @@ describe("Cypher Delete - union", () => {
     test("Simple Delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteActors(where: { name_EQ: "Keanu" }) {
+                deleteActors(where: { name: { eq: "Keanu" } }) {
                     nodesDeleted
                 }
             }
@@ -100,8 +100,8 @@ describe("Cypher Delete - union", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name_EQ: "Keanu" }
-                    delete: { actedIn: { Movie: { where: { node: { title_EQ: "Matrix" } } } } }
+                    where: { name: { eq: "Keanu" } }
+                    delete: { actedIn: { Movie: { where: { node: { title: { eq: "Matrix" } } } } } }
                 ) {
                     nodesDeleted
                 }
@@ -141,12 +141,12 @@ describe("Cypher Delete - union", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name_EQ: "Keanu" }
+                    where: { name: { eq: "Keanu" } }
                     delete: {
                         actedIn: {
                             Movie: [
-                                { where: { node: { title_EQ: "Matrix" } } }
-                                { where: { node: { title_EQ: "Matrix Reloaded" } } }
+                                { where: { node: { title: { eq: "Matrix" } } } }
+                                { where: { node: { title: { eq: "Matrix Reloaded" } } } }
                             ]
                         }
                     }
@@ -201,12 +201,12 @@ describe("Cypher Delete - union", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name_EQ: "Keanu" }
+                    where: { name: { eq: "Keanu" } }
                     delete: {
                         actedIn: {
                             Movie: {
-                                where: { node: { title_EQ: "Matrix" } }
-                                delete: { actors: { where: { node: { name_EQ: "Gloria Foster" } } } }
+                                where: { node: { title: { eq: "Matrix" } } }
+                                delete: { actors: { where: { node: { name: { eq: "Gloria Foster" } } } } }
                             }
                         }
                     }
@@ -262,12 +262,14 @@ describe("Cypher Delete - union", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteActors(
-                    where: { name_EQ: "Keanu" }
+                    where: { name: { eq: "Keanu" } }
                     delete: {
                         actedIn: {
                             Movie: {
-                                where: { node: { title_EQ: "Matrix" } }
-                                delete: { workers: { ScreenWriter: { where: { node: { name_EQ: "Wachowski" } } } } }
+                                where: { node: { title: { eq: "Matrix" } } }
+                                delete: {
+                                    workers: { ScreenWriter: { where: { node: { name: { eq: "Wachowski" } } } } }
+                                }
                             }
                         }
                     }

@@ -54,7 +54,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { id_EQ: "$jwt.sub" } }
+                            where: { node: { id: { eq: "$jwt.sub" } } }
                         }
                     ]
                 )
@@ -63,7 +63,11 @@ describe("Cypher Auth Allow", () => {
                 password: String!
                     @authorization(
                         validate: [
-                            { operations: [READ, UPDATE, DELETE], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }
+                            {
+                                operations: [READ, UPDATE, DELETE]
+                                when: BEFORE
+                                where: { node: { id: { eq: "$jwt.sub" } } }
+                            }
                         ]
                     )
             }
@@ -74,7 +78,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )
@@ -85,7 +89,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )
@@ -267,10 +271,10 @@ describe("Cypher Auth Allow", () => {
     test("Read Two Relationships", async () => {
         const query = /* GraphQL */ `
             {
-                users(where: { id_EQ: "1" }) {
+                users(where: { id: { eq: "1" } }) {
                     id
-                    posts(where: { id_EQ: "1" }) {
-                        comments(where: { id_EQ: "1" }) {
+                    posts(where: { id: { eq: "1" } }) {
+                        comments(where: { id: { eq: "1" } }) {
                             content
                         }
                     }
@@ -331,7 +335,7 @@ describe("Cypher Auth Allow", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id_EQ: "old-id" }, update: { id_SET: "new-id" }) {
+                updateUsers(where: { id: { eq: "old-id" } }, update: { id_SET: "new-id" }) {
                     users {
                         id
                     }
@@ -373,7 +377,7 @@ describe("Cypher Auth Allow", () => {
     test("Update Node Property", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id_EQ: "id-01" }, update: { password_SET: "new-password" }) {
+                updateUsers(where: { id: { eq: "id-01" } }, update: { password_SET: "new-password" }) {
                     users {
                         id
                     }
@@ -418,7 +422,7 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePosts(
-                    where: { id_EQ: "post-id" }
+                    where: { id: { eq: "post-id" } }
                     update: { creator: { update: { node: { id_SET: "new-id" } } } }
                 ) {
                     posts {
@@ -476,7 +480,7 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePosts(
-                    where: { id_EQ: "post-id" }
+                    where: { id: { eq: "post-id" } }
                     update: { creator: { update: { node: { password_SET: "new-password" } } } }
                 ) {
                     posts {
@@ -535,7 +539,7 @@ describe("Cypher Auth Allow", () => {
     test("Delete Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteUsers(where: { id_EQ: "user-id" }) {
+                deleteUsers(where: { id: { eq: "user-id" } }) {
                     nodesDeleted
                 }
             }
@@ -569,7 +573,10 @@ describe("Cypher Auth Allow", () => {
     test("Nested Delete Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteUsers(where: { id_EQ: "user-id" }, delete: { posts: { where: { node: { id_EQ: "post-id" } } } }) {
+                deleteUsers(
+                    where: { id: { eq: "user-id" } }
+                    delete: { posts: { where: { node: { id: { eq: "post-id" } } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -621,8 +628,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "user-id" }
-                    update: { posts: { disconnect: { where: { node: { id_EQ: "post-id" } } } } }
+                    where: { id: { eq: "user-id" } }
+                    update: { posts: { disconnect: { where: { node: { id: { eq: "post-id" } } } } } }
                 ) {
                     users {
                         id
@@ -681,7 +688,9 @@ describe("Cypher Auth Allow", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"post-id\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"post-id\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -700,9 +709,11 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateComments(
-                    where: { id_EQ: "comment-id" }
+                    where: { id: { eq: "comment-id" } }
                     update: {
-                        post: { disconnect: { disconnect: { creator: { where: { node: { id_EQ: "user-id" } } } } } }
+                        post: {
+                            disconnect: { disconnect: { creator: { where: { node: { id: { eq: "user-id" } } } } } }
+                        }
                     }
                 ) {
                     comments {
@@ -789,7 +800,9 @@ describe("Cypher Auth Allow", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id_EQ\\": \\"user-id\\"
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"user-id\\"
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -811,8 +824,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "user-id" }
-                    update: { posts: { connect: { where: { node: { id_EQ: "post-id" } } } } }
+                    where: { id: { eq: "user-id" } }
+                    update: { posts: { connect: { where: { node: { id: { eq: "post-id" } } } } } }
                 ) {
                     users {
                         id

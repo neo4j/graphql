@@ -78,7 +78,7 @@ describe("Cypher -> fulltext -> Match", () => {
     test("match with where and single fulltext property", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesByTitle(phrase: "something AND something", where: { node: { title_EQ: "some-title" } }) {
+                moviesByTitle(phrase: "something AND something", where: { node: { title: { eq: "some-title" } } }) {
                     edges {
                         node {
                             title

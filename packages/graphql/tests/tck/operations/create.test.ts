@@ -302,7 +302,7 @@ describe("Cypher Create", () => {
     test("Simple create and connect", async () => {
         const query = /* GraphQL */ `
             mutation {
-                createMovies(input: [{ id: 1, actors: { connect: [{ where: { node: { name_EQ: "Dan" } } }] } }]) {
+                createMovies(input: [{ id: 1, actors: { connect: [{ where: { node: { name: { eq: "Dan" } } } }] } }]) {
                     movies {
                         id
                     }
@@ -355,11 +355,11 @@ describe("Cypher Create", () => {
     test("Simple create -> relationship field -> connection(where)", async () => {
         const query = /* GraphQL */ `
             mutation {
-                createActors(input: { name: "Dan", movies: { connect: { where: { node: { id_EQ: 1 } } } } }) {
+                createActors(input: { name: "Dan", movies: { connect: { where: { node: { id: { eq: 1 } } } } } }) {
                     actors {
                         name
                         movies {
-                            actorsConnection(where: { node: { name_EQ: "Dan" } }) {
+                            actorsConnection(where: { node: { name: { eq: "Dan" } } }) {
                                 totalCount
                                 edges {
                                     node {

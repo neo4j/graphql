@@ -39,7 +39,7 @@ describe("Node Directive", () => {
             }
 
             extend type Post
-                @authorization(validate: [{ operations: [DELETE], where: { jwt: { roles_INCLUDES: "admin" } } }])
+                @authorization(validate: [{ operations: [DELETE], where: { jwt: { roles: { includes: "admin" } } } }])
 
             type User @node(labels: ["Person"]) {
                 id: ID
@@ -53,7 +53,7 @@ describe("Node Directive", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: [BEFORE]
-                            where: { node: { id_EQ: "$jwt.sub" } }
+                            where: { node: { id: { eq: "$jwt.sub" } } }
                         }
                     ]
                 )
@@ -102,7 +102,7 @@ describe("Node Directive", () => {
     test("Admin Deletes Post", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deletePosts(where: { creator_SOME: { id_EQ: "123" } }) {
+                deletePosts(where: { creator: { some: { id: { eq: "123" } } } }) {
                     nodesDeleted
                 }
             }

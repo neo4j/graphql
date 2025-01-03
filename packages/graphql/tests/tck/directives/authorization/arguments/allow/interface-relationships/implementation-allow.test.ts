@@ -48,7 +48,7 @@ describe("@auth allow on specific interface implementation", () => {
                         {
                             when: BEFORE
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
-                            where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 ) {
@@ -134,11 +134,11 @@ describe("@auth allow on specific interface implementation", () => {
     test("Read Two Relationships", async () => {
         const query = /* GraphQL */ `
             {
-                users(where: { id_EQ: "1" }) {
+                users(where: { id: { eq: "1" } }) {
                     id
-                    content(where: { id_EQ: "1" }) {
+                    content(where: { id: { eq: "1" } }) {
                         ... on Post {
-                            comments(where: { id_EQ: "1" }) {
+                            comments(where: { id: { eq: "1" } }) {
                                 content
                             }
                         }
@@ -207,7 +207,7 @@ describe("@auth allow on specific interface implementation", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "user-id" }
+                    where: { id: { eq: "user-id" } }
                     update: { content: { update: { node: { id_SET: "new-id" } } } }
                 ) {
                     users {
@@ -299,8 +299,8 @@ describe("@auth allow on specific interface implementation", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteUsers(
-                    where: { id_EQ: "user-id" }
-                    delete: { content: { where: { node: { id_EQ: "post-id" } } } }
+                    where: { id: { eq: "user-id" } }
+                    delete: { content: { where: { node: { id: { eq: "post-id" } } } } }
                 ) {
                     nodesDeleted
                 }

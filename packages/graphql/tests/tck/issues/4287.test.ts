@@ -49,7 +49,9 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             query {
                 actors {
                     actedInConnection(
-                        where: { OR: [{ node: { title_EQ: "something" } }, { node: { title_EQ: "whatever" } }] }
+                        where: {
+                            OR: [{ node: { title: { eq: "something" } } }, { node: { title: { eq: "whatever" } } }]
+                        }
                     ) {
                         edges {
                             node {

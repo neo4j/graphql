@@ -41,9 +41,11 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
             union Content = Post
 
-            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            extend type User @authorization(validate: [{ when: BEFORE, where: { node: { id: { eq: "$jwt.sub" } } } }])
             extend type Post
-                @authorization(validate: [{ when: BEFORE, where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } } }])
+                @authorization(
+                    validate: [{ when: BEFORE, where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }]
+                )
         `;
 
         neoSchema = new Neo4jGraphQL({

@@ -70,8 +70,11 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                     {
                         operations: [CREATE, CREATE_RELATIONSHIP]
                         where: {
-                            OR: [{ jwt: { roles_INCLUDES: "store-owner" } }, { jwt: { roles_INCLUDES: "employee" } }]
-                            node: { store_SOME: { id_EQ: "$jwt.store" } }
+                            OR: [
+                                { jwt: { roles: { includes: "store-owner" } } }
+                                { jwt: { roles: { includes: "employee" } } }
+                            ]
+                            node: { store: { some: { id: { eq: "$jwt.store" } } } }
                         }
                     }
                 ]
@@ -79,11 +82,14 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
         extend type Transaction
             @authorization(
                 filter: [
-                    { where: { jwt: { roles_INCLUDES: "admin" } } }
+                    { where: { jwt: { roles: { includes: "admin" } } } }
                     {
                         where: {
-                            OR: [{ jwt: { roles_INCLUDES: "store-owner" } }, { jwt: { roles_INCLUDES: "employee" } }]
-                            node: { store_SOME: { id_EQ: "$jwt.store" } }
+                            OR: [
+                                { jwt: { roles: { includes: "store-owner" } } }
+                                { jwt: { roles: { includes: "employee" } } }
+                            ]
+                            node: { store: { some: { id: { eq: "$jwt.store" } } } }
                         }
                     }
                 ]
@@ -97,8 +103,11 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                     {
                         operations: [CREATE, CREATE_RELATIONSHIP]
                         where: {
-                            OR: [{ jwt: { roles_INCLUDES: "store-owner" } }, { jwt: { roles_INCLUDES: "employee" } }]
-                            node: { transaction_SOME: { store_SOME: { id_EQ: "$jwt.store" } } }
+                            OR: [
+                                { jwt: { roles: { includes: "store-owner" } } }
+                                { jwt: { roles: { includes: "employee" } } }
+                            ]
+                            node: { transaction: { some: { store: { some: { id: { eq: "$jwt.store" } } } } } }
                         }
                     }
                 ]
@@ -106,11 +115,14 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
         extend type TransactionItem
             @authorization(
                 filter: [
-                    { where: { jwt: { roles_INCLUDES: "admin" } } }
+                    { where: { jwt: { roles: { includes: "admin" } } } }
                     {
                         where: {
-                            OR: [{ jwt: { roles_INCLUDES: "store-owner" } }, { jwt: { roles_INCLUDES: "employee" } }]
-                            node: { transaction_SOME: { store_SOME: { id_EQ: "$jwt.store" } } }
+                            OR: [
+                                { jwt: { roles: { includes: "store-owner" } } }
+                                { jwt: { roles: { includes: "employee" } } }
+                            ]
+                            node: { transaction: { some: { store: { some: { id: { eq: "$jwt.store" } } } } } }
                         }
                     }
                 ]
@@ -136,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                         name: "Milk"
                         price: 5
                         quantity: 1
-                        transaction: { connect: { where: { node: { id_EQ: "transactionid" } } } }
+                        transaction: { connect: { where: { node: { id: { eq: "transactionid" } } } } }
                     }
                 ) {
                     transactionItems {

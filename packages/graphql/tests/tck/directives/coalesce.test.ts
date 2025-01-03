@@ -62,13 +62,13 @@ describe("Cypher coalesce()", () => {
             ) {
                 users(
                     where: {
-                        id_EQ: $id
-                        name_MATCHES: $name
-                        NOT: { verified_EQ: $verified }
-                        numberOfFriends_GT: $numberOfFriends
-                        rating_LT: $rating
-                        fromInterface_EQ: $fromInterface
-                        toBeOverridden_EQ: $toBeOverridden
+                        id: { eq: $id }
+                        name: { matches: $name }
+                        NOT: { verified: { eq: $verified } }
+                        numberOfFriends: { gt: $numberOfFriends }
+                        rating: { lt: $rating }
+                        fromInterface: { eq: $fromInterface }
+                        toBeOverridden: { eq: $toBeOverridden }
                     }
                 ) {
                     name
@@ -135,7 +135,7 @@ describe("Cypher coalesce()", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { status_EQ: ACTIVE }) {
+                movies(where: { status: { eq: ACTIVE } }) {
                     id
                     status
                 }
@@ -187,7 +187,7 @@ describe("Cypher coalesce()", () => {
         const query = /* GraphQL */ `
             query Actors {
                 actors {
-                    moviesConnection(where: { node: { status_EQ: ACTIVE } }) {
+                    moviesConnection(where: { node: { status: { eq: ACTIVE } } }) {
                         edges {
                             node {
                                 id
@@ -250,7 +250,7 @@ describe("Cypher coalesce()", () => {
         const query = /* GraphQL */ `
             query Actors {
                 actors {
-                    moviesConnection(where: { node: { statuses_EQ: [ACTIVE, INACTIVE] } }) {
+                    moviesConnection(where: { node: { statuses: { eq: [ACTIVE, INACTIVE] } } }) {
                         edges {
                             node {
                                 id

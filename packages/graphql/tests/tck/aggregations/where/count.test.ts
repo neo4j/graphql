@@ -44,7 +44,7 @@ describe("Cypher Aggregations where with count", () => {
     test("Equality Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { count_EQ: 10 } }) {
+                posts(where: { likesAggregate: { count: { eq: 10 } } }) {
                     content
                 }
             }
@@ -77,7 +77,7 @@ describe("Cypher Aggregations where with count", () => {
     test("LT Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { count_LT: 10 } }) {
+                posts(where: { likesAggregate: { count: { lt: 10 } } }) {
                     content
                 }
             }
@@ -110,7 +110,7 @@ describe("Cypher Aggregations where with count", () => {
     test("LTE Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { count_LTE: 10 } }) {
+                posts(where: { likesAggregate: { count: { lte: 10 } } }) {
                     content
                 }
             }
@@ -143,7 +143,7 @@ describe("Cypher Aggregations where with count", () => {
     test("GT Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { count_GT: 10 } }) {
+                posts(where: { likesAggregate: { count: { gt: 10 } } }) {
                     content
                 }
             }
@@ -176,7 +176,7 @@ describe("Cypher Aggregations where with count", () => {
     test("GTE Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { count_GTE: 10 } }) {
+                posts(where: { likesAggregate: { count: { gte: 10 } } }) {
                     content
                 }
             }

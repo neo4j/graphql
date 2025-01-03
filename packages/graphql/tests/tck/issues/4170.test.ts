@@ -28,19 +28,27 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             id: String
             roles: [String]
         }
-        type User @authorization(validate: [{ where: { node: { userId_EQ: "$jwt.id" } }, operations: [READ] }]) @node {
+        type User
+            @authorization(validate: [{ where: { node: { userId: { eq: "$jwt.id" } } }, operations: [READ] }])
+            @node {
             userId: String!
             adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT)
         }
 
-        type Tenant @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }]) @node {
+        type Tenant
+            @authorization(validate: [{ where: { node: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }])
+            @node {
             id: ID! @id
             settings: [Settings!]! @relationship(type: "HAS_SETTINGS", direction: OUT)
             admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN)
         }
 
         type Settings
-            @authorization(validate: [{ where: { node: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }])
+            @authorization(
+                validate: [
+                    { where: { node: { tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                ]
+            )
             @node {
             id: ID! @id
             tenant: [Tenant!]! @relationship(type: "HAS_SETTINGS", direction: IN)
@@ -52,7 +60,15 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             @node
             @authorization(
                 validate: [
-                    { where: { node: { settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }
+                    {
+                        where: {
+                            node: {
+                                settings: {
+                                    some: { tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }
+                                }
+                            }
+                        }
+                    }
                 ]
             ) {
             id: ID! @id
@@ -67,8 +83,14 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     {
                         where: {
                             node: {
-                                openingDay_SOME: {
-                                    settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } }
+                                openingDay: {
+                                    some: {
+                                        settings: {
+                                            some: {
+                                                tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

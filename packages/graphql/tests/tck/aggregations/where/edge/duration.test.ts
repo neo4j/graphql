@@ -49,7 +49,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_AVERAGE_EQUAL: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { average: { eq: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -90,7 +90,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_AVERAGE_GT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { average: { gt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -131,7 +131,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_AVERAGE_GTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { average: { gte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -172,7 +172,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_AVERAGE_LT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { average: { lt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -213,7 +213,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_AVERAGE_LTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { average: { lte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -254,7 +254,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MIN_EQUAL: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { min: { eq: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -295,7 +295,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MIN_GT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { min: { gt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -336,7 +336,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MIN_GTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { min: { gte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -377,7 +377,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MIN_LT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { min: { lt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -418,7 +418,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MIN_LTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { min: { lte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -459,7 +459,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MAX_EQUAL: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { max: { eq: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -500,7 +500,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MAX_GT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { max: { gt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -541,7 +541,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MAX_GTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { max: { gte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -582,7 +582,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MAX_LT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { max: { lt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -623,7 +623,7 @@ describe("Cypher Aggregations where edge with Duration", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDuration_MAX_LTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { edge: { someDuration: { max: { lte: "P1Y" } } } } }) {
                     content
                 }
             }
