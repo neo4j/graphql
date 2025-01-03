@@ -62,13 +62,13 @@ describe("Cypher coalesce()", () => {
             ) {
                 users(
                     where: {
-                        id_EQ: $id
-                        name_MATCHES: $name
+                        id: { eq: $id }
+                        name: { matches: $name }
                         NOT: { verified: { eq: $verified } }
-                        numberOfFriends_GT: $numberOfFriends
-                        rating_LT: $rating
-                        fromInterface_EQ: $fromInterface
-                        toBeOverridden_EQ: $toBeOverridden
+                        numberOfFriends: { gt: $numberOfFriends }
+                        rating: { lt: $rating }
+                        fromInterface: { eq: $fromInterface }
+                        toBeOverridden: { eq: $toBeOverridden }
                     }
                 ) {
                     name

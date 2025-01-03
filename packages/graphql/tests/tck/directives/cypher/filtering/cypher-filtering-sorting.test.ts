@@ -125,7 +125,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field_EQ: "hello world!" }, sort: [{ title: DESC }]) {
+                movies(where: { custom_field: { eq: "hello world!" } }, sort: [{ title: DESC }]) {
                     title
                     actors {
                         name

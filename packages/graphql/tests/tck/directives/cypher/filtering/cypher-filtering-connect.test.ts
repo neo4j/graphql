@@ -51,7 +51,7 @@ describe("cypher directive filtering", () => {
                                 connect: [
                                     {
                                         where: {
-                                            node: { name: { eq: "Keanu Reeves" }, custom_field_EQ: "hello world!" }
+                                            node: { name: { eq: "Keanu Reeves" }, custom_field: { eq: "hello world!" } }
                                         }
                                     }
                                 ]

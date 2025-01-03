@@ -105,7 +105,7 @@ describe("Cypher Points", () => {
     test("Simple Points INCLUDES query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { points_INCLUDES: { longitude: 1.0, latitude: 2.0 } }) {
+                pointContainers(where: { points: { includes: { longitude: 1.0, latitude: 2.0 } } }) {
                     points {
                         longitude
                         latitude
