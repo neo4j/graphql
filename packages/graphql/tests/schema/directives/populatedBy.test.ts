@@ -183,9 +183,18 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
@@ -200,7 +209,6 @@ describe("@populatedBy tests", () => {
                   callback2: StringAggregateSelection!
                   callback3: StringAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -224,34 +232,40 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieUpdateInput {
-                  callback1_SET: String
-                  id_SET: ID
+                  callback1: StringScalarMutations
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  callback1_CONTAINS: String
-                  callback1_ENDS_WITH: String
-                  callback1_EQ: String
-                  callback1_IN: [String!]
-                  callback1_STARTS_WITH: String
-                  callback2_CONTAINS: String
-                  callback2_ENDS_WITH: String
-                  callback2_EQ: String
-                  callback2_IN: [String!]
-                  callback2_STARTS_WITH: String
-                  callback3_CONTAINS: String
-                  callback3_ENDS_WITH: String
-                  callback3_EQ: String
-                  callback3_IN: [String!]
-                  callback3_STARTS_WITH: String
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  callback1: StringScalarFilters
+                  callback1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { contains: ... }\\")
+                  callback1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { endsWith: ... }\\")
+                  callback1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { eq: ... }\\")
+                  callback1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter callback1: { in: ... }\\")
+                  callback1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { startsWith: ... }\\")
+                  callback2: StringScalarFilters
+                  callback2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { contains: ... }\\")
+                  callback2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { endsWith: ... }\\")
+                  callback2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { eq: ... }\\")
+                  callback2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter callback2: { in: ... }\\")
+                  callback2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { startsWith: ... }\\")
+                  callback3: StringScalarFilters
+                  callback3_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { contains: ... }\\")
+                  callback3_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { endsWith: ... }\\")
+                  callback3_EQ: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { eq: ... }\\")
+                  callback3_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter callback3: { in: ... }\\")
+                  callback3_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { startsWith: ... }\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -291,6 +305,20 @@ describe("@populatedBy tests", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -366,9 +394,18 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type IntAggregateSelection {
@@ -376,6 +413,23 @@ describe("@populatedBy tests", () => {
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Int mutations\\"\\"\\"
+                input IntScalarMutations {
+                  add: Int
+                  set: Int
+                  subtract: Int
                 }
 
                 type Movie {
@@ -390,7 +444,6 @@ describe("@populatedBy tests", () => {
                   callback2: IntAggregateSelection!
                   callback3: IntAggregateSelection!
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -414,39 +467,45 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieUpdateInput {
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
-                  id_SET: ID
+                  callback1: IntScalarMutations
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  callback1_EQ: Int
-                  callback1_GT: Int
-                  callback1_GTE: Int
-                  callback1_IN: [Int!]
-                  callback1_LT: Int
-                  callback1_LTE: Int
-                  callback2_EQ: Int
-                  callback2_GT: Int
-                  callback2_GTE: Int
-                  callback2_IN: [Int!]
-                  callback2_LT: Int
-                  callback2_LTE: Int
-                  callback3_EQ: Int
-                  callback3_GT: Int
-                  callback3_GTE: Int
-                  callback3_IN: [Int!]
-                  callback3_LT: Int
-                  callback3_LTE: Int
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  callback1: IntScalarFilters
+                  callback1_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { eq: ... }\\")
+                  callback1_GT: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { gt: ... }\\")
+                  callback1_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { gte: ... }\\")
+                  callback1_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter callback1: { in: ... }\\")
+                  callback1_LT: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { lt: ... }\\")
+                  callback1_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { lte: ... }\\")
+                  callback2: IntScalarFilters
+                  callback2_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { eq: ... }\\")
+                  callback2_GT: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { gt: ... }\\")
+                  callback2_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { gte: ... }\\")
+                  callback2_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter callback2: { in: ... }\\")
+                  callback2_LT: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { lt: ... }\\")
+                  callback2_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { lte: ... }\\")
+                  callback3: IntScalarFilters
+                  callback3_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { eq: ... }\\")
+                  callback3_GT: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { gt: ... }\\")
+                  callback3_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { gte: ... }\\")
+                  callback3_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter callback3: { in: ... }\\")
+                  callback3_LT: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { lt: ... }\\")
+                  callback3_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { lte: ... }\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -705,13 +764,22 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type Genre {
                   id: ID!
                 }
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -727,6 +795,17 @@ describe("@populatedBy tests", () => {
                   node: Genre!
                 }
 
+                input GenreRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+                  all: GenreWhere
+                  \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+                  none: GenreWhere
+                  \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+                  single: GenreWhere
+                  \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+                  some: GenreWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
                 \\"\\"\\"
@@ -735,18 +814,20 @@ describe("@populatedBy tests", () => {
                 }
 
                 input GenreUpdateInput {
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type GenresConnection {
@@ -755,9 +836,28 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
@@ -769,7 +869,6 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -789,31 +888,25 @@ describe("@populatedBy tests", () => {
                 type MovieGenreGenresAggregationSelection {
                   count: Int!
                   edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
                   callback1: StringAggregateSelection!
                   callback2: StringAggregateSelection!
                   callback3: StringAggregateSelection!
-                  id: IDAggregateSelection!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {
                   AND: [MovieGenresAggregateInput!]
                   NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
                   count_LT: Int
                   count_LTE: Int
                   edge: RelPropertiesAggregationWhereInput
-                  node: MovieGenresNodeAggregationWhereInput
                 }
 
                 input MovieGenresConnectFieldInput {
@@ -825,6 +918,25 @@ describe("@populatedBy tests", () => {
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieGenresConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  all: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  none: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  single: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  some: MovieGenresConnectionWhere
                 }
 
                 input MovieGenresConnectionSort {
@@ -858,22 +970,6 @@ describe("@populatedBy tests", () => {
                   create: [MovieGenresCreateFieldInput!]
                 }
 
-                input MovieGenresNodeAggregationWhereInput {
-                  AND: [MovieGenresNodeAggregationWhereInput!]
-                  NOT: MovieGenresNodeAggregationWhereInput
-                  OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
-                }
-
                 type MovieGenresRelationship {
                   cursor: String!
                   node: Genre!
@@ -903,43 +999,47 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  genres: GenreRelationshipFilters
                   genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_ALL: MovieGenresConnectionWhere
+                  genresConnection_ALL: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_NONE: MovieGenresConnectionWhere
+                  genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SINGLE: MovieGenresConnectionWhere
+                  genresConnection_SINGLE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SOME: MovieGenresConnectionWhere
+                  genresConnection_SOME: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-                  genres_ALL: GenreWhere
+                  genres_ALL: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-                  genres_NONE: GenreWhere
+                  genres_NONE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-                  genres_SINGLE: GenreWhere
+                  genres_SINGLE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-                  genres_SOME: GenreWhere
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  genres_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -989,61 +1089,54 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesAggregationWhereInput!]
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
-                  callback1_AVERAGE_LENGTH_EQUAL: Float
-                  callback1_AVERAGE_LENGTH_GT: Float
-                  callback1_AVERAGE_LENGTH_GTE: Float
-                  callback1_AVERAGE_LENGTH_LT: Float
-                  callback1_AVERAGE_LENGTH_LTE: Float
-                  callback1_LONGEST_LENGTH_EQUAL: Int
-                  callback1_LONGEST_LENGTH_GT: Int
-                  callback1_LONGEST_LENGTH_GTE: Int
-                  callback1_LONGEST_LENGTH_LT: Int
-                  callback1_LONGEST_LENGTH_LTE: Int
-                  callback1_SHORTEST_LENGTH_EQUAL: Int
-                  callback1_SHORTEST_LENGTH_GT: Int
-                  callback1_SHORTEST_LENGTH_GTE: Int
-                  callback1_SHORTEST_LENGTH_LT: Int
-                  callback1_SHORTEST_LENGTH_LTE: Int
-                  callback2_AVERAGE_LENGTH_EQUAL: Float
-                  callback2_AVERAGE_LENGTH_GT: Float
-                  callback2_AVERAGE_LENGTH_GTE: Float
-                  callback2_AVERAGE_LENGTH_LT: Float
-                  callback2_AVERAGE_LENGTH_LTE: Float
-                  callback2_LONGEST_LENGTH_EQUAL: Int
-                  callback2_LONGEST_LENGTH_GT: Int
-                  callback2_LONGEST_LENGTH_GTE: Int
-                  callback2_LONGEST_LENGTH_LT: Int
-                  callback2_LONGEST_LENGTH_LTE: Int
-                  callback2_SHORTEST_LENGTH_EQUAL: Int
-                  callback2_SHORTEST_LENGTH_GT: Int
-                  callback2_SHORTEST_LENGTH_GTE: Int
-                  callback2_SHORTEST_LENGTH_LT: Int
-                  callback2_SHORTEST_LENGTH_LTE: Int
-                  callback3_AVERAGE_LENGTH_EQUAL: Float
-                  callback3_AVERAGE_LENGTH_GT: Float
-                  callback3_AVERAGE_LENGTH_GTE: Float
-                  callback3_AVERAGE_LENGTH_LT: Float
-                  callback3_AVERAGE_LENGTH_LTE: Float
-                  callback3_LONGEST_LENGTH_EQUAL: Int
-                  callback3_LONGEST_LENGTH_GT: Int
-                  callback3_LONGEST_LENGTH_GTE: Int
-                  callback3_LONGEST_LENGTH_LT: Int
-                  callback3_LONGEST_LENGTH_LTE: Int
-                  callback3_SHORTEST_LENGTH_EQUAL: Int
-                  callback3_SHORTEST_LENGTH_GT: Int
-                  callback3_SHORTEST_LENGTH_GTE: Int
-                  callback3_SHORTEST_LENGTH_LT: Int
-                  callback3_SHORTEST_LENGTH_LTE: Int
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
+                  callback1: StringScalarAggregationFilters
+                  callback1_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { eq: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { gt: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { gte: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { lt: ... } } }' instead.\\")
+                  callback1_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { averageLength: { lte: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { eq: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { gt: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { gte: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { lt: ... } } }' instead.\\")
+                  callback1_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { longestLength: { lte: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { eq: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { gt: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { gte: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { lt: ... } } }' instead.\\")
+                  callback1_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { shortestLength: { lte: ... } } }' instead.\\")
+                  callback2: StringScalarAggregationFilters
+                  callback2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { eq: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { gt: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { gte: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { lt: ... } } }' instead.\\")
+                  callback2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { averageLength: { lte: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { eq: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { gt: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { gte: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { lt: ... } } }' instead.\\")
+                  callback2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { longestLength: { lte: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { eq: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { gt: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { gte: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { lt: ... } } }' instead.\\")
+                  callback2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { shortestLength: { lte: ... } } }' instead.\\")
+                  callback3: StringScalarAggregationFilters
+                  callback3_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { eq: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { gt: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { gte: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { lt: ... } } }' instead.\\")
+                  callback3_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { averageLength: { lte: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { eq: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { gt: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { gte: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { lt: ... } } }' instead.\\")
+                  callback3_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { longestLength: { lte: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { eq: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { gt: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { gte: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { lt: ... } } }' instead.\\")
+                  callback3_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 input RelPropertiesCreateInput {
@@ -1059,34 +1152,40 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesUpdateInput {
-                  callback1_SET: String
-                  id_SET: ID
+                  callback1: StringScalarMutations
+                  callback1_SET: String @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {
                   AND: [RelPropertiesWhere!]
                   NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
-                  callback1_CONTAINS: String
-                  callback1_ENDS_WITH: String
-                  callback1_EQ: String
-                  callback1_IN: [String!]
-                  callback1_STARTS_WITH: String
-                  callback2_CONTAINS: String
-                  callback2_ENDS_WITH: String
-                  callback2_EQ: String
-                  callback2_IN: [String!]
-                  callback2_STARTS_WITH: String
-                  callback3_CONTAINS: String
-                  callback3_ENDS_WITH: String
-                  callback3_EQ: String
-                  callback3_IN: [String!]
-                  callback3_STARTS_WITH: String
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  callback1: StringScalarFilters
+                  callback1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { contains: ... }\\")
+                  callback1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { endsWith: ... }\\")
+                  callback1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { eq: ... }\\")
+                  callback1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter callback1: { in: ... }\\")
+                  callback1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback1: { startsWith: ... }\\")
+                  callback2: StringScalarFilters
+                  callback2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { contains: ... }\\")
+                  callback2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { endsWith: ... }\\")
+                  callback2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { eq: ... }\\")
+                  callback2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter callback2: { in: ... }\\")
+                  callback2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback2: { startsWith: ... }\\")
+                  callback3: StringScalarFilters
+                  callback3_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { contains: ... }\\")
+                  callback3_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { endsWith: ... }\\")
+                  callback3_EQ: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { eq: ... }\\")
+                  callback3_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter callback3: { in: ... }\\")
+                  callback3_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter callback3: { startsWith: ... }\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1100,6 +1199,27 @@ describe("@populatedBy tests", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateGenresMutationResponse {
@@ -1194,13 +1314,22 @@ describe("@populatedBy tests", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
                 type Genre {
                   id: ID!
                 }
 
                 type GenreAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input GenreConnectWhere {
@@ -1216,6 +1345,17 @@ describe("@populatedBy tests", () => {
                   node: Genre!
                 }
 
+                input GenreRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+                  all: GenreWhere
+                  \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+                  none: GenreWhere
+                  \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+                  single: GenreWhere
+                  \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+                  some: GenreWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
                 \\"\\"\\"
@@ -1224,18 +1364,20 @@ describe("@populatedBy tests", () => {
                 }
 
                 input GenreUpdateInput {
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input GenreWhere {
                   AND: [GenreWhere!]
                   NOT: GenreWhere
                   OR: [GenreWhere!]
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type GenresConnection {
@@ -1244,9 +1386,18 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type IntAggregateSelection {
@@ -1254,6 +1405,31 @@ describe("@populatedBy tests", () => {
                   max: Int
                   min: Int
                   sum: Int
+                }
+
+                \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+                input IntScalarAggregationFilters {
+                  average: FloatScalarFilters
+                  max: IntScalarFilters
+                  min: IntScalarFilters
+                  sum: IntScalarFilters
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Int mutations\\"\\"\\"
+                input IntScalarMutations {
+                  add: Int
+                  set: Int
+                  subtract: Int
                 }
 
                 type Movie {
@@ -1265,7 +1441,6 @@ describe("@populatedBy tests", () => {
 
                 type MovieAggregateSelection {
                   count: Int!
-                  id: IDAggregateSelection!
                 }
 
                 input MovieCreateInput {
@@ -1285,31 +1460,25 @@ describe("@populatedBy tests", () => {
                 type MovieGenreGenresAggregationSelection {
                   count: Int!
                   edge: MovieGenreGenresEdgeAggregateSelection
-                  node: MovieGenreGenresNodeAggregateSelection
                 }
 
                 type MovieGenreGenresEdgeAggregateSelection {
                   callback1: IntAggregateSelection!
                   callback2: IntAggregateSelection!
                   callback3: IntAggregateSelection!
-                  id: IDAggregateSelection!
-                }
-
-                type MovieGenreGenresNodeAggregateSelection {
-                  id: IDAggregateSelection!
                 }
 
                 input MovieGenresAggregateInput {
                   AND: [MovieGenresAggregateInput!]
                   NOT: MovieGenresAggregateInput
                   OR: [MovieGenresAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
                   count_LT: Int
                   count_LTE: Int
                   edge: RelPropertiesAggregationWhereInput
-                  node: MovieGenresNodeAggregationWhereInput
                 }
 
                 input MovieGenresConnectFieldInput {
@@ -1321,6 +1490,25 @@ describe("@populatedBy tests", () => {
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieGenresConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  all: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  none: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  single: MovieGenresConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieGenresConnections match this filter
+                  \\"\\"\\"
+                  some: MovieGenresConnectionWhere
                 }
 
                 input MovieGenresConnectionSort {
@@ -1354,22 +1542,6 @@ describe("@populatedBy tests", () => {
                   create: [MovieGenresCreateFieldInput!]
                 }
 
-                input MovieGenresNodeAggregationWhereInput {
-                  AND: [MovieGenresNodeAggregationWhereInput!]
-                  NOT: MovieGenresNodeAggregationWhereInput
-                  OR: [MovieGenresNodeAggregationWhereInput!]
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
-                }
-
                 type MovieGenresRelationship {
                   cursor: String!
                   node: Genre!
@@ -1399,43 +1571,47 @@ describe("@populatedBy tests", () => {
 
                 input MovieUpdateInput {
                   genres: [MovieGenresUpdateFieldInput!]
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  genres: GenreRelationshipFilters
                   genresAggregate: MovieGenresAggregateInput
+                  genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_ALL: MovieGenresConnectionWhere
+                  genresConnection_ALL: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_NONE: MovieGenresConnectionWhere
+                  genresConnection_NONE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SINGLE: MovieGenresConnectionWhere
+                  genresConnection_SINGLE: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieGenresConnections match this filter
                   \\"\\"\\"
-                  genresConnection_SOME: MovieGenresConnectionWhere
+                  genresConnection_SOME: MovieGenresConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genresConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-                  genres_ALL: GenreWhere
+                  genres_ALL: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-                  genres_NONE: GenreWhere
+                  genres_NONE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-                  genres_SINGLE: GenreWhere
+                  genres_SINGLE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-                  genres_SOME: GenreWhere
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  genres_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genres: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1485,76 +1661,69 @@ describe("@populatedBy tests", () => {
                   AND: [RelPropertiesAggregationWhereInput!]
                   NOT: RelPropertiesAggregationWhereInput
                   OR: [RelPropertiesAggregationWhereInput!]
-                  callback1_AVERAGE_EQUAL: Float
-                  callback1_AVERAGE_GT: Float
-                  callback1_AVERAGE_GTE: Float
-                  callback1_AVERAGE_LT: Float
-                  callback1_AVERAGE_LTE: Float
-                  callback1_MAX_EQUAL: Int
-                  callback1_MAX_GT: Int
-                  callback1_MAX_GTE: Int
-                  callback1_MAX_LT: Int
-                  callback1_MAX_LTE: Int
-                  callback1_MIN_EQUAL: Int
-                  callback1_MIN_GT: Int
-                  callback1_MIN_GTE: Int
-                  callback1_MIN_LT: Int
-                  callback1_MIN_LTE: Int
-                  callback1_SUM_EQUAL: Int
-                  callback1_SUM_GT: Int
-                  callback1_SUM_GTE: Int
-                  callback1_SUM_LT: Int
-                  callback1_SUM_LTE: Int
-                  callback2_AVERAGE_EQUAL: Float
-                  callback2_AVERAGE_GT: Float
-                  callback2_AVERAGE_GTE: Float
-                  callback2_AVERAGE_LT: Float
-                  callback2_AVERAGE_LTE: Float
-                  callback2_MAX_EQUAL: Int
-                  callback2_MAX_GT: Int
-                  callback2_MAX_GTE: Int
-                  callback2_MAX_LT: Int
-                  callback2_MAX_LTE: Int
-                  callback2_MIN_EQUAL: Int
-                  callback2_MIN_GT: Int
-                  callback2_MIN_GTE: Int
-                  callback2_MIN_LT: Int
-                  callback2_MIN_LTE: Int
-                  callback2_SUM_EQUAL: Int
-                  callback2_SUM_GT: Int
-                  callback2_SUM_GTE: Int
-                  callback2_SUM_LT: Int
-                  callback2_SUM_LTE: Int
-                  callback3_AVERAGE_EQUAL: Float
-                  callback3_AVERAGE_GT: Float
-                  callback3_AVERAGE_GTE: Float
-                  callback3_AVERAGE_LT: Float
-                  callback3_AVERAGE_LTE: Float
-                  callback3_MAX_EQUAL: Int
-                  callback3_MAX_GT: Int
-                  callback3_MAX_GTE: Int
-                  callback3_MAX_LT: Int
-                  callback3_MAX_LTE: Int
-                  callback3_MIN_EQUAL: Int
-                  callback3_MIN_GT: Int
-                  callback3_MIN_GTE: Int
-                  callback3_MIN_LT: Int
-                  callback3_MIN_LTE: Int
-                  callback3_SUM_EQUAL: Int
-                  callback3_SUM_GT: Int
-                  callback3_SUM_GTE: Int
-                  callback3_SUM_LT: Int
-                  callback3_SUM_LTE: Int
-                  id_MAX_EQUAL: ID
-                  id_MAX_GT: ID
-                  id_MAX_GTE: ID
-                  id_MAX_LT: ID
-                  id_MAX_LTE: ID
-                  id_MIN_EQUAL: ID
-                  id_MIN_GT: ID
-                  id_MIN_GTE: ID
-                  id_MIN_LT: ID
-                  id_MIN_LTE: ID
+                  callback1: IntScalarAggregationFilters
+                  callback1_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { eq: ... } } }' instead.\\")
+                  callback1_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { gt: ... } } }' instead.\\")
+                  callback1_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { gte: ... } } }' instead.\\")
+                  callback1_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { lt: ... } } }' instead.\\")
+                  callback1_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { average: { lte: ... } } }' instead.\\")
+                  callback1_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { eq: ... } } }' instead.\\")
+                  callback1_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { gt: ... } } }' instead.\\")
+                  callback1_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { gte: ... } } }' instead.\\")
+                  callback1_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { lt: ... } } }' instead.\\")
+                  callback1_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { max: { lte: ... } } }' instead.\\")
+                  callback1_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { eq: ... } } }' instead.\\")
+                  callback1_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { gt: ... } } }' instead.\\")
+                  callback1_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { gte: ... } } }' instead.\\")
+                  callback1_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { lt: ... } } }' instead.\\")
+                  callback1_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { min: { lte: ... } } }' instead.\\")
+                  callback1_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { eq: ... } } }' instead.\\")
+                  callback1_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { gt: ... } } }' instead.\\")
+                  callback1_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { gte: ... } } }' instead.\\")
+                  callback1_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { lt: ... } } }' instead.\\")
+                  callback1_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback1: { sum: { lte: ... } } }' instead.\\")
+                  callback2: IntScalarAggregationFilters
+                  callback2_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { eq: ... } } }' instead.\\")
+                  callback2_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { gt: ... } } }' instead.\\")
+                  callback2_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { gte: ... } } }' instead.\\")
+                  callback2_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { lt: ... } } }' instead.\\")
+                  callback2_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { average: { lte: ... } } }' instead.\\")
+                  callback2_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { eq: ... } } }' instead.\\")
+                  callback2_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { gt: ... } } }' instead.\\")
+                  callback2_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { gte: ... } } }' instead.\\")
+                  callback2_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { lt: ... } } }' instead.\\")
+                  callback2_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { max: { lte: ... } } }' instead.\\")
+                  callback2_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { eq: ... } } }' instead.\\")
+                  callback2_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { gt: ... } } }' instead.\\")
+                  callback2_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { gte: ... } } }' instead.\\")
+                  callback2_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { lt: ... } } }' instead.\\")
+                  callback2_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { min: { lte: ... } } }' instead.\\")
+                  callback2_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { eq: ... } } }' instead.\\")
+                  callback2_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { gt: ... } } }' instead.\\")
+                  callback2_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { gte: ... } } }' instead.\\")
+                  callback2_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { lt: ... } } }' instead.\\")
+                  callback2_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback2: { sum: { lte: ... } } }' instead.\\")
+                  callback3: IntScalarAggregationFilters
+                  callback3_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { eq: ... } } }' instead.\\")
+                  callback3_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { gt: ... } } }' instead.\\")
+                  callback3_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { gte: ... } } }' instead.\\")
+                  callback3_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { lt: ... } } }' instead.\\")
+                  callback3_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { average: { lte: ... } } }' instead.\\")
+                  callback3_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { eq: ... } } }' instead.\\")
+                  callback3_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { gt: ... } } }' instead.\\")
+                  callback3_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { gte: ... } } }' instead.\\")
+                  callback3_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { lt: ... } } }' instead.\\")
+                  callback3_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { max: { lte: ... } } }' instead.\\")
+                  callback3_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { eq: ... } } }' instead.\\")
+                  callback3_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { gt: ... } } }' instead.\\")
+                  callback3_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { gte: ... } } }' instead.\\")
+                  callback3_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { lt: ... } } }' instead.\\")
+                  callback3_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { min: { lte: ... } } }' instead.\\")
+                  callback3_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { eq: ... } } }' instead.\\")
+                  callback3_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { gt: ... } } }' instead.\\")
+                  callback3_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { gte: ... } } }' instead.\\")
+                  callback3_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { lt: ... } } }' instead.\\")
+                  callback3_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'callback3: { sum: { lte: ... } } }' instead.\\")
                 }
 
                 input RelPropertiesCreateInput {
@@ -1570,39 +1739,45 @@ describe("@populatedBy tests", () => {
                 }
 
                 input RelPropertiesUpdateInput {
-                  callback1_DECREMENT: Int
-                  callback1_INCREMENT: Int
-                  callback1_SET: Int
-                  id_SET: ID
+                  callback1: IntScalarMutations
+                  callback1_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { decrement: ... } }' instead.\\")
+                  callback1_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'callback1: { increment: ... } }' instead.\\")
+                  callback1_SET: Int @deprecated(reason: \\"Please use the generic mutation 'callback1: { set: ... } }' instead.\\")
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input RelPropertiesWhere {
                   AND: [RelPropertiesWhere!]
                   NOT: RelPropertiesWhere
                   OR: [RelPropertiesWhere!]
-                  callback1_EQ: Int
-                  callback1_GT: Int
-                  callback1_GTE: Int
-                  callback1_IN: [Int!]
-                  callback1_LT: Int
-                  callback1_LTE: Int
-                  callback2_EQ: Int
-                  callback2_GT: Int
-                  callback2_GTE: Int
-                  callback2_IN: [Int!]
-                  callback2_LT: Int
-                  callback2_LTE: Int
-                  callback3_EQ: Int
-                  callback3_GT: Int
-                  callback3_GTE: Int
-                  callback3_IN: [Int!]
-                  callback3_LT: Int
-                  callback3_LTE: Int
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
+                  callback1: IntScalarFilters
+                  callback1_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { eq: ... }\\")
+                  callback1_GT: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { gt: ... }\\")
+                  callback1_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { gte: ... }\\")
+                  callback1_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter callback1: { in: ... }\\")
+                  callback1_LT: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { lt: ... }\\")
+                  callback1_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback1: { lte: ... }\\")
+                  callback2: IntScalarFilters
+                  callback2_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { eq: ... }\\")
+                  callback2_GT: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { gt: ... }\\")
+                  callback2_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { gte: ... }\\")
+                  callback2_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter callback2: { in: ... }\\")
+                  callback2_LT: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { lt: ... }\\")
+                  callback2_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback2: { lte: ... }\\")
+                  callback3: IntScalarFilters
+                  callback3_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { eq: ... }\\")
+                  callback3_GT: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { gt: ... }\\")
+                  callback3_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { gte: ... }\\")
+                  callback3_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter callback3: { in: ... }\\")
+                  callback3_LT: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { lt: ... }\\")
+                  callback3_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter callback3: { lte: ... }\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

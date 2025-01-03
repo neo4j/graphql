@@ -145,7 +145,7 @@ function doForRelationshipPropertiesType({
         composer,
     });
     withSortInputType({ relationshipAdapter, userDefinedFieldDirectives, composer });
-    withUpdateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer });
+    withUpdateInputType({ entityAdapter: relationshipAdapter, userDefinedFieldDirectives, composer, features });
     withWhereInputType({
         entityAdapter: relationshipAdapter,
         userDefinedFieldDirectives,

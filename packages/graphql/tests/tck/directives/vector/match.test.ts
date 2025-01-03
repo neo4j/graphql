@@ -228,7 +228,7 @@ describe("Vector index match", () => {
     test("simple match with single property and score and filter", async () => {
         const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
-                    ${queryName}(vector: $vector, where: { node: { released_GT: 2000 } }) {
+                    ${queryName}(vector: $vector, where: { node: { released: { gt: 2000  } } }) {
                         edges {
                             cursor
                             score

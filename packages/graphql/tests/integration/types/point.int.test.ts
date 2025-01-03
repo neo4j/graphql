@@ -194,7 +194,7 @@ describe("Point", () => {
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!) {
                 ${Photograph.operations.update}(
                     where: { id_EQ: $id }
-                    update: { location_SET: { longitude: $longitude, latitude: $latitude } }
+                    update: { location: { set: { longitude: $longitude, latitude: $latitude } } }
                 ) {
                     ${Photograph.plural} {
                         id
@@ -263,7 +263,7 @@ describe("Point", () => {
             mutation UpdatePhotographs($id: String!, $longitude: Float!, $latitude: Float!, $height: Float!) {
                 ${Photograph.operations.update}(
                     where: { id_EQ: $id }
-                    update: { location_SET: { longitude: $longitude, latitude: $latitude, height: $height } }
+                    update: { location: { set: { longitude: $longitude, latitude: $latitude, height: $height } } }
                 ) {
                     ${Photograph.plural} {
                         id
@@ -331,7 +331,7 @@ describe("Point", () => {
         // Test equality
         const photographsEqualsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
-                ${Photograph.plural}(where: { location_EQ: { longitude: $longitude, latitude: $latitude } }) {
+                ${Photograph.plural}(where: { location: { eq: { longitude: $longitude, latitude: $latitude } } }) {
                     id
                     size
                     location {
@@ -363,7 +363,7 @@ describe("Point", () => {
         // Test IN functionality
         const photographsInQuery = /* GraphQL */ `
             query Photographs($locations: [PointInput!]) {
-                ${Photograph.plural}(where: { location_IN: $locations }) {
+                ${Photograph.plural}(where: { location: {in: $locations } }) {
                     id
                     size
                     location {
@@ -404,7 +404,7 @@ describe("Point", () => {
         const photographsLessThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location_LT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1000000 } }
+                    where: { location: { distance: { from: { longitude: $longitude, latitude: $latitude }, lt: 1000000 } } }
                 ) {
                     id
                     size
@@ -438,7 +438,7 @@ describe("Point", () => {
         const photographsGreaterThanQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!) {
                 ${Photograph.plural}(
-                    where: { location_GT: { point: { longitude: $longitude, latitude: $latitude }, distance: 1 } }
+                    where: { location: { distance: { from: { longitude: $longitude, latitude: $latitude }, gt: 1 } } }
                 ) {
                     id
                     size
@@ -494,7 +494,7 @@ describe("Point", () => {
 
         const photographsQuery = /* GraphQL */ `
             query Photographs($longitude: Float!, $latitude: Float!, $height: Float) {
-                ${Photograph.plural}(where: { location_EQ: { longitude: $longitude, latitude: $latitude, height: $height } }) {
+                ${Photograph.plural}(where: { location: { eq: { longitude: $longitude, latitude: $latitude, height: $height } } }) {
                     id
                     size
                     location {

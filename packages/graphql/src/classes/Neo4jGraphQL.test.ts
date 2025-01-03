@@ -39,10 +39,14 @@ describe("Neo4jGraphQL", () => {
         describe("getExecutableSchema", () => {
             test("error should contain path", async () => {
                 let schema: GraphQLSchema | undefined = undefined;
+                const typeDefs = /* GraphQL */ `
+                    type User @node @authorization(filter: [{ where: { banana: { id: "$jwt.sub" } } }]) {
+                        id: ID
+                    }
+                `;
                 const errors: Error[] = await getErrorAsync(async () => {
                     schema = await new Neo4jGraphQL({
-                        typeDefs:
-                            'type User @node @authorization(filter: [{ where: { banana: { id: "$jwt.sub" } } }]) {id: ID}',
+                        typeDefs,
                     }).getExecutableSchema();
                 });
                 expect(errors).toHaveLength(1);

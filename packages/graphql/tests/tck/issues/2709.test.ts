@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
     test("should not use a node label so it covers all nodes implementing the interface for connection rel", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { distributionConnection_SOME: { node: { name_EQ: "test4" } } }) {
+                movies(where: { distributionConnection: { some: { node: { name: { eq: "test4" } } } } }) {
                     title
                 }
             }
@@ -121,7 +121,11 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const query = /* GraphQL */ `
             query {
                 movies(
-                    where: { distributionConnection_SOME: { node: { OR: [{ name_EQ: "test4" }, { name_EQ: "test1" }] } } }
+                    where: {
+                        distributionConnection: {
+                            some: { node: { OR: [{ name: { eq: "test4" } }, { name: { eq: "test1" } }] } }
+                        }
+                    }
                 ) {
                     title
                 }
@@ -216,7 +220,11 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
     test("should use the correct node label for connection rel when defined in node _on - Netflix label", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { OR: [{ distributionConnection_SOME: { Netflix: { node: { name_EQ: "test" } } } }] }) {
+                movies(
+                    where: {
+                        OR: [{ distributionConnection: { some: { Netflix: { node: { name: { eq: "test" } } } } } }]
+                    }
+                ) {
                     title
                 }
             }
@@ -242,7 +250,11 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
     test("should use the correct node label for connection rel when defined in node _on - Dishney label", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { OR: [{ distributionConnection_SOME: { Dishney: { node: { name_EQ: "test2" } } } }] }) {
+                movies(
+                    where: {
+                        OR: [{ distributionConnection: { some: { Dishney: { node: { name: { eq: "test2" } } } } } }]
+                    }
+                ) {
                     title
                 }
             }
@@ -268,7 +280,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
     test("should use the correct node label for connection rel when defined in node _on - without OR operator", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { distributionConnection_SOME: { Dishney: { node: { name_EQ: "test3" } } } }) {
+                movies(where: { distributionConnection: { some: { Dishney: { node: { name: { eq: "test3" } } } } } }) {
                     title
                 }
             }

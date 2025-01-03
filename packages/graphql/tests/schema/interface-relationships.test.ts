@@ -69,26 +69,27 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              screenTime: IntScalarAggregationFilters
+              screenTime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { eq: ... } } }' instead.\\")
+              screenTime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gt: ... } } }' instead.\\")
+              screenTime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gte: ... } } }' instead.\\")
+              screenTime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lt: ... } } }' instead.\\")
+              screenTime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lte: ... } } }' instead.\\")
+              screenTime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { eq: ... } } }' instead.\\")
+              screenTime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gt: ... } } }' instead.\\")
+              screenTime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gte: ... } } }' instead.\\")
+              screenTime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lt: ... } } }' instead.\\")
+              screenTime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lte: ... } } }' instead.\\")
+              screenTime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { eq: ... } } }' instead.\\")
+              screenTime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gt: ... } } }' instead.\\")
+              screenTime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gte: ... } } }' instead.\\")
+              screenTime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lt: ... } } }' instead.\\")
+              screenTime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lte: ... } } }' instead.\\")
+              screenTime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { eq: ... } } }' instead.\\")
+              screenTime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gt: ... } } }' instead.\\")
+              screenTime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gte: ... } } }' instead.\\")
+              screenTime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lt: ... } } }' instead.\\")
+              screenTime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lte: ... } } }' instead.\\")
             }
 
             input ActedInCreateInput {
@@ -100,21 +101,23 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime: IntScalarMutations
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime: IntScalarFilters
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -128,6 +131,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -146,6 +150,25 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -183,21 +206,22 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ActorActedInRelationship {
@@ -262,43 +286,47 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -338,11 +366,46 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -375,27 +438,31 @@ describe("Interface Relationships", () => {
             }
 
             input MovieUpdateInput {
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
-              title_SET: String
+              runtime: IntScalarMutations
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              runtime: IntScalarFilters
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -452,6 +519,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -460,19 +538,21 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionUpdateInput {
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-              typename_IN: [ProductionImplementation!]
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -532,27 +612,31 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesUpdateInput {
-              episodes_DECREMENT: Int
-              episodes_INCREMENT: Int
-              episodes_SET: Int
-              title_SET: String
+              episodes: IntScalarMutations
+              episodes_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { decrement: ... } }' instead.\\")
+              episodes_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodes: { increment: ... } }' instead.\\")
+              episodes_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodes: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              episodes_EQ: Int
-              episodes_GT: Int
-              episodes_GTE: Int
-              episodes_IN: [Int!]
-              episodes_LT: Int
-              episodes_LTE: Int
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              episodes: IntScalarFilters
+              episodes_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { eq: ... }\\")
+              episodes_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { gt: ... }\\")
+              episodes_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { gte: ... }\\")
+              episodes_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodes: { in: ... }\\")
+              episodes_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lt: ... }\\")
+              episodes_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodes: { lte: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -566,6 +650,27 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -652,26 +757,27 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              screenTime: IntScalarAggregationFilters
+              screenTime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { eq: ... } } }' instead.\\")
+              screenTime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gt: ... } } }' instead.\\")
+              screenTime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gte: ... } } }' instead.\\")
+              screenTime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lt: ... } } }' instead.\\")
+              screenTime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lte: ... } } }' instead.\\")
+              screenTime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { eq: ... } } }' instead.\\")
+              screenTime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gt: ... } } }' instead.\\")
+              screenTime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gte: ... } } }' instead.\\")
+              screenTime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lt: ... } } }' instead.\\")
+              screenTime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lte: ... } } }' instead.\\")
+              screenTime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { eq: ... } } }' instead.\\")
+              screenTime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gt: ... } } }' instead.\\")
+              screenTime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gte: ... } } }' instead.\\")
+              screenTime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lt: ... } } }' instead.\\")
+              screenTime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lte: ... } } }' instead.\\")
+              screenTime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { eq: ... } } }' instead.\\")
+              screenTime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gt: ... } } }' instead.\\")
+              screenTime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gte: ... } } }' instead.\\")
+              screenTime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lt: ... } } }' instead.\\")
+              screenTime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lte: ... } } }' instead.\\")
             }
 
             input ActedInCreateInput {
@@ -683,21 +789,23 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime: IntScalarMutations
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime: IntScalarFilters
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -711,6 +819,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -730,6 +839,25 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -769,21 +897,22 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ActorActedInRelationship {
@@ -851,6 +980,17 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -860,43 +1000,47 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -979,10 +1123,22 @@ describe("Interface Relationships", () => {
               node: Episode!
             }
 
+            input EpisodeRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
+              all: EpisodeWhere
+              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
+              none: EpisodeWhere
+              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
+              single: EpisodeWhere
+              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
+              some: EpisodeWhere
+            }
+
             input EpisodeSeriesAggregateInput {
               AND: [EpisodeSeriesAggregateInput!]
               NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1000,6 +1156,25 @@ describe("Interface Relationships", () => {
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input EpisodeSeriesConnectionFilters {
+              \\"\\"\\"
+              Return Episodes where all of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              all: EpisodeSeriesConnectionWhere
+              \\"\\"\\"
+              Return Episodes where none of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              none: EpisodeSeriesConnectionWhere
+              \\"\\"\\"
+              Return Episodes where one of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              single: EpisodeSeriesConnectionWhere
+              \\"\\"\\"
+              Return Episodes where some of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              some: EpisodeSeriesConnectionWhere
             }
 
             input EpisodeSeriesConnectionSort {
@@ -1036,41 +1211,43 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesNodeAggregationWhereInput!]
               NOT: EpisodeSeriesNodeAggregationWhereInput
               OR: [EpisodeSeriesNodeAggregationWhereInput!]
-              episodeCount_AVERAGE_EQUAL: Float
-              episodeCount_AVERAGE_GT: Float
-              episodeCount_AVERAGE_GTE: Float
-              episodeCount_AVERAGE_LT: Float
-              episodeCount_AVERAGE_LTE: Float
-              episodeCount_MAX_EQUAL: Int
-              episodeCount_MAX_GT: Int
-              episodeCount_MAX_GTE: Int
-              episodeCount_MAX_LT: Int
-              episodeCount_MAX_LTE: Int
-              episodeCount_MIN_EQUAL: Int
-              episodeCount_MIN_GT: Int
-              episodeCount_MIN_GTE: Int
-              episodeCount_MIN_LT: Int
-              episodeCount_MIN_LTE: Int
-              episodeCount_SUM_EQUAL: Int
-              episodeCount_SUM_GT: Int
-              episodeCount_SUM_GTE: Int
-              episodeCount_SUM_LT: Int
-              episodeCount_SUM_LTE: Int
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              episodeCount: IntScalarAggregationFilters
+              episodeCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { eq: ... } } }' instead.\\")
+              episodeCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { gt: ... } } }' instead.\\")
+              episodeCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { gte: ... } } }' instead.\\")
+              episodeCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { lt: ... } } }' instead.\\")
+              episodeCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { lte: ... } } }' instead.\\")
+              episodeCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { eq: ... } } }' instead.\\")
+              episodeCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { gt: ... } } }' instead.\\")
+              episodeCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { gte: ... } } }' instead.\\")
+              episodeCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { lt: ... } } }' instead.\\")
+              episodeCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { lte: ... } } }' instead.\\")
+              episodeCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { eq: ... } } }' instead.\\")
+              episodeCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { gt: ... } } }' instead.\\")
+              episodeCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { gte: ... } } }' instead.\\")
+              episodeCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { lt: ... } } }' instead.\\")
+              episodeCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { lte: ... } } }' instead.\\")
+              episodeCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { eq: ... } } }' instead.\\")
+              episodeCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { gt: ... } } }' instead.\\")
+              episodeCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { gte: ... } } }' instead.\\")
+              episodeCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { lt: ... } } }' instead.\\")
+              episodeCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { lte: ... } } }' instead.\\")
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type EpisodeSeriesRelationship {
@@ -1109,9 +1286,10 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeUpdateInput {
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime: IntScalarMutations
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               series: [EpisodeSeriesUpdateFieldInput!]
             }
 
@@ -1119,37 +1297,40 @@ describe("Interface Relationships", () => {
               AND: [EpisodeWhere!]
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime: IntScalarFilters
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
+              series: SeriesRelationshipFilters
               seriesAggregate: EpisodeSeriesAggregateInput
+              seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_ALL: EpisodeSeriesConnectionWhere
+              seriesConnection_ALL: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where none of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_NONE: EpisodeSeriesConnectionWhere
+              seriesConnection_NONE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where one of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere
+              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where some of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SOME: EpisodeSeriesConnectionWhere
+              seriesConnection_SOME: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Episodes where all of the related Series match this filter\\"\\"\\"
-              series_ALL: SeriesWhere
+              series_ALL: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { all: ... }' instead.\\")
               \\"\\"\\"Return Episodes where none of the related Series match this filter\\"\\"\\"
-              series_NONE: SeriesWhere
+              series_NONE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { none: ... }' instead.\\")
               \\"\\"\\"Return Episodes where one of the related Series match this filter\\"\\"\\"
-              series_SINGLE: SeriesWhere
+              series_SINGLE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  single: ... }' instead.\\")
               \\"\\"\\"Return Episodes where some of the related Series match this filter\\"\\"\\"
-              series_SOME: SeriesWhere
+              series_SOME: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  some: ... }' instead.\\")
             }
 
             type EpisodesConnection {
@@ -1158,11 +1339,46 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -1191,6 +1407,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1204,6 +1421,25 @@ describe("Interface Relationships", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input MovieActorsCreateFieldInput {
@@ -1220,21 +1456,22 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -1282,52 +1519,58 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
-              title_SET: String
+              runtime: IntScalarMutations
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              runtime: IntScalarFilters
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -1369,6 +1612,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsAggregateInput!]
               NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1388,6 +1632,25 @@ describe("Interface Relationships", () => {
               edges: [ProductionActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Return Productions where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsConnectionSort {
@@ -1467,21 +1730,22 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsNodeAggregationWhereInput!]
               NOT: ProductionActorsNodeAggregationWhereInput
               OR: [ProductionActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ProductionActorsRelationship {
@@ -1542,6 +1806,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -1551,44 +1826,48 @@ describe("Interface Relationships", () => {
 
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-              typename_IN: [ProductionImplementation!]
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -1644,6 +1923,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1657,6 +1937,25 @@ describe("Interface Relationships", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
+            }
+
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsCreateFieldInput {
@@ -1673,21 +1972,22 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsNodeAggregationWhereInput!]
               NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -1760,6 +2060,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesAggregateInput!]
               NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1777,6 +2078,25 @@ describe("Interface Relationships", () => {
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input SeriesEpisodesConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              all: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              none: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              single: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              some: SeriesEpisodesConnectionWhere
             }
 
             input SeriesEpisodesConnectionSort {
@@ -1813,26 +2133,27 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesNodeAggregationWhereInput!]
               NOT: SeriesEpisodesNodeAggregationWhereInput
               OR: [SeriesEpisodesNodeAggregationWhereInput!]
-              runtime_AVERAGE_EQUAL: Float
-              runtime_AVERAGE_GT: Float
-              runtime_AVERAGE_GTE: Float
-              runtime_AVERAGE_LT: Float
-              runtime_AVERAGE_LTE: Float
-              runtime_MAX_EQUAL: Int
-              runtime_MAX_GT: Int
-              runtime_MAX_GTE: Int
-              runtime_MAX_LT: Int
-              runtime_MAX_LTE: Int
-              runtime_MIN_EQUAL: Int
-              runtime_MIN_GT: Int
-              runtime_MIN_GTE: Int
-              runtime_MIN_LT: Int
-              runtime_MIN_LTE: Int
-              runtime_SUM_EQUAL: Int
-              runtime_SUM_GT: Int
-              runtime_SUM_GTE: Int
-              runtime_SUM_LT: Int
-              runtime_SUM_LTE: Int
+              runtime: IntScalarAggregationFilters
+              runtime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { eq: ... } } }' instead.\\")
+              runtime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { gt: ... } } }' instead.\\")
+              runtime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { gte: ... } } }' instead.\\")
+              runtime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { lt: ... } } }' instead.\\")
+              runtime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { lte: ... } } }' instead.\\")
+              runtime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { eq: ... } } }' instead.\\")
+              runtime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { gt: ... } } }' instead.\\")
+              runtime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { gte: ... } } }' instead.\\")
+              runtime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { lt: ... } } }' instead.\\")
+              runtime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { lte: ... } } }' instead.\\")
+              runtime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { eq: ... } } }' instead.\\")
+              runtime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { gt: ... } } }' instead.\\")
+              runtime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { gte: ... } } }' instead.\\")
+              runtime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { lt: ... } } }' instead.\\")
+              runtime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { lte: ... } } }' instead.\\")
+              runtime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { eq: ... } } }' instead.\\")
+              runtime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { gt: ... } } }' instead.\\")
+              runtime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { gte: ... } } }' instead.\\")
+              runtime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { lt: ... } } }' instead.\\")
+              runtime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { lte: ... } } }' instead.\\")
             }
 
             type SeriesEpisodesRelationship {
@@ -1853,6 +2174,17 @@ describe("Interface Relationships", () => {
               where: SeriesEpisodesConnectionWhere
             }
 
+            input SeriesRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
+              all: SeriesWhere
+              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
+              none: SeriesWhere
+              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
+              single: SeriesWhere
+              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
+              some: SeriesWhere
+            }
+
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -1863,78 +2195,86 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
-              episodeCount_DECREMENT: Int
-              episodeCount_INCREMENT: Int
-              episodeCount_SET: Int
+              episodeCount: IntScalarMutations
+              episodeCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { decrement: ... } }' instead.\\")
+              episodeCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { increment: ... } }' instead.\\")
+              episodeCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeCount: { set: ... } }' instead.\\")
               episodes: [SeriesEpisodesUpdateFieldInput!]
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              episodeCount_EQ: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int!]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              episodeCount: IntScalarFilters
+              episodeCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { eq: ... }\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gt: ... }\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gte: ... }\\")
+              episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
+              episodes: EpisodeRelationshipFilters
               episodesAggregate: SeriesEpisodesAggregateInput
+              episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_ALL: SeriesEpisodesConnectionWhere
+              episodesConnection_ALL: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_NONE: SeriesEpisodesConnectionWhere
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
-              episodes_ALL: EpisodeWhere
+              episodes_ALL: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
-              episodes_NONE: EpisodeWhere
+              episodes_NONE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
-              episodes_SINGLE: EpisodeWhere
+              episodes_SINGLE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
-              episodes_SOME: EpisodeWhere
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              episodes_SOME: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  some: ... }' instead.\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1948,6 +2288,27 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -2042,26 +2403,27 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              screenTime: IntScalarAggregationFilters
+              screenTime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { eq: ... } } }' instead.\\")
+              screenTime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gt: ... } } }' instead.\\")
+              screenTime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gte: ... } } }' instead.\\")
+              screenTime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lt: ... } } }' instead.\\")
+              screenTime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lte: ... } } }' instead.\\")
+              screenTime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { eq: ... } } }' instead.\\")
+              screenTime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gt: ... } } }' instead.\\")
+              screenTime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gte: ... } } }' instead.\\")
+              screenTime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lt: ... } } }' instead.\\")
+              screenTime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lte: ... } } }' instead.\\")
+              screenTime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { eq: ... } } }' instead.\\")
+              screenTime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gt: ... } } }' instead.\\")
+              screenTime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gte: ... } } }' instead.\\")
+              screenTime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lt: ... } } }' instead.\\")
+              screenTime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lte: ... } } }' instead.\\")
+              screenTime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { eq: ... } } }' instead.\\")
+              screenTime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gt: ... } } }' instead.\\")
+              screenTime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gte: ... } } }' instead.\\")
+              screenTime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lt: ... } } }' instead.\\")
+              screenTime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lte: ... } } }' instead.\\")
             }
 
             input ActedInCreateInput {
@@ -2073,21 +2435,23 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime: IntScalarMutations
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime: IntScalarFilters
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -2101,6 +2465,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2120,6 +2485,25 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -2159,21 +2543,22 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ActorActedInRelationship {
@@ -2241,6 +2626,17 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -2250,43 +2646,47 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ProductionRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-              actedIn_ALL: ProductionWhere
+              actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-              actedIn_NONE: ProductionWhere
+              actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-              actedIn_SINGLE: ProductionWhere
+              actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-              actedIn_SOME: ProductionWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -2369,10 +2769,22 @@ describe("Interface Relationships", () => {
               node: Episode!
             }
 
+            input EpisodeRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Episodes match this filter\\"\\"\\"
+              all: EpisodeWhere
+              \\"\\"\\"Filter type where none of the related Episodes match this filter\\"\\"\\"
+              none: EpisodeWhere
+              \\"\\"\\"Filter type where one of the related Episodes match this filter\\"\\"\\"
+              single: EpisodeWhere
+              \\"\\"\\"Filter type where some of the related Episodes match this filter\\"\\"\\"
+              some: EpisodeWhere
+            }
+
             input EpisodeSeriesAggregateInput {
               AND: [EpisodeSeriesAggregateInput!]
               NOT: EpisodeSeriesAggregateInput
               OR: [EpisodeSeriesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2390,6 +2802,25 @@ describe("Interface Relationships", () => {
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input EpisodeSeriesConnectionFilters {
+              \\"\\"\\"
+              Return Episodes where all of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              all: EpisodeSeriesConnectionWhere
+              \\"\\"\\"
+              Return Episodes where none of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              none: EpisodeSeriesConnectionWhere
+              \\"\\"\\"
+              Return Episodes where one of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              single: EpisodeSeriesConnectionWhere
+              \\"\\"\\"
+              Return Episodes where some of the related EpisodeSeriesConnections match this filter
+              \\"\\"\\"
+              some: EpisodeSeriesConnectionWhere
             }
 
             input EpisodeSeriesConnectionSort {
@@ -2426,41 +2857,43 @@ describe("Interface Relationships", () => {
               AND: [EpisodeSeriesNodeAggregationWhereInput!]
               NOT: EpisodeSeriesNodeAggregationWhereInput
               OR: [EpisodeSeriesNodeAggregationWhereInput!]
-              episodeCount_AVERAGE_EQUAL: Float
-              episodeCount_AVERAGE_GT: Float
-              episodeCount_AVERAGE_GTE: Float
-              episodeCount_AVERAGE_LT: Float
-              episodeCount_AVERAGE_LTE: Float
-              episodeCount_MAX_EQUAL: Int
-              episodeCount_MAX_GT: Int
-              episodeCount_MAX_GTE: Int
-              episodeCount_MAX_LT: Int
-              episodeCount_MAX_LTE: Int
-              episodeCount_MIN_EQUAL: Int
-              episodeCount_MIN_GT: Int
-              episodeCount_MIN_GTE: Int
-              episodeCount_MIN_LT: Int
-              episodeCount_MIN_LTE: Int
-              episodeCount_SUM_EQUAL: Int
-              episodeCount_SUM_GT: Int
-              episodeCount_SUM_GTE: Int
-              episodeCount_SUM_LT: Int
-              episodeCount_SUM_LTE: Int
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              episodeCount: IntScalarAggregationFilters
+              episodeCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { eq: ... } } }' instead.\\")
+              episodeCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { gt: ... } } }' instead.\\")
+              episodeCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { gte: ... } } }' instead.\\")
+              episodeCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { lt: ... } } }' instead.\\")
+              episodeCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { average: { lte: ... } } }' instead.\\")
+              episodeCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { eq: ... } } }' instead.\\")
+              episodeCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { gt: ... } } }' instead.\\")
+              episodeCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { gte: ... } } }' instead.\\")
+              episodeCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { lt: ... } } }' instead.\\")
+              episodeCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { max: { lte: ... } } }' instead.\\")
+              episodeCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { eq: ... } } }' instead.\\")
+              episodeCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { gt: ... } } }' instead.\\")
+              episodeCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { gte: ... } } }' instead.\\")
+              episodeCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { lt: ... } } }' instead.\\")
+              episodeCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { min: { lte: ... } } }' instead.\\")
+              episodeCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { eq: ... } } }' instead.\\")
+              episodeCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { gt: ... } } }' instead.\\")
+              episodeCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { gte: ... } } }' instead.\\")
+              episodeCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { lt: ... } } }' instead.\\")
+              episodeCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeCount: { sum: { lte: ... } } }' instead.\\")
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type EpisodeSeriesRelationship {
@@ -2499,9 +2932,10 @@ describe("Interface Relationships", () => {
             }
 
             input EpisodeUpdateInput {
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
+              runtime: IntScalarMutations
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
               series: [EpisodeSeriesUpdateFieldInput!]
             }
 
@@ -2509,37 +2943,40 @@ describe("Interface Relationships", () => {
               AND: [EpisodeWhere!]
               NOT: EpisodeWhere
               OR: [EpisodeWhere!]
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
+              runtime: IntScalarFilters
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
+              series: SeriesRelationshipFilters
               seriesAggregate: EpisodeSeriesAggregateInput
+              seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_ALL: EpisodeSeriesConnectionWhere
+              seriesConnection_ALL: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where none of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_NONE: EpisodeSeriesConnectionWhere
+              seriesConnection_NONE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where one of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere
+              seriesConnection_SINGLE: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Episodes where some of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
-              seriesConnection_SOME: EpisodeSeriesConnectionWhere
+              seriesConnection_SOME: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'seriesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Episodes where all of the related Series match this filter\\"\\"\\"
-              series_ALL: SeriesWhere
+              series_ALL: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { all: ... }' instead.\\")
               \\"\\"\\"Return Episodes where none of the related Series match this filter\\"\\"\\"
-              series_NONE: SeriesWhere
+              series_NONE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: { none: ... }' instead.\\")
               \\"\\"\\"Return Episodes where one of the related Series match this filter\\"\\"\\"
-              series_SINGLE: SeriesWhere
+              series_SINGLE: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  single: ... }' instead.\\")
               \\"\\"\\"Return Episodes where some of the related Series match this filter\\"\\"\\"
-              series_SOME: SeriesWhere
+              series_SOME: SeriesWhere @deprecated(reason: \\"Please use the relevant generic filter 'series: {  some: ... }' instead.\\")
             }
 
             type EpisodesConnection {
@@ -2548,11 +2985,46 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -2581,6 +3053,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2594,6 +3067,25 @@ describe("Interface Relationships", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input MovieActorsCreateFieldInput {
@@ -2610,21 +3102,22 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -2672,52 +3165,58 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
-              title_SET: String
+              runtime: IntScalarMutations
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              runtime: IntScalarFilters
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -2759,6 +3258,7 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsAggregateInput!]
               NOT: ProductionActorsAggregateInput
               OR: [ProductionActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2778,6 +3278,25 @@ describe("Interface Relationships", () => {
               edges: [ProductionActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Return Productions where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsConnectionSort {
@@ -2877,21 +3396,22 @@ describe("Interface Relationships", () => {
               AND: [ProductionActorsNodeAggregationWhereInput!]
               NOT: ProductionActorsNodeAggregationWhereInput
               OR: [ProductionActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ProductionActorsRelationship {
@@ -2952,6 +3472,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
             \\"\\"\\"
             Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
             \\"\\"\\"
@@ -2961,44 +3492,48 @@ describe("Interface Relationships", () => {
 
             input ProductionUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: ProductionActorsAggregateInput
+              actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Productions where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Productions where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Productions where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Productions where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-              typename_IN: [ProductionImplementation!]
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -3054,6 +3589,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3067,6 +3603,25 @@ describe("Interface Relationships", () => {
               connect: [ActorConnectInput!]
               edge: StarredInCreateInput!
               where: ActorConnectWhere
+            }
+
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionActorsConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsCreateFieldInput {
@@ -3083,21 +3638,22 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsNodeAggregationWhereInput!]
               NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -3170,6 +3726,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesAggregateInput!]
               NOT: SeriesEpisodesAggregateInput
               OR: [SeriesEpisodesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3187,6 +3744,25 @@ describe("Interface Relationships", () => {
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input SeriesEpisodesConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              all: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              none: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              single: SeriesEpisodesConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related SeriesEpisodesConnections match this filter
+              \\"\\"\\"
+              some: SeriesEpisodesConnectionWhere
             }
 
             input SeriesEpisodesConnectionSort {
@@ -3223,26 +3799,27 @@ describe("Interface Relationships", () => {
               AND: [SeriesEpisodesNodeAggregationWhereInput!]
               NOT: SeriesEpisodesNodeAggregationWhereInput
               OR: [SeriesEpisodesNodeAggregationWhereInput!]
-              runtime_AVERAGE_EQUAL: Float
-              runtime_AVERAGE_GT: Float
-              runtime_AVERAGE_GTE: Float
-              runtime_AVERAGE_LT: Float
-              runtime_AVERAGE_LTE: Float
-              runtime_MAX_EQUAL: Int
-              runtime_MAX_GT: Int
-              runtime_MAX_GTE: Int
-              runtime_MAX_LT: Int
-              runtime_MAX_LTE: Int
-              runtime_MIN_EQUAL: Int
-              runtime_MIN_GT: Int
-              runtime_MIN_GTE: Int
-              runtime_MIN_LT: Int
-              runtime_MIN_LTE: Int
-              runtime_SUM_EQUAL: Int
-              runtime_SUM_GT: Int
-              runtime_SUM_GTE: Int
-              runtime_SUM_LT: Int
-              runtime_SUM_LTE: Int
+              runtime: IntScalarAggregationFilters
+              runtime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { eq: ... } } }' instead.\\")
+              runtime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { gt: ... } } }' instead.\\")
+              runtime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { gte: ... } } }' instead.\\")
+              runtime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { lt: ... } } }' instead.\\")
+              runtime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { average: { lte: ... } } }' instead.\\")
+              runtime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { eq: ... } } }' instead.\\")
+              runtime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { gt: ... } } }' instead.\\")
+              runtime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { gte: ... } } }' instead.\\")
+              runtime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { lt: ... } } }' instead.\\")
+              runtime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { max: { lte: ... } } }' instead.\\")
+              runtime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { eq: ... } } }' instead.\\")
+              runtime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { gt: ... } } }' instead.\\")
+              runtime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { gte: ... } } }' instead.\\")
+              runtime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { lt: ... } } }' instead.\\")
+              runtime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { min: { lte: ... } } }' instead.\\")
+              runtime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { eq: ... } } }' instead.\\")
+              runtime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { gt: ... } } }' instead.\\")
+              runtime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { gte: ... } } }' instead.\\")
+              runtime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { lt: ... } } }' instead.\\")
+              runtime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'runtime: { sum: { lte: ... } } }' instead.\\")
             }
 
             type SeriesEpisodesRelationship {
@@ -3263,6 +3840,17 @@ describe("Interface Relationships", () => {
               where: SeriesEpisodesConnectionWhere
             }
 
+            input SeriesRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Series match this filter\\"\\"\\"
+              all: SeriesWhere
+              \\"\\"\\"Filter type where none of the related Series match this filter\\"\\"\\"
+              none: SeriesWhere
+              \\"\\"\\"Filter type where one of the related Series match this filter\\"\\"\\"
+              single: SeriesWhere
+              \\"\\"\\"Filter type where some of the related Series match this filter\\"\\"\\"
+              some: SeriesWhere
+            }
+
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -3273,78 +3861,86 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
-              episodeCount_DECREMENT: Int
-              episodeCount_INCREMENT: Int
-              episodeCount_SET: Int
+              episodeCount: IntScalarMutations
+              episodeCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { decrement: ... } }' instead.\\")
+              episodeCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { increment: ... } }' instead.\\")
+              episodeCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeCount: { set: ... } }' instead.\\")
               episodes: [SeriesEpisodesUpdateFieldInput!]
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ProductionActorsConnectionWhere
+              actorsConnection_ALL: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ProductionActorsConnectionWhere
+              actorsConnection_NONE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ProductionActorsConnectionWhere
+              actorsConnection_SINGLE: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ProductionActorsConnectionWhere
+              actorsConnection_SOME: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              episodeCount_EQ: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int!]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              episodeCount: IntScalarFilters
+              episodeCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { eq: ... }\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gt: ... }\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gte: ... }\\")
+              episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
+              episodes: EpisodeRelationshipFilters
               episodesAggregate: SeriesEpisodesAggregateInput
+              episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_ALL: SeriesEpisodesConnectionWhere
+              episodesConnection_ALL: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_NONE: SeriesEpisodesConnectionWhere
+              episodesConnection_NONE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere
+              episodesConnection_SINGLE: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
-              episodesConnection_SOME: SeriesEpisodesConnectionWhere
+              episodesConnection_SOME: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Episodes match this filter\\"\\"\\"
-              episodes_ALL: EpisodeWhere
+              episodes_ALL: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Episodes match this filter\\"\\"\\"
-              episodes_NONE: EpisodeWhere
+              episodes_NONE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Episodes match this filter\\"\\"\\"
-              episodes_SINGLE: EpisodeWhere
+              episodes_SINGLE: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Episodes match this filter\\"\\"\\"
-              episodes_SOME: EpisodeWhere
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              episodes_SOME: EpisodeWhere @deprecated(reason: \\"Please use the relevant generic filter 'episodes: {  some: ... }' instead.\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3367,26 +3963,27 @@ describe("Interface Relationships", () => {
               AND: [StarredInAggregationWhereInput!]
               NOT: StarredInAggregationWhereInput
               OR: [StarredInAggregationWhereInput!]
-              seasons_AVERAGE_EQUAL: Float
-              seasons_AVERAGE_GT: Float
-              seasons_AVERAGE_GTE: Float
-              seasons_AVERAGE_LT: Float
-              seasons_AVERAGE_LTE: Float
-              seasons_MAX_EQUAL: Int
-              seasons_MAX_GT: Int
-              seasons_MAX_GTE: Int
-              seasons_MAX_LT: Int
-              seasons_MAX_LTE: Int
-              seasons_MIN_EQUAL: Int
-              seasons_MIN_GT: Int
-              seasons_MIN_GTE: Int
-              seasons_MIN_LT: Int
-              seasons_MIN_LTE: Int
-              seasons_SUM_EQUAL: Int
-              seasons_SUM_GT: Int
-              seasons_SUM_GTE: Int
-              seasons_SUM_LT: Int
-              seasons_SUM_LTE: Int
+              seasons: IntScalarAggregationFilters
+              seasons_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { average: { eq: ... } } }' instead.\\")
+              seasons_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { average: { gt: ... } } }' instead.\\")
+              seasons_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { average: { gte: ... } } }' instead.\\")
+              seasons_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { average: { lt: ... } } }' instead.\\")
+              seasons_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { average: { lte: ... } } }' instead.\\")
+              seasons_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { max: { eq: ... } } }' instead.\\")
+              seasons_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { max: { gt: ... } } }' instead.\\")
+              seasons_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { max: { gte: ... } } }' instead.\\")
+              seasons_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { max: { lt: ... } } }' instead.\\")
+              seasons_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { max: { lte: ... } } }' instead.\\")
+              seasons_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { min: { eq: ... } } }' instead.\\")
+              seasons_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { min: { gt: ... } } }' instead.\\")
+              seasons_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { min: { gte: ... } } }' instead.\\")
+              seasons_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { min: { lt: ... } } }' instead.\\")
+              seasons_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { min: { lte: ... } } }' instead.\\")
+              seasons_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { sum: { eq: ... } } }' instead.\\")
+              seasons_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { sum: { gt: ... } } }' instead.\\")
+              seasons_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { sum: { gte: ... } } }' instead.\\")
+              seasons_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { sum: { lt: ... } } }' instead.\\")
+              seasons_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'seasons: { sum: { lte: ... } } }' instead.\\")
             }
 
             input StarredInCreateInput {
@@ -3398,26 +3995,49 @@ describe("Interface Relationships", () => {
             }
 
             input StarredInUpdateInput {
-              seasons_DECREMENT: Int
-              seasons_INCREMENT: Int
-              seasons_SET: Int
+              seasons: IntScalarMutations
+              seasons_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'seasons: { decrement: ... } }' instead.\\")
+              seasons_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'seasons: { increment: ... } }' instead.\\")
+              seasons_SET: Int @deprecated(reason: \\"Please use the generic mutation 'seasons: { set: ... } }' instead.\\")
             }
 
             input StarredInWhere {
               AND: [StarredInWhere!]
               NOT: StarredInWhere
               OR: [StarredInWhere!]
-              seasons_EQ: Int
-              seasons_GT: Int
-              seasons_GTE: Int
-              seasons_IN: [Int!]
-              seasons_LT: Int
-              seasons_LTE: Int
+              seasons: IntScalarFilters
+              seasons_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { eq: ... }\\")
+              seasons_GT: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { gt: ... }\\")
+              seasons_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { gte: ... }\\")
+              seasons_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter seasons: { in: ... }\\")
+              seasons_LT: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { lt: ... }\\")
+              seasons_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter seasons: { lte: ... }\\")
             }
 
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -3537,6 +4157,26 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             interface Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
@@ -3583,6 +4223,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3599,6 +4240,25 @@ describe("Interface Relationships", () => {
               edges: [Interface1Interface2Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2ConnectionSort {
@@ -3628,21 +4288,22 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2NodeAggregationWhereInput!]
               NOT: Interface1Interface2NodeAggregationWhereInput
               OR: [Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Interface1Interface2Relationship {
@@ -3663,6 +4324,17 @@ describe("Interface Relationships", () => {
               where: Interface1Interface2ConnectionWhere
             }
 
+            input Interface1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
+              all: Interface1Where
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
+              none: Interface1Where
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
+              single: Interface1Where
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
+              some: Interface1Where
+            }
+
             \\"\\"\\"
             Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
             \\"\\"\\"
@@ -3671,7 +4343,8 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
@@ -3679,45 +4352,48 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
-              typename_IN: [Interface1Implementation!]
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
+              typename: [Interface1Implementation!]
             }
 
             type Interface1sConnection {
@@ -3754,6 +4430,17 @@ describe("Interface Relationships", () => {
               Type2Interface2
             }
 
+            input Interface2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
+              all: Interface2Where
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
+              none: Interface2Where
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
+              single: Interface2Where
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
+              some: Interface2Where
+            }
+
             \\"\\"\\"
             Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
             \\"\\"\\"
@@ -3762,19 +4449,21 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Interface2Where {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String]
-              field2_STARTS_WITH: String
-              typename_IN: [Interface2Implementation!]
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
+              typename: [Interface2Implementation!]
             }
 
             type Interface2sConnection {
@@ -3846,6 +4535,27 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
@@ -3883,6 +4593,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3905,6 +4616,25 @@ describe("Interface Relationships", () => {
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionFilters {
+              \\"\\"\\"
+              Return Type1s where all of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              all: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where none of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              none: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where one of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              single: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where some of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              some: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1ConnectionSort {
@@ -3964,6 +4694,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3974,6 +4705,25 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Interface2ConnectFieldInput {
               where: Interface2ConnectWhere
+            }
+
+            input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2CreateFieldInput {
@@ -4006,21 +4756,22 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type1Interface1Interface2NodeAggregationWhereInput
               OR: [Type1Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input Type1Interface1Interface2UpdateConnectionInput {
@@ -4040,21 +4791,22 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1NodeAggregationWhereInput!]
               NOT: Type1Interface1NodeAggregationWhereInput
               OR: [Type1Interface1NodeAggregationWhereInput!]
-              field1_AVERAGE_LENGTH_EQUAL: Float
-              field1_AVERAGE_LENGTH_GT: Float
-              field1_AVERAGE_LENGTH_GTE: Float
-              field1_AVERAGE_LENGTH_LT: Float
-              field1_AVERAGE_LENGTH_LTE: Float
-              field1_LONGEST_LENGTH_EQUAL: Int
-              field1_LONGEST_LENGTH_GT: Int
-              field1_LONGEST_LENGTH_GTE: Int
-              field1_LONGEST_LENGTH_LT: Int
-              field1_LONGEST_LENGTH_LTE: Int
-              field1_SHORTEST_LENGTH_EQUAL: Int
-              field1_SHORTEST_LENGTH_GT: Int
-              field1_SHORTEST_LENGTH_GTE: Int
-              field1_SHORTEST_LENGTH_LT: Int
-              field1_SHORTEST_LENGTH_LTE: Int
+              field1: StringScalarAggregationFilters
+              field1_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { eq: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { gt: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { gte: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { lt: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { lte: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { eq: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { gt: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { gte: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { lt: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { lte: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { eq: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { gt: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { gte: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { lt: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Type1Interface1Relationship {
@@ -4083,7 +4835,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
 
@@ -4091,44 +4844,47 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type1Interface1sConnection {
@@ -4163,18 +4919,20 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type1Interface2Where {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
             }
 
             type Type1Interface2sConnection {
@@ -4191,7 +4949,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface1: [Type1Interface1UpdateFieldInput!]
             }
 
@@ -4199,36 +4958,39 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface1: Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
+              interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_ALL: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SOME: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
-              interface1_ALL: Interface1Where
+              interface1_ALL: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { all: ... }' instead.\\")
               \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
-              interface1_NONE: Interface1Where
+              interface1_NONE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { none: ... }' instead.\\")
               \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
-              interface1_SINGLE: Interface1Where
+              interface1_SINGLE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  single: ... }' instead.\\")
               \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
-              interface1_SOME: Interface1Where
+              interface1_SOME: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  some: ... }' instead.\\")
             }
 
             type Type1sConnection {
@@ -4267,6 +5029,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4277,6 +5040,25 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2ConnectFieldInput {
               where: Interface2ConnectWhere
+            }
+
+            input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2CreateFieldInput {
@@ -4309,21 +5091,22 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type2Interface1Interface2NodeAggregationWhereInput
               OR: [Type2Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input Type2Interface1Interface2UpdateConnectionInput {
@@ -4347,7 +5130,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
 
@@ -4355,44 +5139,47 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type2Interface1sConnection {
@@ -4427,18 +5214,20 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type2Interface2Where {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
             }
 
             type Type2Interface2sConnection {
@@ -4578,11 +5367,46 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             interface Interface1 {
@@ -4631,6 +5455,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4649,6 +5474,25 @@ describe("Interface Relationships", () => {
               edges: [Interface1Interface2Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2ConnectionSort {
@@ -4726,21 +5570,22 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2NodeAggregationWhereInput!]
               NOT: Interface1Interface2NodeAggregationWhereInput
               OR: [Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Interface1Interface2Relationship {
@@ -4765,6 +5610,17 @@ describe("Interface Relationships", () => {
               where: Interface1Interface2ConnectionWhere
             }
 
+            input Interface1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
+              all: Interface1Where
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
+              none: Interface1Where
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
+              single: Interface1Where
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
+              some: Interface1Where
+            }
+
             \\"\\"\\"
             Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
             \\"\\"\\"
@@ -4773,7 +5629,8 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
@@ -4781,45 +5638,48 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
-              typename_IN: [Interface1Implementation!]
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
+              typename: [Interface1Implementation!]
             }
 
             type Interface1sConnection {
@@ -4856,6 +5716,17 @@ describe("Interface Relationships", () => {
               Type2Interface2
             }
 
+            input Interface2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
+              all: Interface2Where
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
+              none: Interface2Where
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
+              single: Interface2Where
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
+              some: Interface2Where
+            }
+
             \\"\\"\\"
             Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
             \\"\\"\\"
@@ -4864,19 +5735,21 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Interface2Where {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String]
-              field2_STARTS_WITH: String
-              typename_IN: [Interface2Implementation!]
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
+              typename: [Interface2Implementation!]
             }
 
             type Interface2sConnection {
@@ -4924,26 +5797,27 @@ describe("Interface Relationships", () => {
               AND: [PropsAggregationWhereInput!]
               NOT: PropsAggregationWhereInput
               OR: [PropsAggregationWhereInput!]
-              propsField_AVERAGE_EQUAL: Float
-              propsField_AVERAGE_GT: Float
-              propsField_AVERAGE_GTE: Float
-              propsField_AVERAGE_LT: Float
-              propsField_AVERAGE_LTE: Float
-              propsField_MAX_EQUAL: Int
-              propsField_MAX_GT: Int
-              propsField_MAX_GTE: Int
-              propsField_MAX_LT: Int
-              propsField_MAX_LTE: Int
-              propsField_MIN_EQUAL: Int
-              propsField_MIN_GT: Int
-              propsField_MIN_GTE: Int
-              propsField_MIN_LT: Int
-              propsField_MIN_LTE: Int
-              propsField_SUM_EQUAL: Int
-              propsField_SUM_GT: Int
-              propsField_SUM_GTE: Int
-              propsField_SUM_LT: Int
-              propsField_SUM_LTE: Int
+              propsField: IntScalarAggregationFilters
+              propsField_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { average: { eq: ... } } }' instead.\\")
+              propsField_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { average: { gt: ... } } }' instead.\\")
+              propsField_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { average: { gte: ... } } }' instead.\\")
+              propsField_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { average: { lt: ... } } }' instead.\\")
+              propsField_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { average: { lte: ... } } }' instead.\\")
+              propsField_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { max: { eq: ... } } }' instead.\\")
+              propsField_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { max: { gt: ... } } }' instead.\\")
+              propsField_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { max: { gte: ... } } }' instead.\\")
+              propsField_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { max: { lt: ... } } }' instead.\\")
+              propsField_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { max: { lte: ... } } }' instead.\\")
+              propsField_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { min: { eq: ... } } }' instead.\\")
+              propsField_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { min: { gt: ... } } }' instead.\\")
+              propsField_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { min: { gte: ... } } }' instead.\\")
+              propsField_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { min: { lt: ... } } }' instead.\\")
+              propsField_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { min: { lte: ... } } }' instead.\\")
+              propsField_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { sum: { eq: ... } } }' instead.\\")
+              propsField_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { sum: { gt: ... } } }' instead.\\")
+              propsField_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { sum: { gte: ... } } }' instead.\\")
+              propsField_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { sum: { lt: ... } } }' instead.\\")
+              propsField_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'propsField: { sum: { lte: ... } } }' instead.\\")
             }
 
             input PropsCreateInput {
@@ -4955,21 +5829,23 @@ describe("Interface Relationships", () => {
             }
 
             input PropsUpdateInput {
-              propsField_DECREMENT: Int
-              propsField_INCREMENT: Int
-              propsField_SET: Int
+              propsField: IntScalarMutations
+              propsField_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'propsField: { decrement: ... } }' instead.\\")
+              propsField_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'propsField: { increment: ... } }' instead.\\")
+              propsField_SET: Int @deprecated(reason: \\"Please use the generic mutation 'propsField: { set: ... } }' instead.\\")
             }
 
             input PropsWhere {
               AND: [PropsWhere!]
               NOT: PropsWhere
               OR: [PropsWhere!]
-              propsField_EQ: Int
-              propsField_GT: Int
-              propsField_GTE: Int
-              propsField_IN: [Int!]
-              propsField_LT: Int
-              propsField_LTE: Int
+              propsField: IntScalarFilters
+              propsField_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { eq: ... }\\")
+              propsField_GT: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { gt: ... }\\")
+              propsField_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { gte: ... }\\")
+              propsField_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter propsField: { in: ... }\\")
+              propsField_LT: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { lt: ... }\\")
+              propsField_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter propsField: { lte: ... }\\")
             }
 
             type Query {
@@ -5009,6 +5885,27 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
@@ -5046,6 +5943,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5068,6 +5966,25 @@ describe("Interface Relationships", () => {
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionFilters {
+              \\"\\"\\"
+              Return Type1s where all of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              all: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where none of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              none: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where one of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              single: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where some of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              some: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1ConnectionSort {
@@ -5127,6 +6044,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5139,6 +6057,25 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2ConnectFieldInput {
               edge: PropsCreateInput!
               where: Interface2ConnectWhere
+            }
+
+            input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2CreateFieldInput {
@@ -5177,21 +6114,22 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type1Interface1Interface2NodeAggregationWhereInput
               OR: [Type1Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input Type1Interface1Interface2UpdateConnectionInput {
@@ -5212,21 +6150,22 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1NodeAggregationWhereInput!]
               NOT: Type1Interface1NodeAggregationWhereInput
               OR: [Type1Interface1NodeAggregationWhereInput!]
-              field1_AVERAGE_LENGTH_EQUAL: Float
-              field1_AVERAGE_LENGTH_GT: Float
-              field1_AVERAGE_LENGTH_GTE: Float
-              field1_AVERAGE_LENGTH_LT: Float
-              field1_AVERAGE_LENGTH_LTE: Float
-              field1_LONGEST_LENGTH_EQUAL: Int
-              field1_LONGEST_LENGTH_GT: Int
-              field1_LONGEST_LENGTH_GTE: Int
-              field1_LONGEST_LENGTH_LT: Int
-              field1_LONGEST_LENGTH_LTE: Int
-              field1_SHORTEST_LENGTH_EQUAL: Int
-              field1_SHORTEST_LENGTH_GT: Int
-              field1_SHORTEST_LENGTH_GTE: Int
-              field1_SHORTEST_LENGTH_LT: Int
-              field1_SHORTEST_LENGTH_LTE: Int
+              field1: StringScalarAggregationFilters
+              field1_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { eq: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { gt: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { gte: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { lt: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { lte: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { eq: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { gt: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { gte: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { lt: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { lte: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { eq: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { gt: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { gte: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { lt: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Type1Interface1Relationship {
@@ -5255,7 +6194,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
 
@@ -5263,44 +6203,47 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type1Interface1sConnection {
@@ -5335,18 +6278,20 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type1Interface2Where {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
             }
 
             type Type1Interface2sConnection {
@@ -5363,7 +6308,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface1: [Type1Interface1UpdateFieldInput!]
             }
 
@@ -5371,36 +6317,39 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface1: Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
+              interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_ALL: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SOME: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
-              interface1_ALL: Interface1Where
+              interface1_ALL: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { all: ... }' instead.\\")
               \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
-              interface1_NONE: Interface1Where
+              interface1_NONE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { none: ... }' instead.\\")
               \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
-              interface1_SINGLE: Interface1Where
+              interface1_SINGLE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  single: ... }' instead.\\")
               \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
-              interface1_SOME: Interface1Where
+              interface1_SOME: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  some: ... }' instead.\\")
             }
 
             type Type1sConnection {
@@ -5439,6 +6388,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5451,6 +6401,25 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2ConnectFieldInput {
               edge: PropsCreateInput!
               where: Interface2ConnectWhere
+            }
+
+            input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2CreateFieldInput {
@@ -5489,21 +6458,22 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type2Interface1Interface2NodeAggregationWhereInput
               OR: [Type2Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input Type2Interface1Interface2UpdateConnectionInput {
@@ -5528,7 +6498,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
 
@@ -5536,44 +6507,47 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type2Interface1sConnection {
@@ -5608,18 +6582,20 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type2Interface2Where {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
             }
 
             type Type2Interface2sConnection {
@@ -5765,11 +6741,46 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             interface Interface1 {
@@ -5818,6 +6829,7 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2AggregateInput!]
               NOT: Interface1Interface2AggregateInput
               OR: [Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -5836,6 +6848,25 @@ describe("Interface Relationships", () => {
               edges: [Interface1Interface2Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2ConnectionSort {
@@ -5933,21 +6964,22 @@ describe("Interface Relationships", () => {
               AND: [Interface1Interface2NodeAggregationWhereInput!]
               NOT: Interface1Interface2NodeAggregationWhereInput
               OR: [Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Interface1Interface2Relationship {
@@ -5972,6 +7004,17 @@ describe("Interface Relationships", () => {
               where: Interface1Interface2ConnectionWhere
             }
 
+            input Interface1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface1s match this filter\\"\\"\\"
+              all: Interface1Where
+              \\"\\"\\"Filter type where none of the related Interface1s match this filter\\"\\"\\"
+              none: Interface1Where
+              \\"\\"\\"Filter type where one of the related Interface1s match this filter\\"\\"\\"
+              single: Interface1Where
+              \\"\\"\\"Filter type where some of the related Interface1s match this filter\\"\\"\\"
+              some: Interface1Where
+            }
+
             \\"\\"\\"
             Fields to sort Interface1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface1Sort object.
             \\"\\"\\"
@@ -5980,7 +7023,8 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Interface1Interface2UpdateFieldInput!]
             }
 
@@ -5988,45 +7032,48 @@ describe("Interface Relationships", () => {
               AND: [Interface1Where!]
               NOT: Interface1Where
               OR: [Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
-              typename_IN: [Interface1Implementation!]
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
+              typename: [Interface1Implementation!]
             }
 
             type Interface1sConnection {
@@ -6063,6 +7110,17 @@ describe("Interface Relationships", () => {
               Type2Interface2
             }
 
+            input Interface2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Interface2s match this filter\\"\\"\\"
+              all: Interface2Where
+              \\"\\"\\"Filter type where none of the related Interface2s match this filter\\"\\"\\"
+              none: Interface2Where
+              \\"\\"\\"Filter type where one of the related Interface2s match this filter\\"\\"\\"
+              single: Interface2Where
+              \\"\\"\\"Filter type where some of the related Interface2s match this filter\\"\\"\\"
+              some: Interface2Where
+            }
+
             \\"\\"\\"
             Fields to sort Interface2s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Interface2Sort object.
             \\"\\"\\"
@@ -6071,19 +7129,21 @@ describe("Interface Relationships", () => {
             }
 
             input Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Interface2Where {
               AND: [Interface2Where!]
               NOT: Interface2Where
               OR: [Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String]
-              field2_STARTS_WITH: String
-              typename_IN: [Interface2Implementation!]
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
+              typename: [Interface2Implementation!]
             }
 
             type Interface2sConnection {
@@ -6155,6 +7215,27 @@ describe("Interface Relationships", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
@@ -6192,6 +7273,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1AggregateInput!]
               NOT: Type1Interface1AggregateInput
               OR: [Type1Interface1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -6214,6 +7296,25 @@ describe("Interface Relationships", () => {
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Type1Interface1ConnectionFilters {
+              \\"\\"\\"
+              Return Type1s where all of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              all: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where none of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              none: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where one of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              single: Type1Interface1ConnectionWhere
+              \\"\\"\\"
+              Return Type1s where some of the related Type1Interface1Connections match this filter
+              \\"\\"\\"
+              some: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1ConnectionSort {
@@ -6273,6 +7374,7 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2AggregateInput!]
               NOT: Type1Interface1Interface2AggregateInput
               OR: [Type1Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -6285,6 +7387,25 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2ConnectFieldInput {
               edge: Type1PropsCreateInput!
               where: Interface2ConnectWhere
+            }
+
+            input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2CreateFieldInput {
@@ -6323,21 +7444,22 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type1Interface1Interface2NodeAggregationWhereInput
               OR: [Type1Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input Type1Interface1Interface2UpdateConnectionInput {
@@ -6358,21 +7480,22 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1NodeAggregationWhereInput!]
               NOT: Type1Interface1NodeAggregationWhereInput
               OR: [Type1Interface1NodeAggregationWhereInput!]
-              field1_AVERAGE_LENGTH_EQUAL: Float
-              field1_AVERAGE_LENGTH_GT: Float
-              field1_AVERAGE_LENGTH_GTE: Float
-              field1_AVERAGE_LENGTH_LT: Float
-              field1_AVERAGE_LENGTH_LTE: Float
-              field1_LONGEST_LENGTH_EQUAL: Int
-              field1_LONGEST_LENGTH_GT: Int
-              field1_LONGEST_LENGTH_GTE: Int
-              field1_LONGEST_LENGTH_LT: Int
-              field1_LONGEST_LENGTH_LTE: Int
-              field1_SHORTEST_LENGTH_EQUAL: Int
-              field1_SHORTEST_LENGTH_GT: Int
-              field1_SHORTEST_LENGTH_GTE: Int
-              field1_SHORTEST_LENGTH_LT: Int
-              field1_SHORTEST_LENGTH_LTE: Int
+              field1: StringScalarAggregationFilters
+              field1_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { eq: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { gt: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { gte: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { lt: ... } } }' instead.\\")
+              field1_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field1: { averageLength: { lte: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { eq: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { gt: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { gte: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { lt: ... } } }' instead.\\")
+              field1_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { longestLength: { lte: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { eq: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { gt: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { gte: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { lt: ... } } }' instead.\\")
+              field1_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field1: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Type1Interface1Relationship {
@@ -6401,7 +7524,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type1Interface1Interface2UpdateFieldInput!]
             }
 
@@ -6409,44 +7533,47 @@ describe("Interface Relationships", () => {
               AND: [Type1Interface1Where!]
               NOT: Type1Interface1Where
               OR: [Type1Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type1Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type1Interface1sConnection {
@@ -6481,18 +7608,20 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type1Interface2Where {
               AND: [Type1Interface2Where!]
               NOT: Type1Interface2Where
               OR: [Type1Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
             }
 
             type Type1Interface2sConnection {
@@ -6513,26 +7642,27 @@ describe("Interface Relationships", () => {
               AND: [Type1PropsAggregationWhereInput!]
               NOT: Type1PropsAggregationWhereInput
               OR: [Type1PropsAggregationWhereInput!]
-              type1Field_AVERAGE_EQUAL: Float
-              type1Field_AVERAGE_GT: Float
-              type1Field_AVERAGE_GTE: Float
-              type1Field_AVERAGE_LT: Float
-              type1Field_AVERAGE_LTE: Float
-              type1Field_MAX_EQUAL: Int
-              type1Field_MAX_GT: Int
-              type1Field_MAX_GTE: Int
-              type1Field_MAX_LT: Int
-              type1Field_MAX_LTE: Int
-              type1Field_MIN_EQUAL: Int
-              type1Field_MIN_GT: Int
-              type1Field_MIN_GTE: Int
-              type1Field_MIN_LT: Int
-              type1Field_MIN_LTE: Int
-              type1Field_SUM_EQUAL: Int
-              type1Field_SUM_GT: Int
-              type1Field_SUM_GTE: Int
-              type1Field_SUM_LT: Int
-              type1Field_SUM_LTE: Int
+              type1Field: IntScalarAggregationFilters
+              type1Field_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { average: { eq: ... } } }' instead.\\")
+              type1Field_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { average: { gt: ... } } }' instead.\\")
+              type1Field_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { average: { gte: ... } } }' instead.\\")
+              type1Field_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { average: { lt: ... } } }' instead.\\")
+              type1Field_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { average: { lte: ... } } }' instead.\\")
+              type1Field_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { max: { eq: ... } } }' instead.\\")
+              type1Field_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { max: { gt: ... } } }' instead.\\")
+              type1Field_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { max: { gte: ... } } }' instead.\\")
+              type1Field_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { max: { lt: ... } } }' instead.\\")
+              type1Field_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { max: { lte: ... } } }' instead.\\")
+              type1Field_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { min: { eq: ... } } }' instead.\\")
+              type1Field_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { min: { gt: ... } } }' instead.\\")
+              type1Field_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { min: { gte: ... } } }' instead.\\")
+              type1Field_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { min: { lt: ... } } }' instead.\\")
+              type1Field_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { min: { lte: ... } } }' instead.\\")
+              type1Field_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { sum: { eq: ... } } }' instead.\\")
+              type1Field_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { sum: { gt: ... } } }' instead.\\")
+              type1Field_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { sum: { gte: ... } } }' instead.\\")
+              type1Field_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { sum: { lt: ... } } }' instead.\\")
+              type1Field_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type1Field: { sum: { lte: ... } } }' instead.\\")
             }
 
             input Type1PropsCreateInput {
@@ -6544,21 +7674,23 @@ describe("Interface Relationships", () => {
             }
 
             input Type1PropsUpdateInput {
-              type1Field_DECREMENT: Int
-              type1Field_INCREMENT: Int
-              type1Field_SET: Int
+              type1Field: IntScalarMutations
+              type1Field_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type1Field: { decrement: ... } }' instead.\\")
+              type1Field_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type1Field: { increment: ... } }' instead.\\")
+              type1Field_SET: Int @deprecated(reason: \\"Please use the generic mutation 'type1Field: { set: ... } }' instead.\\")
             }
 
             input Type1PropsWhere {
               AND: [Type1PropsWhere!]
               NOT: Type1PropsWhere
               OR: [Type1PropsWhere!]
-              type1Field_EQ: Int
-              type1Field_GT: Int
-              type1Field_GTE: Int
-              type1Field_IN: [Int!]
-              type1Field_LT: Int
-              type1Field_LTE: Int
+              type1Field: IntScalarFilters
+              type1Field_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { eq: ... }\\")
+              type1Field_GT: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { gt: ... }\\")
+              type1Field_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { gte: ... }\\")
+              type1Field_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter type1Field: { in: ... }\\")
+              type1Field_LT: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { lt: ... }\\")
+              type1Field_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter type1Field: { lte: ... }\\")
             }
 
             \\"\\"\\"
@@ -6569,7 +7701,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface1: [Type1Interface1UpdateFieldInput!]
             }
 
@@ -6577,36 +7710,39 @@ describe("Interface Relationships", () => {
               AND: [Type1Where!]
               NOT: Type1Where
               OR: [Type1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface1: Interface1RelationshipFilters
               interface1Aggregate: Type1Interface1AggregateInput
+              interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_ALL: Type1Interface1ConnectionWhere
+              interface1Connection_ALL: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where none of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_NONE: Type1Interface1ConnectionWhere
+              interface1Connection_NONE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where one of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SINGLE: Type1Interface1ConnectionWhere
+              interface1Connection_SINGLE: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type1s where some of the related Type1Interface1Connections match this filter
               \\"\\"\\"
-              interface1Connection_SOME: Type1Interface1ConnectionWhere
+              interface1Connection_SOME: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Type1s where all of the related Interface1s match this filter\\"\\"\\"
-              interface1_ALL: Interface1Where
+              interface1_ALL: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { all: ... }' instead.\\")
               \\"\\"\\"Return Type1s where none of the related Interface1s match this filter\\"\\"\\"
-              interface1_NONE: Interface1Where
+              interface1_NONE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: { none: ... }' instead.\\")
               \\"\\"\\"Return Type1s where one of the related Interface1s match this filter\\"\\"\\"
-              interface1_SINGLE: Interface1Where
+              interface1_SINGLE: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  single: ... }' instead.\\")
               \\"\\"\\"Return Type1s where some of the related Interface1s match this filter\\"\\"\\"
-              interface1_SOME: Interface1Where
+              interface1_SOME: Interface1Where @deprecated(reason: \\"Please use the relevant generic filter 'interface1: {  some: ... }' instead.\\")
             }
 
             type Type1sConnection {
@@ -6645,6 +7781,7 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2AggregateInput!]
               NOT: Type2Interface1Interface2AggregateInput
               OR: [Type2Interface1Interface2AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -6657,6 +7794,25 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2ConnectFieldInput {
               edge: Type2PropsCreateInput!
               where: Interface2ConnectWhere
+            }
+
+            input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              all: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              none: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              single: Interface1Interface2ConnectionWhere
+              \\"\\"\\"
+              Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
+              \\"\\"\\"
+              some: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2CreateFieldInput {
@@ -6695,21 +7851,22 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Interface2NodeAggregationWhereInput!]
               NOT: Type2Interface1Interface2NodeAggregationWhereInput
               OR: [Type2Interface1Interface2NodeAggregationWhereInput!]
-              field2_AVERAGE_LENGTH_EQUAL: Float
-              field2_AVERAGE_LENGTH_GT: Float
-              field2_AVERAGE_LENGTH_GTE: Float
-              field2_AVERAGE_LENGTH_LT: Float
-              field2_AVERAGE_LENGTH_LTE: Float
-              field2_LONGEST_LENGTH_EQUAL: Int
-              field2_LONGEST_LENGTH_GT: Int
-              field2_LONGEST_LENGTH_GTE: Int
-              field2_LONGEST_LENGTH_LT: Int
-              field2_LONGEST_LENGTH_LTE: Int
-              field2_SHORTEST_LENGTH_EQUAL: Int
-              field2_SHORTEST_LENGTH_GT: Int
-              field2_SHORTEST_LENGTH_GTE: Int
-              field2_SHORTEST_LENGTH_LT: Int
-              field2_SHORTEST_LENGTH_LTE: Int
+              field2: StringScalarAggregationFilters
+              field2_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { eq: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { gte: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lt: ... } } }' instead.\\")
+              field2_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'field2: { averageLength: { lte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { eq: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { gte: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lt: ... } } }' instead.\\")
+              field2_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { longestLength: { lte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { eq: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { gte: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lt: ... } } }' instead.\\")
+              field2_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'field2: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input Type2Interface1Interface2UpdateConnectionInput {
@@ -6734,7 +7891,8 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1UpdateInput {
-              field1_SET: String
+              field1: StringScalarMutations
+              field1_SET: String @deprecated(reason: \\"Please use the generic mutation 'field1: { set: ... } }' instead.\\")
               interface2: [Type2Interface1Interface2UpdateFieldInput!]
             }
 
@@ -6742,44 +7900,47 @@ describe("Interface Relationships", () => {
               AND: [Type2Interface1Where!]
               NOT: Type2Interface1Where
               OR: [Type2Interface1Where!]
-              field1_CONTAINS: String
-              field1_ENDS_WITH: String
-              field1_EQ: String
-              field1_IN: [String!]
-              field1_STARTS_WITH: String
+              field1: StringScalarFilters
+              field1_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field1: { contains: ... }\\")
+              field1_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { endsWith: ... }\\")
+              field1_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field1: { eq: ... }\\")
+              field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
+              field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
+              interface2: Interface2RelationshipFilters
               interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_ALL: Interface1Interface2ConnectionWhere
+              interface2Connection_ALL: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_NONE: Interface1Interface2ConnectionWhere
+              interface2Connection_NONE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere
+              interface2Connection_SINGLE: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
-              interface2Connection_SOME: Interface1Interface2ConnectionWhere
+              interface2Connection_SOME: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'interface2Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_ALL: Interface2Where
+              interface2_ALL: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where none of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_NONE: Interface2Where
+              interface2_NONE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where one of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SINGLE: Interface2Where
+              interface2_SINGLE: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Type2Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
-              interface2_SOME: Interface2Where
+              interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
             }
 
             type Type2Interface1sConnection {
@@ -6814,18 +7975,20 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface2UpdateInput {
-              field2_SET: String
+              field2: StringScalarMutations
+              field2_SET: String @deprecated(reason: \\"Please use the generic mutation 'field2: { set: ... } }' instead.\\")
             }
 
             input Type2Interface2Where {
               AND: [Type2Interface2Where!]
               NOT: Type2Interface2Where
               OR: [Type2Interface2Where!]
-              field2_CONTAINS: String
-              field2_ENDS_WITH: String
-              field2_EQ: String
-              field2_IN: [String!]
-              field2_STARTS_WITH: String
+              field2: StringScalarFilters
+              field2_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter field2: { contains: ... }\\")
+              field2_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { endsWith: ... }\\")
+              field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
+              field2_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
+              field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
             }
 
             type Type2Interface2sConnection {
@@ -6846,26 +8009,27 @@ describe("Interface Relationships", () => {
               AND: [Type2PropsAggregationWhereInput!]
               NOT: Type2PropsAggregationWhereInput
               OR: [Type2PropsAggregationWhereInput!]
-              type2Field_AVERAGE_EQUAL: Float
-              type2Field_AVERAGE_GT: Float
-              type2Field_AVERAGE_GTE: Float
-              type2Field_AVERAGE_LT: Float
-              type2Field_AVERAGE_LTE: Float
-              type2Field_MAX_EQUAL: Int
-              type2Field_MAX_GT: Int
-              type2Field_MAX_GTE: Int
-              type2Field_MAX_LT: Int
-              type2Field_MAX_LTE: Int
-              type2Field_MIN_EQUAL: Int
-              type2Field_MIN_GT: Int
-              type2Field_MIN_GTE: Int
-              type2Field_MIN_LT: Int
-              type2Field_MIN_LTE: Int
-              type2Field_SUM_EQUAL: Int
-              type2Field_SUM_GT: Int
-              type2Field_SUM_GTE: Int
-              type2Field_SUM_LT: Int
-              type2Field_SUM_LTE: Int
+              type2Field: IntScalarAggregationFilters
+              type2Field_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { average: { eq: ... } } }' instead.\\")
+              type2Field_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { average: { gt: ... } } }' instead.\\")
+              type2Field_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { average: { gte: ... } } }' instead.\\")
+              type2Field_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { average: { lt: ... } } }' instead.\\")
+              type2Field_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { average: { lte: ... } } }' instead.\\")
+              type2Field_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { max: { eq: ... } } }' instead.\\")
+              type2Field_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { max: { gt: ... } } }' instead.\\")
+              type2Field_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { max: { gte: ... } } }' instead.\\")
+              type2Field_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { max: { lt: ... } } }' instead.\\")
+              type2Field_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { max: { lte: ... } } }' instead.\\")
+              type2Field_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { min: { eq: ... } } }' instead.\\")
+              type2Field_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { min: { gt: ... } } }' instead.\\")
+              type2Field_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { min: { gte: ... } } }' instead.\\")
+              type2Field_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { min: { lt: ... } } }' instead.\\")
+              type2Field_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { min: { lte: ... } } }' instead.\\")
+              type2Field_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { sum: { eq: ... } } }' instead.\\")
+              type2Field_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { sum: { gt: ... } } }' instead.\\")
+              type2Field_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { sum: { gte: ... } } }' instead.\\")
+              type2Field_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { sum: { lt: ... } } }' instead.\\")
+              type2Field_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'type2Field: { sum: { lte: ... } } }' instead.\\")
             }
 
             input Type2PropsCreateInput {
@@ -6877,21 +8041,23 @@ describe("Interface Relationships", () => {
             }
 
             input Type2PropsUpdateInput {
-              type2Field_DECREMENT: Int
-              type2Field_INCREMENT: Int
-              type2Field_SET: Int
+              type2Field: IntScalarMutations
+              type2Field_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type2Field: { decrement: ... } }' instead.\\")
+              type2Field_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'type2Field: { increment: ... } }' instead.\\")
+              type2Field_SET: Int @deprecated(reason: \\"Please use the generic mutation 'type2Field: { set: ... } }' instead.\\")
             }
 
             input Type2PropsWhere {
               AND: [Type2PropsWhere!]
               NOT: Type2PropsWhere
               OR: [Type2PropsWhere!]
-              type2Field_EQ: Int
-              type2Field_GT: Int
-              type2Field_GTE: Int
-              type2Field_IN: [Int!]
-              type2Field_LT: Int
-              type2Field_LTE: Int
+              type2Field: IntScalarFilters
+              type2Field_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { eq: ... }\\")
+              type2Field_GT: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { gt: ... }\\")
+              type2Field_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { gte: ... }\\")
+              type2Field_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter type2Field: { in: ... }\\")
+              type2Field_LT: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { lt: ... }\\")
+              type2Field_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter type2Field: { lte: ... }\\")
             }
 
             \\"\\"\\"
@@ -6988,7 +8154,6 @@ describe("Interface Relationships", () => {
             type CommentAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input CommentConnectInput {
@@ -7011,6 +8176,7 @@ describe("Interface Relationships", () => {
               AND: [CommentCreatorAggregateInput!]
               NOT: CommentCreatorAggregateInput
               OR: [CommentCreatorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7022,6 +8188,25 @@ describe("Interface Relationships", () => {
             input CommentCreatorConnectFieldInput {
               connect: [UserConnectInput!]
               where: UserConnectWhere
+            }
+
+            input CommentCreatorConnectionFilters {
+              \\"\\"\\"
+              Return Comments where all of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              all: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Comments where none of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              none: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Comments where one of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              single: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Comments where some of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              some: ContentCreatorConnectionWhere
             }
 
             input CommentCreatorCreateFieldInput {
@@ -7037,31 +8222,22 @@ describe("Interface Relationships", () => {
               AND: [CommentCreatorNodeAggregationWhereInput!]
               NOT: CommentCreatorNodeAggregationWhereInput
               OR: [CommentCreatorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input CommentCreatorUpdateConnectionInput {
@@ -7096,6 +8272,7 @@ describe("Interface Relationships", () => {
               AND: [CommentPostAggregateInput!]
               NOT: CommentPostAggregateInput
               OR: [CommentPostAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7113,6 +8290,25 @@ describe("Interface Relationships", () => {
               edges: [CommentPostRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input CommentPostConnectionFilters {
+              \\"\\"\\"
+              Return Comments where all of the related CommentPostConnections match this filter
+              \\"\\"\\"
+              all: CommentPostConnectionWhere
+              \\"\\"\\"
+              Return Comments where none of the related CommentPostConnections match this filter
+              \\"\\"\\"
+              none: CommentPostConnectionWhere
+              \\"\\"\\"
+              Return Comments where one of the related CommentPostConnections match this filter
+              \\"\\"\\"
+              single: CommentPostConnectionWhere
+              \\"\\"\\"
+              Return Comments where some of the related CommentPostConnections match this filter
+              \\"\\"\\"
+              some: CommentPostConnectionWhere
             }
 
             input CommentPostConnectionSort {
@@ -7149,31 +8345,22 @@ describe("Interface Relationships", () => {
               AND: [CommentPostNodeAggregationWhereInput!]
               NOT: CommentPostNodeAggregationWhereInput
               OR: [CommentPostNodeAggregationWhereInput!]
-              content_AVERAGE_LENGTH_EQUAL: Float
-              content_AVERAGE_LENGTH_GT: Float
-              content_AVERAGE_LENGTH_GTE: Float
-              content_AVERAGE_LENGTH_LT: Float
-              content_AVERAGE_LENGTH_LTE: Float
-              content_LONGEST_LENGTH_EQUAL: Int
-              content_LONGEST_LENGTH_GT: Int
-              content_LONGEST_LENGTH_GTE: Int
-              content_LONGEST_LENGTH_LT: Int
-              content_LONGEST_LENGTH_LTE: Int
-              content_SHORTEST_LENGTH_EQUAL: Int
-              content_SHORTEST_LENGTH_GT: Int
-              content_SHORTEST_LENGTH_GTE: Int
-              content_SHORTEST_LENGTH_LT: Int
-              content_SHORTEST_LENGTH_LTE: Int
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              content: StringScalarAggregationFilters
+              content_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { eq: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { gt: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { gte: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { lt: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { lte: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { eq: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { gt: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { gte: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { lt: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { lte: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { eq: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { gt: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { gte: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lt: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type CommentPostPostAggregationSelection {
@@ -7183,7 +8370,6 @@ describe("Interface Relationships", () => {
 
             type CommentPostPostNodeAggregateSelection {
               content: StringAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             type CommentPostRelationship {
@@ -7204,6 +8390,17 @@ describe("Interface Relationships", () => {
               where: CommentPostConnectionWhere
             }
 
+            input CommentRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Comments match this filter\\"\\"\\"
+              all: CommentWhere
+              \\"\\"\\"Filter type where none of the related Comments match this filter\\"\\"\\"
+              none: CommentWhere
+              \\"\\"\\"Filter type where one of the related Comments match this filter\\"\\"\\"
+              single: CommentWhere
+              \\"\\"\\"Filter type where some of the related Comments match this filter\\"\\"\\"
+              some: CommentWhere
+            }
+
             \\"\\"\\"
             Fields to sort Comments by. The order in which sorts are applied is not guaranteed when specifying many fields in one CommentSort object.
             \\"\\"\\"
@@ -7213,9 +8410,11 @@ describe("Interface Relationships", () => {
             }
 
             input CommentUpdateInput {
-              content_SET: String
+              content: StringScalarMutations
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
               creator: [CommentCreatorUpdateFieldInput!]
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               post: [CommentPostUpdateFieldInput!]
             }
 
@@ -7225,7 +8424,6 @@ describe("Interface Relationships", () => {
             }
 
             type CommentUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -7233,66 +8431,72 @@ describe("Interface Relationships", () => {
               AND: [CommentWhere!]
               NOT: CommentWhere
               OR: [CommentWhere!]
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              content: StringScalarFilters
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
+              creator: UserRelationshipFilters
               creatorAggregate: CommentCreatorAggregateInput
+              creatorConnection: CommentCreatorConnectionFilters
               \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_ALL: ContentCreatorConnectionWhere
+              creatorConnection_ALL: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where none of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_NONE: ContentCreatorConnectionWhere
+              creatorConnection_NONE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where one of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SINGLE: ContentCreatorConnectionWhere
+              creatorConnection_SINGLE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where some of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SOME: ContentCreatorConnectionWhere
+              creatorConnection_SOME: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Comments where all of the related Users match this filter\\"\\"\\"
-              creator_ALL: UserWhere
+              creator_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { all: ... }' instead.\\")
               \\"\\"\\"Return Comments where none of the related Users match this filter\\"\\"\\"
-              creator_NONE: UserWhere
+              creator_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { none: ... }' instead.\\")
               \\"\\"\\"Return Comments where one of the related Users match this filter\\"\\"\\"
-              creator_SINGLE: UserWhere
+              creator_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  single: ... }' instead.\\")
               \\"\\"\\"Return Comments where some of the related Users match this filter\\"\\"\\"
-              creator_SOME: UserWhere
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              post: PostRelationshipFilters
               postAggregate: CommentPostAggregateInput
+              postConnection: CommentPostConnectionFilters
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_ALL: CommentPostConnectionWhere
+              postConnection_ALL: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where none of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_NONE: CommentPostConnectionWhere
+              postConnection_NONE: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where one of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_SINGLE: CommentPostConnectionWhere
+              postConnection_SINGLE: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Comments where some of the related CommentPostConnections match this filter
               \\"\\"\\"
-              postConnection_SOME: CommentPostConnectionWhere
+              postConnection_SOME: CommentPostConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Comments where all of the related Posts match this filter\\"\\"\\"
-              post_ALL: PostWhere
+              post_ALL: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: { all: ... }' instead.\\")
               \\"\\"\\"Return Comments where none of the related Posts match this filter\\"\\"\\"
-              post_NONE: PostWhere
+              post_NONE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: { none: ... }' instead.\\")
               \\"\\"\\"Return Comments where one of the related Posts match this filter\\"\\"\\"
-              post_SINGLE: PostWhere
+              post_SINGLE: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: {  single: ... }' instead.\\")
               \\"\\"\\"Return Comments where some of the related Posts match this filter\\"\\"\\"
-              post_SOME: PostWhere
+              post_SOME: PostWhere @deprecated(reason: \\"Please use the relevant generic filter 'post: {  some: ... }' instead.\\")
             }
 
             type CommentsConnection {
@@ -7311,7 +8515,6 @@ describe("Interface Relationships", () => {
             type ContentAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input ContentConnectInput {
@@ -7331,6 +8534,7 @@ describe("Interface Relationships", () => {
               AND: [ContentCreatorAggregateInput!]
               NOT: ContentCreatorAggregateInput
               OR: [ContentCreatorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7348,6 +8552,25 @@ describe("Interface Relationships", () => {
               edges: [ContentCreatorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ContentCreatorConnectionFilters {
+              \\"\\"\\"
+              Return Contents where all of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              all: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Contents where none of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              none: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Contents where one of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              single: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Contents where some of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              some: ContentCreatorConnectionWhere
             }
 
             input ContentCreatorConnectionSort {
@@ -7379,31 +8602,22 @@ describe("Interface Relationships", () => {
               AND: [ContentCreatorNodeAggregationWhereInput!]
               NOT: ContentCreatorNodeAggregationWhereInput
               OR: [ContentCreatorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ContentCreatorRelationship {
@@ -7442,6 +8656,17 @@ describe("Interface Relationships", () => {
               Post
             }
 
+            input ContentRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Contents match this filter\\"\\"\\"
+              all: ContentWhere
+              \\"\\"\\"Filter type where none of the related Contents match this filter\\"\\"\\"
+              none: ContentWhere
+              \\"\\"\\"Filter type where one of the related Contents match this filter\\"\\"\\"
+              single: ContentWhere
+              \\"\\"\\"Filter type where some of the related Contents match this filter\\"\\"\\"
+              some: ContentWhere
+            }
+
             \\"\\"\\"
             Fields to sort Contents by. The order in which sorts are applied is not guaranteed when specifying many fields in one ContentSort object.
             \\"\\"\\"
@@ -7451,51 +8676,57 @@ describe("Interface Relationships", () => {
             }
 
             input ContentUpdateInput {
-              content_SET: String
+              content: StringScalarMutations
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
               creator: [ContentCreatorUpdateFieldInput!]
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input ContentWhere {
               AND: [ContentWhere!]
               NOT: ContentWhere
               OR: [ContentWhere!]
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              content: StringScalarFilters
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
+              creator: UserRelationshipFilters
               creatorAggregate: ContentCreatorAggregateInput
+              creatorConnection: ContentCreatorConnectionFilters
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_ALL: ContentCreatorConnectionWhere
+              creatorConnection_ALL: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Contents where none of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_NONE: ContentCreatorConnectionWhere
+              creatorConnection_NONE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Contents where one of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SINGLE: ContentCreatorConnectionWhere
+              creatorConnection_SINGLE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Contents where some of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SOME: ContentCreatorConnectionWhere
+              creatorConnection_SOME: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Contents where all of the related Users match this filter\\"\\"\\"
-              creator_ALL: UserWhere
+              creator_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { all: ... }' instead.\\")
               \\"\\"\\"Return Contents where none of the related Users match this filter\\"\\"\\"
-              creator_NONE: UserWhere
+              creator_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { none: ... }' instead.\\")
               \\"\\"\\"Return Contents where one of the related Users match this filter\\"\\"\\"
-              creator_SINGLE: UserWhere
+              creator_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  single: ... }' instead.\\")
               \\"\\"\\"Return Contents where some of the related Users match this filter\\"\\"\\"
-              creator_SOME: UserWhere
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              typename_IN: [ContentImplementation!]
+              creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              typename: [ContentImplementation!]
             }
 
             type ContentsConnection {
@@ -7535,9 +8766,38 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -7574,7 +8834,6 @@ describe("Interface Relationships", () => {
             type PostAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
-              id: IDAggregateSelection!
             }
 
             type PostCommentCommentsAggregationSelection {
@@ -7584,13 +8843,13 @@ describe("Interface Relationships", () => {
 
             type PostCommentCommentsNodeAggregateSelection {
               content: StringAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input PostCommentsAggregateInput {
               AND: [PostCommentsAggregateInput!]
               NOT: PostCommentsAggregateInput
               OR: [PostCommentsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7608,6 +8867,25 @@ describe("Interface Relationships", () => {
               edges: [PostCommentsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PostCommentsConnectionFilters {
+              \\"\\"\\"
+              Return Posts where all of the related PostCommentsConnections match this filter
+              \\"\\"\\"
+              all: PostCommentsConnectionWhere
+              \\"\\"\\"
+              Return Posts where none of the related PostCommentsConnections match this filter
+              \\"\\"\\"
+              none: PostCommentsConnectionWhere
+              \\"\\"\\"
+              Return Posts where one of the related PostCommentsConnections match this filter
+              \\"\\"\\"
+              single: PostCommentsConnectionWhere
+              \\"\\"\\"
+              Return Posts where some of the related PostCommentsConnections match this filter
+              \\"\\"\\"
+              some: PostCommentsConnectionWhere
             }
 
             input PostCommentsConnectionSort {
@@ -7644,31 +8922,22 @@ describe("Interface Relationships", () => {
               AND: [PostCommentsNodeAggregationWhereInput!]
               NOT: PostCommentsNodeAggregationWhereInput
               OR: [PostCommentsNodeAggregationWhereInput!]
-              content_AVERAGE_LENGTH_EQUAL: Float
-              content_AVERAGE_LENGTH_GT: Float
-              content_AVERAGE_LENGTH_GTE: Float
-              content_AVERAGE_LENGTH_LT: Float
-              content_AVERAGE_LENGTH_LTE: Float
-              content_LONGEST_LENGTH_EQUAL: Int
-              content_LONGEST_LENGTH_GT: Int
-              content_LONGEST_LENGTH_GTE: Int
-              content_LONGEST_LENGTH_LT: Int
-              content_LONGEST_LENGTH_LTE: Int
-              content_SHORTEST_LENGTH_EQUAL: Int
-              content_SHORTEST_LENGTH_GT: Int
-              content_SHORTEST_LENGTH_GTE: Int
-              content_SHORTEST_LENGTH_LT: Int
-              content_SHORTEST_LENGTH_LTE: Int
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              content: StringScalarAggregationFilters
+              content_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { eq: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { gt: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { gte: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { lt: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { lte: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { eq: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { gt: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { gte: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { lt: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { lte: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { eq: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { gt: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { gte: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lt: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type PostCommentsRelationship {
@@ -7709,6 +8978,7 @@ describe("Interface Relationships", () => {
               AND: [PostCreatorAggregateInput!]
               NOT: PostCreatorAggregateInput
               OR: [PostCreatorAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7720,6 +8990,25 @@ describe("Interface Relationships", () => {
             input PostCreatorConnectFieldInput {
               connect: [UserConnectInput!]
               where: UserConnectWhere
+            }
+
+            input PostCreatorConnectionFilters {
+              \\"\\"\\"
+              Return Posts where all of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              all: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Posts where none of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              none: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Posts where one of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              single: ContentCreatorConnectionWhere
+              \\"\\"\\"
+              Return Posts where some of the related ContentCreatorConnections match this filter
+              \\"\\"\\"
+              some: ContentCreatorConnectionWhere
             }
 
             input PostCreatorCreateFieldInput {
@@ -7735,31 +9024,22 @@ describe("Interface Relationships", () => {
               AND: [PostCreatorNodeAggregationWhereInput!]
               NOT: PostCreatorNodeAggregationWhereInput
               OR: [PostCreatorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input PostCreatorUpdateConnectionInput {
@@ -7790,6 +9070,17 @@ describe("Interface Relationships", () => {
               node: Post!
             }
 
+            input PostRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Posts match this filter\\"\\"\\"
+              all: PostWhere
+              \\"\\"\\"Filter type where none of the related Posts match this filter\\"\\"\\"
+              none: PostWhere
+              \\"\\"\\"Filter type where one of the related Posts match this filter\\"\\"\\"
+              single: PostWhere
+              \\"\\"\\"Filter type where some of the related Posts match this filter\\"\\"\\"
+              some: PostWhere
+            }
+
             \\"\\"\\"
             Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
             \\"\\"\\"
@@ -7800,9 +9091,11 @@ describe("Interface Relationships", () => {
 
             input PostUpdateInput {
               comments: [PostCommentsUpdateFieldInput!]
-              content_SET: String
+              content: StringScalarMutations
+              content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
               creator: [PostCreatorUpdateFieldInput!]
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             type PostUserCreatorAggregationSelection {
@@ -7811,7 +9104,6 @@ describe("Interface Relationships", () => {
             }
 
             type PostUserCreatorNodeAggregateSelection {
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -7819,66 +9111,72 @@ describe("Interface Relationships", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
+              comments: CommentRelationshipFilters
               commentsAggregate: PostCommentsAggregateInput
+              commentsConnection: PostCommentsConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_ALL: PostCommentsConnectionWhere
+              commentsConnection_ALL: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_NONE: PostCommentsConnectionWhere
+              commentsConnection_NONE: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_SINGLE: PostCommentsConnectionWhere
+              commentsConnection_SINGLE: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related PostCommentsConnections match this filter
               \\"\\"\\"
-              commentsConnection_SOME: PostCommentsConnectionWhere
+              commentsConnection_SOME: PostCommentsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'commentsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Comments match this filter\\"\\"\\"
-              comments_ALL: CommentWhere
+              comments_ALL: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Comments match this filter\\"\\"\\"
-              comments_NONE: CommentWhere
+              comments_NONE: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Comments match this filter\\"\\"\\"
-              comments_SINGLE: CommentWhere
+              comments_SINGLE: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Comments match this filter\\"\\"\\"
-              comments_SOME: CommentWhere
-              content_CONTAINS: String
-              content_ENDS_WITH: String
-              content_EQ: String
-              content_IN: [String]
-              content_STARTS_WITH: String
+              comments_SOME: CommentWhere @deprecated(reason: \\"Please use the relevant generic filter 'comments: {  some: ... }' instead.\\")
+              content: StringScalarFilters
+              content_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter content: { contains: ... }\\")
+              content_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { endsWith: ... }\\")
+              content_EQ: String @deprecated(reason: \\"Please use the relevant generic filter content: { eq: ... }\\")
+              content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
+              content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
+              creator: UserRelationshipFilters
               creatorAggregate: PostCreatorAggregateInput
+              creatorConnection: PostCreatorConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_ALL: ContentCreatorConnectionWhere
+              creatorConnection_ALL: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where none of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_NONE: ContentCreatorConnectionWhere
+              creatorConnection_NONE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where one of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SINGLE: ContentCreatorConnectionWhere
+              creatorConnection_SINGLE: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Posts where some of the related ContentCreatorConnections match this filter
               \\"\\"\\"
-              creatorConnection_SOME: ContentCreatorConnectionWhere
+              creatorConnection_SOME: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'creatorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
-              creator_ALL: UserWhere
+              creator_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { all: ... }' instead.\\")
               \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
-              creator_NONE: UserWhere
+              creator_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: { none: ... }' instead.\\")
               \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
-              creator_SINGLE: UserWhere
+              creator_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
-              creator_SOME: UserWhere
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              creator_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'creator: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -7913,6 +9211,27 @@ describe("Interface Relationships", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateCommentsMutationResponse {
@@ -7950,7 +9269,6 @@ describe("Interface Relationships", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -7966,6 +9284,7 @@ describe("Interface Relationships", () => {
               AND: [UserContentAggregateInput!]
               NOT: UserContentAggregateInput
               OR: [UserContentAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -7983,6 +9302,25 @@ describe("Interface Relationships", () => {
               edges: [UserContentRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input UserContentConnectionFilters {
+              \\"\\"\\"
+              Return Users where all of the related UserContentConnections match this filter
+              \\"\\"\\"
+              all: UserContentConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserContentConnections match this filter
+              \\"\\"\\"
+              none: UserContentConnectionWhere
+              \\"\\"\\"
+              Return Users where one of the related UserContentConnections match this filter
+              \\"\\"\\"
+              single: UserContentConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserContentConnections match this filter
+              \\"\\"\\"
+              some: UserContentConnectionWhere
             }
 
             input UserContentConnectionSort {
@@ -8003,7 +9341,6 @@ describe("Interface Relationships", () => {
 
             type UserContentContentNodeAggregateSelection {
               content: StringAggregateSelection!
-              id: IDAggregateSelection!
             }
 
             input UserContentCreateFieldInput {
@@ -8029,31 +9366,22 @@ describe("Interface Relationships", () => {
               AND: [UserContentNodeAggregationWhereInput!]
               NOT: UserContentNodeAggregationWhereInput
               OR: [UserContentNodeAggregationWhereInput!]
-              content_AVERAGE_LENGTH_EQUAL: Float
-              content_AVERAGE_LENGTH_GT: Float
-              content_AVERAGE_LENGTH_GTE: Float
-              content_AVERAGE_LENGTH_LT: Float
-              content_AVERAGE_LENGTH_LTE: Float
-              content_LONGEST_LENGTH_EQUAL: Int
-              content_LONGEST_LENGTH_GT: Int
-              content_LONGEST_LENGTH_GTE: Int
-              content_LONGEST_LENGTH_LT: Int
-              content_LONGEST_LENGTH_LTE: Int
-              content_SHORTEST_LENGTH_EQUAL: Int
-              content_SHORTEST_LENGTH_GT: Int
-              content_SHORTEST_LENGTH_GTE: Int
-              content_SHORTEST_LENGTH_LT: Int
-              content_SHORTEST_LENGTH_LTE: Int
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
+              content: StringScalarAggregationFilters
+              content_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { eq: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { gt: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { gte: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { lt: ... } } }' instead.\\")
+              content_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'content: { averageLength: { lte: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { eq: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { gt: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { gte: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { lt: ... } } }' instead.\\")
+              content_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { longestLength: { lte: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { eq: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { gt: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { gte: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lt: ... } } }' instead.\\")
+              content_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type UserContentRelationship {
@@ -8093,6 +9421,17 @@ describe("Interface Relationships", () => {
               node: User!
             }
 
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
+            }
+
             \\"\\"\\"
             Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
             \\"\\"\\"
@@ -8103,49 +9442,55 @@ describe("Interface Relationships", () => {
 
             input UserUpdateInput {
               content: [UserContentUpdateFieldInput!]
-              id_SET: ID
-              name_SET: String
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
+              content: ContentRelationshipFilters
               contentAggregate: UserContentAggregateInput
+              contentConnection: UserContentConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_ALL: UserContentConnectionWhere
+              contentConnection_ALL: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_NONE: UserContentConnectionWhere
+              contentConnection_NONE: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_SINGLE: UserContentConnectionWhere
+              contentConnection_SINGLE: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserContentConnections match this filter
               \\"\\"\\"
-              contentConnection_SOME: UserContentConnectionWhere
+              contentConnection_SOME: UserContentConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'contentConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Contents match this filter\\"\\"\\"
-              content_ALL: ContentWhere
+              content_ALL: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Contents match this filter\\"\\"\\"
-              content_NONE: ContentWhere
+              content_NONE: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Contents match this filter\\"\\"\\"
-              content_SINGLE: ContentWhere
+              content_SINGLE: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Contents match this filter\\"\\"\\"
-              content_SOME: ContentWhere
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              content_SOME: ContentWhere @deprecated(reason: \\"Please use the relevant generic filter 'content: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type UsersConnection {
@@ -8216,26 +9561,27 @@ describe("Interface Relationships", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              screenTime: IntScalarAggregationFilters
+              screenTime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { eq: ... } } }' instead.\\")
+              screenTime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gt: ... } } }' instead.\\")
+              screenTime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gte: ... } } }' instead.\\")
+              screenTime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lt: ... } } }' instead.\\")
+              screenTime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lte: ... } } }' instead.\\")
+              screenTime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { eq: ... } } }' instead.\\")
+              screenTime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gt: ... } } }' instead.\\")
+              screenTime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gte: ... } } }' instead.\\")
+              screenTime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lt: ... } } }' instead.\\")
+              screenTime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lte: ... } } }' instead.\\")
+              screenTime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { eq: ... } } }' instead.\\")
+              screenTime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gt: ... } } }' instead.\\")
+              screenTime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gte: ... } } }' instead.\\")
+              screenTime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lt: ... } } }' instead.\\")
+              screenTime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lte: ... } } }' instead.\\")
+              screenTime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { eq: ... } } }' instead.\\")
+              screenTime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gt: ... } } }' instead.\\")
+              screenTime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gte: ... } } }' instead.\\")
+              screenTime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lt: ... } } }' instead.\\")
+              screenTime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lte: ... } } }' instead.\\")
             }
 
             input ActedInCreateInput {
@@ -8247,21 +9593,23 @@ describe("Interface Relationships", () => {
             }
 
             input ActedInUpdateInput {
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime: IntScalarMutations
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime: IntScalarFilters
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
@@ -8275,6 +9623,7 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInAggregateInput!]
               NOT: ActorActedInAggregateInput
               OR: [ActorActedInAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8294,6 +9643,25 @@ describe("Interface Relationships", () => {
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              all: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              none: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              single: ActorActedInConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorActedInConnections match this filter
+              \\"\\"\\"
+              some: ActorActedInConnectionWhere
             }
 
             input ActorActedInConnectionSort {
@@ -8333,21 +9701,22 @@ describe("Interface Relationships", () => {
               AND: [ActorActedInNodeAggregationWhereInput!]
               NOT: ActorActedInNodeAggregationWhereInput
               OR: [ActorActedInNodeAggregationWhereInput!]
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ActorActedInRelationship {
@@ -8401,6 +9770,17 @@ describe("Interface Relationships", () => {
               node: Actor!
             }
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             type ActorShowActedInAggregationSelection {
               count: Int!
               edge: ActorShowActedInEdgeAggregateSelection
@@ -8424,43 +9804,47 @@ describe("Interface Relationships", () => {
 
             input ActorUpdateInput {
               actedIn: [ActorActedInUpdateFieldInput!]
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              actedIn: ShowRelationshipFilters
               actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorActedInConnections match this filter
               \\"\\"\\"
-              actedInConnection_SOME: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Shows match this filter\\"\\"\\"
-              actedIn_ALL: ShowWhere
+              actedIn_ALL: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Shows match this filter\\"\\"\\"
-              actedIn_NONE: ShowWhere
+              actedIn_NONE: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Shows match this filter\\"\\"\\"
-              actedIn_SINGLE: ShowWhere
+              actedIn_SINGLE: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Shows match this filter\\"\\"\\"
-              actedIn_SOME: ShowWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              actedIn_SOME: ShowWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -8500,11 +9884,46 @@ describe("Interface Relationships", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type IntAggregateSelection {
               average: Float
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production & Show {
@@ -8533,6 +9952,7 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8546,6 +9966,25 @@ describe("Interface Relationships", () => {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
               where: ActorConnectWhere
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              all: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              none: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              single: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              some: ShowActorsConnectionWhere
             }
 
             input MovieActorsCreateFieldInput {
@@ -8562,21 +10001,22 @@ describe("Interface Relationships", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input MovieActorsUpdateConnectionInput {
@@ -8624,52 +10064,58 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               actors: [MovieActorsUpdateFieldInput!]
-              runtime_DECREMENT: Int
-              runtime_INCREMENT: Int
-              runtime_SET: Int
-              title_SET: String
+              runtime: IntScalarMutations
+              runtime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { decrement: ... } }' instead.\\")
+              runtime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'runtime: { increment: ... } }' instead.\\")
+              runtime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'runtime: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: MovieActorsAggregateInput
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ShowActorsConnectionWhere
+              actorsConnection_ALL: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NONE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              actorsConnection_SINGLE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ShowActorsConnectionWhere
+              actorsConnection_SOME: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              runtime_EQ: Int
-              runtime_GT: Int
-              runtime_GTE: Int
-              runtime_IN: [Int!]
-              runtime_LT: Int
-              runtime_LTE: Int
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              runtime: IntScalarFilters
+              runtime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { eq: ... }\\")
+              runtime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gt: ... }\\")
+              runtime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { gte: ... }\\")
+              runtime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter runtime: { in: ... }\\")
+              runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
+              runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -8729,12 +10175,13 @@ describe("Interface Relationships", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-              typename_IN: [ProductionImplementation!]
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -8787,6 +10234,7 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsAggregateInput!]
               NOT: SeriesActorsAggregateInput
               OR: [SeriesActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8800,6 +10248,25 @@ describe("Interface Relationships", () => {
               connect: [ActorConnectInput!]
               edge: StarredInCreateInput!
               where: ActorConnectWhere
+            }
+
+            input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Return Series where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              all: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              none: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              single: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              some: ShowActorsConnectionWhere
             }
 
             input SeriesActorsCreateFieldInput {
@@ -8816,21 +10283,22 @@ describe("Interface Relationships", () => {
               AND: [SeriesActorsNodeAggregationWhereInput!]
               NOT: SeriesActorsNodeAggregationWhereInput
               OR: [SeriesActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input SeriesActorsUpdateConnectionInput {
@@ -8884,52 +10352,58 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               actors: [SeriesActorsUpdateFieldInput!]
-              episodeCount_DECREMENT: Int
-              episodeCount_INCREMENT: Int
-              episodeCount_SET: Int
-              title_SET: String
+              episodeCount: IntScalarMutations
+              episodeCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { decrement: ... } }' instead.\\")
+              episodeCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeCount: { increment: ... } }' instead.\\")
+              episodeCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeCount: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: SeriesActorsAggregateInput
+              actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ShowActorsConnectionWhere
+              actorsConnection_ALL: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NONE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              actorsConnection_SINGLE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ShowActorsConnectionWhere
+              actorsConnection_SOME: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              episodeCount_EQ: Int
-              episodeCount_GT: Int
-              episodeCount_GTE: Int
-              episodeCount_IN: [Int!]
-              episodeCount_LT: Int
-              episodeCount_LTE: Int
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              episodeCount: IntScalarFilters
+              episodeCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { eq: ... }\\")
+              episodeCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gt: ... }\\")
+              episodeCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { gte: ... }\\")
+              episodeCount_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { in: ... }\\")
+              episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
+              episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             interface Show {
@@ -8942,6 +10416,7 @@ describe("Interface Relationships", () => {
               AND: [ShowActorsAggregateInput!]
               NOT: ShowActorsAggregateInput
               OR: [ShowActorsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -8961,6 +10436,25 @@ describe("Interface Relationships", () => {
               edges: [ShowActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ShowActorsConnectionFilters {
+              \\"\\"\\"
+              Return Shows where all of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              all: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where none of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              none: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where one of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              single: ShowActorsConnectionWhere
+              \\"\\"\\"
+              Return Shows where some of the related ShowActorsConnections match this filter
+              \\"\\"\\"
+              some: ShowActorsConnectionWhere
             }
 
             input ShowActorsConnectionSort {
@@ -9060,21 +10554,22 @@ describe("Interface Relationships", () => {
               AND: [ShowActorsNodeAggregationWhereInput!]
               NOT: ShowActorsNodeAggregationWhereInput
               OR: [ShowActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ShowActorsRelationship {
@@ -9135,6 +10630,17 @@ describe("Interface Relationships", () => {
               Series
             }
 
+            input ShowRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Shows match this filter\\"\\"\\"
+              all: ShowWhere
+              \\"\\"\\"Filter type where none of the related Shows match this filter\\"\\"\\"
+              none: ShowWhere
+              \\"\\"\\"Filter type where one of the related Shows match this filter\\"\\"\\"
+              single: ShowWhere
+              \\"\\"\\"Filter type where some of the related Shows match this filter\\"\\"\\"
+              some: ShowWhere
+            }
+
             \\"\\"\\"
             Fields to sort Shows by. The order in which sorts are applied is not guaranteed when specifying many fields in one ShowSort object.
             \\"\\"\\"
@@ -9144,44 +10650,48 @@ describe("Interface Relationships", () => {
 
             input ShowUpdateInput {
               actors: [ShowActorsUpdateFieldInput!]
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input ShowWhere {
               AND: [ShowWhere!]
               NOT: ShowWhere
               OR: [ShowWhere!]
+              actors: ActorRelationshipFilters
               actorsAggregate: ShowActorsAggregateInput
+              actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: ShowActorsConnectionWhere
+              actorsConnection_ALL: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Shows where none of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: ShowActorsConnectionWhere
+              actorsConnection_NONE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Shows where one of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: ShowActorsConnectionWhere
+              actorsConnection_SINGLE: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Shows where some of the related ShowActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: ShowActorsConnectionWhere
+              actorsConnection_SOME: ShowActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Shows where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Shows where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Shows where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Shows where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-              typename_IN: [ShowImplementation!]
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
+              typename: [ShowImplementation!]
             }
 
             type ShowsConnection {
@@ -9210,26 +10720,27 @@ describe("Interface Relationships", () => {
               AND: [StarredInAggregationWhereInput!]
               NOT: StarredInAggregationWhereInput
               OR: [StarredInAggregationWhereInput!]
-              episodeNr_AVERAGE_EQUAL: Float
-              episodeNr_AVERAGE_GT: Float
-              episodeNr_AVERAGE_GTE: Float
-              episodeNr_AVERAGE_LT: Float
-              episodeNr_AVERAGE_LTE: Float
-              episodeNr_MAX_EQUAL: Int
-              episodeNr_MAX_GT: Int
-              episodeNr_MAX_GTE: Int
-              episodeNr_MAX_LT: Int
-              episodeNr_MAX_LTE: Int
-              episodeNr_MIN_EQUAL: Int
-              episodeNr_MIN_GT: Int
-              episodeNr_MIN_GTE: Int
-              episodeNr_MIN_LT: Int
-              episodeNr_MIN_LTE: Int
-              episodeNr_SUM_EQUAL: Int
-              episodeNr_SUM_GT: Int
-              episodeNr_SUM_GTE: Int
-              episodeNr_SUM_LT: Int
-              episodeNr_SUM_LTE: Int
+              episodeNr: IntScalarAggregationFilters
+              episodeNr_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { average: { eq: ... } } }' instead.\\")
+              episodeNr_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { average: { gt: ... } } }' instead.\\")
+              episodeNr_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { average: { gte: ... } } }' instead.\\")
+              episodeNr_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { average: { lt: ... } } }' instead.\\")
+              episodeNr_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { average: { lte: ... } } }' instead.\\")
+              episodeNr_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { max: { eq: ... } } }' instead.\\")
+              episodeNr_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { max: { gt: ... } } }' instead.\\")
+              episodeNr_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { max: { gte: ... } } }' instead.\\")
+              episodeNr_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { max: { lt: ... } } }' instead.\\")
+              episodeNr_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { max: { lte: ... } } }' instead.\\")
+              episodeNr_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { min: { eq: ... } } }' instead.\\")
+              episodeNr_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { min: { gt: ... } } }' instead.\\")
+              episodeNr_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { min: { gte: ... } } }' instead.\\")
+              episodeNr_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { min: { lt: ... } } }' instead.\\")
+              episodeNr_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { min: { lte: ... } } }' instead.\\")
+              episodeNr_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { sum: { eq: ... } } }' instead.\\")
+              episodeNr_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { sum: { gt: ... } } }' instead.\\")
+              episodeNr_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { sum: { gte: ... } } }' instead.\\")
+              episodeNr_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { sum: { lt: ... } } }' instead.\\")
+              episodeNr_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'episodeNr: { sum: { lte: ... } } }' instead.\\")
             }
 
             input StarredInCreateInput {
@@ -9241,26 +10752,49 @@ describe("Interface Relationships", () => {
             }
 
             input StarredInUpdateInput {
-              episodeNr_DECREMENT: Int
-              episodeNr_INCREMENT: Int
-              episodeNr_SET: Int
+              episodeNr: IntScalarMutations
+              episodeNr_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeNr: { decrement: ... } }' instead.\\")
+              episodeNr_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episodeNr: { increment: ... } }' instead.\\")
+              episodeNr_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episodeNr: { set: ... } }' instead.\\")
             }
 
             input StarredInWhere {
               AND: [StarredInWhere!]
               NOT: StarredInWhere
               OR: [StarredInWhere!]
-              episodeNr_EQ: Int
-              episodeNr_GT: Int
-              episodeNr_GTE: Int
-              episodeNr_IN: [Int!]
-              episodeNr_LT: Int
-              episodeNr_LTE: Int
+              episodeNr: IntScalarFilters
+              episodeNr_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { eq: ... }\\")
+              episodeNr_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { gt: ... }\\")
+              episodeNr_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { gte: ... }\\")
+              episodeNr_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { in: ... }\\")
+              episodeNr_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { lt: ... }\\")
+              episodeNr_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeNr: { lte: ... }\\")
             }
 
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

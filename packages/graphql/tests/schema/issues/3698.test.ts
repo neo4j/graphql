@@ -105,6 +105,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               UPDATE
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             type Genre {
               name: String!
               product(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
@@ -174,6 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [GenreProductAggregateInput!]
               NOT: GenreProductAggregateInput
               OR: [GenreProductAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -190,6 +201,25 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input GenreProductConnectionFilters {
+              \\"\\"\\"
+              Return Genres where all of the related GenreProductConnections match this filter
+              \\"\\"\\"
+              all: GenreProductConnectionWhere
+              \\"\\"\\"
+              Return Genres where none of the related GenreProductConnections match this filter
+              \\"\\"\\"
+              none: GenreProductConnectionWhere
+              \\"\\"\\"
+              Return Genres where one of the related GenreProductConnections match this filter
+              \\"\\"\\"
+              single: GenreProductConnectionWhere
+              \\"\\"\\"
+              Return Genres where some of the related GenreProductConnections match this filter
+              \\"\\"\\"
+              some: GenreProductConnectionWhere
             }
 
             input GenreProductConnectionSort {
@@ -224,51 +254,54 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [GenreProductNodeAggregationWhereInput!]
               NOT: GenreProductNodeAggregationWhereInput
               OR: [GenreProductNodeAggregationWhereInput!]
-              id_AVERAGE_LENGTH_EQUAL: Float
-              id_AVERAGE_LENGTH_GT: Float
-              id_AVERAGE_LENGTH_GTE: Float
-              id_AVERAGE_LENGTH_LT: Float
-              id_AVERAGE_LENGTH_LTE: Float
-              id_LONGEST_LENGTH_EQUAL: Int
-              id_LONGEST_LENGTH_GT: Int
-              id_LONGEST_LENGTH_GTE: Int
-              id_LONGEST_LENGTH_LT: Int
-              id_LONGEST_LENGTH_LTE: Int
-              id_SHORTEST_LENGTH_EQUAL: Int
-              id_SHORTEST_LENGTH_GT: Int
-              id_SHORTEST_LENGTH_GTE: Int
-              id_SHORTEST_LENGTH_LT: Int
-              id_SHORTEST_LENGTH_LTE: Int
-              info_AVERAGE_LENGTH_EQUAL: Float
-              info_AVERAGE_LENGTH_GT: Float
-              info_AVERAGE_LENGTH_GTE: Float
-              info_AVERAGE_LENGTH_LT: Float
-              info_AVERAGE_LENGTH_LTE: Float
-              info_LONGEST_LENGTH_EQUAL: Int
-              info_LONGEST_LENGTH_GT: Int
-              info_LONGEST_LENGTH_GTE: Int
-              info_LONGEST_LENGTH_LT: Int
-              info_LONGEST_LENGTH_LTE: Int
-              info_SHORTEST_LENGTH_EQUAL: Int
-              info_SHORTEST_LENGTH_GT: Int
-              info_SHORTEST_LENGTH_GTE: Int
-              info_SHORTEST_LENGTH_LT: Int
-              info_SHORTEST_LENGTH_LTE: Int
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              id: StringScalarAggregationFilters
+              id_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { eq: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { gt: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { gte: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { lt: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { lte: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { eq: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { gt: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { gte: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { lt: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { lte: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { eq: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { gt: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { gte: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { lt: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { lte: ... } } }' instead.\\")
+              info: StringScalarAggregationFilters
+              info_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'info: { averageLength: { eq: ... } } }' instead.\\")
+              info_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'info: { averageLength: { gt: ... } } }' instead.\\")
+              info_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'info: { averageLength: { gte: ... } } }' instead.\\")
+              info_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'info: { averageLength: { lt: ... } } }' instead.\\")
+              info_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'info: { averageLength: { lte: ... } } }' instead.\\")
+              info_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { longestLength: { eq: ... } } }' instead.\\")
+              info_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { longestLength: { gt: ... } } }' instead.\\")
+              info_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { longestLength: { gte: ... } } }' instead.\\")
+              info_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { longestLength: { lt: ... } } }' instead.\\")
+              info_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { longestLength: { lte: ... } } }' instead.\\")
+              info_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { shortestLength: { eq: ... } } }' instead.\\")
+              info_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { shortestLength: { gt: ... } } }' instead.\\")
+              info_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { shortestLength: { gte: ... } } }' instead.\\")
+              info_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { shortestLength: { lt: ... } } }' instead.\\")
+              info_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'info: { shortestLength: { lte: ... } } }' instead.\\")
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type GenreProductRelationship {
@@ -289,6 +322,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               where: GenreProductConnectionWhere
             }
 
+            input GenreRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere
+            }
+
             \\"\\"\\"
             Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
             \\"\\"\\"
@@ -300,15 +344,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [GenreSubscriptionWhere!]
               NOT: GenreSubscriptionWhere
               OR: [GenreSubscriptionWhere!]
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             input GenreUpdateInput {
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               product: [GenreProductUpdateFieldInput!]
             }
 
@@ -323,36 +369,39 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              product: IProductRelationshipFilters
               productAggregate: GenreProductAggregateInput
+              productConnection: GenreProductConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_ALL: GenreProductConnectionWhere
+              productConnection_ALL: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where none of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_NONE: GenreProductConnectionWhere
+              productConnection_NONE: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_SINGLE: GenreProductConnectionWhere
+              productConnection_SINGLE: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where some of the related GenreProductConnections match this filter
               \\"\\"\\"
-              productConnection_SOME: GenreProductConnectionWhere
+              productConnection_SOME: GenreProductConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'productConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Genres where all of the related IProducts match this filter\\"\\"\\"
-              product_ALL: IProductWhere
+              product_ALL: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: { all: ... }' instead.\\")
               \\"\\"\\"Return Genres where none of the related IProducts match this filter\\"\\"\\"
-              product_NONE: IProductWhere
+              product_NONE: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: { none: ... }' instead.\\")
               \\"\\"\\"Return Genres where one of the related IProducts match this filter\\"\\"\\"
-              product_SINGLE: IProductWhere
+              product_SINGLE: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: {  single: ... }' instead.\\")
               \\"\\"\\"Return Genres where some of the related IProducts match this filter\\"\\"\\"
-              product_SOME: IProductWhere
+              product_SOME: IProductWhere @deprecated(reason: \\"Please use the relevant generic filter 'product: {  some: ... }' instead.\\")
             }
 
             type GenresConnection {
@@ -392,6 +441,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               Movie
             }
 
+            input IProductRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related IProducts match this filter\\"\\"\\"
+              all: IProductWhere
+              \\"\\"\\"Filter type where none of the related IProducts match this filter\\"\\"\\"
+              none: IProductWhere
+              \\"\\"\\"Filter type where one of the related IProducts match this filter\\"\\"\\"
+              single: IProductWhere
+              \\"\\"\\"Filter type where some of the related IProducts match this filter\\"\\"\\"
+              some: IProductWhere
+            }
+
             \\"\\"\\"
             Fields to sort IProducts by. The order in which sorts are applied is not guaranteed when specifying many fields in one IProductSort object.
             \\"\\"\\"
@@ -402,37 +462,53 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input IProductUpdateInput {
-              id_SET: String
-              info_SET: String
-              name_SET: String
+              id: StringScalarMutations
+              id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              info: StringScalarMutations
+              info_SET: String @deprecated(reason: \\"Please use the generic mutation 'info: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input IProductWhere {
               AND: [IProductWhere!]
               NOT: IProductWhere
               OR: [IProductWhere!]
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
-              info_CONTAINS: String
-              info_ENDS_WITH: String
-              info_EQ: String
-              info_IN: [String!]
-              info_STARTS_WITH: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              typename_IN: [IProductImplementation!]
+              id: StringScalarFilters
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              info: StringScalarFilters
+              info_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter info: { contains: ... }\\")
+              info_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter info: { endsWith: ... }\\")
+              info_EQ: String @deprecated(reason: \\"Please use the relevant generic filter info: { eq: ... }\\")
+              info_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter info: { in: ... }\\")
+              info_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter info: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              typename: [IProductImplementation!]
             }
 
             type IProductsConnection {
               edges: [IProductEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie implements IProduct {
@@ -486,6 +562,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [MovieGenreAggregateInput!]
               NOT: MovieGenreAggregateInput
               OR: [MovieGenreAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -503,6 +580,25 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               edges: [MovieGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieGenreConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenreConnections match this filter
+              \\"\\"\\"
+              all: MovieGenreConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenreConnections match this filter
+              \\"\\"\\"
+              none: MovieGenreConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenreConnections match this filter
+              \\"\\"\\"
+              single: MovieGenreConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenreConnections match this filter
+              \\"\\"\\"
+              some: MovieGenreConnectionWhere
             }
 
             input MovieGenreConnectionSort {
@@ -548,21 +644,22 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [MovieGenreNodeAggregationWhereInput!]
               NOT: MovieGenreNodeAggregationWhereInput
               OR: [MovieGenreNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type MovieGenreRelationship {
@@ -595,22 +692,26 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              id: StringScalarFilters
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             input MovieUpdateInput {
               genre: [MovieGenreUpdateFieldInput!]
-              id_SET: String
-              name_SET: String
+              id: StringScalarMutations
+              id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type MovieUpdatedEvent {
@@ -624,41 +725,45 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              genre: GenreRelationshipFilters
               genreAggregate: MovieGenreAggregateInput
+              genreConnection: MovieGenreConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_ALL: MovieGenreConnectionWhere
+              genreConnection_ALL: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_NONE: MovieGenreConnectionWhere
+              genreConnection_NONE: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_SINGLE: MovieGenreConnectionWhere
+              genreConnection_SINGLE: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieGenreConnections match this filter
               \\"\\"\\"
-              genreConnection_SOME: MovieGenreConnectionWhere
+              genreConnection_SOME: MovieGenreConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'genreConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Genres match this filter\\"\\"\\"
-              genre_ALL: GenreWhere
+              genre_ALL: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Genres match this filter\\"\\"\\"
-              genre_NONE: GenreWhere
+              genre_NONE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Genres match this filter\\"\\"\\"
-              genre_SINGLE: GenreWhere
+              genre_SINGLE: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
-              genre_SOME: GenreWhere
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String!]
-              id_STARTS_WITH: String
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              genre_SOME: GenreWhere @deprecated(reason: \\"Please use the relevant generic filter 'genre: {  some: ... }' instead.\\")
+              id: StringScalarFilters
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -707,6 +812,27 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {

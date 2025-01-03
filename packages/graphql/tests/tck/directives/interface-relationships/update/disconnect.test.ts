@@ -61,7 +61,9 @@ describe("Interface Relationships - Update disconnect", () => {
     test("Update disconnect from an interface relationship", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateActors(update: { actedIn: { disconnect: { where: { node: { title_STARTS_WITH: "The " } } } } }) {
+                updateActors(
+                    update: { actedIn: { disconnect: { where: { node: { title: { startsWith: "The " } } } } } }
+                ) {
                     actors {
                         name
                     }
@@ -124,7 +126,9 @@ describe("Interface Relationships - Update disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"title_STARTS_WITH\\": \\"The \\"
+                                                    \\"title\\": {
+                                                        \\"startsWith\\": \\"The \\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -146,8 +150,8 @@ describe("Interface Relationships - Update disconnect", () => {
                     update: {
                         actedIn: {
                             disconnect: {
-                                where: { node: { title_STARTS_WITH: "The " } }
-                                disconnect: { actors: { where: { node: { name_EQ: "Actor" } } } }
+                                where: { node: { title: { startsWith: "The " } } }
+                                disconnect: { actors: { where: { node: { name: { eq: "Actor" } } } } }
                             }
                         }
                     }
@@ -239,7 +243,9 @@ describe("Interface Relationships - Update disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"title_STARTS_WITH\\": \\"The \\"
+                                                    \\"title\\": {
+                                                        \\"startsWith\\": \\"The \\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -247,7 +253,9 @@ describe("Interface Relationships - Update disconnect", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"name_EQ\\": \\"Actor\\"
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Actor\\"
+                                                                }
                                                             }
                                                         }
                                                     }

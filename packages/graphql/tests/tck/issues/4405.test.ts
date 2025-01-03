@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
                         {
                             when: [BEFORE]
                             operations: [READ]
-                            where: { node: { actedInConnection_SOME: { node: { title_IN: ["Matrix"] } } } }
+                            where: { node: { actedInConnection: { some: { node: { title: { in: ["Matrix"] } } } } } }
                         }
                     ]
                 ) {
@@ -89,9 +89,14 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
                             operations: [READ]
                             where: {
                                 node: {
-                                    actedInConnection_SOME: {
-                                        node: {
-                                            OR: [{ title_IN: ["Matrix"] }, { title_IN: ["Forrest Gump", "Top Gun"] }]
+                                    actedInConnection: {
+                                        some: {
+                                            node: {
+                                                OR: [
+                                                    { title: { in: ["Matrix"] } }
+                                                    { title: { in: ["Forrest Gump", "Top Gun"] } }
+                                                ]
+                                            }
                                         }
                                     }
                                 }

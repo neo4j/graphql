@@ -36,27 +36,27 @@ describe("cypher directive filtering - Scalar", () => {
     test.each([
         {
             title: "Int cypher field: exact match",
-            filter: `special_count_EQ: 1`,
+            filter: `special_count: { eq: 1 }`,
         },
         {
             title: "Int cypher field: GT",
-            filter: `special_count_GT: 0`,
+            filter: `special_count: { gt: 0 }`,
         },
         {
             title: "Int cypher field: GTE",
-            filter: `special_count_GTE: 1`,
+            filter: `special_count: { gte: 1 }`,
         },
         {
             title: "Int cypher field: LT",
-            filter: `special_count_LT: 2`,
+            filter: `special_count: { lt: 2 }`,
         },
         {
             title: "Int cypher field: LTE",
-            filter: `special_count_LTE: 2`,
+            filter: `special_count: { lte: 2 }`,
         },
         {
             title: "Int cypher field: IN",
-            filter: `special_count_IN: [1, 2, 3]`,
+            filter: `special_count: { in: [1, 2, 3]}`,
         },
     ] as const)("$title", async ({ filter }) => {
         const typeDefs = /* GraphQL */ `
@@ -85,7 +85,6 @@ describe("cypher directive filtering - Scalar", () => {
         `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
             [CustomType.plural]: [
@@ -99,23 +98,23 @@ describe("cypher directive filtering - Scalar", () => {
     test.each([
         {
             title: "String cypher field: exact match",
-            filter: `special_word_EQ: "test"`,
+            filter: `special_word: { eq: "test"}`,
         },
         {
             title: "String cypher field: CONTAINS",
-            filter: `special_word_CONTAINS: "es"`,
+            filter: `special_word: { contains: "es"}`,
         },
         {
             title: "String cypher field: ENDS_WITH",
-            filter: `special_word_ENDS_WITH: "est"`,
+            filter: `special_word:{ endsWith: "est"}`,
         },
         {
             title: "String cypher field: STARTS_WITH",
-            filter: `special_word_STARTS_WITH: "tes"`,
+            filter: `special_word:{ startsWith: "tes"}`,
         },
         {
             title: "String cypher field: IN",
-            filter: `special_word_IN: ["test", "test2"]`,
+            filter: `special_word:{ in: ["test", "test2"]}`,
         },
     ] as const)("$title", async ({ filter }) => {
         const typeDefs = /* GraphQL */ `
@@ -185,7 +184,7 @@ describe("cypher directive filtering - Scalar", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { special_count_GTE: 1, title_EQ: "CustomType One" }) {
+                ${CustomType.plural}(where: { special_count: { gte: 1 }, title: { eq: "CustomType One"} }) {
                     special_count
                 }
             }
@@ -234,7 +233,7 @@ describe("cypher directive filtering - Scalar", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { special_count_GTE: 1, title_EQ: "CustomType Unknown" }) {
+                ${CustomType.plural}(where: { special_count: { gt: 1 }, title: { eq: "CustomType Unknown"} }) {
                     special_count
                 }
             }
@@ -268,7 +267,7 @@ describe("cypher directive filtering - Scalar", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${CustomType.plural}(where: { special_count_GTE: 1 }) {
+                ${CustomType.plural}(where: { special_count: { gte: 1 }}) {
                     title
                 }
             }

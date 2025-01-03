@@ -105,6 +105,27 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
+              in: [DateTime!]
+              lt: DateTime
+              lte: DateTime
+            }
+
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -113,9 +134,51 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"ID list filters\\"\\"\\"
+            input IDListFilters {
+              eq: [ID!]
+              includes: ID
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Mutations for a list for ID\\"\\"\\"
+            input ListIDMutations {
+              pop: Int
+              push: [ID!]
+              set: [ID!]
             }
 
             type Mutation {
@@ -136,6 +199,19 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               PropertyA
               PropertyB
               PropertyC
+            }
+
+            \\"\\"\\"Property filters\\"\\"\\"
+            input PropertyListEnumScalarFilters {
+              eq: [Property!]
+              includes: Property
+            }
+
+            \\"\\"\\"Mutations for a list for Property\\"\\"\\"
+            input PropertyListEnumScalarMutations {
+              pop: Property
+              push: [Property!]!
+              set: [Property!]!
             }
 
             type Query {
@@ -168,7 +244,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             type ResourceAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
             }
@@ -185,6 +260,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceContainedByAggregateInput!]
               NOT: ResourceContainedByAggregateInput
               OR: [ResourceContainedByAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -202,6 +278,25 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               edges: [ResourceContainedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ResourceContainedByConnectionFilters {
+              \\"\\"\\"
+              Return Resources where all of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              all: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where none of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              none: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where one of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              single: ResourceContainedByConnectionWhere
+              \\"\\"\\"
+              Return Resources where some of the related ResourceContainedByConnections match this filter
+              \\"\\"\\"
+              some: ResourceContainedByConnectionWhere
             }
 
             input ResourceContainedByConnectionSort {
@@ -238,51 +333,44 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceContainedByNodeAggregationWhereInput!]
               NOT: ResourceContainedByNodeAggregationWhereInput
               OR: [ResourceContainedByNodeAggregationWhereInput!]
-              createdAt_MAX_EQUAL: DateTime
-              createdAt_MAX_GT: DateTime
-              createdAt_MAX_GTE: DateTime
-              createdAt_MAX_LT: DateTime
-              createdAt_MAX_LTE: DateTime
-              createdAt_MIN_EQUAL: DateTime
-              createdAt_MIN_GT: DateTime
-              createdAt_MIN_GTE: DateTime
-              createdAt_MIN_LT: DateTime
-              createdAt_MIN_LTE: DateTime
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              updatedAt_MAX_EQUAL: DateTime
-              updatedAt_MAX_GT: DateTime
-              updatedAt_MAX_GTE: DateTime
-              updatedAt_MAX_LT: DateTime
-              updatedAt_MAX_LTE: DateTime
-              updatedAt_MIN_EQUAL: DateTime
-              updatedAt_MIN_GT: DateTime
-              updatedAt_MIN_GTE: DateTime
-              updatedAt_MIN_LT: DateTime
-              updatedAt_MIN_LTE: DateTime
+              createdAt: DateTimeScalarAggregationFilters
+              createdAt_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { eq: ... } } }' instead.\\")
+              createdAt_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gt: ... } } }' instead.\\")
+              createdAt_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { gte: ... } } }' instead.\\")
+              createdAt_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lt: ... } } }' instead.\\")
+              createdAt_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { max: { lte: ... } } }' instead.\\")
+              createdAt_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { eq: ... } } }' instead.\\")
+              createdAt_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gt: ... } } }' instead.\\")
+              createdAt_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { gte: ... } } }' instead.\\")
+              createdAt_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lt: ... } } }' instead.\\")
+              createdAt_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'createdAt: { min: { lte: ... } } }' instead.\\")
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
+              updatedAt: DateTimeScalarAggregationFilters
+              updatedAt_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { eq: ... } } }' instead.\\")
+              updatedAt_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { gt: ... } } }' instead.\\")
+              updatedAt_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { gte: ... } } }' instead.\\")
+              updatedAt_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { lt: ... } } }' instead.\\")
+              updatedAt_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { max: { lte: ... } } }' instead.\\")
+              updatedAt_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { eq: ... } } }' instead.\\")
+              updatedAt_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { gt: ... } } }' instead.\\")
+              updatedAt_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { gte: ... } } }' instead.\\")
+              updatedAt_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { lt: ... } } }' instead.\\")
+              updatedAt_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'updatedAt: { min: { lte: ... } } }' instead.\\")
             }
 
             type ResourceContainedByRelationship {
@@ -345,7 +433,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceEntityAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
             }
 
@@ -371,23 +458,39 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               AND: [ResourceEntityWhere!]
               NOT: ResourceEntityWhere
               OR: [ResourceEntityWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-              properties_EQ: [Property!]
-              properties_INCLUDES: Property
-              tags_EQ: [Tag!]
-              tags_INCLUDES: Tag
-              type_EQ: ResourceType
-              type_IN: [ResourceType!]
-              typename_IN: [ResourceEntityImplementation!]
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              properties: PropertyListEnumScalarFilters
+              properties_EQ: [Property!] @deprecated(reason: \\"Please use the relevant generic filter properties: { eq: ... }\\")
+              properties_INCLUDES: Property @deprecated(reason: \\"Please use the relevant generic filter properties: { includes: ... }\\")
+              tags: TagListEnumScalarFilters
+              tags_EQ: [Tag!] @deprecated(reason: \\"Please use the relevant generic filter tags: { eq: ... }\\")
+              tags_INCLUDES: Tag @deprecated(reason: \\"Please use the relevant generic filter tags: { includes: ... }\\")
+              type: ResourceTypeEnumScalarFilters
+              type_EQ: ResourceType @deprecated(reason: \\"Please use the relevant generic filter type: { eq: ... }\\")
+              type_IN: [ResourceType!] @deprecated(reason: \\"Please use the relevant generic filter type: { in: ... }\\")
+              typename: [ResourceEntityImplementation!]
+            }
+
+            input ResourceRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Resources match this filter\\"\\"\\"
+              all: ResourceWhere
+              \\"\\"\\"Filter type where none of the related Resources match this filter\\"\\"\\"
+              none: ResourceWhere
+              \\"\\"\\"Filter type where one of the related Resources match this filter\\"\\"\\"
+              single: ResourceWhere
+              \\"\\"\\"Filter type where some of the related Resources match this filter\\"\\"\\"
+              some: ResourceWhere
             }
 
             type ResourceResourceContainedByAggregationSelection {
@@ -397,7 +500,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceResourceContainedByNodeAggregateSelection {
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
             }
@@ -419,78 +521,106 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               ResourceC
             }
 
+            \\"\\"\\"ResourceType filters\\"\\"\\"
+            input ResourceTypeEnumScalarFilters {
+              eq: ResourceType
+              in: [ResourceType!]
+            }
+
+            \\"\\"\\"ResourceType mutations\\"\\"\\"
+            input ResourceTypeEnumScalarMutations {
+              set: ResourceType
+            }
+
             input ResourceUpdateInput {
               containedBy: [ResourceContainedByUpdateFieldInput!]
-              createdAt_SET: DateTime
-              externalIds_POP: Int
-              externalIds_PUSH: [ID!]
-              externalIds_SET: [ID!]
-              id_SET: ID
-              name_SET: String
-              properties_SET: [Property!]
-              tags_SET: [Tag!]
-              type_SET: ResourceType
+              createdAt: DateTimeScalarMutations
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
+              externalIds: ListIDMutations
+              externalIds_POP: Int @deprecated(reason: \\"Please use the generic mutation 'externalIds: { pop: ... } }' instead.\\")
+              externalIds_PUSH: [ID!] @deprecated(reason: \\"Please use the generic mutation 'externalIds: { push: ... } }' instead.\\")
+              externalIds_SET: [ID!] @deprecated(reason: \\"Please use the generic mutation 'externalIds: { set: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+              properties: PropertyListEnumScalarMutations
+              properties_SET: [Property!] @deprecated(reason: \\"Please use the generic mutation 'properties: { set: ... } }' instead.\\")
+              tags: TagListEnumScalarMutations
+              tags_SET: [Tag!] @deprecated(reason: \\"Please use the generic mutation 'tags: { set: ... } }' instead.\\")
+              type: ResourceTypeEnumScalarMutations
+              type_SET: ResourceType @deprecated(reason: \\"Please use the generic mutation 'type: { set: ... } }' instead.\\")
             }
 
             input ResourceWhere {
               AND: [ResourceWhere!]
               NOT: ResourceWhere
               OR: [ResourceWhere!]
+              containedBy: ResourceRelationshipFilters
               containedByAggregate: ResourceContainedByAggregateInput
+              containedByConnection: ResourceContainedByConnectionFilters
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_ALL: ResourceContainedByConnectionWhere
+              containedByConnection_ALL: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Resources where none of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_NONE: ResourceContainedByConnectionWhere
+              containedByConnection_NONE: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Resources where one of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_SINGLE: ResourceContainedByConnectionWhere
+              containedByConnection_SINGLE: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Resources where some of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
-              containedByConnection_SOME: ResourceContainedByConnectionWhere
+              containedByConnection_SOME: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedByConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Resources where all of the related Resources match this filter\\"\\"\\"
-              containedBy_ALL: ResourceWhere
+              containedBy_ALL: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: { all: ... }' instead.\\")
               \\"\\"\\"Return Resources where none of the related Resources match this filter\\"\\"\\"
-              containedBy_NONE: ResourceWhere
+              containedBy_NONE: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: { none: ... }' instead.\\")
               \\"\\"\\"Return Resources where one of the related Resources match this filter\\"\\"\\"
-              containedBy_SINGLE: ResourceWhere
+              containedBy_SINGLE: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: {  single: ... }' instead.\\")
               \\"\\"\\"Return Resources where some of the related Resources match this filter\\"\\"\\"
-              containedBy_SOME: ResourceWhere
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime!]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
-              externalIds_EQ: [ID!]
-              externalIds_INCLUDES: ID
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-              properties_EQ: [Property!]
-              properties_INCLUDES: Property
-              tags_EQ: [Tag!]
-              tags_INCLUDES: Tag
-              type_EQ: ResourceType
-              type_IN: [ResourceType!]
-              updatedAt_EQ: DateTime
-              updatedAt_GT: DateTime
-              updatedAt_GTE: DateTime
-              updatedAt_IN: [DateTime!]
-              updatedAt_LT: DateTime
-              updatedAt_LTE: DateTime
+              containedBy_SOME: ResourceWhere @deprecated(reason: \\"Please use the relevant generic filter 'containedBy: {  some: ... }' instead.\\")
+              createdAt: DateTimeScalarFilters
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
+              externalIds: IDListFilters
+              externalIds_EQ: [ID!] @deprecated(reason: \\"Please use the relevant generic filter externalIds: { eq: ... }\\")
+              externalIds_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter externalIds: { includes: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              properties: PropertyListEnumScalarFilters
+              properties_EQ: [Property!] @deprecated(reason: \\"Please use the relevant generic filter properties: { eq: ... }\\")
+              properties_INCLUDES: Property @deprecated(reason: \\"Please use the relevant generic filter properties: { includes: ... }\\")
+              tags: TagListEnumScalarFilters
+              tags_EQ: [Tag!] @deprecated(reason: \\"Please use the relevant generic filter tags: { eq: ... }\\")
+              tags_INCLUDES: Tag @deprecated(reason: \\"Please use the relevant generic filter tags: { includes: ... }\\")
+              type: ResourceTypeEnumScalarFilters
+              type_EQ: ResourceType @deprecated(reason: \\"Please use the relevant generic filter type: { eq: ... }\\")
+              type_IN: [ResourceType!] @deprecated(reason: \\"Please use the relevant generic filter type: { in: ... }\\")
+              updatedAt: DateTimeScalarFilters
+              updatedAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { eq: ... }\\")
+              updatedAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gt: ... }\\")
+              updatedAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gte: ... }\\")
+              updatedAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { in: ... }\\")
+              updatedAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lt: ... }\\")
+              updatedAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lte: ... }\\")
             }
 
             type ResourcesConnection {
@@ -512,10 +642,44 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               shortest: String
             }
 
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             enum Tag {
               TagA
               TagB
               TagC
+            }
+
+            \\"\\"\\"Tag filters\\"\\"\\"
+            input TagListEnumScalarFilters {
+              eq: [Tag!]
+              includes: Tag
+            }
+
+            \\"\\"\\"Mutations for a list for Tag\\"\\"\\"
+            input TagListEnumScalarMutations {
+              pop: Tag
+              push: [Tag!]!
+              set: [Tag!]!
             }
 
             \\"\\"\\"

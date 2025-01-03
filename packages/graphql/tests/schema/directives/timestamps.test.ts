@@ -61,6 +61,21 @@ describe("Timestamps", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
+              in: [DateTime!]
+              lt: DateTime
+              lte: DateTime
+            }
+
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -69,9 +84,18 @@ describe("Timestamps", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -83,7 +107,6 @@ describe("Timestamps", () => {
             type MovieAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
-              id: IDAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
             }
 
@@ -107,31 +130,36 @@ describe("Timestamps", () => {
             }
 
             input MovieUpdateInput {
-              createdAt_SET: DateTime
-              id_SET: ID
+              createdAt: DateTimeScalarMutations
+              createdAt_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'createdAt: { set: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              createdAt_EQ: DateTime
-              createdAt_GT: DateTime
-              createdAt_GTE: DateTime
-              createdAt_IN: [DateTime!]
-              createdAt_LT: DateTime
-              createdAt_LTE: DateTime
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              updatedAt_EQ: DateTime
-              updatedAt_GT: DateTime
-              updatedAt_GTE: DateTime
-              updatedAt_IN: [DateTime!]
-              updatedAt_LT: DateTime
-              updatedAt_LTE: DateTime
+              createdAt: DateTimeScalarFilters
+              createdAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { eq: ... }\\")
+              createdAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gt: ... }\\")
+              createdAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { gte: ... }\\")
+              createdAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter createdAt: { in: ... }\\")
+              createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
+              createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              updatedAt: DateTimeScalarFilters
+              updatedAt_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { eq: ... }\\")
+              updatedAt_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gt: ... }\\")
+              updatedAt_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { gte: ... }\\")
+              updatedAt_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { in: ... }\\")
+              updatedAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lt: ... }\\")
+              updatedAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter updatedAt: { lte: ... }\\")
             }
 
             type MoviesConnection {

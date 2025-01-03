@@ -112,7 +112,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             query {
                 actors {
                     name
-                    actedInConnection(where: { node: { title_STARTS_WITH: "The " } }) {
+                    actedInConnection(where: { node: { title: { startsWith: "The " } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -171,7 +171,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             query {
                 actors {
                     name
-                    actedInConnection(where: { edge: { screenTime_GT: 60 } }) {
+                    actedInConnection(where: { edge: { screenTime: { gt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime

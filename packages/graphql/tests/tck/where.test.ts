@@ -47,7 +47,7 @@ describe("Cypher WHERE", () => {
     test("Simple", async () => {
         const query = /* GraphQL */ `
             query ($title: String, $isFavorite: Boolean) {
-                movies(where: { title_EQ: $title, isFavorite_EQ: $isFavorite }) {
+                movies(where: { title: { eq: $title }, isFavorite: { eq: $isFavorite } }) {
                     title
                 }
             }
@@ -74,7 +74,7 @@ describe("Cypher WHERE", () => {
     test("Simple AND", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { AND: [{ title_EQ: "some title" }] }) {
+                movies(where: { AND: [{ title: { eq: "some title" } }] }) {
                     title
                 }
             }
@@ -98,7 +98,7 @@ describe("Cypher WHERE", () => {
     test("Simple AND with multiple parameters", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { AND: [{ title_EQ: "some title" }, { isFavorite_EQ: true }] }) {
+                movies(where: { AND: [{ title: { eq: "some title" } }, { isFavorite: { eq: true } }] }) {
                     title
                 }
             }
@@ -123,7 +123,7 @@ describe("Cypher WHERE", () => {
     test("Nested AND", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { AND: [{ AND: [{ title_EQ: "some title" }] }] }) {
+                movies(where: { AND: [{ AND: [{ title: { eq: "some title" } }] }] }) {
                     title
                 }
             }
@@ -147,7 +147,9 @@ describe("Cypher WHERE", () => {
     test("Nested AND with multiple properties", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { AND: [{ AND: [{ title_EQ: "some title" }, { title_EQ: "another title" }] }] }) {
+                movies(
+                    where: { AND: [{ AND: [{ title: { eq: "some title" } }, { title: { eq: "another title" } }] }] }
+                ) {
                     title
                 }
             }
@@ -172,7 +174,11 @@ describe("Cypher WHERE", () => {
     test("Nested AND and OR", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { AND: [{ OR: [{ title_EQ: "some title" }, { isFavorite_EQ: true }], id_EQ: 2 }] }) {
+                movies(
+                    where: {
+                        AND: [{ OR: [{ title: { eq: "some title" } }, { isFavorite: { eq: true } }], id: { eq: 2 } }]
+                    }
+                ) {
                     title
                 }
             }
@@ -198,7 +204,7 @@ describe("Cypher WHERE", () => {
     test("Super Nested AND", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { AND: [{ AND: [{ AND: [{ title_EQ: "some title" }] }] }] }) {
+                movies(where: { AND: [{ AND: [{ AND: [{ title: { eq: "some title" } }] }] }] }) {
                     title
                 }
             }
@@ -222,7 +228,7 @@ describe("Cypher WHERE", () => {
     test("Simple OR", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { OR: [{ title_EQ: "some title" }] }) {
+                movies(where: { OR: [{ title: { eq: "some title" } }] }) {
                     title
                 }
             }
@@ -246,7 +252,7 @@ describe("Cypher WHERE", () => {
     test("Nested OR", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { OR: [{ OR: [{ title_EQ: "some title" }] }] }) {
+                movies(where: { OR: [{ OR: [{ title: { eq: "some title" } }] }] }) {
                     title
                 }
             }
@@ -270,7 +276,7 @@ describe("Cypher WHERE", () => {
     test("Super Nested OR", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { OR: [{ OR: [{ OR: [{ title_EQ: "some title" }] }] }] }) {
+                movies(where: { OR: [{ OR: [{ OR: [{ title: { eq: "some title" } }] }] }] }) {
                     title
                 }
             }
@@ -295,7 +301,7 @@ describe("Cypher WHERE", () => {
         test("Match with NULL in where", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { title_EQ: null }) {
+                    movies(where: { title: { eq: null } }) {
                         title
                     }
                 }
@@ -315,7 +321,7 @@ describe("Cypher WHERE", () => {
         test("Match with not NULL in where", async () => {
             const query = /* GraphQL */ `
                 {
-                    movies(where: { NOT: { title_EQ: null } }) {
+                    movies(where: { NOT: { title: { eq: null } } }) {
                         title
                     }
                 }
@@ -336,7 +342,7 @@ describe("Cypher WHERE", () => {
     test("Simple NOT", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { NOT: { title_EQ: "some title" } }) {
+                movies(where: { NOT: { title: { eq: "some title" } } }) {
                     title
                 }
             }
@@ -360,7 +366,7 @@ describe("Cypher WHERE", () => {
     test("Simple NOT, implicit AND", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { NOT: { title_EQ: "some title", isFavorite_EQ: false } }) {
+                movies(where: { NOT: { title: { eq: "some title" }, isFavorite: { eq: false } } }) {
                     title
                 }
             }

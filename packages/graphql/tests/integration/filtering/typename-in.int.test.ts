@@ -88,7 +88,7 @@ describe("typename_IN", () => {
     test("top-level", async () => {
         const query = `
         {
-            productions(where: { OR: [{ AND: [{ title_EQ: "The Matrix" }, { typename_IN: [${Movie.name}] }] }, { typename_IN: [${Series.name}] }]}) {
+            productions(where: { OR: [{ AND: [{ title_EQ: "The Matrix" }, { typename: [${Movie.name}] }] }, { typename: [${Series.name}] }]}) {
                 __typename
                 title
             }
@@ -116,8 +116,8 @@ describe("typename_IN", () => {
         {
             ${Actor.plural} {
                 actedIn(where: { OR: [
-                    { AND: [{ title_EQ: "The Matrix" }, { typename_IN: [${Movie.name}] }] }
-                    { typename_IN: [${Series.name}] }
+                    { AND: [{ title_EQ: "The Matrix" }, { typename: [${Movie.name}] }] }
+                    { typename: [${Series.name}] }
                 ] }) {
                     __typename
                     title
@@ -149,7 +149,7 @@ describe("typename_IN", () => {
     test("aggregation", async () => {
         const query = `
         {
-            productionsAggregate(where: { OR: [ { typename_IN: [${Movie.name}, ${Series.name}] } { typename_IN: [${Cartoon.name}] } ] }) {
+            productionsAggregate(where: { OR: [ { typename: [${Movie.name}, ${Series.name}] } { typename: [${Cartoon.name}] } ] }) {
                 count
             }
         }  
@@ -168,7 +168,7 @@ describe("typename_IN", () => {
         const query = `
         {
             ${Actor.plural} {
-                actedInAggregate(where: { NOT:  { typename_IN: [${Movie.name}, ${Series.name}] } }) {
+                actedInAggregate(where: { NOT:  { typename: [${Movie.name}, ${Series.name}] } }) {
                     count
                 }
             }

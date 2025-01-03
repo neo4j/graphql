@@ -82,6 +82,16 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             \\"\\"\\"
             The edge properties for the following fields:
             * Person.friends
@@ -94,21 +104,22 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [FriendOfAggregationWhereInput!]
               NOT: FriendOfAggregationWhereInput
               OR: [FriendOfAggregationWhereInput!]
-              id_AVERAGE_LENGTH_EQUAL: Float
-              id_AVERAGE_LENGTH_GT: Float
-              id_AVERAGE_LENGTH_GTE: Float
-              id_AVERAGE_LENGTH_LT: Float
-              id_AVERAGE_LENGTH_LTE: Float
-              id_LONGEST_LENGTH_EQUAL: Int
-              id_LONGEST_LENGTH_GT: Int
-              id_LONGEST_LENGTH_GTE: Int
-              id_LONGEST_LENGTH_LT: Int
-              id_LONGEST_LENGTH_LTE: Int
-              id_SHORTEST_LENGTH_EQUAL: Int
-              id_SHORTEST_LENGTH_GT: Int
-              id_SHORTEST_LENGTH_GTE: Int
-              id_SHORTEST_LENGTH_LT: Int
-              id_SHORTEST_LENGTH_LTE: Int
+              id: StringScalarAggregationFilters
+              id_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { eq: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { gt: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { gte: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { lt: ... } } }' instead.\\")
+              id_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'id: { averageLength: { lte: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { eq: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { gt: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { gte: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { lt: ... } } }' instead.\\")
+              id_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { longestLength: { lte: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { eq: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { gt: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { gte: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { lt: ... } } }' instead.\\")
+              id_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'id: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input FriendOfSort {
@@ -116,23 +127,39 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             input FriendOfUpdateInput {
-              id_SET: String
+              id: StringScalarMutations
+              id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input FriendOfWhere {
               AND: [FriendOfWhere!]
               NOT: FriendOfWhere
               OR: [FriendOfWhere!]
-              id_CONTAINS: String
-              id_ENDS_WITH: String
-              id_EQ: String
-              id_IN: [String]
-              id_STARTS_WITH: String
+              id: StringScalarFilters
+              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -164,7 +191,6 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
 
             type PersonAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input PersonConnectInput {
@@ -196,13 +222,13 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonFriendsAggregateInput!]
               NOT: PersonFriendsAggregateInput
               OR: [PersonFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
               edge: FriendOfAggregationWhereInput
-              node: PersonFriendsNodeAggregationWhereInput
             }
 
             input PersonFriendsConnectFieldInput {
@@ -214,6 +240,25 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PersonFriendsConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              all: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              none: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              single: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              some: PersonFriendsConnectionWhere
             }
 
             input PersonFriendsConnectionSort {
@@ -248,22 +293,6 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               create: [PersonFriendsCreateFieldInput!]
             }
 
-            input PersonFriendsNodeAggregationWhereInput {
-              AND: [PersonFriendsNodeAggregationWhereInput!]
-              NOT: PersonFriendsNodeAggregationWhereInput
-              OR: [PersonFriendsNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-            }
-
             type PersonFriendsRelationship {
               cursor: String!
               node: Person!
@@ -287,15 +316,21 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type PersonPersonFriendsAggregationSelection {
               count: Int!
               edge: PersonPersonFriendsEdgeAggregateSelection
-              node: PersonPersonFriendsNodeAggregateSelection
             }
 
             type PersonPersonFriendsEdgeAggregateSelection {
               id: StringAggregateSelection!
             }
 
-            type PersonPersonFriendsNodeAggregateSelection {
-              id: IDAggregateSelection!
+            input PersonRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
             }
 
             \\"\\"\\"
@@ -313,36 +348,39 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              friends: PersonRelationshipFilters
               friendsAggregate: PersonFriendsAggregateInput
+              friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_ALL: PersonFriendsConnectionWhere
+              friendsConnection_ALL: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_NONE: PersonFriendsConnectionWhere
+              friendsConnection_NONE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SINGLE: PersonFriendsConnectionWhere
+              friendsConnection_SINGLE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SOME: PersonFriendsConnectionWhere
+              friendsConnection_SOME: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
-              friends_ALL: PersonWhere
+              friends_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
-              friends_NONE: PersonWhere
+              friends_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
-              friends_SINGLE: PersonWhere
+              friends_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
-              friends_SOME: PersonWhere
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              friends_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
             type Query {
@@ -362,6 +400,27 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

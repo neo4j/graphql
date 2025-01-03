@@ -75,9 +75,18 @@ describe("@customResolver directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Mutation {
@@ -116,6 +125,20 @@ describe("@customResolver directive", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -141,7 +164,6 @@ describe("@customResolver directive", () => {
 
             type UserAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               password: StringAggregateSelection!
               username: StringAggregateSelection!
             }
@@ -186,12 +208,13 @@ describe("@customResolver directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
-              customResolver_CONTAINS: String
-              customResolver_ENDS_WITH: String
-              customResolver_EQ: String
-              customResolver_IN: [String]
-              customResolver_STARTS_WITH: String
-              typename_IN: [UserInterfaceImplementation!]
+              customResolver: StringScalarFilters
+              customResolver_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { contains: ... }\\")
+              customResolver_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { endsWith: ... }\\")
+              customResolver_EQ: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { eq: ... }\\")
+              customResolver_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter customResolver: { in: ... }\\")
+              customResolver_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { startsWith: ... }\\")
+              typename: [UserInterfaceImplementation!]
             }
 
             type UserInterfacesConnection {
@@ -210,30 +233,36 @@ describe("@customResolver directive", () => {
             }
 
             input UserUpdateInput {
-              id_SET: ID
-              password_SET: String
-              username_SET: String
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              password: StringScalarMutations
+              password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+              username: StringScalarMutations
+              username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              password_CONTAINS: String
-              password_ENDS_WITH: String
-              password_EQ: String
-              password_IN: [String!]
-              password_STARTS_WITH: String
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              password: StringScalarFilters
+              password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+              password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+              password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+              username: StringScalarFilters
+              username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+              username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+              username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type UsersConnection {

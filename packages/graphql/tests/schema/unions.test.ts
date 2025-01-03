@@ -78,7 +78,6 @@ describe("Unions", () => {
 
             type GenreAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input GenreConnectWhere {
@@ -102,18 +101,20 @@ describe("Unions", () => {
             }
 
             input GenreUpdateInput {
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input GenreWhere {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
             type GenresConnection {
@@ -122,9 +123,18 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -136,7 +146,6 @@ describe("Unions", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieConnectInput {
@@ -174,6 +183,25 @@ describe("Unions", () => {
               edges: [MovieSearchRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieSearchConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              all: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              none: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              single: MovieSearchConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieSearchConnections match this filter
+              \\"\\"\\"
+              some: MovieSearchConnectionWhere
             }
 
             input MovieSearchConnectionWhere {
@@ -299,7 +327,8 @@ describe("Unions", () => {
             }
 
             input MovieUpdateInput {
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               search: MovieSearchUpdateInput
             }
 
@@ -307,35 +336,38 @@ describe("Unions", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              search: SearchRelationshipFilters
+              searchConnection: MovieSearchConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_ALL: MovieSearchConnectionWhere
+              searchConnection_ALL: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_NONE: MovieSearchConnectionWhere
+              searchConnection_NONE: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_SINGLE: MovieSearchConnectionWhere
+              searchConnection_SINGLE: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieSearchConnections match this filter
               \\"\\"\\"
-              searchConnection_SOME: MovieSearchConnectionWhere
+              searchConnection_SOME: MovieSearchConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'searchConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Searches match this filter\\"\\"\\"
-              search_ALL: SearchWhere
+              search_ALL: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Searches match this filter\\"\\"\\"
-              search_NONE: SearchWhere
+              search_NONE: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Searches match this filter\\"\\"\\"
-              search_SINGLE: SearchWhere
+              search_SINGLE: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Searches match this filter\\"\\"\\"
-              search_SOME: SearchWhere
+              search_SOME: SearchWhere @deprecated(reason: \\"Please use the relevant generic filter 'search: {  some: ... }' instead.\\")
             }
 
             type MoviesConnection {
@@ -372,6 +404,17 @@ describe("Unions", () => {
             }
 
             union Search = Genre | Movie
+
+            input SearchRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Searches match this filter\\"\\"\\"
+              all: SearchWhere
+              \\"\\"\\"Filter type where none of the related Searches match this filter\\"\\"\\"
+              none: SearchWhere
+              \\"\\"\\"Filter type where one of the related Searches match this filter\\"\\"\\"
+              single: SearchWhere
+              \\"\\"\\"Filter type where some of the related Searches match this filter\\"\\"\\"
+              some: SearchWhere
+            }
 
             input SearchWhere {
               Genre: GenreWhere

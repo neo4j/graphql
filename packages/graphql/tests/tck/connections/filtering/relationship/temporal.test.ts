@@ -53,7 +53,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                 movies {
                     title
                     actorsConnection(
-                        where: { edge: { startDate_GT: "2000-01-01", endDateTime_LT: "2010-01-01T00:00:00.000Z" } }
+                        where: {
+                            edge: { startDate: { gt: "2000-01-01" }, endDateTime: { lt: "2010-01-01T00:00:00.000Z" } }
+                        }
                     ) {
                         edges {
                             properties {

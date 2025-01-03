@@ -275,6 +275,7 @@ export default function createUpdateAndParams({
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                                 parameterNotation: ".",
+                                isUpdateOperation: true,
                             });
                             let setProperties;
                             if (res) {
@@ -537,6 +538,7 @@ export default function createUpdateAndParams({
                 varName,
                 value,
                 withVars,
+                isUpdateOperation: true,
             });
             res.strs.push(mutationFieldStatements);
 

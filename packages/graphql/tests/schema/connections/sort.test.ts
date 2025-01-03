@@ -69,6 +69,26 @@ describe("Sort", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
             type Mutation {
               createNode1s(input: [Node1CreateInput!]!): CreateNode1sMutationResponse!
               createNode2s(input: [Node2CreateInput!]!): CreateNode2sMutationResponse!
@@ -124,6 +144,7 @@ describe("Sort", () => {
               AND: [Node1RelatedToAggregateInput!]
               NOT: Node1RelatedToAggregateInput
               OR: [Node1RelatedToAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -140,6 +161,25 @@ describe("Sort", () => {
               edges: [Node1RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Node1RelatedToConnectionFilters {
+              \\"\\"\\"
+              Return Node1s where all of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              all: Node1RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node1s where none of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              none: Node1RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node1s where one of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              single: Node1RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node1s where some of the related Node1RelatedToConnections match this filter
+              \\"\\"\\"
+              some: Node1RelatedToConnectionWhere
             }
 
             input Node1RelatedToConnectionWhere {
@@ -186,6 +226,17 @@ describe("Sort", () => {
               where: Node1RelatedToConnectionWhere
             }
 
+            input Node1RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Node1s match this filter\\"\\"\\"
+              all: Node1Where
+              \\"\\"\\"Filter type where none of the related Node1s match this filter\\"\\"\\"
+              none: Node1Where
+              \\"\\"\\"Filter type where one of the related Node1s match this filter\\"\\"\\"
+              single: Node1Where
+              \\"\\"\\"Filter type where some of the related Node1s match this filter\\"\\"\\"
+              some: Node1Where
+            }
+
             \\"\\"\\"
             Fields to sort Node1s by. The order in which sorts are applied is not guaranteed when specifying many fields in one Node1Sort object.
             \\"\\"\\"
@@ -194,7 +245,8 @@ describe("Sort", () => {
             }
 
             input Node1UpdateInput {
-              property_SET: String
+              property: StringScalarMutations
+              property_SET: String @deprecated(reason: \\"Please use the generic mutation 'property: { set: ... } }' instead.\\")
               relatedTo: [Node1RelatedToUpdateFieldInput!]
             }
 
@@ -202,36 +254,39 @@ describe("Sort", () => {
               AND: [Node1Where!]
               NOT: Node1Where
               OR: [Node1Where!]
-              property_CONTAINS: String
-              property_ENDS_WITH: String
-              property_EQ: String
-              property_IN: [String!]
-              property_STARTS_WITH: String
+              property: StringScalarFilters
+              property_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter property: { contains: ... }\\")
+              property_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { endsWith: ... }\\")
+              property_EQ: String @deprecated(reason: \\"Please use the relevant generic filter property: { eq: ... }\\")
+              property_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter property: { in: ... }\\")
+              property_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { startsWith: ... }\\")
+              relatedTo: Node2RelationshipFilters
               relatedToAggregate: Node1RelatedToAggregateInput
+              relatedToConnection: Node1RelatedToConnectionFilters
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_ALL: Node1RelatedToConnectionWhere
+              relatedToConnection_ALL: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node1s where none of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_NONE: Node1RelatedToConnectionWhere
+              relatedToConnection_NONE: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node1s where one of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SINGLE: Node1RelatedToConnectionWhere
+              relatedToConnection_SINGLE: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node1s where some of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SOME: Node1RelatedToConnectionWhere
+              relatedToConnection_SOME: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Node1s where all of the related Node2s match this filter\\"\\"\\"
-              relatedTo_ALL: Node2Where
+              relatedTo_ALL: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { all: ... }' instead.\\")
               \\"\\"\\"Return Node1s where none of the related Node2s match this filter\\"\\"\\"
-              relatedTo_NONE: Node2Where
+              relatedTo_NONE: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { none: ... }' instead.\\")
               \\"\\"\\"Return Node1s where one of the related Node2s match this filter\\"\\"\\"
-              relatedTo_SINGLE: Node2Where
+              relatedTo_SINGLE: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  single: ... }' instead.\\")
               \\"\\"\\"Return Node1s where some of the related Node2s match this filter\\"\\"\\"
-              relatedTo_SOME: Node2Where
+              relatedTo_SOME: Node2Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  some: ... }' instead.\\")
             }
 
             type Node1sConnection {
@@ -288,6 +343,7 @@ describe("Sort", () => {
               AND: [Node2RelatedToAggregateInput!]
               NOT: Node2RelatedToAggregateInput
               OR: [Node2RelatedToAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -305,6 +361,25 @@ describe("Sort", () => {
               edges: [Node2RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Node2RelatedToConnectionFilters {
+              \\"\\"\\"
+              Return Node2s where all of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              all: Node2RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node2s where none of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              none: Node2RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node2s where one of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              single: Node2RelatedToConnectionWhere
+              \\"\\"\\"
+              Return Node2s where some of the related Node2RelatedToConnections match this filter
+              \\"\\"\\"
+              some: Node2RelatedToConnectionWhere
             }
 
             input Node2RelatedToConnectionSort {
@@ -341,21 +416,22 @@ describe("Sort", () => {
               AND: [Node2RelatedToNodeAggregationWhereInput!]
               NOT: Node2RelatedToNodeAggregationWhereInput
               OR: [Node2RelatedToNodeAggregationWhereInput!]
-              property_AVERAGE_LENGTH_EQUAL: Float
-              property_AVERAGE_LENGTH_GT: Float
-              property_AVERAGE_LENGTH_GTE: Float
-              property_AVERAGE_LENGTH_LT: Float
-              property_AVERAGE_LENGTH_LTE: Float
-              property_LONGEST_LENGTH_EQUAL: Int
-              property_LONGEST_LENGTH_GT: Int
-              property_LONGEST_LENGTH_GTE: Int
-              property_LONGEST_LENGTH_LT: Int
-              property_LONGEST_LENGTH_LTE: Int
-              property_SHORTEST_LENGTH_EQUAL: Int
-              property_SHORTEST_LENGTH_GT: Int
-              property_SHORTEST_LENGTH_GTE: Int
-              property_SHORTEST_LENGTH_LT: Int
-              property_SHORTEST_LENGTH_LTE: Int
+              property: StringScalarAggregationFilters
+              property_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { eq: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { gt: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { gte: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { lt: ... } } }' instead.\\")
+              property_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'property: { averageLength: { lte: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { eq: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { gt: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { gte: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { lt: ... } } }' instead.\\")
+              property_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { longestLength: { lte: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { eq: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { gt: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { gte: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { lt: ... } } }' instead.\\")
+              property_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'property: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Node2RelatedToRelationship {
@@ -376,6 +452,17 @@ describe("Sort", () => {
               where: Node2RelatedToConnectionWhere
             }
 
+            input Node2RelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Node2s match this filter\\"\\"\\"
+              all: Node2Where
+              \\"\\"\\"Filter type where none of the related Node2s match this filter\\"\\"\\"
+              none: Node2Where
+              \\"\\"\\"Filter type where one of the related Node2s match this filter\\"\\"\\"
+              single: Node2Where
+              \\"\\"\\"Filter type where some of the related Node2s match this filter\\"\\"\\"
+              some: Node2Where
+            }
+
             input Node2UpdateInput {
               relatedTo: [Node2RelatedToUpdateFieldInput!]
             }
@@ -384,31 +471,33 @@ describe("Sort", () => {
               AND: [Node2Where!]
               NOT: Node2Where
               OR: [Node2Where!]
+              relatedTo: Node1RelationshipFilters
               relatedToAggregate: Node2RelatedToAggregateInput
+              relatedToConnection: Node2RelatedToConnectionFilters
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_ALL: Node2RelatedToConnectionWhere
+              relatedToConnection_ALL: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node2s where none of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_NONE: Node2RelatedToConnectionWhere
+              relatedToConnection_NONE: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node2s where one of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SINGLE: Node2RelatedToConnectionWhere
+              relatedToConnection_SINGLE: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Node2s where some of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
-              relatedToConnection_SOME: Node2RelatedToConnectionWhere
+              relatedToConnection_SOME: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'relatedToConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Node2s where all of the related Node1s match this filter\\"\\"\\"
-              relatedTo_ALL: Node1Where
+              relatedTo_ALL: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { all: ... }' instead.\\")
               \\"\\"\\"Return Node2s where none of the related Node1s match this filter\\"\\"\\"
-              relatedTo_NONE: Node1Where
+              relatedTo_NONE: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: { none: ... }' instead.\\")
               \\"\\"\\"Return Node2s where one of the related Node1s match this filter\\"\\"\\"
-              relatedTo_SINGLE: Node1Where
+              relatedTo_SINGLE: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  single: ... }' instead.\\")
               \\"\\"\\"Return Node2s where some of the related Node1s match this filter\\"\\"\\"
-              relatedTo_SOME: Node1Where
+              relatedTo_SOME: Node1Where @deprecated(reason: \\"Please use the relevant generic filter 'relatedTo: {  some: ... }' instead.\\")
             }
 
             type Node2sConnection {
@@ -445,6 +534,27 @@ describe("Sort", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

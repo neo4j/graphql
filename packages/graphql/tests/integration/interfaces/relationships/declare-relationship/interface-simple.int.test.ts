@@ -1333,7 +1333,7 @@ describe("interface with declared relationships", () => {
             ]
         );
     });
-
+    // FLAKY_TEST
     // update -> connect -> edge
     test("update interface relationship, connect edge", async () => {
         const actorName = "actor1";
@@ -1853,7 +1853,7 @@ describe("interface with declared relationships", () => {
                 actedIn: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}] } }
+                    where: { node: { title_EQ: "${movieTitle}", typename: [${Movie.name}] } }
                   }
                 }
               }

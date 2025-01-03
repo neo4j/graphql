@@ -87,28 +87,32 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             input FooUpdateInput {
-              geo_point_SET: PointInput
-              point_SET: PointInput
+              geo_point: PointMutations
+              geo_point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'geo_point: { set: ... } }' instead.\\")
+              point: PointMutations
+              point_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'point: { set: ... } }' instead.\\")
             }
 
             input FooWhere {
               AND: [FooWhere!]
               NOT: FooWhere
               OR: [FooWhere!]
-              geo_point_DISTANCE: PointDistance
-              geo_point_EQ: PointInput
-              geo_point_GT: PointDistance
-              geo_point_GTE: PointDistance
-              geo_point_IN: [PointInput]
-              geo_point_LT: PointDistance
-              geo_point_LTE: PointDistance
-              point_DISTANCE: PointDistance
-              point_EQ: PointInput
-              point_GT: PointDistance
-              point_GTE: PointDistance
-              point_IN: [PointInput]
-              point_LT: PointDistance
-              point_LTE: PointDistance
+              geo_point: PointFilters
+              geo_point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter geo_point: { distance: ... }\\")
+              geo_point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter geo_point: { eq: ... }\\")
+              geo_point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter geo_point: { gt: ... }\\")
+              geo_point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter geo_point: { gte: ... }\\")
+              geo_point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter geo_point: { in: ... }\\")
+              geo_point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter geo_point: { lt: ... }\\")
+              geo_point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter geo_point: { lte: ... }\\")
+              point: PointFilters
+              point_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { distance: ... }\\")
+              point_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter point: { eq: ... }\\")
+              point_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gt: ... }\\")
+              point_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { gte: ... }\\")
+              point_IN: [PointInput] @deprecated(reason: \\"Please use the relevant generic filter point: { in: ... }\\")
+              point_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lt: ... }\\")
+              point_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter point: { lte: ... }\\")
             }
 
             type FoosConnection {
@@ -149,11 +153,33 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              eq: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {

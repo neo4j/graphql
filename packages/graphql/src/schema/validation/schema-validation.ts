@@ -21,17 +21,43 @@ import type {
     DefinitionNode,
     DocumentNode,
     GraphQLDirective,
+    GraphQLInputObjectType,
     GraphQLNamedType,
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLSchema, specifiedDirectives, visit } from "graphql";
-import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import { createAuthenticationDirectiveDefinition } from "../../graphql/directives/type-dependant-directives/authentication";
 import { getStaticAuthorizationDefinitions } from "../../graphql/directives/type-dependant-directives/get-static-auth-definitions";
+import {
+    BigIntListFilters,
+    BigIntScalarFilters,
+} from "../../graphql/input-objects/generic-operators/BigIntScalarFilters";
+import {
+    BooleanListFilters,
+    BooleanScalarFilters,
+} from "../../graphql/input-objects/generic-operators/BooleanScalarFilters";
+import {
+    CartesianPointFilters,
+    CartesianPointListFilters,
+} from "../../graphql/input-objects/generic-operators/CartesianPointFilters";
+import { DateListFilters, DateScalarFilters } from "../../graphql/input-objects/generic-operators/DateScalarFilters";
+import { DateTimeScalarFilters } from "../../graphql/input-objects/generic-operators/DateTimeScalarFilters";
+import { DurationScalarFilters } from "../../graphql/input-objects/generic-operators/DurationScalarFilters";
+import { FloatListFilters, FloatScalarFilters } from "../../graphql/input-objects/generic-operators/FloatScalarFilters";
+import { getIDScalarFilters, IDListFilters } from "../../graphql/input-objects/generic-operators/IDScalarFilters";
+import { IntListFilters, IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
+import { LocalTimeScalarFilters } from "../../graphql/input-objects/generic-operators/LocalTimeScalarFilters";
+import { PointFilters, PointListFilters } from "../../graphql/input-objects/generic-operators/PointFilters";
+import {
+    getStringScalarFilters,
+    StringListFilters,
+} from "../../graphql/input-objects/generic-operators/StringScalarFilters";
+import { TimeScalarFilters } from "../../graphql/input-objects/generic-operators/TimeScalarFilters";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { EnricherContext } from "./EnricherContext";
-import { DirectiveArgumentOfCorrectType } from "./custom-rules/directive-argument-of-correct-type";
 import { makeReplaceWildcardVisitor } from "./custom-rules/replace-wildcard-value";
+import { ValidateAuthorizationLikeDirectives } from "./custom-rules/validate-authorization-like-directives";
 import { authenticationDirectiveEnricher } from "./enrichers/authentication";
 import { authorizationDefinitionsEnricher, authorizationDirectiveEnricher } from "./enrichers/authorization";
 import {
@@ -82,29 +108,69 @@ export function validateUserDefinition({
     augmentedDocument,
     additionalDirectives = [],
     additionalTypes = [],
-    rules,
     jwt,
+    features,
 }: {
     userDocument: DocumentNode;
     augmentedDocument: DocumentNode;
     additionalDirectives?: Array<GraphQLDirective>;
     additionalTypes?: Array<GraphQLNamedType>;
-    rules?: readonly SDLValidationRule[];
     jwt?: ObjectTypeDefinitionNode;
+    features?: Neo4jFeaturesSettings;
 }): void {
-    rules = rules ? rules : [...specifiedSDLRules, DirectiveArgumentOfCorrectType()];
+    const rules = [...specifiedSDLRules, ValidateAuthorizationLikeDirectives];
     let validationDocument = makeValidationDocument(userDocument, augmentedDocument, jwt);
-
+    const genericFiltersName: GraphQLInputObjectType[] = [
+        BooleanScalarFilters,
+        BooleanListFilters,
+        getIDScalarFilters(features),
+        IDListFilters,
+        getStringScalarFilters(features),
+        StringListFilters,
+        FloatScalarFilters,
+        FloatListFilters,
+        IntScalarFilters,
+        IntListFilters,
+        BigIntScalarFilters,
+        BigIntListFilters,
+        TimeScalarFilters,
+        DateTimeScalarFilters,
+        DateScalarFilters,
+        DateListFilters,
+        DurationScalarFilters,
+        LocalTimeScalarFilters,
+        PointFilters,
+        PointListFilters,
+        CartesianPointFilters,
+        CartesianPointListFilters,
+    ];
     const schemaToExtend = new GraphQLSchema({
         directives: [...specifiedDirectives, ...additionalDirectives],
-        types: [...additionalTypes],
+        types: [...genericFiltersName, ...additionalTypes],
     });
 
     const replaceWildcardValue = makeReplaceWildcardVisitor({ jwt, schema: schemaToExtend });
+
+    validationDocument = removeDuplicateTypes(validationDocument, schemaToExtend.getTypeMap());
     validationDocument = visit(validationDocument, replaceWildcardValue());
 
     const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
         throw errors;
     }
+}
+
+function removeDuplicateTypes(doc: DocumentNode, extraTypes: Record<string, GraphQLNamedType>): DocumentNode {
+    return {
+        ...doc,
+        // Remove duplicate types generated by genericFiltersName
+        definitions: doc.definitions.filter((def) => {
+            if (def["name"] !== undefined) {
+                if (extraTypes[(def as any).name.value]) {
+                    return false;
+                }
+            }
+            return true;
+        }),
+    };
 }

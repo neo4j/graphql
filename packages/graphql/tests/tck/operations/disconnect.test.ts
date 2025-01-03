@@ -68,12 +68,12 @@ describe("Cypher Disconnect", () => {
                         colors: {
                             disconnect: [
                                 {
-                                    where: { node: { name_EQ: "Red" } }
+                                    where: { node: { name: { eq: "Red" } } }
                                     disconnect: {
                                         photos: [
                                             {
-                                                where: { node: { id_EQ: "123" } }
-                                                disconnect: { color: { where: { node: { id_EQ: "134" } } } }
+                                                where: { node: { id: { eq: "123" } } }
+                                                disconnect: { color: { where: { node: { id: { eq: "134" } } } } }
                                             }
                                         ]
                                     }
@@ -83,12 +83,12 @@ describe("Cypher Disconnect", () => {
                         photos: {
                             disconnect: [
                                 {
-                                    where: { node: { id_EQ: "321" } }
-                                    disconnect: { color: { where: { node: { name_EQ: "Green" } } } }
+                                    where: { node: { id: { eq: "321" } } }
+                                    disconnect: { color: { where: { node: { name: { eq: "Green" } } } } }
                                 }
                                 {
-                                    where: { node: { id_EQ: "33211" } }
-                                    disconnect: { color: { where: { node: { name_EQ: "Red" } } } }
+                                    where: { node: { id: { eq: "33211" } } }
+                                    disconnect: { color: { where: { node: { name: { eq: "Red" } } } } }
                                 }
                             ]
                         }
@@ -219,7 +219,9 @@ describe("Cypher Disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Red\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Red\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -227,7 +229,9 @@ describe("Cypher Disconnect", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id_EQ\\": \\"123\\"
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"123\\"
+                                                                }
                                                             }
                                                         },
                                                         \\"disconnect\\": {
@@ -235,7 +239,9 @@ describe("Cypher Disconnect", () => {
                                                                 {
                                                                     \\"where\\": {
                                                                         \\"node\\": {
-                                                                            \\"id_EQ\\": \\"134\\"
+                                                                            \\"id\\": {
+                                                                                \\"eq\\": \\"134\\"
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -254,7 +260,9 @@ describe("Cypher Disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"321\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"321\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -262,7 +270,9 @@ describe("Cypher Disconnect", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"name_EQ\\": \\"Green\\"
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Green\\"
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -272,7 +282,9 @@ describe("Cypher Disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"33211\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"33211\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -280,7 +292,9 @@ describe("Cypher Disconnect", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"name_EQ\\": \\"Red\\"
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Red\\"
+                                                                }
                                                             }
                                                         }
                                                     }

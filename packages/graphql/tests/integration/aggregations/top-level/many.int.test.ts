@@ -68,10 +68,6 @@ describe("aggregations-top_level-many", () => {
         const query = `
                 {
                     ${typeMovie.operations.aggregate}(where: { testId_EQ: "${testId}" }) {
-                        id {
-                            shortest
-                            longest
-                        }
                         title {
                             shortest
                             longest
@@ -98,10 +94,6 @@ describe("aggregations-top_level-many", () => {
         expect(gqlResult.errors).toBeUndefined();
 
         expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
-            id: {
-                shortest: "1",
-                longest: "4444",
-            },
             title: {
                 shortest: "1",
                 longest: "4444",

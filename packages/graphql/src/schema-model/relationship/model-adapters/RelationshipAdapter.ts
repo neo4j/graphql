@@ -23,7 +23,6 @@ import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
-import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import type { Entity } from "../../entity/Entity";
 import type { EntityAdapter } from "../../entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
@@ -35,7 +34,6 @@ import type { NestedOperation, QueryDirection, Relationship, RelationshipDirecti
 import { RelationshipOperations } from "./RelationshipOperations";
 
 export class RelationshipAdapter {
-    private _listFiltersModel: ListFiltersAdapter | undefined;
     public readonly name: string;
     public readonly type: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
@@ -115,15 +113,6 @@ export class RelationshipAdapter {
             return new RelationshipOperations(this);
         }
         return this._operations;
-    }
-    public get listFiltersModel(): ListFiltersAdapter | undefined {
-        if (!this._listFiltersModel) {
-            if (!this.isList) {
-                return;
-            }
-            this._listFiltersModel = new ListFiltersAdapter(this);
-        }
-        return this._listFiltersModel;
     }
 
     public get singular(): string {

@@ -37,7 +37,7 @@ describe("cypher directive filtering - Lists", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_cypher_list_INCLUDES: "a" }) {
+                movies(where: { custom_cypher_list: { includes: "a" } }) {
                     title
                 }
             }

@@ -44,7 +44,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("AND", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
+                posts(where: { likesAggregate: { AND: [{ count: { gt: 10 } }, { count: { lt: 20 } }] } }) {
                     content
                 }
             }
@@ -81,7 +81,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("OR", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { OR: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
+                posts(where: { likesAggregate: { OR: [{ count: { gt: 10 } }, { count: { lt: 20 } }] } }) {
                     content
                 }
             }
@@ -118,7 +118,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("NOT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { NOT: { count_GT: 10 } } }) {
+                posts(where: { likesAggregate: { NOT: { count: { gt: 10 } } } }) {
                     content
                 }
             }
@@ -154,8 +154,8 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 posts(
                     where: {
                         likesAggregate: {
-                            AND: [{ count_GT: 10 }, { count_LT: 20 }]
-                            OR: [{ count_GT: 10 }, { count_LT: 20 }]
+                            AND: [{ count: { gt: 10 } }, { count: { lt: 20 } }]
+                            OR: [{ count: { gt: 10 } }, { count: { lt: 20 } }]
                         }
                     }
                 ) {
@@ -206,9 +206,8 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                 posts(
                     where: {
                         likesAggregate: {
-                            count_GT: 10
-                            count_LT: 20
-                            OR: [{ count_GT: 10 }, { count_LT: 20 }, { count_LT: 54 }]
+                            count: { gt: 10, lt: 20 }
+                            OR: [{ count: { gt: 10 } }, { count: { lt: 20 } }, { count: { lt: 54 } }]
                         }
                     }
                 ) {
@@ -224,7 +223,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) < $param0 AND count(this1) > $param1 AND (count(this1) > $param2 OR count(this1) < $param3 OR count(this1) < $param4)) AS var2
+                RETURN (count(this1) > $param0 AND count(this1) < $param1 AND (count(this1) > $param2 OR count(this1) < $param3 OR count(this1) < $param4)) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -234,11 +233,11 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 20,
+                    \\"low\\": 10,
                     \\"high\\": 0
                 },
                 \\"param1\\": {
-                    \\"low\\": 10,
+                    \\"low\\": 20,
                     \\"high\\": 0
                 },
                 \\"param2\\": {

@@ -199,7 +199,7 @@ describe("Cypher Sort tests", () => {
                     sort: [{ numberOfActors: DESC }, { title: ASC }]
                     offset: 10
                     limit: 10
-                    where: { title_EQ: "The Matrix" }
+                    where: { title: { eq: "The Matrix" } }
                 ) {
                     id
                     title

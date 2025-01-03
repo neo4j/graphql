@@ -59,12 +59,12 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                         colors: {
                             disconnect: [
                                 {
-                                    where: { node: { name_EQ: "Red" } }
+                                    where: { node: { name: { eq: "Red" } } }
                                     disconnect: {
                                         photos: [
                                             {
-                                                where: { node: { id_EQ: "123" } }
-                                                disconnect: { color: { where: { node: { id_EQ: "134" } } } }
+                                                where: { node: { id: { eq: "123" } } }
+                                                disconnect: { color: { where: { node: { id: { eq: "134" } } } } }
                                             }
                                         ]
                                     }
@@ -74,12 +74,12 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                         photos: {
                             disconnect: [
                                 {
-                                    where: { node: { id_EQ: "321" } }
-                                    disconnect: { color: { where: { node: { name_EQ: "Green" } } } }
+                                    where: { node: { id: { eq: "321" } } }
+                                    disconnect: { color: { where: { node: { name: { eq: "Green" } } } } }
                                 }
                                 {
-                                    where: { node: { id_EQ: "33211" } }
-                                    disconnect: { color: { where: { node: { name_EQ: "Red" } } } }
+                                    where: { node: { id: { eq: "33211" } } }
+                                    disconnect: { color: { where: { node: { name: { eq: "Red" } } } } }
                                 }
                             ]
                         }
@@ -210,7 +210,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Red\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Red\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -218,7 +220,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id_EQ\\": \\"123\\"
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"123\\"
+                                                                }
                                                             }
                                                         },
                                                         \\"disconnect\\": {
@@ -226,7 +230,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                                                 {
                                                                     \\"where\\": {
                                                                         \\"node\\": {
-                                                                            \\"id_EQ\\": \\"134\\"
+                                                                            \\"id\\": {
+                                                                                \\"eq\\": \\"134\\"
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -245,7 +251,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"321\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"321\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -253,7 +261,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"name_EQ\\": \\"Green\\"
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Green\\"
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -263,7 +273,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"33211\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"33211\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -271,7 +283,9 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"name_EQ\\": \\"Red\\"
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Red\\"
+                                                                }
                                                             }
                                                         }
                                                     }

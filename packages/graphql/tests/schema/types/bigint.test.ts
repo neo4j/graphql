@@ -51,6 +51,23 @@ describe("Bigint", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"BigInt filters\\"\\"\\"
+            input BigIntScalarFilters {
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
+              in: [BigInt!]
+              lt: BigInt
+              lte: BigInt
+            }
+
+            \\"\\"\\"BigInt mutations\\"\\"\\"
+            input BigIntScalarMutations {
+              add: BigInt
+              set: BigInt
+              subtract: BigInt
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -102,27 +119,31 @@ describe("Bigint", () => {
             }
 
             input FileUpdateInput {
-              name_SET: String
-              size_DECREMENT: BigInt
-              size_INCREMENT: BigInt
-              size_SET: BigInt
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+              size: BigIntScalarMutations
+              size_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { decrement: ... } }' instead.\\")
+              size_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { increment: ... } }' instead.\\")
+              size_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'size: { set: ... } }' instead.\\")
             }
 
             input FileWhere {
               AND: [FileWhere!]
               NOT: FileWhere
               OR: [FileWhere!]
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              size_EQ: BigInt
-              size_GT: BigInt
-              size_GTE: BigInt
-              size_IN: [BigInt!]
-              size_LT: BigInt
-              size_LTE: BigInt
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              size: BigIntScalarFilters
+              size_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { eq: ... }\\")
+              size_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { gt: ... }\\")
+              size_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { gte: ... }\\")
+              size_IN: [BigInt!] @deprecated(reason: \\"Please use the relevant generic filter size: { in: ... }\\")
+              size_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { lt: ... }\\")
+              size_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { lte: ... }\\")
             }
 
             type FilesConnection {
@@ -162,6 +183,20 @@ describe("Bigint", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateFilesMutationResponse {

@@ -20,7 +20,7 @@
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
-describe("cypher directive filtering - Auth", () => {
+describe("cypher directive filtering", () => {
     test("Int cypher field AND String title field", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -38,7 +38,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_count_GTE: 1, title_EQ: "CustomType One" }) {
+                movies(where: { special_count: { gte: 1 }, title: { eq: "CustomType One" } }) {
                     special_count
                 }
             }
@@ -107,7 +107,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_count_GTE: 1, title_EQ: "CustomType Unknown" }) {
+                movies(where: { special_count: { gte: 1 }, title: { eq: "CustomType Unknown" } }) {
                     special_count
                 }
             }
@@ -176,7 +176,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { special_count_GTE: 1 }) {
+                movies(where: { special_count: { gte: 1 } }) {
                     title
                 }
             }

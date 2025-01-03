@@ -94,6 +94,20 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Test {
               Name: String
             }
@@ -126,17 +140,19 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             input TestUpdateInput {
-              Name_SET: String
+              Name: StringScalarMutations
+              Name_SET: String @deprecated(reason: \\"Please use the generic mutation 'Name: { set: ... } }' instead.\\")
             }
 
             input TestWhere {
               AND: [TestWhere!]
               NOT: TestWhere
-              Name_CONTAINS: String
-              Name_ENDS_WITH: String
-              Name_EQ: String
-              Name_IN: [String]
-              Name_STARTS_WITH: String
+              Name: StringScalarFilters
+              Name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter Name: { contains: ... }\\")
+              Name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter Name: { endsWith: ... }\\")
+              Name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter Name: { eq: ... }\\")
+              Name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter Name: { in: ... }\\")
+              Name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter Name: { startsWith: ... }\\")
               OR: [TestWhere!]
             }
 

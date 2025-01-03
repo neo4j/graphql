@@ -124,7 +124,7 @@ describe("Missing custom Cypher on unions", () => {
         const query = /* GraphQL */ `
             query browseHierarchicalComponents($hierarchicalRootId: ID!, $choNodeIris: [ID!]!) {
                 hierarchicalComponents(
-                    where: { isContained_SOME: { iri_EQ: $hierarchicalRootId }, iri_IN: $choNodeIris }
+                    where: { isContained: { some: { iri: { eq: $hierarchicalRootId } } }, iri: { in: $choNodeIris } }
                 ) {
                     #...hierarchicalComponentFields
                     relatesToChild {

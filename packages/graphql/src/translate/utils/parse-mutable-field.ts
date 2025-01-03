@@ -25,12 +25,12 @@ import { parseMutationField } from "../queryAST/factory/parsers/parse-mutation-f
 export function parseMutableField(
     nodeOrRel: Node | Relationship,
     key: string
-): { settableField: MutableField; operator: MutationOperator } {
+): { settableField: MutableField; operator: MutationOperator | undefined } {
     const { fieldName, operator } = parseMutationField(key);
     const field = nodeOrRel.mutableFields.find((x) => x.fieldName === fieldName);
 
     if (field) {
-        return { settableField: field, operator: operator ?? "SET" };
+        return { settableField: field, operator: operator };
     }
 
     throw new Error(`Transpile error: field ${key} not found`);

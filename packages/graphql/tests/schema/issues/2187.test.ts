@@ -81,6 +81,33 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               sum: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
             type Genre {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): GenreMovieMoviesAggregationSelection
@@ -134,6 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [GenreMoviesAggregateInput!]
               NOT: GenreMoviesAggregateInput
               OR: [GenreMoviesAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -151,6 +179,25 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               edges: [GenreMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input GenreMoviesConnectionFilters {
+              \\"\\"\\"
+              Return Genres where all of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              all: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where none of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              none: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where one of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              single: GenreMoviesConnectionWhere
+              \\"\\"\\"
+              Return Genres where some of the related GenreMoviesConnections match this filter
+              \\"\\"\\"
+              some: GenreMoviesConnectionWhere
             }
 
             input GenreMoviesConnectionSort {
@@ -187,61 +234,64 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [GenreMoviesNodeAggregationWhereInput!]
               NOT: GenreMoviesNodeAggregationWhereInput
               OR: [GenreMoviesNodeAggregationWhereInput!]
-              imdbRating_AVERAGE_EQUAL: Float
-              imdbRating_AVERAGE_GT: Float
-              imdbRating_AVERAGE_GTE: Float
-              imdbRating_AVERAGE_LT: Float
-              imdbRating_AVERAGE_LTE: Float
-              imdbRating_MAX_EQUAL: Float
-              imdbRating_MAX_GT: Float
-              imdbRating_MAX_GTE: Float
-              imdbRating_MAX_LT: Float
-              imdbRating_MAX_LTE: Float
-              imdbRating_MIN_EQUAL: Float
-              imdbRating_MIN_GT: Float
-              imdbRating_MIN_GTE: Float
-              imdbRating_MIN_LT: Float
-              imdbRating_MIN_LTE: Float
-              imdbRating_SUM_EQUAL: Float
-              imdbRating_SUM_GT: Float
-              imdbRating_SUM_GTE: Float
-              imdbRating_SUM_LT: Float
-              imdbRating_SUM_LTE: Float
-              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Do not use title\\")
-              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
-              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Do not use title\\")
-              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Do not use title\\")
-              year_AVERAGE_EQUAL: Float
-              year_AVERAGE_GT: Float
-              year_AVERAGE_GTE: Float
-              year_AVERAGE_LT: Float
-              year_AVERAGE_LTE: Float
-              year_MAX_EQUAL: Int
-              year_MAX_GT: Int
-              year_MAX_GTE: Int
-              year_MAX_LT: Int
-              year_MAX_LTE: Int
-              year_MIN_EQUAL: Int
-              year_MIN_GT: Int
-              year_MIN_GTE: Int
-              year_MIN_LT: Int
-              year_MIN_LTE: Int
-              year_SUM_EQUAL: Int
-              year_SUM_GT: Int
-              year_SUM_GTE: Int
-              year_SUM_LT: Int
-              year_SUM_LTE: Int
+              imdbRating: FloatScalarAggregationFilters
+              imdbRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { eq: ... } } }' instead.\\")
+              imdbRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { gt: ... } } }' instead.\\")
+              imdbRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { gte: ... } } }' instead.\\")
+              imdbRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { lt: ... } } }' instead.\\")
+              imdbRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { average: { lte: ... } } }' instead.\\")
+              imdbRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { eq: ... } } }' instead.\\")
+              imdbRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { gt: ... } } }' instead.\\")
+              imdbRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { gte: ... } } }' instead.\\")
+              imdbRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { lt: ... } } }' instead.\\")
+              imdbRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { max: { lte: ... } } }' instead.\\")
+              imdbRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { eq: ... } } }' instead.\\")
+              imdbRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { gt: ... } } }' instead.\\")
+              imdbRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { gte: ... } } }' instead.\\")
+              imdbRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { lt: ... } } }' instead.\\")
+              imdbRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { min: { lte: ... } } }' instead.\\")
+              imdbRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { eq: ... } } }' instead.\\")
+              imdbRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { gt: ... } } }' instead.\\")
+              imdbRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { gte: ... } } }' instead.\\")
+              imdbRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { lt: ... } } }' instead.\\")
+              imdbRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'imdbRating: { sum: { lte: ... } } }' instead.\\")
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
+              year: IntScalarAggregationFilters
+              year_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { eq: ... } } }' instead.\\")
+              year_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gt: ... } } }' instead.\\")
+              year_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { gte: ... } } }' instead.\\")
+              year_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lt: ... } } }' instead.\\")
+              year_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'year: { average: { lte: ... } } }' instead.\\")
+              year_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { eq: ... } } }' instead.\\")
+              year_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gt: ... } } }' instead.\\")
+              year_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { gte: ... } } }' instead.\\")
+              year_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lt: ... } } }' instead.\\")
+              year_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { max: { lte: ... } } }' instead.\\")
+              year_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { eq: ... } } }' instead.\\")
+              year_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gt: ... } } }' instead.\\")
+              year_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { gte: ... } } }' instead.\\")
+              year_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lt: ... } } }' instead.\\")
+              year_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { min: { lte: ... } } }' instead.\\")
+              year_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { eq: ... } } }' instead.\\")
+              year_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gt: ... } } }' instead.\\")
+              year_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { gte: ... } } }' instead.\\")
+              year_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lt: ... } } }' instead.\\")
+              year_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'year: { sum: { lte: ... } } }' instead.\\")
             }
 
             type GenreMoviesRelationship {
@@ -262,6 +312,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               where: GenreMoviesConnectionWhere
             }
 
+            input GenreRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Genres match this filter\\"\\"\\"
+              all: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"Filter type where none of the related Genres match this filter\\"\\"\\"
+              none: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"Filter type where one of the related Genres match this filter\\"\\"\\"
+              single: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"Filter type where some of the related Genres match this filter\\"\\"\\"
+              some: GenreWhere @deprecated(reason: \\"Do not use genre\\")
+            }
+
             \\"\\"\\"
             Fields to sort Genres by. The order in which sorts are applied is not guaranteed when specifying many fields in one GenreSort object.
             \\"\\"\\"
@@ -271,43 +332,47 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreUpdateInput {
               movies: [GenreMoviesUpdateFieldInput!]
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input GenreWhere {
               AND: [GenreWhere!]
               NOT: GenreWhere
               OR: [GenreWhere!]
+              movies: MovieRelationshipFilters
               moviesAggregate: GenreMoviesAggregateInput
+              moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: GenreMoviesConnectionWhere
+              moviesConnection_ALL: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where none of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: GenreMoviesConnectionWhere
+              moviesConnection_NONE: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where one of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: GenreMoviesConnectionWhere
+              moviesConnection_SINGLE: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Genres where some of the related GenreMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: GenreMoviesConnectionWhere
+              moviesConnection_SOME: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Genres where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Genres where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Genres where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Genres where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type GenresConnection {
@@ -321,6 +386,31 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -380,6 +470,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieGenresAggregateInput!]
               NOT: MovieGenresAggregateInput
               OR: [MovieGenresAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -397,6 +488,25 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               edges: [MovieGenresRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieGenresConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              all: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"
+              Return Movies where none of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              none: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"
+              Return Movies where one of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              single: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
+              \\"\\"\\"
+              Return Movies where some of the related MovieGenresConnections match this filter
+              \\"\\"\\"
+              some: MovieGenresConnectionWhere @deprecated(reason: \\"Do not use genre\\")
             }
 
             input MovieGenresConnectionSort {
@@ -433,21 +543,22 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               AND: [MovieGenresNodeAggregationWhereInput!]
               NOT: MovieGenresNodeAggregationWhereInput
               OR: [MovieGenresNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type MovieGenresRelationship {
@@ -468,6 +579,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               where: MovieGenresConnectionWhere
             }
 
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -479,22 +601,27 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieUpdateInput {
               genres: [MovieGenresUpdateFieldInput!] @deprecated(reason: \\"Do not use genre\\")
-              imdbRating_ADD: Float
-              imdbRating_DIVIDE: Float
-              imdbRating_MULTIPLY: Float
-              imdbRating_SET: Float
-              imdbRating_SUBTRACT: Float
+              imdbRating: FloatScalarMutations
+              imdbRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { add: ... } }' instead.\\")
+              imdbRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { divide: ... } }' instead.\\")
+              imdbRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { multiply: ... } }' instead.\\")
+              imdbRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'imdbRating: { set: ... } }' instead.\\")
+              imdbRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'imdbRating: { subtract: ... } }' instead.\\")
+              title: StringScalarMutations @deprecated(reason: \\"Do not use title\\")
               title_SET: String @deprecated(reason: \\"Do not use title\\")
-              year_DECREMENT: Int
-              year_INCREMENT: Int
-              year_SET: Int
+              year: IntScalarMutations
+              year_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { decrement: ... } }' instead.\\")
+              year_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'year: { increment: ... } }' instead.\\")
+              year_SET: Int @deprecated(reason: \\"Please use the generic mutation 'year: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
+              genres: GenreRelationshipFilters
               genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use genre\\")
+              genresConnection: MovieGenresConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -519,23 +646,26 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               genres_SINGLE: GenreWhere @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"Return Movies where some of the related Genres match this filter\\"\\"\\"
               genres_SOME: GenreWhere @deprecated(reason: \\"Do not use genre\\")
-              imdbRating_EQ: Float
-              imdbRating_GT: Float
-              imdbRating_GTE: Float
-              imdbRating_IN: [Float]
-              imdbRating_LT: Float
-              imdbRating_LTE: Float
+              imdbRating: FloatScalarFilters
+              imdbRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { eq: ... }\\")
+              imdbRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gt: ... }\\")
+              imdbRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { gte: ... }\\")
+              imdbRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { in: ... }\\")
+              imdbRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lt: ... }\\")
+              imdbRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter imdbRating: { lte: ... }\\")
+              title: StringScalarFilters @deprecated(reason: \\"Do not use title\\")
               title_CONTAINS: String @deprecated(reason: \\"Do not use title\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Do not use title\\")
               title_EQ: String @deprecated(reason: \\"Do not use title\\")
               title_IN: [String] @deprecated(reason: \\"Do not use title\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Do not use title\\")
-              year_EQ: Int
-              year_GT: Int
-              year_GTE: Int
-              year_IN: [Int]
-              year_LT: Int
-              year_LTE: Int
+              year: IntScalarFilters
+              year_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter year: { eq: ... }\\")
+              year_GT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gt: ... }\\")
+              year_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { gte: ... }\\")
+              year_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter year: { in: ... }\\")
+              year_LT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lt: ... }\\")
+              year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
             type MoviesConnection {
@@ -581,6 +711,27 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateGenresMutationResponse {

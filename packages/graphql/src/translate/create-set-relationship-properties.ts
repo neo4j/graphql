@@ -34,6 +34,7 @@ export function createSetRelationshipProperties({
     callbackBucket,
     parameterPrefix,
     parameterNotation,
+    isUpdateOperation = false,
 }: {
     properties: Record<string, Record<string, unknown>>;
     varName: string;
@@ -44,6 +45,7 @@ export function createSetRelationshipProperties({
     callbackBucket: CallbackBucket;
     parameterPrefix: string;
     parameterNotation: "." | "_";
+    isUpdateOperation?: boolean;
 }): [string, Record<string, any>] | undefined {
     // setting properties on the edge of an Interface relationship
     // the input can contain other properties than the one applicable for this concrete entity relationship field
@@ -59,6 +61,7 @@ export function createSetRelationshipProperties({
                 callbackBucket,
                 parameterPrefix: `${parameterPrefix}${parameterNotation}${relationship.properties}`,
                 parameterNotation,
+                isUpdateOperation,
             });
         }
         return;
@@ -72,6 +75,7 @@ export function createSetRelationshipProperties({
         callbackBucket,
         parameterPrefix,
         parameterNotation,
+        isUpdateOperation,
     });
 }
 
@@ -84,6 +88,7 @@ function createSetRelationshipPropertiesForProperties({
     callbackBucket,
     parameterPrefix,
     parameterNotation,
+    isUpdateOperation,
 }: {
     properties: Record<string, unknown>;
     varName: string;
@@ -93,6 +98,7 @@ function createSetRelationshipPropertiesForProperties({
     callbackBucket: CallbackBucket;
     parameterPrefix: string;
     parameterNotation: "." | "_";
+    isUpdateOperation: boolean;
 }): [string, Record<string, any>] {
     assertNonAmbiguousUpdate(relationship, properties);
     const strs: string[] = [];
@@ -112,6 +118,7 @@ function createSetRelationshipPropertiesForProperties({
             varName,
             value,
             withVars,
+            isUpdateOperation,
         });
         strs.push(mutationFieldStatements);
         params[param] = value;

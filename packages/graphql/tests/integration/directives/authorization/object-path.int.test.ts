@@ -38,7 +38,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with allow", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 nestedSub: String! @jwtClaim(path: "nested.object.path.sub")
             }
@@ -47,16 +47,16 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id_EQ: "$jwt.nestedSub" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { id: { eq: "$jwt.nestedSub" } } } }])
         `;
 
         const userId = generate({
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${User.plural}(where: {id_EQ: "${userId}"}) {
+                ${User.plural}(where: { id: { eq: "${userId}" } }) {
                     id
                 }
             }
@@ -94,7 +94,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use $context value plucking on auth", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${User} @node {
                 id: ID
             }
@@ -104,7 +104,7 @@ describe("auth/object-path", () => {
                 creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
             }
 
-            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator_SINGLE: { id_EQ: "$context.userId" } } } }])
+            extend type ${Post} @node @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { node: { creator: { single: { id: { eq: "$context.userId" } } } } } }])
         `;
 
         const userId = generate({
@@ -115,9 +115,9 @@ describe("auth/object-path", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Post.plural}(where: {id_EQ: "${postId}"}) {
+                ${Post.plural}(where: {id: { eq: "${postId}" }}) {
                     id
                 }
             }
@@ -149,7 +149,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with roles", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]! @jwtClaim(path: "https://github\\\\.com/claims.https://github\\\\.com/claims/roles")
             }
@@ -158,16 +158,16 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles: { includes:  "admin" } } } }])
         `;
 
         const userId = generate({
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${User.plural}(where: {id_EQ: "${userId}"}) {
+                ${User.plural}(where: { id: { eq: "${userId}" }}) {
                     id
                 }
             }
@@ -199,7 +199,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with JWT endpoint", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type JWTPayload @jwt {
                 roles: [String!]! 
             }
@@ -208,16 +208,16 @@ describe("auth/object-path", () => {
                 id: ID
             }
 
-            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }])
+            extend type ${User} @authorization(validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles:{ includes: "admin" }} } }])
         `;
 
         const userId = generate({
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${User.plural}(where: {id_EQ: "${userId}"}) {
+                ${User.plural}(where: {id: { eq: "${userId}" }}) {
                     id
                 }
             }

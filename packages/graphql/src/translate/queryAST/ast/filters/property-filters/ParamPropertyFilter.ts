@@ -18,11 +18,11 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { QueryASTContext } from "../../QueryASTContext";
-import { PropertyFilter } from "./PropertyFilter";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import type { FilterOperator } from "../Filter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { QueryASTContext } from "../../QueryASTContext";
+import type { FilterOperator } from "../Filter";
+import { PropertyFilter } from "./PropertyFilter";
 
 type CypherVariable = Cypher.Variable | Cypher.Property | Cypher.Param;
 
@@ -33,8 +33,7 @@ export class ParamPropertyFilter extends PropertyFilter {
     constructor(options: {
         attribute: AttributeAdapter;
         comparisonValue: CypherVariable;
-        operator: FilterOperator;
-        isNot: boolean;
+        operator: FilterOperator,
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }) {

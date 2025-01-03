@@ -45,7 +45,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator_SOME: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 ) {
@@ -65,7 +65,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             when: AFTER
                             operations: [CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { id_EQ: "$jwt.sub" } }
+                            where: { node: { id: { eq: "$jwt.sub" } } }
                         }
                     ]
                 )
@@ -130,7 +130,10 @@ describe("Cypher Auth Allow", () => {
             MERGE (this0_contentPost0_node)<-[:HAS_CONTENT]-(this0_contentPost0_node_creator0_node)
             MERGE (this0)-[:HAS_CONTENT]->(this0_contentPost0_node)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentPost0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0_contentPost0_node)<-[:HAS_CONTENT]-(authorization_0_2_0_1_after_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_0_2_0_1_after_this0.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentPost0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this0_contentPost0_node)<-[:HAS_CONTENT]-(authorization_0_2_0_1_after_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization_0_2_0_1_after_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {
@@ -239,10 +242,10 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "id-01" }
+                    where: { id: { eq: "id-01" } }
                     update: {
                         content: {
-                            where: { node: { id_EQ: "post-id" } }
+                            where: { node: { id: { eq: "post-id" } } }
                             update: { node: { creator: { update: { node: { id_SET: "not bound" } } } } }
                         }
                     }
@@ -300,7 +303,10 @@ describe("Cypher Auth Allow", () => {
             		RETURN count(*) AS update_this_content0_creator0
             	}
             	WITH this, this_content0
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this_content0)<-[:HAS_CONTENT]-(authorization__after_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__after_this0.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            	    MATCH (this_content0)<-[:HAS_CONTENT]-(authorization__after_this0:User)
+            	    WHERE ($jwt.sub IS NOT NULL AND authorization__after_this0.id = $jwt.sub)
+            	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	RETURN count(*) AS update_this_content0
             }
             RETURN count(*) AS update_this_Post
@@ -329,7 +335,9 @@ describe("Cypher Auth Allow", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"id_EQ\\": \\"post-id\\"
+                                            \\"id\\": {
+                                                \\"eq\\": \\"post-id\\"
+                                            }
                                         }
                                     },
                                     \\"update\\": {

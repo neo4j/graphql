@@ -40,7 +40,7 @@ describe("Cypher Duration", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { duration_EQ: "P1Y" }) {
+                movies(where: { duration: { eq: "P1Y" } }) {
                     duration
                 }
             }
@@ -75,7 +75,7 @@ describe("Cypher Duration", () => {
     test("GTE Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { duration_GTE: "P3Y4M" }) {
+                movies(where: { duration: { gte: "P3Y4M" } }) {
                     duration
                 }
             }

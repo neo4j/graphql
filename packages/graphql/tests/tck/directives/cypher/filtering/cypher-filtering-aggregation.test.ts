@@ -39,7 +39,7 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_STARTS_WITH: "he" }) {
+                moviesAggregate(where: { custom_field: { startsWith: "he" } }) {
                     title {
                         shortest
                     }
@@ -102,7 +102,7 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_GT: 0 }) {
+                moviesAggregate(where: { custom_field: { gt: 0 } }) {
                     released {
                         min
                     }
@@ -165,7 +165,7 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_INCLUDES: "test" }) {
+                moviesAggregate(where: { custom_field: { includes: "test" } }) {
                     title {
                         longest
                     }
@@ -229,7 +229,7 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_INCLUDES: 2 }) {
+                moviesAggregate(where: { custom_field: { includes: 2 } }) {
                     title {
                         longest
                     }

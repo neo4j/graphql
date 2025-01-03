@@ -84,20 +84,22 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
-              filmedAt_SET: PointInput
+              filmedAt: PointMutations
+              filmedAt_SET: PointInput @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt_DISTANCE: PointDistance
-              filmedAt_EQ: PointInput
-              filmedAt_GT: PointDistance
-              filmedAt_GTE: PointDistance
-              filmedAt_IN: [PointInput!]
-              filmedAt_LT: PointDistance
-              filmedAt_LTE: PointDistance
+              filmedAt: PointFilters
+              filmedAt_DISTANCE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { distance: ... }\\")
+              filmedAt_EQ: PointInput @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { eq: ... }\\")
+              filmedAt_GT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { gt: ... }\\")
+              filmedAt_GTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { gte: ... }\\")
+              filmedAt_IN: [PointInput!] @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { in: ... }\\")
+              filmedAt_LT: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { lt: ... }\\")
+              filmedAt_LTE: PointDistance @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { lte: ... }\\")
             }
 
             type MoviesConnection {
@@ -138,11 +140,33 @@ describe("Point", () => {
               point: PointInput!
             }
 
+            \\"\\"\\"Distance filters\\"\\"\\"
+            input PointDistanceFilters {
+              eq: Float
+              from: PointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Point filters\\"\\"\\"
+            input PointFilters {
+              distance: PointDistanceFilters
+              eq: PointInput
+              in: [PointInput!]
+            }
+
             \\"\\"\\"Input type for a point\\"\\"\\"
             input PointInput {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point mutations\\"\\"\\"
+            input PointMutations {
+              set: PointInput
             }
 
             type Query {
@@ -191,6 +215,15 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Distance filters for cartesian points\\"\\"\\"
+            input CartesianDistancePointFilters {
+              from: CartesianPointInput!
+              gt: Float
+              gte: Float
+              lt: Float
+              lte: Float
+            }
+
             \\"\\"\\"
             A point in a two- or three-dimensional Cartesian coordinate system or in a three-dimensional cylindrical coordinate system. For more information, see https://neo4j.com/docs/graphql/4/type-definitions/types/spatial/#cartesian-point
             \\"\\"\\"
@@ -208,11 +241,23 @@ describe("Point", () => {
               point: CartesianPointInput!
             }
 
+            \\"\\"\\"Cartesian Point filters\\"\\"\\"
+            input CartesianPointFilters {
+              distance: CartesianDistancePointFilters
+              eq: CartesianPointInput
+              in: [CartesianPointInput!]
+            }
+
             \\"\\"\\"Input type for a cartesian point\\"\\"\\"
             input CartesianPointInput {
               x: Float!
               y: Float!
               z: Float
+            }
+
+            \\"\\"\\"CartesianPoint mutations\\"\\"\\"
+            input CartesianPointMutations {
+              set: CartesianPointInput
             }
 
             \\"\\"\\"
@@ -261,20 +306,22 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
-              partLocation_SET: CartesianPointInput
+              partLocation: CartesianPointMutations
+              partLocation_SET: CartesianPointInput @deprecated(reason: \\"Please use the generic mutation 'partLocation: { set: ... } }' instead.\\")
             }
 
             input MachineWhere {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocation_DISTANCE: CartesianPointDistance
-              partLocation_EQ: CartesianPointInput
-              partLocation_GT: CartesianPointDistance
-              partLocation_GTE: CartesianPointDistance
-              partLocation_IN: [CartesianPointInput!]
-              partLocation_LT: CartesianPointDistance
-              partLocation_LTE: CartesianPointDistance
+              partLocation: CartesianPointFilters
+              partLocation_DISTANCE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { distance: ... }\\")
+              partLocation_EQ: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter partLocation: { eq: ... }\\")
+              partLocation_GT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { gt: ... }\\")
+              partLocation_GTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { gte: ... }\\")
+              partLocation_IN: [CartesianPointInput!] @deprecated(reason: \\"Please use the relevant generic filter partLocation: { in: ... }\\")
+              partLocation_LT: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { lt: ... }\\")
+              partLocation_LTE: CartesianPointDistance @deprecated(reason: \\"Please use the relevant generic filter partLocation: { lte: ... }\\")
             }
 
             type MachinesConnection {
@@ -364,6 +411,13 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Mutations for a list for PointInput\\"\\"\\"
+            input ListPointInputMutations {
+              pop: Int
+              push: [PointInput!]
+              set: [PointInput!]
+            }
+
             type Movie {
               filmedAt: [Point!]!
             }
@@ -382,17 +436,19 @@ describe("Point", () => {
             }
 
             input MovieUpdateInput {
-              filmedAt_POP: Int
-              filmedAt_PUSH: [PointInput!]
-              filmedAt_SET: [PointInput!]
+              filmedAt: ListPointInputMutations
+              filmedAt_POP: Int @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { pop: ... } }' instead.\\")
+              filmedAt_PUSH: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { push: ... } }' instead.\\")
+              filmedAt_SET: [PointInput!] @deprecated(reason: \\"Please use the generic mutation 'filmedAt: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              filmedAt_EQ: [PointInput!]
-              filmedAt_INCLUDES: PointInput
+              filmedAt: PointListFilters
+              filmedAt_EQ: [PointInput!] @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { eq: ... }\\")
+              filmedAt_INCLUDES: PointInput @deprecated(reason: \\"Please use the relevant generic filter filmedAt: { includes: ... }\\")
             }
 
             type MoviesConnection {
@@ -431,6 +487,12 @@ describe("Point", () => {
               height: Float
               latitude: Float!
               longitude: Float!
+            }
+
+            \\"\\"\\"Point list filters\\"\\"\\"
+            input PointListFilters {
+              eq: [PointInput!]
+              includes: PointInput
             }
 
             type Query {
@@ -489,6 +551,12 @@ describe("Point", () => {
               z: Float
             }
 
+            \\"\\"\\"CartesianPoint list filters\\"\\"\\"
+            input CartesianPointListFilters {
+              eq: [CartesianPointInput!]
+              includes: CartesianPointInput
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -510,6 +578,13 @@ describe("Point", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Mutations for a list for CartesianPointInput\\"\\"\\"
+            input ListCartesianPointInputMutations {
+              pop: Int
+              push: [CartesianPointInput!]
+              set: [CartesianPointInput!]
+            }
+
             type Machine {
               partLocations: [CartesianPoint!]!
             }
@@ -528,17 +603,19 @@ describe("Point", () => {
             }
 
             input MachineUpdateInput {
-              partLocations_POP: Int
-              partLocations_PUSH: [CartesianPointInput!]
-              partLocations_SET: [CartesianPointInput!]
+              partLocations: ListCartesianPointInputMutations
+              partLocations_POP: Int @deprecated(reason: \\"Please use the generic mutation 'partLocations: { pop: ... } }' instead.\\")
+              partLocations_PUSH: [CartesianPointInput!] @deprecated(reason: \\"Please use the generic mutation 'partLocations: { push: ... } }' instead.\\")
+              partLocations_SET: [CartesianPointInput!] @deprecated(reason: \\"Please use the generic mutation 'partLocations: { set: ... } }' instead.\\")
             }
 
             input MachineWhere {
               AND: [MachineWhere!]
               NOT: MachineWhere
               OR: [MachineWhere!]
-              partLocations_EQ: [CartesianPointInput!]
-              partLocations_INCLUDES: CartesianPointInput
+              partLocations: CartesianPointListFilters
+              partLocations_EQ: [CartesianPointInput!] @deprecated(reason: \\"Please use the relevant generic filter partLocations: { eq: ... }\\")
+              partLocations_INCLUDES: CartesianPointInput @deprecated(reason: \\"Please use the relevant generic filter partLocations: { includes: ... }\\")
             }
 
             type MachinesConnection {

@@ -35,8 +35,6 @@ export class ConnectionFilter extends Filter {
     protected relationship: RelationshipAdapter;
     protected target: ConcreteEntityAdapter | InterfaceEntityAdapter; // target can be an interface entity, only with the label predicate optimization
     protected operator: RelationshipWhereOperator;
-    protected isNot: boolean;
-
     // Predicate generation for subqueries cannot be done separately from subqueries, so we need to create the predicates at the same time
     // as subqueries and store them
     protected subqueryPredicate: Cypher.Predicate | undefined;
@@ -45,17 +43,14 @@ export class ConnectionFilter extends Filter {
         relationship,
         target,
         operator,
-        isNot,
     }: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        operator: RelationshipWhereOperator | undefined;
-        isNot: boolean;
+        operator: RelationshipWhereOperator;
     }) {
         super();
         this.relationship = relationship;
-        this.isNot = isNot;
-        this.operator = operator || "SOME";
+        this.operator = operator;
         this.target = target;
     }
 
@@ -72,7 +67,9 @@ export class ConnectionFilter extends Filter {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
         const targetNode = new Cypher.Node();
         const targetLabels = getEntityLabels(this.target, context.neo4jGraphQLContext);
         const relationship = new Cypher.Relationship();
@@ -98,7 +95,9 @@ export class ConnectionFilter extends Filter {
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!hasTarget(queryASTContext)) {
+            throw new Error("No parent node found!");
+        }
         if (this.subqueryPredicate) {
             return this.subqueryPredicate;
         }
@@ -120,10 +119,7 @@ export class ConnectionFilter extends Filter {
 
         const nestedContext = queryASTContext.push({ target, relationship });
 
-        const predicate = this.createRelationshipOperation(pattern, nestedContext);
-        if (predicate) {
-            return this.wrapInNotIfNeeded(predicate);
-        }
+        return this.createRelationshipOperation(pattern, nestedContext);
     }
     /**
      * Create a label predicate that filters concrete entities for interface target,
@@ -137,8 +133,12 @@ export class ConnectionFilter extends Filter {
      * RETURN this { .name } AS this
      **/
     protected getLabelPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
-        if (isConcreteEntity(this.target)) return undefined;
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
+        if (isConcreteEntity(this.target)) {
+            return;
+        }
         const labelPredicate = this.target.concreteEntities.map((e) => {
             return context.target.hasLabels(...e.labels);
         });
@@ -153,7 +153,9 @@ export class ConnectionFilter extends Filter {
         const labelPredicate = this.getLabelPredicate(queryASTContext);
         const innerPredicate = Cypher.and(...connectionFilter, labelPredicate);
 
-        if (!innerPredicate) return undefined;
+        if (!innerPredicate) {
+            return;
+        }
 
         switch (this.operator) {
             case "ALL": {
@@ -166,11 +168,12 @@ export class ConnectionFilter extends Filter {
                 return this.createSingleRelationshipOperation(pattern, queryASTContext, innerPredicate);
             }
             default: {
-                if (!this.relationship.isList) {
-                    return this.createSingleRelationshipOperation(pattern, queryASTContext, innerPredicate);
-                }
                 const match = new Cypher.Match(pattern).where(innerPredicate);
-                return new Cypher.Exists(match);
+                const existsClause = new Cypher.Exists(match);
+                if (this.operator === "NONE") {
+                    return Cypher.not(existsClause);
+                }
+                return existsClause;
             }
         }
     }
@@ -180,7 +183,9 @@ export class ConnectionFilter extends Filter {
         context: QueryASTContext,
         innerPredicate: Cypher.Predicate
     ) {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!hasTarget(context)) {
+            throw new Error("No parent node found!");
+        }
         const patternComprehension = new Cypher.PatternComprehension(pattern)
             .map(new Cypher.Literal(1))
             .where(innerPredicate);
@@ -191,7 +196,9 @@ export class ConnectionFilter extends Filter {
         pattern: Cypher.Pattern,
         queryASTContext: QueryASTContext
     ): Cypher.Clause[] {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!hasTarget(queryASTContext)) {
+            throw new Error("No parent node found!");
+        }
         const match = new Cypher.Match(pattern);
         const returnVar = new Cypher.Variable();
         const innerFiltersPredicates: Cypher.Predicate[] = [];
@@ -213,7 +220,7 @@ export class ConnectionFilter extends Filter {
 
         if (subqueries.length === 0) return []; // Hack logic to change predicates logic
 
-        const comparisonValue = this.isNot ? Cypher.false : Cypher.true;
+        const comparisonValue = this.operator === "NONE" ? Cypher.false : Cypher.true;
         this.subqueryPredicate = Cypher.eq(returnVar, comparisonValue);
 
         const countComparisonPredicate =
@@ -231,7 +238,9 @@ export class ConnectionFilter extends Filter {
     // 1. "All" operations require 2 CALL subqueries
     // 2. Each subquery has its own return variable, that needs to be carried over to the predicate
     private getSubqueriesForOperationAll(pattern: Cypher.Pattern, queryASTContext: QueryASTContext): Cypher.Clause[] {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!hasTarget(queryASTContext)) {
+            throw new Error("No parent node found!");
+        }
         const match = new Cypher.Match(pattern);
         const match2 = new Cypher.Match(pattern);
 
@@ -255,7 +264,9 @@ export class ConnectionFilter extends Filter {
             return nestedSubqueries;
         });
 
-        if (subqueries.length === 0) return [];
+        if (subqueries.length === 0) {
+            return [];
+        }
 
         const subqueries2 = this.innerFilters.flatMap((f) => {
             const nestedSubqueries = f.getSubqueries(queryASTContext).map((sq) => {
@@ -279,10 +290,5 @@ export class ConnectionFilter extends Filter {
         this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
 
         return [Cypher.utils.concat(match, ...subqueries), Cypher.utils.concat(match2, ...subqueries2)];
-    }
-
-    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) return Cypher.not(predicate);
-        else return predicate;
     }
 }

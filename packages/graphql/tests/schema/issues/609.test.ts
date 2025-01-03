@@ -85,6 +85,7 @@ describe("609", () => {
             }
 
             input DeprecatedUpdateInput {
+              deprecatedField: StringScalarMutations @deprecated
               deprecatedField_SET: String @deprecated
             }
 
@@ -92,6 +93,7 @@ describe("609", () => {
               AND: [DeprecatedWhere!]
               NOT: DeprecatedWhere
               OR: [DeprecatedWhere!]
+              deprecatedField: StringScalarFilters @deprecated
               deprecatedField_CONTAINS: String @deprecated
               deprecatedField_ENDS_WITH: String @deprecated
               deprecatedField_EQ: String @deprecated
@@ -136,6 +138,20 @@ describe("609", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateDeprecatedsMutationResponse {

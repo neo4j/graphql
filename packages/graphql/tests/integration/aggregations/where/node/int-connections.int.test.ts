@@ -73,7 +73,7 @@ describe("aggregations-where-node-int - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { eq: ${avg} } } } } }) {
                            edges {
                             node {
                                  testString
@@ -117,7 +117,7 @@ describe("aggregations-where-node-int - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { gt: ${avgGT} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -160,7 +160,7 @@ describe("aggregations-where-node-int - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { gte: ${avg} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -204,7 +204,7 @@ describe("aggregations-where-node-int - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { lt: ${avgLT} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -247,7 +247,7 @@ describe("aggregations-where-node-int - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { lte: ${avg} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -296,7 +296,7 @@ describe("aggregations-where-node-int - connections", () => {
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { sum: {eq: ${sum} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -385,7 +385,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { eq: ${avg} } } } } }) {
                            edges {
                             node {
                                  testString
@@ -429,7 +429,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { gt: ${avgGT} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -472,7 +472,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { gte: ${avg} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -516,7 +516,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { lt: ${avgLT} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -559,7 +559,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { average: { lte: ${avg} } } } } }) {
                             edges {
                                 node {
                                     testString
@@ -608,7 +608,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
 
             const query = `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                        ${Post.operations.connection}(where: { testString: {eq: "${testString}"}, likesAggregate: { node: { someInt: { sum: {eq: ${sum} } } } } }) {
                             edges {
                                 node {
                                     testString
