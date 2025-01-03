@@ -250,7 +250,7 @@ describe("Cypher coalesce()", () => {
         const query = /* GraphQL */ `
             query Actors {
                 actors {
-                    moviesConnection(where: { node: { statuses_EQ: [ACTIVE, INACTIVE] } }) {
+                    moviesConnection(where: { node: { statuses: { eq: [ACTIVE, INACTIVE] } } }) {
                         edges {
                             node {
                                 id

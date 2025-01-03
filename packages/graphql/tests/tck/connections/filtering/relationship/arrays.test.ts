@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_IN: [60, 70] } }) {
+                    actorsConnection(where: { edge: { screenTime: { in: [60, 70] } } }) {
                         edges {
                             properties {
                                 screenTime
