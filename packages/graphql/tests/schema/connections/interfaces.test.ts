@@ -278,7 +278,7 @@ describe("Connection with interfaces", () => {
               Return Creatures where some of the related Productions match this filter
               \\"\\"\\"
               movies_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
-              typename_IN: [CreatureImplementation!]
+              typename: [CreatureImplementation!]
             }
 
             type CreaturesConnection {
@@ -870,7 +870,7 @@ describe("Connection with interfaces", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {

@@ -552,7 +552,7 @@ describe("Interface Relationships", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -1867,7 +1867,7 @@ describe("Interface Relationships", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -3533,7 +3533,7 @@ describe("Interface Relationships", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -4393,7 +4393,7 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
               interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
-              typename_IN: [Interface1Implementation!]
+              typename: [Interface1Implementation!]
             }
 
             type Interface1sConnection {
@@ -4463,7 +4463,7 @@ describe("Interface Relationships", () => {
               field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
               field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
               field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
-              typename_IN: [Interface2Implementation!]
+              typename: [Interface2Implementation!]
             }
 
             type Interface2sConnection {
@@ -5679,7 +5679,7 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
               interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
-              typename_IN: [Interface1Implementation!]
+              typename: [Interface1Implementation!]
             }
 
             type Interface1sConnection {
@@ -5749,7 +5749,7 @@ describe("Interface Relationships", () => {
               field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
               field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
               field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
-              typename_IN: [Interface2Implementation!]
+              typename: [Interface2Implementation!]
             }
 
             type Interface2sConnection {
@@ -7073,7 +7073,7 @@ describe("Interface Relationships", () => {
               Return Interface1s where some of the related Interface2s match this filter
               \\"\\"\\"
               interface2_SOME: Interface2Where @deprecated(reason: \\"Please use the relevant generic filter 'interface2: {  some: ... }' instead.\\")
-              typename_IN: [Interface1Implementation!]
+              typename: [Interface1Implementation!]
             }
 
             type Interface1sConnection {
@@ -7143,7 +7143,7 @@ describe("Interface Relationships", () => {
               field2_EQ: String @deprecated(reason: \\"Please use the relevant generic filter field2: { eq: ... }\\")
               field2_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter field2: { in: ... }\\")
               field2_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field2: { startsWith: ... }\\")
-              typename_IN: [Interface2Implementation!]
+              typename: [Interface2Implementation!]
             }
 
             type Interface2sConnection {
@@ -8726,7 +8726,7 @@ describe("Interface Relationships", () => {
               id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              typename_IN: [ContentImplementation!]
+              typename: [ContentImplementation!]
             }
 
             type ContentsConnection {
@@ -10181,7 +10181,7 @@ describe("Interface Relationships", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {
@@ -10691,7 +10691,7 @@ describe("Interface Relationships", () => {
               title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
               title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
               title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-              typename_IN: [ShowImplementation!]
+              typename: [ShowImplementation!]
             }
 
             type ShowsConnection {

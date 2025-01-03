@@ -6482,7 +6482,7 @@ describe("@filterable directive", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      typename_IN: [PersonImplementation!]
+                      typename: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
                       username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
@@ -7254,7 +7254,7 @@ describe("@filterable directive", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      typename_IN: [PersonImplementation!]
+                      typename: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
                       username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
@@ -7990,7 +7990,7 @@ describe("@filterable directive", () => {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      typename_IN: [PersonImplementation!]
+                      typename: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
                       username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")

@@ -340,7 +340,7 @@ describe("@default directive", () => {
               toBeOverridden_EQ: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { eq: ... }\\")
               toBeOverridden_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { in: ... }\\")
               toBeOverridden_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { startsWith: ... }\\")
-              typename_IN: [UserInterfaceImplementation!]
+              typename: [UserInterfaceImplementation!]
             }
 
             type UserInterfacesConnection {

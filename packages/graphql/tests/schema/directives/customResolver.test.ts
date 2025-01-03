@@ -214,7 +214,7 @@ describe("@customResolver directive", () => {
               customResolver_EQ: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { eq: ... }\\")
               customResolver_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter customResolver: { in: ... }\\")
               customResolver_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { startsWith: ... }\\")
-              typename_IN: [UserInterfaceImplementation!]
+              typename: [UserInterfaceImplementation!]
             }
 
             type UserInterfacesConnection {

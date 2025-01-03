@@ -3030,7 +3030,7 @@ describe("@selectable", () => {
                   title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                   title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
                   title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                  typename_IN: [ProductionImplementation!]
+                  typename: [ProductionImplementation!]
                 }
 
                 type ProductionsConnection {
@@ -3629,7 +3629,7 @@ describe("@selectable", () => {
                   title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
                   title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
                   title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                  typename_IN: [ProductionImplementation!]
+                  typename: [ProductionImplementation!]
                 }
 
                 type ProductionsConnection {

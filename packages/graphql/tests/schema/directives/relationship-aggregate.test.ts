@@ -1514,7 +1514,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
                       password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      typename_IN: [PersonImplementation!]
+                      typename: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
                       username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
@@ -2030,7 +2030,7 @@ describe("@relationship directive, aggregate argument", () => {
                       password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
                       password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
                       password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      typename_IN: [PersonImplementation!]
+                      typename: [PersonImplementation!]
                       username: StringScalarFilters
                       username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
                       username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")

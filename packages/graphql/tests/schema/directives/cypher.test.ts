@@ -1591,7 +1591,7 @@ describe("Cypher", () => {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              typename_IN: [ProductionImplementation!]
+              typename: [ProductionImplementation!]
             }
 
             type ProductionsConnection {

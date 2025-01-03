@@ -1778,7 +1778,7 @@ describe("Union Interface Relationships", () => {
               reviewerId_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter reviewerId: { in: ... }\\")
               reviewerId_LT: Int @deprecated(reason: \\"Please use the relevant generic filter reviewerId: { lt: ... }\\")
               reviewerId_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter reviewerId: { lte: ... }\\")
-              typename_IN: [ReviewerImplementation!]
+              typename: [ReviewerImplementation!]
             }
 
             type ReviewersConnection {

@@ -159,7 +159,7 @@ describe("Cypher Delete - interface", () => {
             mutation {
                 deleteActors(
                     where: { name: { eq: "Keanu" } }
-                    delete: { actedIn: { where: { node: { typename_IN: [Movie], title: { eq: "Matrix" } } } } }
+                    delete: { actedIn: { where: { node: { typename: [Movie], title: { eq: "Matrix" } } } } }
                 ) {
                     nodesDeleted
                 }

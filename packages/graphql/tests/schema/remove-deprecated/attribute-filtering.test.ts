@@ -613,7 +613,7 @@ describe("Exclude attribute suffix based filtering", () => {
               localTime: LocalTimeScalarFilters
               point: PointFilters
               time: TimeScalarFilters
-              typename_IN: [interfaceCImplementation!]
+              typename: [interfaceCImplementation!]
             }
 
             \\"\\"\\"

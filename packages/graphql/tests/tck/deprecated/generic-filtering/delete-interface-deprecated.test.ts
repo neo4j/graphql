@@ -159,7 +159,7 @@ describe("Cypher Delete - interface - deprecated", () => {
             mutation {
                 deleteActors(
                     where: { name_EQ: "Keanu" }
-                    delete: { actedIn: { where: { node: { typename_IN: [Movie], title_EQ: "Matrix" } } } }
+                    delete: { actedIn: { where: { node: { typename: [Movie], title_EQ: "Matrix" } } } }
                 ) {
                     nodesDeleted
                 }

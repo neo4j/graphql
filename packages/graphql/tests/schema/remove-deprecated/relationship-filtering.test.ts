@@ -684,7 +684,7 @@ describe("Exclude suffix based filtering", () => {
               time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
               time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
               time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
-              typename_IN: [interfaceCImplementation!]
+              typename: [interfaceCImplementation!]
             }
 
             \\"\\"\\"
