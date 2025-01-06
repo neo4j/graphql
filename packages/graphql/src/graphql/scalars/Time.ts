@@ -19,7 +19,7 @@
 
 import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
-import neo4j, { isTime } from "neo4j-driver";
+import neo4j from "neo4j-driver";
 
 export const TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)(:(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?)?$/;
@@ -78,15 +78,15 @@ export const parseTime = (value: unknown): ParsedTime => {
     };
 };
 
-const parse = (value: unknown) => {
-    if (isTime(value)) {
-        return value;
-    }
+// const parse = (value: unknown) => {
+//     if (isTime(value)) {
+//         return value;
+//     }
 
-    const { hour, minute, second, nanosecond, timeZoneOffsetSeconds } = parseTime(value);
+//     const { hour, minute, second, nanosecond, timeZoneOffsetSeconds } = parseTime(value);
 
-    return new neo4j.types.Time(hour, minute, second, nanosecond, timeZoneOffsetSeconds);
-};
+//     return new neo4j.types.Time(hour, minute, second, nanosecond, timeZoneOffsetSeconds);
+// };
 
 export const GraphQLTime = new GraphQLScalarType({
     name: "Time",
@@ -105,12 +105,14 @@ export const GraphQLTime = new GraphQLScalarType({
         return stringifiedValue;
     },
     parseValue: (value: unknown) => {
-        return parse(value);
+        return value as string;
+        // return parse(value);
     },
     parseLiteral: (ast: ValueNode) => {
         if (ast.kind !== Kind.STRING) {
             throw new GraphQLError(`Only strings can be validated as Time, but received: ${ast.kind}`);
         }
-        return parse(ast.value);
+        return ast.value;
+        // return parse(ast.value);
     },
 });

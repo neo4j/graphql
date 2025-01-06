@@ -58,7 +58,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someTime) = $param0 AS var2
+                RETURN min(this1.someTime) = time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -67,13 +67,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -94,7 +88,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someTime) > $param0 AS var2
+                RETURN min(this1.someTime) > time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -103,13 +97,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -130,7 +118,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someTime) >= $param0 AS var2
+                RETURN min(this1.someTime) >= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -139,13 +127,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -166,7 +148,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someTime) < $param0 AS var2
+                RETURN min(this1.someTime) < time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -175,13 +157,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -202,7 +178,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someTime) <= $param0 AS var2
+                RETURN min(this1.someTime) <= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -211,13 +187,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -238,7 +208,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someTime) = $param0 AS var2
+                RETURN max(this1.someTime) = time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -247,13 +217,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -274,7 +238,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someTime) > $param0 AS var2
+                RETURN max(this1.someTime) > time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -283,13 +247,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -310,7 +268,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someTime) >= $param0 AS var2
+                RETURN max(this1.someTime) >= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -319,13 +277,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -346,7 +298,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someTime) < $param0 AS var2
+                RETURN max(this1.someTime) < time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -355,13 +307,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -382,7 +328,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someTime) <= $param0 AS var2
+                RETURN max(this1.someTime) <= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -391,13 +337,7 @@ describe("Cypher Aggregations where node with Time", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
