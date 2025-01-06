@@ -29,24 +29,26 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         }
 
         type Actor
-            @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy_EQ: "$jwt.sub" } } }])
+            @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy: { eq: "$jwt.sub" } } } }])
             @node {
             id: ID! @id
             name: String
             nodeCreatedBy: String
             fieldA: String
                 @authorization(
-                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-A" } } }]
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "role-A" } } } }]
                 )
             fieldB: String
                 @authorization(
-                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-B" } } }]
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "role-B" } } } }]
                 )
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
         type Movie
             @node
-            @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+            @authorization(
+                validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "admin" } } } }]
+            ) {
             id: ID
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
         }

@@ -60,9 +60,18 @@ describe("Time", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -72,7 +81,6 @@ describe("Time", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               time: TimeAggregateSelection!
             }
 
@@ -95,25 +103,29 @@ describe("Time", () => {
             }
 
             input MovieUpdateInput {
-              id_SET: ID
-              time_SET: Time
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              time: TimeScalarMutations
+              time_SET: Time @deprecated(reason: \\"Please use the generic mutation 'time: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              time_EQ: Time
-              time_GT: Time
-              time_GTE: Time
-              time_IN: [Time]
-              time_LT: Time
-              time_LTE: Time
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              time: TimeScalarFilters
+              time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
+              time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gt: ... }\\")
+              time_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gte: ... }\\")
+              time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
+              time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
+              time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
             }
 
             type MoviesConnection {
@@ -156,6 +168,21 @@ describe("Time", () => {
             type TimeAggregateSelection {
               max: Time
               min: Time
+            }
+
+            \\"\\"\\"Time filters\\"\\"\\"
+            input TimeScalarFilters {
+              eq: Time
+              gt: Time
+              gte: Time
+              in: [Time!]
+              lt: Time
+              lte: Time
+            }
+
+            \\"\\"\\"Time mutations\\"\\"\\"
+            input TimeScalarMutations {
+              set: Time
             }
 
             \\"\\"\\"

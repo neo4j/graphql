@@ -31,7 +31,7 @@ describe("Interface filtering", () => {
     const Actor = testHelper.createUniqueType("Actor");
 
     beforeAll(async () => {
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             interface Show {
                 title: String!
                 actors: [${Actor}!]! @declareRelationship
@@ -90,9 +90,9 @@ describe("Interface filtering", () => {
     });
 
     test("allow for logical filters on top-level interfaces", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query actedInWhere {
-                shows(where: { OR: [{ title_EQ: "The Office" }, { title_EQ: "The Office 2" }] }) {
+                shows(where: { OR: [{ title: { eq: "The Office" } }, { title: { eq: "The Office 2" } }] }) {
                     title
                 }
             }
@@ -117,10 +117,10 @@ describe("Interface filtering", () => {
     });
 
     test("allow for logical filters on nested-level interfaces", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query actedInWhere {
                 ${Actor.plural} {
-                    actedIn(where: { OR: [{ title_EQ: "The Office" }, { title_EQ: "The Office 2" }] }) {
+                    actedIn(where: { OR: [{ title: {eq: "The Office"} }, { title: { eq: "The Office 2"} }] }) {
                         title
                     }
                 }

@@ -28,7 +28,11 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }
+                        {
+                            when: [BEFORE]
+                            operations: [CREATE_RELATIONSHIP]
+                            where: { node: { id: { eq: "$jwt.sub" } } }
+                        }
                     ]
                 ) {
                 id: ID!
@@ -47,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(update: { targets: { connect: { where: { node: { id_EQ: 1 } } } } }) {
+                updateSources(update: { targets: { connect: { where: { node: { id: { eq: 1 } } } } } }) {
                     sources {
                         id
                     }
@@ -102,7 +106,11 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }
+                        {
+                            when: [BEFORE]
+                            operations: [DELETE_RELATIONSHIP]
+                            where: { node: { id: { eq: "$jwt.sub" } } }
+                        }
                     ]
                 ) {
                 id: ID!
@@ -121,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(update: { targets: { disconnect: { where: { node: { id_EQ: 1 } } } } }) {
+                updateSources(update: { targets: { disconnect: { where: { node: { id: { eq: 1 } } } } } }) {
                     sources {
                         id
                     }
@@ -169,7 +177,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"1\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"1\\"
+                                                    }
                                                 }
                                             }
                                         }

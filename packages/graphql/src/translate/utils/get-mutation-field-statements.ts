@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Node, Relationship } from "../../classes";
+import { Neo4jGraphQLError, type Node, type Relationship } from "../../classes";
 import { SPATIAL_TYPES } from "../../constants";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./math";
@@ -36,6 +36,7 @@ export function getMutationFieldStatements({
     varName,
     value,
     withVars,
+    isUpdateOperation = false,
 }: {
     nodeOrRel: Node | Relationship;
     param: string;
@@ -43,16 +44,29 @@ export function getMutationFieldStatements({
     varName: string;
     value: any;
     withVars: string[];
+    isUpdateOperation?: boolean;
 }): string {
     const strs: string[] = [];
     const { settableField, operator } = parseMutableField(nodeOrRel, key);
+    if (!operator && isUpdateOperation) {
+        const result = getMutationFieldStatementsForGenericOperator({
+            nodeOrRel,
+            param,
+            key,
+            varName,
+            operations: value,
+            withVars,
+        });
+        return result;
+    }
+
     if (settableField) {
         const dbFieldName = mapToDbProperty(nodeOrRel, settableField.fieldName);
         if (settableField.typeMeta.required && value === null) {
             throw new Error(`Cannot set non-nullable field ${nodeOrRel.name}.${settableField.fieldName} to null`);
         }
 
-        switch (operator) {
+        switch (operator ?? "SET") {
             case "SET": {
                 const isSpatial = SPATIAL_TYPES.includes(settableField.typeMeta.name);
                 const isZonedTemporal = ["DateTime", "Time"].includes(settableField.typeMeta.name);
@@ -119,4 +133,67 @@ export function getMutationFieldStatements({
         }
     }
     return strs.join("\n");
+}
+
+// Converts generic operator into cypher statements using the deprecated syntax as intermediate step
+function getMutationFieldStatementsForGenericOperator({
+    nodeOrRel,
+    param,
+    key,
+    varName,
+    operations,
+    withVars,
+}: {
+    nodeOrRel: Node | Relationship;
+    param: string;
+    key: string;
+    varName: string;
+    operations: any;
+    withVars: string[];
+}): string {
+    if (Object.entries(operations).length > 1) {
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of field ${key}: ${Object.keys(operations)
+                .map((n) => `[[${n}]]`)
+                .join(", ")} on type ${nodeOrRel.name}`
+        );
+    }
+
+    return Object.entries(operations)
+        .map(([operator, value]) => {
+            return getMutationFieldStatements({
+                nodeOrRel,
+                param: `${param}.${operator}`,
+                key: `${key}_${newOperatorToDeprecated(operator)}`,
+                varName,
+                withVars,
+                value,
+            });
+        })
+        .join("\n");
+}
+
+function newOperatorToDeprecated(op: string): string {
+    switch (op) {
+        case "set":
+            return "SET";
+        case "increment":
+            return "INCREMENT";
+        case "decrement":
+            return "DECREMENT";
+        case "add":
+            return "ADD";
+        case "subtract":
+            return "SUBTRACT";
+        case "divide":
+            return "DIVIDE";
+        case "multiply":
+            return "MULTIPLY";
+        case "push":
+            return "PUSH";
+        case "pop":
+            return "POP";
+        default:
+            throw new Error(`Unknown generic mutation operator ${op}`);
+    }
 }

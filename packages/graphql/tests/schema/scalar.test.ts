@@ -58,6 +58,30 @@ describe("Scalar", () => {
 
             scalar CustomScalar
 
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarListScalarFilters {
+              eq: [CustomScalar!]
+              includes: CustomScalar
+            }
+
+            \\"\\"\\"Mutations for a list for CustomScalar\\"\\"\\"
+            input CustomScalarListScalarMutations {
+              pop: CustomScalar
+              push: [CustomScalar!]!
+              set: [CustomScalar!]!
+            }
+
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarFilters {
+              eq: CustomScalar
+              in: [CustomScalar!]
+            }
+
+            \\"\\"\\"CustomScalar filters\\"\\"\\"
+            input CustomScalarScalarMutations {
+              set: CustomScalar
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -66,9 +90,18 @@ describe("Scalar", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -80,7 +113,6 @@ describe("Scalar", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input MovieCreateInput {
@@ -104,27 +136,35 @@ describe("Scalar", () => {
             }
 
             input MovieUpdateInput {
-              id_SET: ID
-              myCustomArrayScalar_SET: [CustomScalar!]
-              myCustomScalar_SET: CustomScalar
-              myRequiredCustomArrayScalar_SET: [CustomScalar!]
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              myCustomArrayScalar: CustomScalarListScalarMutations
+              myCustomArrayScalar_SET: [CustomScalar!] @deprecated(reason: \\"Please use the generic mutation 'myCustomArrayScalar: { set: ... } }' instead.\\")
+              myCustomScalar: CustomScalarScalarMutations
+              myCustomScalar_SET: CustomScalar @deprecated(reason: \\"Please use the generic mutation 'myCustomScalar: { set: ... } }' instead.\\")
+              myRequiredCustomArrayScalar: CustomScalarListScalarMutations
+              myRequiredCustomArrayScalar_SET: [CustomScalar!] @deprecated(reason: \\"Please use the generic mutation 'myRequiredCustomArrayScalar: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              myCustomArrayScalar_EQ: [CustomScalar!]
-              myCustomArrayScalar_INCLUDES: CustomScalar
-              myCustomScalar_EQ: CustomScalar
-              myCustomScalar_IN: [CustomScalar]
-              myRequiredCustomArrayScalar_EQ: [CustomScalar!]
-              myRequiredCustomArrayScalar_INCLUDES: CustomScalar
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              myCustomArrayScalar: CustomScalarListScalarFilters
+              myCustomArrayScalar_EQ: [CustomScalar!] @deprecated(reason: \\"Please use the relevant generic filter myCustomArrayScalar: { eq: ... }\\")
+              myCustomArrayScalar_INCLUDES: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myCustomArrayScalar: { includes: ... }\\")
+              myCustomScalar: CustomScalarScalarFilters
+              myCustomScalar_EQ: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myCustomScalar: { eq: ... }\\")
+              myCustomScalar_IN: [CustomScalar] @deprecated(reason: \\"Please use the relevant generic filter myCustomScalar: { in: ... }\\")
+              myRequiredCustomArrayScalar: CustomScalarListScalarFilters
+              myRequiredCustomArrayScalar_EQ: [CustomScalar!] @deprecated(reason: \\"Please use the relevant generic filter myRequiredCustomArrayScalar: { eq: ... }\\")
+              myRequiredCustomArrayScalar_INCLUDES: CustomScalar @deprecated(reason: \\"Please use the relevant generic filter myRequiredCustomArrayScalar: { includes: ... }\\")
             }
 
             type MoviesConnection {

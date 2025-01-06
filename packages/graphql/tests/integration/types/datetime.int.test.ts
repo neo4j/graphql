@@ -143,7 +143,7 @@ describe("DateTime", () => {
 
             const query = `
                 query {
-                    ${Movie.plural}(where: { datetime_EQ: "${date.toISOString()}" }) {
+                    ${Movie.plural}(where: { datetime: {eq: "${date.toISOString()}" } }) {
                         datetime
                     }
                 }
@@ -179,7 +179,7 @@ describe("DateTime", () => {
 
             const query = /* GraphQL */ `
                 query {
-                    ${Movie.plural}(where: { name_EQ: "${Movie.name}" }) {
+                    ${Movie.plural}(where: { name: {eq: "${Movie.name}" }}) {
                         datetime
                     }
                 }

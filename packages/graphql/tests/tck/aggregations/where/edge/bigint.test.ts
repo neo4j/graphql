@@ -49,7 +49,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_AVERAGE_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { average: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -82,7 +82,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_AVERAGE_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { average: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -115,7 +115,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_AVERAGE_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { average: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -148,7 +148,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_AVERAGE_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { average: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -181,7 +181,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_AVERAGE_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { average: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -214,7 +214,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("SUM_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_SUM_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { sum: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -247,7 +247,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("SUM_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_SUM_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { sum: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -280,7 +280,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("SUM_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_SUM_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { sum: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -313,7 +313,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("SUM_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_SUM_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { sum: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -346,7 +346,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("SUM_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_SUM_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { sum: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -379,7 +379,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MIN_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { min: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -412,7 +412,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MIN_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { min: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -445,7 +445,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MIN_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { min: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -478,7 +478,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MIN_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { min: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -511,7 +511,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MIN_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { min: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -544,7 +544,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MAX_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { max: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -577,7 +577,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MAX_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { max: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -610,7 +610,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MAX_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { max: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -643,7 +643,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MAX_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { max: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -676,7 +676,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someBigInt_MAX_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { edge: { someBigInt: { max: { lte: "2147483648" } } } } }) {
                     content
                 }
             }

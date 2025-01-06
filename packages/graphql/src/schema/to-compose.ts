@@ -30,7 +30,10 @@ import type { Argument } from "../schema-model/argument/Argument";
 import { ArgumentAdapter } from "../schema-model/argument/model-adapters/ArgumentAdapter";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
-import type { InputField } from "../types";
+import type { InputField, Neo4jFeaturesSettings } from "../types";
+import { DEPRECATE_ARRAY_MUTATIONS, DEPRECATE_MATH_MUTATIONS, DEPRECATE_SET_MUTATION } from "./constants";
+import { getMutationInputFromAttributeType } from "./generation/get-mutation-input-from-attribute-type";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { idResolver } from "./resolvers/field/id";
 import { numericalResolver } from "./resolvers/field/numerical";
 
@@ -129,26 +132,39 @@ export function concreteEntityToUpdateInputFields({
     objectFields,
     userDefinedFieldDirectives,
     additionalFieldsCallbacks = [],
+    features,
 }: {
     objectFields: AttributeAdapter[];
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     additionalFieldsCallbacks: AdditionalFieldsCallback[];
+    features: Neo4jFeaturesSettings | undefined;
 }) {
     let updateInputFields: InputTypeComposerFieldConfigMapDefinition = {};
     for (const field of objectFields) {
         const newInputField: InputField = {
             type: field.getInputTypeNames().update.pretty,
-            directives: [],
+            directives: [DEPRECATE_SET_MUTATION(field.name)],
         };
 
         const userDefinedDirectivesOnField = userDefinedFieldDirectives.get(field.name);
+        let userDefinedDirectives: Directive[] = [];
+
         if (userDefinedDirectivesOnField) {
-            newInputField.directives = graphqlDirectivesToCompose(
+            userDefinedDirectives = graphqlDirectivesToCompose(
                 userDefinedDirectivesOnField.filter((directive) => directive.name.value === DEPRECATED)
             );
+
+            newInputField.directives = userDefinedDirectives;
         }
 
-        updateInputFields[`${field.name}_SET`] = newInputField;
+        updateInputFields[field.name] = {
+            type: getMutationInputFromAttributeType(field),
+            directives: userDefinedDirectives,
+        };
+
+        if (shouldAddDeprecatedFields(features, "mutationOperations")) {
+            updateInputFields[`${field.name}_SET`] = newInputField;
+        }
 
         for (const cb of additionalFieldsCallbacks) {
             const additionalFields = cb(field, newInputField);
@@ -162,9 +178,18 @@ export function concreteEntityToUpdateInputFields({
 export function withMathOperators(): AdditionalFieldsCallback {
     return (attribute: AttributeAdapter, fieldDefinition: InputField): Record<string, InputField> => {
         const fields: Record<string, InputField> = {};
+
         if (attribute.mathModel) {
             for (const operation of attribute.mathModel.getMathOperations()) {
-                fields[operation] = fieldDefinition;
+                const newFieldDefinition =
+                    typeof fieldDefinition === "string" ? { type: fieldDefinition } : { ...fieldDefinition };
+                const operationNameUpperCase = operation.split("_")[1];
+                if (!operationNameUpperCase) {
+                    throw new Error(`Invalid operation: ${operation}`);
+                }
+                const newOperationName = operationNameUpperCase.toLowerCase();
+                newFieldDefinition.directives = [DEPRECATE_MATH_MUTATIONS(attribute.name, newOperationName)];
+                fields[operation] = newFieldDefinition;
             }
         }
         return fields;
@@ -175,14 +200,20 @@ export function withArrayOperators(): AdditionalFieldsCallback {
     return (attribute: AttributeAdapter): InputTypeComposerFieldConfigMapDefinition => {
         const fields: InputTypeComposerFieldConfigMapDefinition = {};
         if (attribute.listModel) {
-            fields[attribute.listModel.getPop()] = GraphQLInt;
-            fields[attribute.listModel.getPush()] = attribute.getInputTypeNames().update.pretty;
+            fields[attribute.listModel.getPop()] = {
+                type: GraphQLInt,
+                directives: [DEPRECATE_ARRAY_MUTATIONS(attribute.name, "pop")],
+            };
+            fields[attribute.listModel.getPush()] = {
+                type: attribute.getInputTypeNames().update.pretty,
+                directives: [DEPRECATE_ARRAY_MUTATIONS(attribute.name, "push")],
+            };
         }
         return fields;
     };
 }
 
-type AdditionalFieldsCallback = (
+export type AdditionalFieldsCallback = (
     attribute: AttributeAdapter,
     fieldDefinition: InputField
 ) => Record<string, InputField> | InputTypeComposerFieldConfigMapDefinition;

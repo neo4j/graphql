@@ -49,7 +49,7 @@ describe("array-pop-and-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: "new tag", moreTags_POP: 2 }) {
+                ${typeMovie.operations.update} (update: { tags: {push: "new tag" }, moreTags: {pop: 2 } }) {
                     ${typeMovie.plural} {
                         title
                         tags

@@ -145,6 +145,100 @@ function makeAugmentedSchema({
     const generatorComposer = schemaGenerator.generate();
     composer.merge(generatorComposer);
 
+    // Generates the filters for enums, which are reused
+    Array.from(enumTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}EnumScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                eq: {
+                    type: enumType.name.value,
+                },
+                in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+        composer.createInputTC({
+            name: `${enumType.name.value}ListEnumScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                eq: {
+                    type: `[${enumType.name.value}!]`,
+                },
+                includes: {
+                    type: enumType.name.value,
+                },
+            },
+        });
+    });
+
+    // Generates the mutations for enums, which are reused
+    Array.from(enumTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}EnumScalarMutations`,
+            description: `${enumType.name.value} mutations`,
+            fields: {
+                set: { type: enumType.name.value },
+            },
+        });
+        composer.createInputTC({
+            name: `${enumType.name.value}ListEnumScalarMutations`,
+            description: `Mutations for a list for ${enumType.name.value}`,
+            fields: {
+                set: { type: `[${enumType.name.value}!]!` },
+                push: { type: `[${enumType.name.value}!]!` },
+                pop: { type: enumType.name.value },
+            },
+        });
+    });
+
+    // Generates the filters for custom scalars
+    Array.from(scalarTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}ScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                eq: {
+                    type: enumType.name.value,
+                },
+                in: { type: `[${enumType.name.value}!]` },
+            },
+        });
+
+        composer.createInputTC({
+            name: `${enumType.name.value}ListScalarFilters`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                eq: {
+                    type: `[${enumType.name.value}!]`,
+                },
+                includes: {
+                    type: enumType.name.value,
+                },
+            },
+        });
+    });
+
+    // Generates the mutations for custom scalars
+    Array.from(scalarTypes.values()).forEach((enumType) => {
+        composer.createInputTC({
+            name: `${enumType.name.value}ScalarMutations`,
+            description: `${enumType.name.value} filters`,
+            fields: {
+                set: { type: enumType.name.value },
+            },
+        });
+
+        composer.createInputTC({
+            name: `${enumType.name.value}ListScalarMutations`,
+            description: `Mutations for a list for ${enumType.name.value}`,
+            fields: {
+                set: { type: `[${enumType.name.value}!]!` },
+                push: { type: `[${enumType.name.value}!]!` },
+                pop: { type: enumType.name.value },
+            },
+        });
+    });
+
     // TODO: move these to SchemaGenerator once the other types are moved (in the meantime references to object types are causing errors because they are not present in the generated schema)
     const pipedDefs = [
         ...userDefinedObjectTypes.values(),
@@ -371,6 +465,7 @@ function makeAugmentedSchema({
     let parsedDoc = parse(generatedTypeDefs);
     
     const documentNames = new Set(parsedDoc.definitions.filter(definitionNodeHasName).map((x) => x.name.value));
+
     const resolveMethods = getResolveAndSubscriptionMethods(composer);
 
     const generatedResolveMethods: GraphQLToolsResolveMethods<any> = {};
@@ -547,7 +642,7 @@ function generateObjectType({
     augmentVectorSchema({ composer, concreteEntityAdapter, features, complexityEstimatorHelper });
     withUniqueWhereInputType({ concreteEntityAdapter, composer });
     withCreateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
-    withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer });
+    withUpdateInputType({ entityAdapter: concreteEntityAdapter, userDefinedFieldDirectives, composer, features });
     withMutationResponseTypes({ concreteEntityAdapter, propagatedDirectives, composer });
     const composeNode = withObjectType({
         entityAdapter: concreteEntityAdapter,
@@ -693,7 +788,7 @@ function generateInterfaceObjectType({
         composer,
     });
     withCreateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
-    withUpdateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer });
+    withUpdateInputType({ entityAdapter: interfaceEntityAdapter, userDefinedFieldDirectives, composer, features });
 
     const composeInterface = withInterfaceType({
         interfaceEntityAdapter,

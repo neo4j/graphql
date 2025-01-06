@@ -31,28 +31,24 @@ export class CypherOneToOneRelationshipFilter extends Filter {
     private selection: CustomCypherSelection;
     private operator: FilterOperator;
     private targetNodeFilters: Filter[] = [];
-    private isNot: boolean;
     private isNull: boolean;
 
     constructor({
         selection,
         attribute,
         operator,
-        isNot,
         isNull,
         returnVariable,
     }: {
         selection: CustomCypherSelection;
         attribute: AttributeAdapter;
         operator: RelationshipWhereOperator;
-        isNot: boolean;
         isNull: boolean;
         returnVariable: Cypher.Node;
     }) {
         super();
         this.selection = selection;
         this.attribute = attribute;
-        this.isNot = isNot;
         this.isNull = isNull;
         this.operator = operator;
         this.returnVariable = returnVariable;
@@ -67,7 +63,7 @@ export class CypherOneToOneRelationshipFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.attribute.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.attribute.name}] <${this.operator}>`;
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
@@ -84,10 +80,7 @@ export class CypherOneToOneRelationshipFilter extends Filter {
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const context = queryASTContext.setTarget(this.returnVariable);
 
-        const predicate = this.createRelationshipOperation(context);
-        if (predicate) {
-            return this.wrapInNotIfNeeded(predicate);
-        }
+        return this.createRelationshipOperation(context);
     }
 
     private createRelationshipOperation(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -99,13 +92,5 @@ export class CypherOneToOneRelationshipFilter extends Filter {
         }
 
         return innerPredicate;
-    }
-
-    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.not(predicate);
-        }
-
-        return predicate;
     }
 }

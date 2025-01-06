@@ -84,7 +84,7 @@ describe("#288", () => {
     test("Can update a USER and COMPANYID is populated", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { USERID_EQ: "userid" }, update: { COMPANYID_SET: "companyid2" }) {
+                updateUsers(where: { USERID: { eq: "userid" } }, update: { COMPANYID_SET: "companyid2" }) {
                     users {
                         USERID
                         COMPANYID

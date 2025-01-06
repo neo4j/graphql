@@ -31,7 +31,9 @@ describe("Batch Create, Auth", () => {
                 roles: [String!]!
             }
 
-            type Actor @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
+            type Actor
+                @authorization(validate: [{ when: [BEFORE], where: { node: { id: { eq: "$jwt.sub" } } } }])
+                @node {
                 id: ID! @id
                 name: String
                 website: [Website!]! @relationship(type: "HAS_WEBSITE", direction: OUT)
@@ -41,7 +43,7 @@ describe("Batch Create, Auth", () => {
             type Movie
                 @node
                 @authorization(
-                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "admin" } } } }]
                 ) {
                 id: ID
                 website: [Website!]! @relationship(type: "HAS_WEBSITE", direction: OUT)

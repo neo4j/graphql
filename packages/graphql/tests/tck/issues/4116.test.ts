@@ -42,7 +42,13 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
             type Person
                 @node
                 @authorization(
-                    filter: [{ where: { node: { family_SOME: { creator_SOME: { roles_INCLUDES: "plan:paid" } } } } }]
+                    filter: [
+                        {
+                            where: {
+                                node: { family: { some: { creator: { some: { roles: { includes: "plan:paid" } } } } } }
+                            }
+                        }
+                    ]
                 ) {
                 id: ID! @id
                 creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
@@ -85,7 +91,13 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                WHERE ($isAuthenticated = true AND size([(this1)-[:MEMBER_OF]->(this3:Family) WHERE size([(this3)<-[:CREATOR_OF]-(this2:User) WHERE ($param1 IS NOT NULL AND $param1 IN this2.roles) | 1]) > 0 | 1]) > 0)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                    MATCH (this1)-[:MEMBER_OF]->(this2:Family)
+                    WHERE EXISTS {
+                        MATCH (this2)<-[:CREATOR_OF]-(this3:User)
+                        WHERE ($param1 IS NOT NULL AND $param1 IN this3.roles)
+                    }
+                })
                 RETURN count(this1) AS var4
             }
             RETURN this { .id, membersAggregate: { count: var4 } } AS this"

@@ -401,7 +401,12 @@ class Neo4jGraphQL {
             });
 
             if (this.validate) {
-                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
+                validateUserDefinition({
+                    userDocument: document,
+                    augmentedDocument: typeDefs,
+                    jwt: jwt?.type,
+                    features: this.features,
+                });
             }
 
             this._nodes = nodes;
@@ -473,6 +478,7 @@ class Neo4jGraphQL {
                 additionalDirectives: directives,
                 additionalTypes: types,
                 jwt: jwt?.type,
+                features: this.features,
             });
         }
 

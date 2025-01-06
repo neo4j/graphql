@@ -57,6 +57,16 @@ describe("@default directive", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -78,6 +88,21 @@ describe("@default directive", () => {
               min: DateTime
             }
 
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
+              in: [DateTime!]
+              lt: DateTime
+              lte: DateTime
+            }
+
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -93,9 +118,37 @@ describe("@default directive", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -105,10 +158,38 @@ describe("@default directive", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             enum Location {
               EVERYWHERE
               HERE
               THERE
+            }
+
+            \\"\\"\\"Location filters\\"\\"\\"
+            input LocationEnumScalarFilters {
+              eq: Location
+              in: [Location!]
+            }
+
+            \\"\\"\\"Location mutations\\"\\"\\"
+            input LocationEnumScalarMutations {
+              set: Location
             }
 
             type Mutation {
@@ -147,6 +228,20 @@ describe("@default directive", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created and deleted during an update mutation
             \\"\\"\\"
@@ -177,7 +272,6 @@ describe("@default directive", () => {
             type UserAggregateSelection {
               count: Int!
               fromInterface: StringAggregateSelection!
-              id: IDAggregateSelection!
               name: StringAggregateSelection!
               numberOfFriends: IntAggregateSelection!
               rating: FloatAggregateSelection!
@@ -234,17 +328,19 @@ describe("@default directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
-              fromInterface_CONTAINS: String
-              fromInterface_ENDS_WITH: String
-              fromInterface_EQ: String
-              fromInterface_IN: [String!]
-              fromInterface_STARTS_WITH: String
-              toBeOverridden_CONTAINS: String
-              toBeOverridden_ENDS_WITH: String
-              toBeOverridden_EQ: String
-              toBeOverridden_IN: [String!]
-              toBeOverridden_STARTS_WITH: String
-              typename_IN: [UserInterfaceImplementation!]
+              fromInterface: StringScalarFilters
+              fromInterface_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { contains: ... }\\")
+              fromInterface_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { endsWith: ... }\\")
+              fromInterface_EQ: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { eq: ... }\\")
+              fromInterface_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { in: ... }\\")
+              fromInterface_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { startsWith: ... }\\")
+              toBeOverridden: StringScalarFilters
+              toBeOverridden_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { contains: ... }\\")
+              toBeOverridden_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { endsWith: ... }\\")
+              toBeOverridden_EQ: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { eq: ... }\\")
+              toBeOverridden_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { in: ... }\\")
+              toBeOverridden_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { startsWith: ... }\\")
+              typename: [UserInterfaceImplementation!]
             }
 
             type UserInterfacesConnection {
@@ -269,68 +365,86 @@ describe("@default directive", () => {
             }
 
             input UserUpdateInput {
-              fromInterface_SET: String
-              id_SET: ID
-              location_SET: Location
-              name_SET: String
-              numberOfFriends_DECREMENT: Int
-              numberOfFriends_INCREMENT: Int
-              numberOfFriends_SET: Int
-              rating_ADD: Float
-              rating_DIVIDE: Float
-              rating_MULTIPLY: Float
-              rating_SET: Float
-              rating_SUBTRACT: Float
-              toBeOverridden_SET: String
-              verifiedDate_SET: DateTime
-              verified_SET: Boolean
+              fromInterface: StringScalarMutations
+              fromInterface_SET: String @deprecated(reason: \\"Please use the generic mutation 'fromInterface: { set: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              location: LocationEnumScalarMutations
+              location_SET: Location @deprecated(reason: \\"Please use the generic mutation 'location: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+              numberOfFriends: IntScalarMutations
+              numberOfFriends_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'numberOfFriends: { decrement: ... } }' instead.\\")
+              numberOfFriends_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'numberOfFriends: { increment: ... } }' instead.\\")
+              numberOfFriends_SET: Int @deprecated(reason: \\"Please use the generic mutation 'numberOfFriends: { set: ... } }' instead.\\")
+              rating: FloatScalarMutations
+              rating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { add: ... } }' instead.\\")
+              rating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { divide: ... } }' instead.\\")
+              rating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { multiply: ... } }' instead.\\")
+              rating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'rating: { set: ... } }' instead.\\")
+              rating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'rating: { subtract: ... } }' instead.\\")
+              toBeOverridden: StringScalarMutations
+              toBeOverridden_SET: String @deprecated(reason: \\"Please use the generic mutation 'toBeOverridden: { set: ... } }' instead.\\")
+              verified: BooleanScalarMutations
+              verifiedDate: DateTimeScalarMutations
+              verifiedDate_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'verifiedDate: { set: ... } }' instead.\\")
+              verified_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'verified: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              fromInterface_CONTAINS: String
-              fromInterface_ENDS_WITH: String
-              fromInterface_EQ: String
-              fromInterface_IN: [String!]
-              fromInterface_STARTS_WITH: String
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              location_EQ: Location
-              location_IN: [Location!]
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              numberOfFriends_EQ: Int
-              numberOfFriends_GT: Int
-              numberOfFriends_GTE: Int
-              numberOfFriends_IN: [Int!]
-              numberOfFriends_LT: Int
-              numberOfFriends_LTE: Int
-              rating_EQ: Float
-              rating_GT: Float
-              rating_GTE: Float
-              rating_IN: [Float!]
-              rating_LT: Float
-              rating_LTE: Float
-              toBeOverridden_CONTAINS: String
-              toBeOverridden_ENDS_WITH: String
-              toBeOverridden_EQ: String
-              toBeOverridden_IN: [String!]
-              toBeOverridden_STARTS_WITH: String
-              verifiedDate_EQ: DateTime
-              verifiedDate_GT: DateTime
-              verifiedDate_GTE: DateTime
-              verifiedDate_IN: [DateTime!]
-              verifiedDate_LT: DateTime
-              verifiedDate_LTE: DateTime
-              verified_EQ: Boolean
+              fromInterface: StringScalarFilters
+              fromInterface_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { contains: ... }\\")
+              fromInterface_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { endsWith: ... }\\")
+              fromInterface_EQ: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { eq: ... }\\")
+              fromInterface_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { in: ... }\\")
+              fromInterface_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter fromInterface: { startsWith: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              location: LocationEnumScalarFilters
+              location_EQ: Location @deprecated(reason: \\"Please use the relevant generic filter location: { eq: ... }\\")
+              location_IN: [Location!] @deprecated(reason: \\"Please use the relevant generic filter location: { in: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              numberOfFriends: IntScalarFilters
+              numberOfFriends_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { eq: ... }\\")
+              numberOfFriends_GT: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { gt: ... }\\")
+              numberOfFriends_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { gte: ... }\\")
+              numberOfFriends_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { in: ... }\\")
+              numberOfFriends_LT: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { lt: ... }\\")
+              numberOfFriends_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter numberOfFriends: { lte: ... }\\")
+              rating: FloatScalarFilters
+              rating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { eq: ... }\\")
+              rating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { gt: ... }\\")
+              rating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { gte: ... }\\")
+              rating_IN: [Float!] @deprecated(reason: \\"Please use the relevant generic filter rating: { in: ... }\\")
+              rating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { lt: ... }\\")
+              rating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter rating: { lte: ... }\\")
+              toBeOverridden: StringScalarFilters
+              toBeOverridden_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { contains: ... }\\")
+              toBeOverridden_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { endsWith: ... }\\")
+              toBeOverridden_EQ: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { eq: ... }\\")
+              toBeOverridden_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { in: ... }\\")
+              toBeOverridden_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter toBeOverridden: { startsWith: ... }\\")
+              verified: BooleanScalarFilters
+              verifiedDate: DateTimeScalarFilters
+              verifiedDate_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { eq: ... }\\")
+              verifiedDate_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { gt: ... }\\")
+              verifiedDate_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { gte: ... }\\")
+              verifiedDate_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { in: ... }\\")
+              verifiedDate_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { lt: ... }\\")
+              verifiedDate_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter verifiedDate: { lte: ... }\\")
+              verified_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter verified: { eq: ... }\\")
             }
 
             type UsersConnection {

@@ -44,18 +44,52 @@ export function filterByValues<T>(
             }
         } else {
             const { fieldName, operator } = parseFilterProperty(k);
+            if (!operator) {
+                return filterByValuesOnGenericOperator({
+                    fieldName,
+                    receivedValues,
+                    jwtClaims,
+                    value: v as Record<string, any>,
+                });
+            }
             const receivedValue = getReceivedValue({ fieldName, receivedValues, jwtClaims });
             if (!receivedValue) {
                 return false;
             }
 
-            const checkFilterPasses = getFilteringFn(operator);
-            if (!checkFilterPasses(receivedValue, v)) {
+            const filteringFn = getFilteringFn(operator);
+            if (!filteringFn(receivedValue, v)) {
                 return false;
             }
         }
     }
     return true;
+}
+
+function filterByValuesOnGenericOperator({
+    fieldName,
+    receivedValues,
+    jwtClaims,
+    value,
+}: {
+    fieldName: string;
+    receivedValues: Record<string, any>;
+    jwtClaims?: Map<string, string>;
+    value: Record<string, any>;
+}): boolean {
+    const predicates = Object.entries(value).map(([k, v]) => {
+        const receivedValue = getReceivedValue({ fieldName, receivedValues, jwtClaims });
+        if (!receivedValue) {
+            return false;
+        }
+        const filteringFn = getFilteringFn(k);
+
+        if (!filteringFn(receivedValue, v)) {
+            return false;
+        }
+        return true;
+    });
+    return multipleConditionsAggregationMap.AND(predicates);
 }
 
 function getReceivedValue<T>({

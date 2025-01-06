@@ -31,7 +31,13 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
             type User
                 @node(labels: ["User"])
                 @authorization(
-                    filter: [{ where: { node: { NOT: { blockedUsers_SOME: { to_SOME: { id_EQ: "$jwt.sub" } } } } } }]
+                    filter: [
+                        {
+                            where: {
+                                node: { NOT: { blockedUsers: { some: { to: { some: { id: { eq: "$jwt.sub" } } } } } } }
+                            }
+                        }
+                    ]
                 ) {
                 id: ID! @id
                 blockedUsers: [UserBlockedUser!]! @relationship(type: "HAS_BLOCKED", direction: OUT)
@@ -39,7 +45,7 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
 
             type UserBlockedUser
                 @node(labels: ["UserBlockedUser"])
-                @authorization(filter: [{ where: { node: { from_SOME: { id_EQ: "$jwt.sub" } } } }]) {
+                @authorization(filter: [{ where: { node: { from: { some: { id: { eq: "$jwt.sub" } } } } } }]) {
                 id: ID! @id
                 from: [User!]!
                     @relationship(type: "HAS_BLOCKED", direction: IN)
@@ -94,7 +100,13 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
             }
             WITH u AS this0
             WITH *
-            WHERE ($isAuthenticated = true AND NOT (size([(this0)-[:HAS_BLOCKED]->(this2:UserBlockedUser) WHERE size([(this2)-[:IS_BLOCKING]->(this1:User) WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub) | 1]) > 0 | 1]) > 0))
+            WHERE ($isAuthenticated = true AND NOT (EXISTS {
+                MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
+                WHERE EXISTS {
+                    MATCH (this1)-[:IS_BLOCKING]->(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                }
+            }))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

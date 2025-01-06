@@ -80,7 +80,7 @@ describe("Cypher Create Pringles", () => {
                                             id: 106
                                             description: "Green photo"
                                             url: "g.png"
-                                            color: { connect: { where: { node: { id_EQ: "102" } } } }
+                                            color: { connect: { where: { node: { id: { eq: "102" } } } } }
                                         }
                                     }
                                     {
@@ -88,7 +88,7 @@ describe("Cypher Create Pringles", () => {
                                             id: 107
                                             description: "Red photo"
                                             url: "r.png"
-                                            color: { connect: { where: { node: { id_EQ: "100" } } } }
+                                            color: { connect: { where: { node: { id: { eq: "100" } } } } }
                                         }
                                     }
                                 ]
@@ -225,17 +225,17 @@ describe("Cypher Create Pringles", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateProducts(
-                    where: { name_EQ: "Pringles" }
+                    where: { name: { eq: "Pringles" } }
                     update: {
                         photos: [
                             {
-                                where: { node: { description_EQ: "Green Photo" } }
+                                where: { node: { description: { eq: "Green Photo" } } }
                                 update: {
                                     node: {
                                         description_SET: "Light Green Photo"
                                         color: {
-                                            connect: { where: { node: { name_EQ: "Light Green" } } }
-                                            disconnect: { where: { node: { name_EQ: "Green" } } }
+                                            connect: { where: { node: { name: { eq: "Light Green" } } } }
+                                            disconnect: { where: { node: { name: { eq: "Green" } } } }
                                         }
                                     }
                                 }
@@ -311,7 +311,9 @@ describe("Cypher Create Pringles", () => {
                                 {
                                     \\"where\\": {
                                         \\"node\\": {
-                                            \\"description_EQ\\": \\"Green Photo\\"
+                                            \\"description\\": {
+                                                \\"eq\\": \\"Green Photo\\"
+                                            }
                                         }
                                     },
                                     \\"update\\": {
@@ -323,7 +325,9 @@ describe("Cypher Create Pringles", () => {
                                                         {
                                                             \\"where\\": {
                                                                 \\"node\\": {
-                                                                    \\"name_EQ\\": \\"Light Green\\"
+                                                                    \\"name\\": {
+                                                                        \\"eq\\": \\"Light Green\\"
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -332,7 +336,9 @@ describe("Cypher Create Pringles", () => {
                                                         {
                                                             \\"where\\": {
                                                                 \\"node\\": {
-                                                                    \\"name_EQ\\": \\"Green\\"
+                                                                    \\"name\\": {
+                                                                        \\"eq\\": \\"Green\\"
+                                                                    }
                                                                 }
                                                             }
                                                         }

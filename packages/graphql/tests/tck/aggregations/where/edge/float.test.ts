@@ -49,7 +49,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_AVERAGE_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { average: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -79,7 +79,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_AVERAGE_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { average: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -109,7 +109,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_AVERAGE_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { average: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -139,7 +139,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_AVERAGE_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { average: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -169,7 +169,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_AVERAGE_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { average: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -199,7 +199,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("SUM_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_SUM_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { sum: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -229,7 +229,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("SUM_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_SUM_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { sum: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -259,7 +259,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("SUM_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_SUM_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { sum: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -289,7 +289,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("SUM_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_SUM_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { sum: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -319,7 +319,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("SUM_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_SUM_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { sum: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -349,7 +349,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MIN_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { min: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -379,7 +379,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MIN_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { min: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -409,7 +409,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MIN_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { min: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -439,7 +439,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MIN_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { min: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -469,7 +469,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MIN_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { min: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -499,7 +499,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MAX_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { max: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -529,7 +529,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MAX_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { max: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -559,7 +559,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MAX_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { max: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -589,7 +589,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MAX_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { max: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -619,7 +619,7 @@ describe("Cypher Aggregations where edge with Float", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someFloat_MAX_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someFloat: { max: { lte: 10 } } } } }) {
                     content
                 }
             }

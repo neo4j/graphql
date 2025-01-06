@@ -70,9 +70,9 @@ describe("Label in Node directive", () => {
     test("Select Movie with label Film from Actors with additionalLabels", async () => {
         const query = /* GraphQL */ `
             query {
-                actors(where: { age_GT: 10 }) {
+                actors(where: { age: { gt: 10 } }) {
                     name
-                    movies(where: { title_EQ: "terminator" }) {
+                    movies(where: { title: { eq: "terminator" } }) {
                         title
                     }
                 }
@@ -117,7 +117,7 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person"  });
+        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person" });
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`

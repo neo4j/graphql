@@ -90,15 +90,17 @@ describe("Enum", () => {
             }
 
             input MovieUpdateInput {
-              status_SET: Status
+              status: StatusEnumScalarMutations
+              status_SET: Status @deprecated(reason: \\"Please use the generic mutation 'status: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              status_EQ: Status
-              status_IN: [Status]
+              status: StatusEnumScalarFilters
+              status_EQ: Status @deprecated(reason: \\"Please use the relevant generic filter status: { eq: ... }\\")
+              status_IN: [Status] @deprecated(reason: \\"Please use the relevant generic filter status: { in: ... }\\")
             }
 
             type MoviesConnection {
@@ -139,6 +141,17 @@ describe("Enum", () => {
               ACTIVE
               INACTIVE
               PENDING
+            }
+
+            \\"\\"\\"Status filters\\"\\"\\"
+            input StatusEnumScalarFilters {
+              eq: Status
+              in: [Status!]
+            }
+
+            \\"\\"\\"Status mutations\\"\\"\\"
+            input StatusEnumScalarMutations {
+              set: Status
             }
 
             \\"\\"\\"

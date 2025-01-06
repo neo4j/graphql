@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import createUpdateAndParams from "./create-update-and-params";
-import { CallbackBucket } from "../classes/CallbackBucket";
-import type { BaseField } from "../types";
-import { trimmer } from "../utils";
-import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
-import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { Attribute } from "../schema-model/attribute/Attribute";
 import { GraphQLBuiltInScalarType, ScalarType } from "../schema-model/attribute/AttributeType";
+import { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
+import type { BaseField } from "../types";
+import { trimmer } from "../utils";
+import createUpdateAndParams from "./create-update-and-params";
 
 describe("createUpdateAndParams", () => {
     test("should return the correct update and params", () => {
@@ -96,7 +96,7 @@ describe("createUpdateAndParams", () => {
         }).instance();
 
         const result = createUpdateAndParams({
-            updateInput: { id: "new" },
+            updateInput: { id_SET: "new" },
             node,
             context,
             varName: "this",
@@ -108,12 +108,12 @@ describe("createUpdateAndParams", () => {
 
         expect(trimmer(result[0])).toEqual(
             trimmer(`
-                SET this.id = $this_update_id
+                SET this.id = $this_update_id_SET
             `)
         );
 
         expect(result[1]).toMatchObject({
-            this_update_id: "new",
+            this_update_id_SET: "new",
         });
     });
 });

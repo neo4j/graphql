@@ -49,7 +49,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
     test("Connection can be selected following update Mutation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { title_EQ: "Forrest Gump" }) {
+                updateMovies(where: { title: { eq: "Forrest Gump" } }) {
                     movies {
                         title
                         actorsConnection {

@@ -30,13 +30,13 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             type JWT @jwt {
                 id: String
             }
-            type User @authorization(filter: [{ where: { node: { userId_EQ: "$jwt.id" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { userId: { eq: "$jwt.id" } } } }]) @node {
                 userId: String!
                 adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT, aggregate: false)
             }
 
             type Tenant
-                @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }])
+                @authorization(validate: [{ where: { node: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }])
                 @node {
                 id: ID! @id
                 admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
@@ -46,7 +46,9 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             type Settings
                 @node
                 @authorization(
-                    validate: [{ where: { node: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]
+                    validate: [
+                        { where: { node: { tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                    ]
                 ) {
                 tenant: [Tenant!]! @relationship(type: "HAS_SETTINGS", direction: IN, aggregate: false)
                 extendedOpeningHours: [OpeningDay!]!
@@ -59,7 +61,11 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                     validate: [
                         {
                             where: {
-                                node: { settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } }
+                                node: {
+                                    settings: {
+                                        some: { tenant: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }
+                                    }
+                                }
                             }
                         }
                     ]
@@ -77,8 +83,16 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                         {
                             where: {
                                 node: {
-                                    openingDay_SOME: {
-                                        settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } }
+                                    openingDay: {
+                                        some: {
+                                            settings: {
+                                                some: {
+                                                    tenant: {
+                                                        some: { admins: { some: { userId: { eq: "$jwt.id" } } } }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -127,17 +141,35 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Tenant)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:ADMIN_IN]-(this0:User) WHERE ($jwt.id IS NOT NULL AND this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:ADMIN_IN]-(this0:User)
+                WHERE ($jwt.id IS NOT NULL AND this0.userId = $jwt.id)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_has_settings0_relationship:HAS_SETTINGS]->(this_settings0:Settings)
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this_settings0)<-[:HAS_SETTINGS]-(authorization_updatebefore_this1:Tenant) WHERE size([(authorization_updatebefore_this1)<-[:ADMIN_IN]-(authorization_updatebefore_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_updatebefore_this0.userId = $jwt.id) | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            	    MATCH (this_settings0)<-[:HAS_SETTINGS]-(authorization_updatebefore_this0:Tenant)
+            	    WHERE EXISTS {
+            	        MATCH (authorization_updatebefore_this0)<-[:ADMIN_IN]-(authorization_updatebefore_this1:User)
+            	        WHERE ($jwt.id IS NOT NULL AND authorization_updatebefore_this1.userId = $jwt.id)
+            	    }
+            	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	WITH *
             	CALL {
             	WITH *
             	OPTIONAL MATCH (this_settings0)-[this_settings0_extendedOpeningHours0_delete0_relationship:HAS_OPENING_HOURS]->(this_settings0_extendedOpeningHours0_delete0:OpeningDay)
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this_settings0_extendedOpeningHours0_delete0)<-[:HAS_OPENING_HOURS]-(authorization_deletebefore_this2:Settings) WHERE size([(authorization_deletebefore_this2)<-[:HAS_SETTINGS]-(authorization_deletebefore_this1:Tenant) WHERE size([(authorization_deletebefore_this1)<-[:ADMIN_IN]-(authorization_deletebefore_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization_deletebefore_this0.userId = $jwt.id) | 1]) > 0 | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            	    MATCH (this_settings0_extendedOpeningHours0_delete0)<-[:HAS_OPENING_HOURS]-(authorization_deletebefore_this0:Settings)
+            	    WHERE EXISTS {
+            	        MATCH (authorization_deletebefore_this0)<-[:HAS_SETTINGS]-(authorization_deletebefore_this1:Tenant)
+            	        WHERE EXISTS {
+            	            MATCH (authorization_deletebefore_this1)<-[:ADMIN_IN]-(authorization_deletebefore_this2:User)
+            	            WHERE ($jwt.id IS NOT NULL AND authorization_deletebefore_this2.userId = $jwt.id)
+            	        }
+            	    }
+            	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	WITH this_settings0_extendedOpeningHours0_delete0_relationship, collect(DISTINCT this_settings0_extendedOpeningHours0_delete0) AS this_settings0_extendedOpeningHours0_delete0_to_delete
             	CALL {
             		WITH this_settings0_extendedOpeningHours0_delete0_to_delete
@@ -146,28 +178,67 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             	}
             	}
             	WITH this, this_settings0
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this_settings0)<-[:HAS_SETTINGS]-(authorization__after_this1:Tenant) WHERE size([(authorization__after_this1)<-[:ADMIN_IN]-(authorization__after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization__after_this0.userId = $jwt.id) | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            	    MATCH (this_settings0)<-[:HAS_SETTINGS]-(authorization__after_this0:Tenant)
+            	    WHERE EXISTS {
+            	        MATCH (authorization__after_this0)<-[:ADMIN_IN]-(authorization__after_this1:User)
+            	        WHERE ($jwt.id IS NOT NULL AND authorization__after_this1.userId = $jwt.id)
+            	    }
+            	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	RETURN count(*) AS update_this_settings0
             }
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:ADMIN_IN]-(authorization__after_this0:User) WHERE ($jwt.id IS NOT NULL AND authorization__after_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:ADMIN_IN]-(authorization__after_this0:User)
+                WHERE ($jwt.id IS NOT NULL AND authorization__after_this0.userId = $jwt.id)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:ADMIN_IN]-(update_this0:User) WHERE ($jwt.id IS NOT NULL AND update_this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:ADMIN_IN]-(update_this0:User)
+                WHERE ($jwt.id IS NOT NULL AND update_this0.userId = $jwt.id)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[update_this1:HAS_SETTINGS]->(update_this2:Settings)
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(update_this2)<-[:HAS_SETTINGS]-(update_this4:Tenant) WHERE size([(update_this4)<-[:ADMIN_IN]-(update_this3:User) WHERE ($jwt.id IS NOT NULL AND update_this3.userId = $jwt.id) | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    MATCH (update_this2)<-[:HAS_SETTINGS]-(update_this3:Tenant)
+                    WHERE EXISTS {
+                        MATCH (update_this3)<-[:ADMIN_IN]-(update_this4:User)
+                        WHERE ($jwt.id IS NOT NULL AND update_this4.userId = $jwt.id)
+                    }
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH update_this2
                     MATCH (update_this2)-[update_this5:HAS_OPENING_HOURS]->(update_this6:OpeningDay)
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(update_this6)<-[:HAS_OPENING_HOURS]-(update_this9:Settings) WHERE size([(update_this9)<-[:HAS_SETTINGS]-(update_this8:Tenant) WHERE size([(update_this8)<-[:ADMIN_IN]-(update_this7:User) WHERE ($jwt.id IS NOT NULL AND update_this7.userId = $jwt.id) | 1]) > 0 | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (update_this6)<-[:HAS_OPENING_HOURS]-(update_this7:Settings)
+                        WHERE EXISTS {
+                            MATCH (update_this7)<-[:HAS_SETTINGS]-(update_this8:Tenant)
+                            WHERE EXISTS {
+                                MATCH (update_this8)<-[:ADMIN_IN]-(update_this9:User)
+                                WHERE ($jwt.id IS NOT NULL AND update_this9.userId = $jwt.id)
+                            }
+                        }
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     CALL {
                         WITH update_this6
                         MATCH (update_this6)-[update_this10:HAS_OPEN_INTERVALS]->(update_this11:OpeningHoursInterval)
                         WITH *
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(update_this11)<-[:HAS_OPEN_INTERVALS]-(update_this15:OpeningDay) WHERE size([(update_this15)<-[:HAS_OPENING_HOURS]-(update_this14:Settings) WHERE size([(update_this14)<-[:HAS_SETTINGS]-(update_this13:Tenant) WHERE size([(update_this13)<-[:ADMIN_IN]-(update_this12:User) WHERE ($jwt.id IS NOT NULL AND update_this12.userId = $jwt.id) | 1]) > 0 | 1]) > 0 | 1]) > 0 | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                            MATCH (update_this11)<-[:HAS_OPEN_INTERVALS]-(update_this12:OpeningDay)
+                            WHERE EXISTS {
+                                MATCH (update_this12)<-[:HAS_OPENING_HOURS]-(update_this13:Settings)
+                                WHERE EXISTS {
+                                    MATCH (update_this13)<-[:HAS_SETTINGS]-(update_this14:Tenant)
+                                    WHERE EXISTS {
+                                        MATCH (update_this14)<-[:ADMIN_IN]-(update_this15:User)
+                                        WHERE ($jwt.id IS NOT NULL AND update_this15.userId = $jwt.id)
+                                    }
+                                }
+                            }
+                        }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH update_this11 { .name } AS update_this11
                         RETURN collect(update_this11) AS update_var16
                     }

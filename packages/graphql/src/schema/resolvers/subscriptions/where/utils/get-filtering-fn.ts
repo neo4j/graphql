@@ -21,9 +21,8 @@ import type { AttributeAdapter } from "../../../../../schema-model/attribute/mod
 
 type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: AttributeAdapter | undefined) => boolean;
 
-const operatorCheckMap = {
+const legacyOperatorCheckMap = {
     EQ: (received: string, filtered: string) => received == filtered,
-    NOT: (received: string, filtered: string) => received !== filtered,
     LT: (received: number | string, filtered: number) => {
         const parsed = typeof received === "string" ? BigInt(received) : received;
 
@@ -45,23 +44,28 @@ const operatorCheckMap = {
         return parsed >= filtered;
     },
     STARTS_WITH: (received: string, filtered: string) => received.startsWith(filtered),
-    NOT_STARTS_WITH: (received: string, filtered: string) => !received.startsWith(filtered),
     ENDS_WITH: (received: string, filtered: string) => received.endsWith(filtered),
-    NOT_ENDS_WITH: (received: string, filtered: string) => !received.endsWith(filtered),
     CONTAINS: (received: string, filtered: string) => received.includes(filtered),
-    NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
     INCLUDES: (received: [string | number], filtered: string | number) => {
         return received.some((v) => v === filtered);
-    },
-    NOT_INCLUDES: (received: [string | number], filtered: string | number) => {
-        return !received.some((v) => v === filtered);
     },
     IN: (received: string | number, filtered: [string | number]) => {
         return filtered.some((v) => v === received);
     },
-    NOT_IN: (received: string | number, filtered: [string | number]) => {
-        return !filtered.some((v) => v === received);
-    },
+};
+
+const operatorCheckMap = {
+    ...legacyOperatorCheckMap,
+    eq: legacyOperatorCheckMap.EQ,
+    lt: legacyOperatorCheckMap.LT,
+    lte: legacyOperatorCheckMap.LTE,
+    gt: legacyOperatorCheckMap.GT,
+    gte: legacyOperatorCheckMap.GTE,
+    in: legacyOperatorCheckMap.IN,
+    startsWith: legacyOperatorCheckMap.STARTS_WITH,
+    endsWith: legacyOperatorCheckMap.ENDS_WITH,
+    contains: legacyOperatorCheckMap.CONTAINS,
+    includes: legacyOperatorCheckMap.INCLUDES,
 };
 
 export function getFilteringFn<T>(
@@ -74,5 +78,9 @@ export function getFilteringFn<T>(
 
     const operators = { ...operatorCheckMap, ...overrides };
 
-    return operators[operator];
+    const comparatorFunction = operators[operator];
+    if (!comparatorFunction) {
+        throw new Error(`Operator ${operator} not supported`);
+    }
+    return comparatorFunction;
 }

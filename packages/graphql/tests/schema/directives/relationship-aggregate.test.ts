@@ -252,6 +252,17 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -261,24 +272,28 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 input ActorUpdateInput {
-                  password_SET: String
-                  username_SET: String
+                  password: StringScalarMutations
+                  password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                  username: StringScalarMutations
+                  username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  password_CONTAINS: String
-                  password_ENDS_WITH: String
-                  password_EQ: String
-                  password_IN: [String!]
-                  password_STARTS_WITH: String
-                  username_CONTAINS: String
-                  username_ENDS_WITH: String
-                  username_EQ: String
-                  username_IN: [String!]
-                  username_STARTS_WITH: String
+                  password: StringScalarFilters
+                  password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                  password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                  password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                  password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                  password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                  username: StringScalarFilters
+                  username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                  username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                  username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                  username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                  username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -313,6 +328,26 @@ describe("@relationship directive, aggregate argument", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -323,6 +358,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -339,6 +375,25 @@ describe("@relationship directive, aggregate argument", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -373,36 +428,38 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  password_AVERAGE_LENGTH_EQUAL: Float
-                  password_AVERAGE_LENGTH_GT: Float
-                  password_AVERAGE_LENGTH_GTE: Float
-                  password_AVERAGE_LENGTH_LT: Float
-                  password_AVERAGE_LENGTH_LTE: Float
-                  password_LONGEST_LENGTH_EQUAL: Int
-                  password_LONGEST_LENGTH_GT: Int
-                  password_LONGEST_LENGTH_GTE: Int
-                  password_LONGEST_LENGTH_LT: Int
-                  password_LONGEST_LENGTH_LTE: Int
-                  password_SHORTEST_LENGTH_EQUAL: Int
-                  password_SHORTEST_LENGTH_GT: Int
-                  password_SHORTEST_LENGTH_GTE: Int
-                  password_SHORTEST_LENGTH_LT: Int
-                  password_SHORTEST_LENGTH_LTE: Int
-                  username_AVERAGE_LENGTH_EQUAL: Float
-                  username_AVERAGE_LENGTH_GT: Float
-                  username_AVERAGE_LENGTH_GTE: Float
-                  username_AVERAGE_LENGTH_LT: Float
-                  username_AVERAGE_LENGTH_LTE: Float
-                  username_LONGEST_LENGTH_EQUAL: Int
-                  username_LONGEST_LENGTH_GT: Int
-                  username_LONGEST_LENGTH_GTE: Int
-                  username_LONGEST_LENGTH_LT: Int
-                  username_LONGEST_LENGTH_LTE: Int
-                  username_SHORTEST_LENGTH_EQUAL: Int
-                  username_SHORTEST_LENGTH_GT: Int
-                  username_SHORTEST_LENGTH_GTE: Int
-                  username_SHORTEST_LENGTH_LT: Int
-                  username_SHORTEST_LENGTH_LTE: Int
+                  password: StringScalarAggregationFilters
+                  password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                  username: StringScalarAggregationFilters
+                  username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -451,43 +508,47 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  title_SET: String
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  actors_ALL: ActorWhere
+                  actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  actors_NONE: ActorWhere
+                  actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  actors_SINGLE: ActorWhere
+                  actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  actors_SOME: ActorWhere
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String]
-                  title_STARTS_WITH: String
+                  actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -533,6 +594,27 @@ describe("@relationship directive, aggregate argument", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -604,6 +686,17 @@ describe("@relationship directive, aggregate argument", () => {
                   node: Actor!
                 }
 
+                input ActorRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+                  all: ActorWhere
+                  \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+                  none: ActorWhere
+                  \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+                  single: ActorWhere
+                  \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+                  some: ActorWhere
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -613,24 +706,28 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 input ActorUpdateInput {
-                  password_SET: String
-                  username_SET: String
+                  password: StringScalarMutations
+                  password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                  username: StringScalarMutations
+                  username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  password_CONTAINS: String
-                  password_ENDS_WITH: String
-                  password_EQ: String
-                  password_IN: [String!]
-                  password_STARTS_WITH: String
-                  username_CONTAINS: String
-                  username_ENDS_WITH: String
-                  username_EQ: String
-                  username_IN: [String!]
-                  username_STARTS_WITH: String
+                  password: StringScalarFilters
+                  password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                  password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                  password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                  password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                  password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                  username: StringScalarFilters
+                  username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                  username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                  username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                  username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                  username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -665,6 +762,26 @@ describe("@relationship directive, aggregate argument", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
@@ -686,6 +803,7 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -702,6 +820,25 @@ describe("@relationship directive, aggregate argument", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -736,36 +873,38 @@ describe("@relationship directive, aggregate argument", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  password_AVERAGE_LENGTH_EQUAL: Float
-                  password_AVERAGE_LENGTH_GT: Float
-                  password_AVERAGE_LENGTH_GTE: Float
-                  password_AVERAGE_LENGTH_LT: Float
-                  password_AVERAGE_LENGTH_LTE: Float
-                  password_LONGEST_LENGTH_EQUAL: Int
-                  password_LONGEST_LENGTH_GT: Int
-                  password_LONGEST_LENGTH_GTE: Int
-                  password_LONGEST_LENGTH_LT: Int
-                  password_LONGEST_LENGTH_LTE: Int
-                  password_SHORTEST_LENGTH_EQUAL: Int
-                  password_SHORTEST_LENGTH_GT: Int
-                  password_SHORTEST_LENGTH_GTE: Int
-                  password_SHORTEST_LENGTH_LT: Int
-                  password_SHORTEST_LENGTH_LTE: Int
-                  username_AVERAGE_LENGTH_EQUAL: Float
-                  username_AVERAGE_LENGTH_GT: Float
-                  username_AVERAGE_LENGTH_GTE: Float
-                  username_AVERAGE_LENGTH_LT: Float
-                  username_AVERAGE_LENGTH_LTE: Float
-                  username_LONGEST_LENGTH_EQUAL: Int
-                  username_LONGEST_LENGTH_GT: Int
-                  username_LONGEST_LENGTH_GTE: Int
-                  username_LONGEST_LENGTH_LT: Int
-                  username_LONGEST_LENGTH_LTE: Int
-                  username_SHORTEST_LENGTH_EQUAL: Int
-                  username_SHORTEST_LENGTH_GT: Int
-                  username_SHORTEST_LENGTH_GTE: Int
-                  username_SHORTEST_LENGTH_LT: Int
-                  username_SHORTEST_LENGTH_LTE: Int
+                  password: StringScalarAggregationFilters
+                  password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                  password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                  password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                  password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                  username: StringScalarAggregationFilters
+                  username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                  username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                  username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                  username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -814,43 +953,47 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  title_SET: String
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: ActorRelationshipFilters
                   actorsAggregate: MovieActorsAggregateInput
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-                  actors_ALL: ActorWhere
+                  actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-                  actors_NONE: ActorWhere
+                  actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-                  actors_SINGLE: ActorWhere
+                  actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-                  actors_SOME: ActorWhere
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String]
-                  title_STARTS_WITH: String
+                  actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -896,6 +1039,27 @@ describe("@relationship directive, aggregate argument", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -978,24 +1142,28 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
-                      password_SET: String
-                      username_SET: String
+                      password: StringScalarMutations
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                      username: StringScalarMutations
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password_CONTAINS: String
-                      password_ENDS_WITH: String
-                      password_EQ: String
-                      password_IN: [String!]
-                      password_STARTS_WITH: String
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
+                      password: StringScalarFilters
+                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                      username: StringScalarFilters
+                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -1030,6 +1198,26 @@ describe("@relationship directive, aggregate argument", () => {
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
@@ -1040,6 +1228,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1056,6 +1245,25 @@ describe("@relationship directive, aggregate argument", () => {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsConnectionSort {
@@ -1090,36 +1298,38 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_LENGTH_EQUAL: Float
-                      password_AVERAGE_LENGTH_GT: Float
-                      password_AVERAGE_LENGTH_GTE: Float
-                      password_AVERAGE_LENGTH_LT: Float
-                      password_AVERAGE_LENGTH_LTE: Float
-                      password_LONGEST_LENGTH_EQUAL: Int
-                      password_LONGEST_LENGTH_GT: Int
-                      password_LONGEST_LENGTH_GTE: Int
-                      password_LONGEST_LENGTH_LT: Int
-                      password_LONGEST_LENGTH_LTE: Int
-                      password_SHORTEST_LENGTH_EQUAL: Int
-                      password_SHORTEST_LENGTH_GT: Int
-                      password_SHORTEST_LENGTH_GTE: Int
-                      password_SHORTEST_LENGTH_LT: Int
-                      password_SHORTEST_LENGTH_LTE: Int
-                      username_AVERAGE_LENGTH_EQUAL: Float
-                      username_AVERAGE_LENGTH_GT: Float
-                      username_AVERAGE_LENGTH_GTE: Float
-                      username_AVERAGE_LENGTH_LT: Float
-                      username_AVERAGE_LENGTH_LTE: Float
-                      username_LONGEST_LENGTH_EQUAL: Int
-                      username_LONGEST_LENGTH_GT: Int
-                      username_LONGEST_LENGTH_GTE: Int
-                      username_LONGEST_LENGTH_LT: Int
-                      username_LONGEST_LENGTH_LTE: Int
-                      username_SHORTEST_LENGTH_EQUAL: Int
-                      username_SHORTEST_LENGTH_GT: Int
-                      username_SHORTEST_LENGTH_GTE: Int
-                      username_SHORTEST_LENGTH_LT: Int
-                      username_SHORTEST_LENGTH_LTE: Int
+                      password: StringScalarAggregationFilters
+                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                      username: StringScalarAggregationFilters
+                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1168,43 +1378,47 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
-                      title_SET: String
+                      title: StringScalarMutations
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_ALL: MovieActorsConnectionWhere
+                      actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_NONE: MovieActorsConnectionWhere
+                      actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SINGLE: MovieActorsConnectionWhere
+                      actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SOME: MovieActorsConnectionWhere
+                      actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                       \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      actors_ALL: PersonWhere
+                      actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      actors_NONE: PersonWhere
+                      actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      actors_SINGLE: PersonWhere
+                      actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      actors_SOME: PersonWhere
-                      title_CONTAINS: String
-                      title_ENDS_WITH: String
-                      title_EQ: String
-                      title_IN: [String]
-                      title_STARTS_WITH: String
+                      actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                      title: StringScalarFilters
+                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -1264,6 +1478,17 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor
                     }
 
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
                     \\"\\"\\"
@@ -1273,25 +1498,29 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      password_SET: String
-                      username_SET: String
+                      password: StringScalarMutations
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                      username: StringScalarMutations
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      password_CONTAINS: String
-                      password_ENDS_WITH: String
-                      password_EQ: String
-                      password_IN: [String!]
-                      password_STARTS_WITH: String
-                      typename_IN: [PersonImplementation!]
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
+                      password: StringScalarFilters
+                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                      typename: [PersonImplementation!]
+                      username: StringScalarFilters
+                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -1317,6 +1546,27 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      eq: String
+                      in: [String!]
+                      startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1397,24 +1647,28 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
-                      password_SET: String
-                      username_SET: String
+                      password: StringScalarMutations
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                      username: StringScalarMutations
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password_CONTAINS: String
-                      password_ENDS_WITH: String
-                      password_EQ: String
-                      password_IN: [String!]
-                      password_STARTS_WITH: String
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
+                      password: StringScalarFilters
+                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                      username: StringScalarFilters
+                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -1449,6 +1703,26 @@ describe("@relationship directive, aggregate argument", () => {
                       relationshipsDeleted: Int!
                     }
 
+                    \\"\\"\\"Float filters\\"\\"\\"
+                    input FloatScalarFilters {
+                      eq: Float
+                      gt: Float
+                      gte: Float
+                      in: [Float!]
+                      lt: Float
+                      lte: Float
+                    }
+
+                    \\"\\"\\"Int filters\\"\\"\\"
+                    input IntScalarFilters {
+                      eq: Int
+                      gt: Int
+                      gte: Int
+                      in: [Int!]
+                      lt: Int
+                      lte: Int
+                    }
+
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                       actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
@@ -1460,6 +1734,7 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsAggregateInput!]
                       NOT: MovieActorsAggregateInput
                       OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
                       count_EQ: Int
                       count_GT: Int
                       count_GTE: Int
@@ -1476,6 +1751,25 @@ describe("@relationship directive, aggregate argument", () => {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsConnectionSort {
@@ -1510,36 +1804,38 @@ describe("@relationship directive, aggregate argument", () => {
                       AND: [MovieActorsNodeAggregationWhereInput!]
                       NOT: MovieActorsNodeAggregationWhereInput
                       OR: [MovieActorsNodeAggregationWhereInput!]
-                      password_AVERAGE_LENGTH_EQUAL: Float
-                      password_AVERAGE_LENGTH_GT: Float
-                      password_AVERAGE_LENGTH_GTE: Float
-                      password_AVERAGE_LENGTH_LT: Float
-                      password_AVERAGE_LENGTH_LTE: Float
-                      password_LONGEST_LENGTH_EQUAL: Int
-                      password_LONGEST_LENGTH_GT: Int
-                      password_LONGEST_LENGTH_GTE: Int
-                      password_LONGEST_LENGTH_LT: Int
-                      password_LONGEST_LENGTH_LTE: Int
-                      password_SHORTEST_LENGTH_EQUAL: Int
-                      password_SHORTEST_LENGTH_GT: Int
-                      password_SHORTEST_LENGTH_GTE: Int
-                      password_SHORTEST_LENGTH_LT: Int
-                      password_SHORTEST_LENGTH_LTE: Int
-                      username_AVERAGE_LENGTH_EQUAL: Float
-                      username_AVERAGE_LENGTH_GT: Float
-                      username_AVERAGE_LENGTH_GTE: Float
-                      username_AVERAGE_LENGTH_LT: Float
-                      username_AVERAGE_LENGTH_LTE: Float
-                      username_LONGEST_LENGTH_EQUAL: Int
-                      username_LONGEST_LENGTH_GT: Int
-                      username_LONGEST_LENGTH_GTE: Int
-                      username_LONGEST_LENGTH_LT: Int
-                      username_LONGEST_LENGTH_LTE: Int
-                      username_SHORTEST_LENGTH_EQUAL: Int
-                      username_SHORTEST_LENGTH_GT: Int
-                      username_SHORTEST_LENGTH_GTE: Int
-                      username_SHORTEST_LENGTH_LT: Int
-                      username_SHORTEST_LENGTH_LTE: Int
+                      password: StringScalarAggregationFilters
+                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
+                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
+                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
+                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
+                      username: StringScalarAggregationFilters
+                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
+                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
+                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
+                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -1598,43 +1894,47 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
-                      title_SET: String
+                      title: StringScalarMutations
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: PersonRelationshipFilters
                       actorsAggregate: MovieActorsAggregateInput
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_ALL: MovieActorsConnectionWhere
+                      actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_NONE: MovieActorsConnectionWhere
+                      actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SINGLE: MovieActorsConnectionWhere
+                      actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SOME: MovieActorsConnectionWhere
+                      actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                       \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                      actors_ALL: PersonWhere
+                      actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                       \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                      actors_NONE: PersonWhere
+                      actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                       \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                      actors_SINGLE: PersonWhere
+                      actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                       \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                      actors_SOME: PersonWhere
-                      title_CONTAINS: String
-                      title_ENDS_WITH: String
-                      title_EQ: String
-                      title_IN: [String]
-                      title_STARTS_WITH: String
+                      actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                      title: StringScalarFilters
+                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -1694,6 +1994,17 @@ describe("@relationship directive, aggregate argument", () => {
                       Actor
                     }
 
+                    input PersonRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                      all: PersonWhere
+                      \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                      none: PersonWhere
+                      \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                      single: PersonWhere
+                      \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                      some: PersonWhere
+                    }
+
                     \\"\\"\\"
                     Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
                     \\"\\"\\"
@@ -1703,25 +2014,29 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      password_SET: String
-                      username_SET: String
+                      password: StringScalarMutations
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                      username: StringScalarMutations
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      password_CONTAINS: String
-                      password_ENDS_WITH: String
-                      password_EQ: String
-                      password_IN: [String!]
-                      password_STARTS_WITH: String
-                      typename_IN: [PersonImplementation!]
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
+                      password: StringScalarFilters
+                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                      typename: [PersonImplementation!]
+                      username: StringScalarFilters
+                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -1747,6 +2062,27 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                    input StringScalarAggregationFilters {
+                      averageLength: FloatScalarFilters
+                      longestLength: IntScalarFilters
+                      shortestLength: IntScalarFilters
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      eq: String
+                      in: [String!]
+                      startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1835,24 +2171,28 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
-                      password_SET: String
-                      username_SET: String
+                      password: StringScalarMutations
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                      username: StringScalarMutations
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password_CONTAINS: String
-                      password_ENDS_WITH: String
-                      password_EQ: String
-                      password_IN: [String!]
-                      password_STARTS_WITH: String
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
+                      password: StringScalarFilters
+                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                      username: StringScalarFilters
+                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -1862,6 +2202,17 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     union CastMember = Actor | Person
+
+                    input CastMemberRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related CastMembers match this filter\\"\\"\\"
+                      all: CastMemberWhere
+                      \\"\\"\\"Filter type where none of the related CastMembers match this filter\\"\\"\\"
+                      none: CastMemberWhere
+                      \\"\\"\\"Filter type where one of the related CastMembers match this filter\\"\\"\\"
+                      single: CastMemberWhere
+                      \\"\\"\\"Filter type where some of the related CastMembers match this filter\\"\\"\\"
+                      some: CastMemberWhere
+                    }
 
                     input CastMemberWhere {
                       Actor: ActorWhere
@@ -1950,6 +2301,25 @@ describe("@relationship directive, aggregate argument", () => {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsConnectionWhere {
@@ -2046,42 +2416,46 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
-                      title_SET: String
+                      title: StringScalarMutations
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberRelationshipFilters
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_ALL: MovieActorsConnectionWhere
+                      actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_NONE: MovieActorsConnectionWhere
+                      actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SINGLE: MovieActorsConnectionWhere
+                      actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SOME: MovieActorsConnectionWhere
+                      actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                       \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
-                      actors_ALL: CastMemberWhere
+                      actors_ALL: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                       \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
-                      actors_NONE: CastMemberWhere
+                      actors_NONE: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                       \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
-                      actors_SINGLE: CastMemberWhere
+                      actors_SINGLE: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                       \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
-                      actors_SOME: CastMemberWhere
-                      title_CONTAINS: String
-                      title_ENDS_WITH: String
-                      title_EQ: String
-                      title_IN: [String]
-                      title_STARTS_WITH: String
+                      actors_SOME: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                      title: StringScalarFilters
+                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -2146,18 +2520,20 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      name_SET: String
+                      name: StringScalarMutations
+                      name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      name_CONTAINS: String
-                      name_ENDS_WITH: String
-                      name_EQ: String
-                      name_IN: [String!]
-                      name_STARTS_WITH: String
+                      name: StringScalarFilters
+                      name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                      name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                      name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                      name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                      name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -2184,6 +2560,20 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      eq: String
+                      in: [String!]
+                      startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {
@@ -2274,24 +2664,28 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input ActorUpdateInput {
-                      password_SET: String
-                      username_SET: String
+                      password: StringScalarMutations
+                      password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+                      username: StringScalarMutations
+                      username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
                     }
 
                     input ActorWhere {
                       AND: [ActorWhere!]
                       NOT: ActorWhere
                       OR: [ActorWhere!]
-                      password_CONTAINS: String
-                      password_ENDS_WITH: String
-                      password_EQ: String
-                      password_IN: [String!]
-                      password_STARTS_WITH: String
-                      username_CONTAINS: String
-                      username_ENDS_WITH: String
-                      username_EQ: String
-                      username_IN: [String!]
-                      username_STARTS_WITH: String
+                      password: StringScalarFilters
+                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+                      username: StringScalarFilters
+                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
                     }
 
                     type ActorsConnection {
@@ -2301,6 +2695,17 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     union CastMember = Actor | Person
+
+                    input CastMemberRelationshipFilters {
+                      \\"\\"\\"Filter type where all of the related CastMembers match this filter\\"\\"\\"
+                      all: CastMemberWhere
+                      \\"\\"\\"Filter type where none of the related CastMembers match this filter\\"\\"\\"
+                      none: CastMemberWhere
+                      \\"\\"\\"Filter type where one of the related CastMembers match this filter\\"\\"\\"
+                      single: CastMemberWhere
+                      \\"\\"\\"Filter type where some of the related CastMembers match this filter\\"\\"\\"
+                      some: CastMemberWhere
+                    }
 
                     input CastMemberWhere {
                       Actor: ActorWhere
@@ -2389,6 +2794,25 @@ describe("@relationship directive, aggregate argument", () => {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"
+                      Return Movies where all of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      all: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where none of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      none: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where one of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      single: MovieActorsConnectionWhere
+                      \\"\\"\\"
+                      Return Movies where some of the related MovieActorsConnections match this filter
+                      \\"\\"\\"
+                      some: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsConnectionWhere {
@@ -2485,42 +2909,46 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
-                      title_SET: String
+                      title: StringScalarMutations
+                      title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                     }
 
                     input MovieWhere {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actors: CastMemberRelationshipFilters
+                      actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_ALL: MovieActorsConnectionWhere
+                      actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where none of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_NONE: MovieActorsConnectionWhere
+                      actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where one of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SINGLE: MovieActorsConnectionWhere
+                      actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                       \\"\\"\\"
                       Return Movies where some of the related MovieActorsConnections match this filter
                       \\"\\"\\"
-                      actorsConnection_SOME: MovieActorsConnectionWhere
+                      actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                       \\"\\"\\"Return Movies where all of the related CastMembers match this filter\\"\\"\\"
-                      actors_ALL: CastMemberWhere
+                      actors_ALL: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                       \\"\\"\\"Return Movies where none of the related CastMembers match this filter\\"\\"\\"
-                      actors_NONE: CastMemberWhere
+                      actors_NONE: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                       \\"\\"\\"Return Movies where one of the related CastMembers match this filter\\"\\"\\"
-                      actors_SINGLE: CastMemberWhere
+                      actors_SINGLE: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                       \\"\\"\\"Return Movies where some of the related CastMembers match this filter\\"\\"\\"
-                      actors_SOME: CastMemberWhere
-                      title_CONTAINS: String
-                      title_ENDS_WITH: String
-                      title_EQ: String
-                      title_IN: [String]
-                      title_STARTS_WITH: String
+                      actors_SOME: CastMemberWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                      title: StringScalarFilters
+                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                     }
 
                     type MoviesConnection {
@@ -2585,18 +3013,20 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     input PersonUpdateInput {
-                      name_SET: String
+                      name: StringScalarMutations
+                      name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                     }
 
                     input PersonWhere {
                       AND: [PersonWhere!]
                       NOT: PersonWhere
                       OR: [PersonWhere!]
-                      name_CONTAINS: String
-                      name_ENDS_WITH: String
-                      name_EQ: String
-                      name_IN: [String!]
-                      name_STARTS_WITH: String
+                      name: StringScalarFilters
+                      name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                      name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                      name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                      name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                      name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                     }
 
                     type Query {
@@ -2623,6 +3053,20 @@ describe("@relationship directive, aggregate argument", () => {
                     type StringAggregateSelection {
                       longest: String
                       shortest: String
+                    }
+
+                    \\"\\"\\"String filters\\"\\"\\"
+                    input StringScalarFilters {
+                      contains: String
+                      endsWith: String
+                      eq: String
+                      in: [String!]
+                      startsWith: String
+                    }
+
+                    \\"\\"\\"String mutations\\"\\"\\"
+                    input StringScalarMutations {
+                      set: String
                     }
 
                     type UpdateActorsMutationResponse {

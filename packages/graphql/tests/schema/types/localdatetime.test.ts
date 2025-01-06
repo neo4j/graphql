@@ -60,9 +60,18 @@ describe("Localdatetime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -73,6 +82,21 @@ describe("Localdatetime", () => {
               min: LocalDateTime
             }
 
+            \\"\\"\\"LocalDateTime filters\\"\\"\\"
+            input LocalDateTimeScalarFilters {
+              eq: LocalDateTime
+              gt: LocalDateTime
+              gte: LocalDateTime
+              in: [LocalDateTime!]
+              lt: LocalDateTime
+              lte: LocalDateTime
+            }
+
+            \\"\\"\\"LocalDateTime mutations\\"\\"\\"
+            input LocalDateTimeScalarMutations {
+              set: LocalDateTime
+            }
+
             type Movie {
               id: ID
               localDT: LocalDateTime
@@ -80,7 +104,6 @@ describe("Localdatetime", () => {
 
             type MovieAggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
               localDT: LocalDateTimeAggregateSelection!
             }
 
@@ -103,25 +126,29 @@ describe("Localdatetime", () => {
             }
 
             input MovieUpdateInput {
-              id_SET: ID
-              localDT_SET: LocalDateTime
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              localDT: LocalDateTimeScalarMutations
+              localDT_SET: LocalDateTime @deprecated(reason: \\"Please use the generic mutation 'localDT: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              localDT_EQ: LocalDateTime
-              localDT_GT: LocalDateTime
-              localDT_GTE: LocalDateTime
-              localDT_IN: [LocalDateTime]
-              localDT_LT: LocalDateTime
-              localDT_LTE: LocalDateTime
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              localDT: LocalDateTimeScalarFilters
+              localDT_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { eq: ... }\\")
+              localDT_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { gt: ... }\\")
+              localDT_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { gte: ... }\\")
+              localDT_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter localDT: { in: ... }\\")
+              localDT_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { lt: ... }\\")
+              localDT_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { lte: ... }\\")
             }
 
             type MoviesConnection {

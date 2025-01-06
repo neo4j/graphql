@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
     test("should query relationship", async () => {
         const query = /* GraphQL */ `
             query Query {
-                users(where: { hasGroup_SOME: { name_IN: ["Group A"] } }) {
+                users(where: { hasGroup: { some: { name: { in: ["Group A"] } } } }) {
                     name
                 }
             }
@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
     test("should query nested relationship", async () => {
         const query = /* GraphQL */ `
             query Query {
-                groups(where: { hasGroupUser_SOME: { hasGroup_SOME: { name_IN: ["Group A"] } } }) {
+                groups(where: { hasGroupUser: { some: { hasGroup: { some: { name: { in: ["Group A"] } } } } } }) {
                     name
                 }
             }

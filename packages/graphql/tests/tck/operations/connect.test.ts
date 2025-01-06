@@ -69,12 +69,12 @@ describe("Cypher Connect", () => {
                             colors: {
                                 connect: [
                                     {
-                                        where: { node: { name_EQ: "Red" } }
+                                        where: { node: { name: { eq: "Red" } } }
                                         connect: {
                                             photos: [
                                                 {
-                                                    where: { node: { id_EQ: "123" } }
-                                                    connect: { color: { where: { node: { id_EQ: "134" } } } }
+                                                    where: { node: { id: { eq: "123" } } }
+                                                    connect: { color: { where: { node: { id: { eq: "134" } } } } }
                                                 }
                                             ]
                                         }
@@ -84,12 +84,12 @@ describe("Cypher Connect", () => {
                             photos: {
                                 connect: [
                                     {
-                                        where: { node: { id_EQ: "321" } }
-                                        connect: { color: { where: { node: { name_EQ: "Green" } } } }
+                                        where: { node: { id: { eq: "321" } } }
+                                        connect: { color: { where: { node: { name: { eq: "Green" } } } } }
                                     }
                                     {
-                                        where: { node: { id_EQ: "33211" } }
-                                        connect: { color: { where: { node: { name_EQ: "Red" } } } }
+                                        where: { node: { id: { eq: "33211" } } }
+                                        connect: { color: { where: { node: { name: { eq: "Red" } } } } }
                                     }
                                 ]
                             }

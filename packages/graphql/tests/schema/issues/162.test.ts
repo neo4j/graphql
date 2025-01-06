@@ -79,9 +79,28 @@ describe("162", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -89,6 +108,31 @@ describe("162", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Mutation {
@@ -162,7 +206,6 @@ describe("162", () => {
 
             type TigerJawLevel2AggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2CreateInput {
@@ -190,17 +233,16 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1AggregateInput!]
               NOT: TigerJawLevel2Part1AggregateInput
               OR: [TigerJawLevel2Part1AggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: TigerJawLevel2Part1NodeAggregationWhereInput
             }
 
             type TigerJawLevel2Part1AggregateSelection {
               count: Int!
-              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {
@@ -220,6 +262,25 @@ describe("162", () => {
               edges: [TigerJawLevel2Part1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input TigerJawLevel2Part1ConnectionFilters {
+              \\"\\"\\"
+              Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              all: TigerJawLevel2Part1ConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2s where none of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              none: TigerJawLevel2Part1ConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2s where one of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              single: TigerJawLevel2Part1ConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2s where some of the related TigerJawLevel2Part1Connections match this filter
+              \\"\\"\\"
+              some: TigerJawLevel2Part1ConnectionWhere
             }
 
             input TigerJawLevel2Part1ConnectionSort {
@@ -270,25 +331,28 @@ describe("162", () => {
               create: [TigerJawLevel2Part1CreateFieldInput!]
             }
 
-            input TigerJawLevel2Part1NodeAggregationWhereInput {
-              AND: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              NOT: TigerJawLevel2Part1NodeAggregationWhereInput
-              OR: [TigerJawLevel2Part1NodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID
-              id_MAX_GT: ID
-              id_MAX_GTE: ID
-              id_MAX_LT: ID
-              id_MAX_LTE: ID
-              id_MIN_EQUAL: ID
-              id_MIN_GT: ID
-              id_MIN_GTE: ID
-              id_MIN_LT: ID
-              id_MIN_LTE: ID
-            }
-
             type TigerJawLevel2Part1Relationship {
               cursor: String!
               node: TigerJawLevel2Part1!
+            }
+
+            input TigerJawLevel2Part1RelationshipFilters {
+              \\"\\"\\"
+              Filter type where all of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              all: TigerJawLevel2Part1Where
+              \\"\\"\\"
+              Filter type where none of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              none: TigerJawLevel2Part1Where
+              \\"\\"\\"
+              Filter type where one of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              single: TigerJawLevel2Part1Where
+              \\"\\"\\"
+              Filter type where some of the related TigerJawLevel2Part1s match this filter
+              \\"\\"\\"
+              some: TigerJawLevel2Part1Where
             }
 
             \\"\\"\\"
@@ -302,6 +366,7 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1TigerAggregateInput!]
               NOT: TigerJawLevel2Part1TigerAggregateInput
               OR: [TigerJawLevel2Part1TigerAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -318,6 +383,25 @@ describe("162", () => {
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input TigerJawLevel2Part1TigerConnectionFilters {
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              all: TigerJawLevel2Part1TigerConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where none of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              none: TigerJawLevel2Part1TigerConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where one of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              single: TigerJawLevel2Part1TigerConnectionWhere
+              \\"\\"\\"
+              Return TigerJawLevel2Part1s where some of the related TigerJawLevel2Part1TigerConnections match this filter
+              \\"\\"\\"
+              some: TigerJawLevel2Part1TigerConnectionWhere
             }
 
             input TigerJawLevel2Part1TigerConnectionSort {
@@ -352,26 +436,27 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
               NOT: TigerJawLevel2Part1TigerNodeAggregationWhereInput
               OR: [TigerJawLevel2Part1TigerNodeAggregationWhereInput!]
-              x_AVERAGE_EQUAL: Float
-              x_AVERAGE_GT: Float
-              x_AVERAGE_GTE: Float
-              x_AVERAGE_LT: Float
-              x_AVERAGE_LTE: Float
-              x_MAX_EQUAL: Int
-              x_MAX_GT: Int
-              x_MAX_GTE: Int
-              x_MAX_LT: Int
-              x_MAX_LTE: Int
-              x_MIN_EQUAL: Int
-              x_MIN_GT: Int
-              x_MIN_GTE: Int
-              x_MIN_LT: Int
-              x_MIN_LTE: Int
-              x_SUM_EQUAL: Int
-              x_SUM_GT: Int
-              x_SUM_GTE: Int
-              x_SUM_LT: Int
-              x_SUM_LTE: Int
+              x: IntScalarAggregationFilters
+              x_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { eq: ... } } }' instead.\\")
+              x_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { gt: ... } } }' instead.\\")
+              x_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { gte: ... } } }' instead.\\")
+              x_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { lt: ... } } }' instead.\\")
+              x_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'x: { average: { lte: ... } } }' instead.\\")
+              x_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { eq: ... } } }' instead.\\")
+              x_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { gt: ... } } }' instead.\\")
+              x_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { gte: ... } } }' instead.\\")
+              x_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { lt: ... } } }' instead.\\")
+              x_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { max: { lte: ... } } }' instead.\\")
+              x_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { eq: ... } } }' instead.\\")
+              x_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { gt: ... } } }' instead.\\")
+              x_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { gte: ... } } }' instead.\\")
+              x_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { lt: ... } } }' instead.\\")
+              x_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { min: { lte: ... } } }' instead.\\")
+              x_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { eq: ... } } }' instead.\\")
+              x_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { gt: ... } } }' instead.\\")
+              x_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { gte: ... } } }' instead.\\")
+              x_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { lt: ... } } }' instead.\\")
+              x_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'x: { sum: { lte: ... } } }' instead.\\")
             }
 
             type TigerJawLevel2Part1TigerRelationship {
@@ -415,7 +500,8 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1UpdateInput {
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               tiger: [TigerJawLevel2Part1TigerUpdateFieldInput!]
             }
 
@@ -423,44 +509,47 @@ describe("162", () => {
               AND: [TigerJawLevel2Part1Where!]
               NOT: TigerJawLevel2Part1Where
               OR: [TigerJawLevel2Part1Where!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              tiger: TigerRelationshipFilters
               tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
+              tigerConnection: TigerJawLevel2Part1TigerConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_ALL: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_ALL: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where none of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_NONE: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_NONE: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where one of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_SINGLE: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_SINGLE: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where some of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
-              tigerConnection_SOME: TigerJawLevel2Part1TigerConnectionWhere
+              tigerConnection_SOME: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'tigerConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related Tigers match this filter
               \\"\\"\\"
-              tiger_ALL: TigerWhere
+              tiger_ALL: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: { all: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where none of the related Tigers match this filter
               \\"\\"\\"
-              tiger_NONE: TigerWhere
+              tiger_NONE: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: { none: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where one of the related Tigers match this filter
               \\"\\"\\"
-              tiger_SINGLE: TigerWhere
+              tiger_SINGLE: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2Part1s where some of the related Tigers match this filter
               \\"\\"\\"
-              tiger_SOME: TigerWhere
+              tiger_SOME: TigerWhere @deprecated(reason: \\"Please use the relevant generic filter 'tiger: {  some: ... }' instead.\\")
             }
 
             type TigerJawLevel2Part1sConnection {
@@ -478,15 +567,11 @@ describe("162", () => {
 
             type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
               count: Int!
-              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
-            }
-
-            type TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection {
-              id: IDAggregateSelection!
             }
 
             input TigerJawLevel2UpdateInput {
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               part1: [TigerJawLevel2Part1UpdateFieldInput!]
             }
 
@@ -494,50 +579,64 @@ describe("162", () => {
               AND: [TigerJawLevel2Where!]
               NOT: TigerJawLevel2Where
               OR: [TigerJawLevel2Where!]
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              part1: TigerJawLevel2Part1RelationshipFilters
               part1Aggregate: TigerJawLevel2Part1AggregateInput
+              part1Connection: TigerJawLevel2Part1ConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_ALL: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_ALL: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where none of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_NONE: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_NONE: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where one of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_SINGLE: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_SINGLE: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where some of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
-              part1Connection_SOME: TigerJawLevel2Part1ConnectionWhere
+              part1Connection_SOME: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'part1Connection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_ALL: TigerJawLevel2Part1Where
+              part1_ALL: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: { all: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where none of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_NONE: TigerJawLevel2Part1Where
+              part1_NONE: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: { none: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where one of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_SINGLE: TigerJawLevel2Part1Where
+              part1_SINGLE: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return TigerJawLevel2s where some of the related TigerJawLevel2Part1s match this filter
               \\"\\"\\"
-              part1_SOME: TigerJawLevel2Part1Where
+              part1_SOME: TigerJawLevel2Part1Where @deprecated(reason: \\"Please use the relevant generic filter 'part1: {  some: ... }' instead.\\")
             }
 
             type TigerJawLevel2sConnection {
               edges: [TigerJawLevel2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input TigerRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Tigers match this filter\\"\\"\\"
+              all: TigerWhere
+              \\"\\"\\"Filter type where none of the related Tigers match this filter\\"\\"\\"
+              none: TigerWhere
+              \\"\\"\\"Filter type where one of the related Tigers match this filter\\"\\"\\"
+              single: TigerWhere
+              \\"\\"\\"Filter type where some of the related Tigers match this filter\\"\\"\\"
+              some: TigerWhere
             }
 
             \\"\\"\\"
@@ -548,21 +647,23 @@ describe("162", () => {
             }
 
             input TigerUpdateInput {
-              x_DECREMENT: Int
-              x_INCREMENT: Int
-              x_SET: Int
+              x: IntScalarMutations
+              x_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'x: { decrement: ... } }' instead.\\")
+              x_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'x: { increment: ... } }' instead.\\")
+              x_SET: Int @deprecated(reason: \\"Please use the generic mutation 'x: { set: ... } }' instead.\\")
             }
 
             input TigerWhere {
               AND: [TigerWhere!]
               NOT: TigerWhere
               OR: [TigerWhere!]
-              x_EQ: Int
-              x_GT: Int
-              x_GTE: Int
-              x_IN: [Int]
-              x_LT: Int
-              x_LTE: Int
+              x: IntScalarFilters
+              x_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter x: { eq: ... }\\")
+              x_GT: Int @deprecated(reason: \\"Please use the relevant generic filter x: { gt: ... }\\")
+              x_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter x: { gte: ... }\\")
+              x_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter x: { in: ... }\\")
+              x_LT: Int @deprecated(reason: \\"Please use the relevant generic filter x: { lt: ... }\\")
+              x_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter x: { lte: ... }\\")
             }
 
             type TigersConnection {

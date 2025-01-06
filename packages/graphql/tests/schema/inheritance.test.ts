@@ -88,6 +88,7 @@ describe("inheritance", () => {
               AND: [ActorFriendsAggregateInput!]
               NOT: ActorFriendsAggregateInput
               OR: [ActorFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -101,6 +102,25 @@ describe("inheritance", () => {
               connect: PersonConnectInput
               edge: FriendsWithCreateInput
               where: PersonConnectWhere
+            }
+
+            input ActorFriendsConnectionFilters {
+              \\"\\"\\"
+              Return Actors where all of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              all: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              none: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              single: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              some: PersonFriendsConnectionWhere
             }
 
             input ActorFriendsCreateFieldInput {
@@ -127,21 +147,22 @@ describe("inheritance", () => {
               AND: [ActorFriendsNodeAggregationWhereInput!]
               NOT: ActorFriendsNodeAggregationWhereInput
               OR: [ActorFriendsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             input ActorFriendsUpdateConnectionInput {
@@ -181,43 +202,47 @@ describe("inheritance", () => {
 
             input ActorUpdateInput {
               friends: [ActorFriendsUpdateFieldInput!]
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
+              friends: PersonRelationshipFilters
               friendsAggregate: ActorFriendsAggregateInput
+              friendsConnection: ActorFriendsConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_ALL: PersonFriendsConnectionWhere
+              friendsConnection_ALL: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_NONE: PersonFriendsConnectionWhere
+              friendsConnection_NONE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SINGLE: PersonFriendsConnectionWhere
+              friendsConnection_SINGLE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SOME: PersonFriendsConnectionWhere
+              friendsConnection_SOME: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related People match this filter\\"\\"\\"
-              friends_ALL: PersonWhere
+              friends_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related People match this filter\\"\\"\\"
-              friends_NONE: PersonWhere
+              friends_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related People match this filter\\"\\"\\"
-              friends_SINGLE: PersonWhere
+              friends_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related People match this filter\\"\\"\\"
-              friends_SOME: PersonWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
+              friends_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -247,6 +272,16 @@ describe("inheritance", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
             \\"\\"\\"
             The edge properties for the following fields:
             * Actor.friends
@@ -259,26 +294,27 @@ describe("inheritance", () => {
               AND: [FriendsWithAggregationWhereInput!]
               NOT: FriendsWithAggregationWhereInput
               OR: [FriendsWithAggregationWhereInput!]
-              since_AVERAGE_EQUAL: Float
-              since_AVERAGE_GT: Float
-              since_AVERAGE_GTE: Float
-              since_AVERAGE_LT: Float
-              since_AVERAGE_LTE: Float
-              since_MAX_EQUAL: Int
-              since_MAX_GT: Int
-              since_MAX_GTE: Int
-              since_MAX_LT: Int
-              since_MAX_LTE: Int
-              since_MIN_EQUAL: Int
-              since_MIN_GT: Int
-              since_MIN_GTE: Int
-              since_MIN_LT: Int
-              since_MIN_LTE: Int
-              since_SUM_EQUAL: Int
-              since_SUM_GT: Int
-              since_SUM_GTE: Int
-              since_SUM_LT: Int
-              since_SUM_LTE: Int
+              since: IntScalarAggregationFilters
+              since_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'since: { average: { eq: ... } } }' instead.\\")
+              since_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'since: { average: { gt: ... } } }' instead.\\")
+              since_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'since: { average: { gte: ... } } }' instead.\\")
+              since_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'since: { average: { lt: ... } } }' instead.\\")
+              since_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'since: { average: { lte: ... } } }' instead.\\")
+              since_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { eq: ... } } }' instead.\\")
+              since_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { gt: ... } } }' instead.\\")
+              since_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { gte: ... } } }' instead.\\")
+              since_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { lt: ... } } }' instead.\\")
+              since_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { lte: ... } } }' instead.\\")
+              since_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { eq: ... } } }' instead.\\")
+              since_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { gt: ... } } }' instead.\\")
+              since_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { gte: ... } } }' instead.\\")
+              since_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { lt: ... } } }' instead.\\")
+              since_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { lte: ... } } }' instead.\\")
+              since_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { sum: { eq: ... } } }' instead.\\")
+              since_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { sum: { gt: ... } } }' instead.\\")
+              since_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { sum: { gte: ... } } }' instead.\\")
+              since_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { sum: { lt: ... } } }' instead.\\")
+              since_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'since: { sum: { lte: ... } } }' instead.\\")
             }
 
             input FriendsWithCreateInput {
@@ -290,21 +326,23 @@ describe("inheritance", () => {
             }
 
             input FriendsWithUpdateInput {
-              since_DECREMENT: Int
-              since_INCREMENT: Int
-              since_SET: Int
+              since: IntScalarMutations
+              since_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'since: { decrement: ... } }' instead.\\")
+              since_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'since: { increment: ... } }' instead.\\")
+              since_SET: Int @deprecated(reason: \\"Please use the generic mutation 'since: { set: ... } }' instead.\\")
             }
 
             input FriendsWithWhere {
               AND: [FriendsWithWhere!]
               NOT: FriendsWithWhere
               OR: [FriendsWithWhere!]
-              since_EQ: Int
-              since_GT: Int
-              since_GTE: Int
-              since_IN: [Int]
-              since_LT: Int
-              since_LTE: Int
+              since: IntScalarFilters
+              since_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter since: { eq: ... }\\")
+              since_GT: Int @deprecated(reason: \\"Please use the relevant generic filter since: { gt: ... }\\")
+              since_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter since: { gte: ... }\\")
+              since_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter since: { in: ... }\\")
+              since_LT: Int @deprecated(reason: \\"Please use the relevant generic filter since: { lt: ... }\\")
+              since_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter since: { lte: ... }\\")
             }
 
             type IntAggregateSelection {
@@ -312,6 +350,31 @@ describe("inheritance", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Mutation {
@@ -374,6 +437,7 @@ describe("inheritance", () => {
               AND: [PersonFriendsAggregateInput!]
               NOT: PersonFriendsAggregateInput
               OR: [PersonFriendsAggregateInput!]
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -393,6 +457,25 @@ describe("inheritance", () => {
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PersonFriendsConnectionFilters {
+              \\"\\"\\"
+              Return People where all of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              all: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              none: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              single: PersonFriendsConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonFriendsConnections match this filter
+              \\"\\"\\"
+              some: PersonFriendsConnectionWhere
             }
 
             input PersonFriendsConnectionSort {
@@ -467,21 +550,22 @@ describe("inheritance", () => {
               AND: [PersonFriendsNodeAggregationWhereInput!]
               NOT: PersonFriendsNodeAggregationWhereInput
               OR: [PersonFriendsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type PersonFriendsRelationship {
@@ -510,6 +594,17 @@ describe("inheritance", () => {
               Actor
             }
 
+            input PersonRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+              all: PersonWhere
+              \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+              none: PersonWhere
+              \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+              single: PersonWhere
+              \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+              some: PersonWhere
+            }
+
             \\"\\"\\"
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
@@ -519,6 +614,7 @@ describe("inheritance", () => {
 
             input PersonUpdateInput {
               friends: [PersonFriendsUpdateFieldInput!]
+              name: StringScalarMutations
               name_SET: String
             }
 
@@ -526,37 +622,40 @@ describe("inheritance", () => {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
+              friends: PersonRelationshipFilters
               friendsAggregate: PersonFriendsAggregateInput
+              friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_ALL: PersonFriendsConnectionWhere
+              friendsConnection_ALL: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_NONE: PersonFriendsConnectionWhere
+              friendsConnection_NONE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SINGLE: PersonFriendsConnectionWhere
+              friendsConnection_SINGLE: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related PersonFriendsConnections match this filter
               \\"\\"\\"
-              friendsConnection_SOME: PersonFriendsConnectionWhere
+              friendsConnection_SOME: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'friendsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related People match this filter\\"\\"\\"
-              friends_ALL: PersonWhere
+              friends_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related People match this filter\\"\\"\\"
-              friends_NONE: PersonWhere
+              friends_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related People match this filter\\"\\"\\"
-              friends_SINGLE: PersonWhere
+              friends_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related People match this filter\\"\\"\\"
-              friends_SOME: PersonWhere
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-              typename_IN: [PersonImplementation!]
+              friends_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'friends: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              typename: [PersonImplementation!]
             }
 
             type Query {
@@ -579,6 +678,27 @@ describe("inheritance", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {

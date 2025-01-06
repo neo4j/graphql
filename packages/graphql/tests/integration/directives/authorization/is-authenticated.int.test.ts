@@ -50,7 +50,7 @@ describe("auth/is-authenticated", () => {
 
     describe("read", () => {
         test("should throw if not authenticated type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${Product} @authentication(operations: [READ]) @node {
                     id: ID
                     name: String
@@ -66,7 +66,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${Product.plural} {
                         id
@@ -76,17 +76,13 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should not throw if authenticated type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${Product} @authentication(operations: [READ]) @node {
                     id: ID
                     name: String
@@ -102,7 +98,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${Product.plural} {
                         id
@@ -118,11 +114,11 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should not throw if authenticated with correct role type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [READ], jwt: { roles: { includes: "admin" } }) @node {
                     id: ID
                     name: String
                 }
@@ -137,7 +133,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${Product.plural} {
                         id
@@ -153,11 +149,12 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if authenticated with incorrect role type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${Product} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
+                
+                type ${Product} @authentication(operations: [READ], jwt: { roles: { includes: "admin" } }) @node {
                     id: ID
                     name: String
                 }
@@ -172,7 +169,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${Product.plural} {
                         id
@@ -188,10 +185,10 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [READ]) 
+                    password: String @authentication(operations: [READ]) 
                 }
             `;
 
@@ -204,7 +201,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${User.plural} {
                         password
@@ -214,10 +211,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -226,7 +219,7 @@ describe("auth/is-authenticated", () => {
 
     describe("create", () => {
         test("should not throw if authenticated on type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @authentication(operations: [CREATE]) @node {
                     id: ID
                     name: String
@@ -242,7 +235,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1" }]) {
                         ${User.plural} {
@@ -260,12 +253,12 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should not throw if authenticated with correct role on type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) @node {
+                type ${User} @authentication(operations: [CREATE], jwt: {roles: { includes: "admin" } }) @node {
                     id: ID
                     name: String
                 }
@@ -280,7 +273,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1" }]) {
                         ${User.plural} {
@@ -298,7 +291,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @authentication(operations: [CREATE]) @node {
                     id: ID
                     name: String
@@ -314,7 +307,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1" }]) {
                         ${User.plural} {
@@ -326,21 +319,17 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${User} @authentication(operations: [CREATE], jwt: { roles: { includes: "admin" } }) @node {
                     id: ID
                     name: String
                 }
@@ -355,7 +344,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1" }]) {
                         ${User.plural} {
@@ -373,7 +362,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on nested create type", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
                     name: String
@@ -394,7 +383,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
                         ${User.plural} {
@@ -406,17 +395,13 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on nested create type", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -427,7 +412,7 @@ describe("auth/is-authenticated", () => {
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [CREATE], jwt: { roles: { includes: "admin" } }) @node {
                     id: ID
                 }   
             `;
@@ -441,7 +426,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
                         ${User.plural} {
@@ -459,7 +444,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if authenticated with incorrect role on nested create type - not unwind-create", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -470,7 +455,7 @@ describe("auth/is-authenticated", () => {
                     products: [${Product}!]! @relationship(type: "HAS_PRODUCT", direction: OUT) 
                 }
 
-                type ${Product} @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) @node {
+                type ${Product} @authentication(operations: [CREATE], jwt: { roles: { includes: "admin" } }) @node {
                     id: ID
                 }   
             `;
@@ -484,7 +469,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
                         ${User.plural} {
@@ -502,7 +487,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should not throw if authenticated on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
                     password: String  @authentication(operations: [CREATE]) 
@@ -514,7 +499,7 @@ describe("auth/is-authenticated", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ password: "1" }]) {
                         ${User.plural} {
@@ -531,14 +516,14 @@ describe("auth/is-authenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
         });
         test("should not throw if authenticated with correct role on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [CREATE], jwt: {roles_INCLUDES: "admin"}) 
+                    password: String @authentication(operations: [CREATE], jwt: {roles: { includes: "admin" }}) 
                 }
             `;
 
@@ -547,7 +532,7 @@ describe("auth/is-authenticated", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ password: "1" }]) {
                         ${User.plural} {
@@ -565,10 +550,10 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [CREATE]) 
+                    password: String @authentication(operations: [CREATE]) 
                 }
             `;
 
@@ -577,7 +562,7 @@ describe("auth/is-authenticated", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ password: "1" }]) {
                         ${User.plural} {
@@ -589,24 +574,20 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
             
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
+                    password: String @authentication(operations: [CREATE], jwt: { roles: { includes: "admin" } }) 
                 }
             `;
 
@@ -615,7 +596,7 @@ describe("auth/is-authenticated", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ password: "1" }]) {
                         ${User.plural} {
@@ -633,14 +614,14 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if authenticated with incorrect role on field definition - not unwind-create", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
             
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
+                    password: String  @authentication(operations: [CREATE], jwt: { roles: { includes: "admin" } }) 
                 }
             `;
 
@@ -649,7 +630,7 @@ describe("auth/is-authenticated", () => {
                 features: { authorization: { key: secret } },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ password: "1" }]) {
                         ${User.plural} {
@@ -667,7 +648,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on nested create field", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
                     name: String
@@ -675,7 +656,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type ${Product} @node {
-                    id: ID  @authentication(operations: [CREATE]) 
+                    id: ID @authentication(operations: [CREATE]) 
                 }   
             `;
 
@@ -688,7 +669,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
                         ${User.plural} {
@@ -700,17 +681,13 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
         });
 
         test("should throw if authenticated with incorrect role on nested create field", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -722,7 +699,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type ${Product} @node {
-                    id: ID  @authentication(operations: [CREATE], jwt: { roles_INCLUDES: "admin" }) 
+                    id: ID  @authentication(operations: [CREATE], jwt: { roles: { includes: "admin" } }) 
                 }   
             `;
 
@@ -735,7 +712,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
                         ${User.plural} {
@@ -753,7 +730,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if authenticated with incorrect role on nested create field - not unwind-create", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -778,7 +755,7 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${User.operations.create}(input: [{ id: "1", products: { create: [{ node: { id: "5" } }] } }]) {
                         ${User.plural} {
@@ -799,7 +776,7 @@ describe("auth/is-authenticated", () => {
     describe("update", () => {
         test("should not throw if authenticated on type definition", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${User}  @authentication(operations: [UPDATE])  @node {
+                type ${User}  @authentication(operations: [UPDATE]) @node {
                     id: ID
                     name: String
                 }
@@ -837,7 +814,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User}  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"})  @node {
+                type ${User}  @authentication(operations: [UPDATE], jwt: {roles: { includes: "admin" }}) @node {
                     id: ID
                     name: String
                 }
@@ -871,7 +848,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${User}  @authentication(operations: [UPDATE])  @node {
+                type ${User} @authentication(operations: [UPDATE]) @node {
                     id: ID
                     name: String
                 }
@@ -898,10 +875,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -912,7 +885,7 @@ describe("auth/is-authenticated", () => {
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
-                type ${User}  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" })  @node {
+                type ${User} @authentication(operations: [UPDATE], jwt: { roles: { includes: "admin" } })  @node {
                     id: ID
                     name: String
                 }
@@ -986,7 +959,7 @@ describe("auth/is-authenticated", () => {
         
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [UPDATE], jwt: {roles_INCLUDES: "admin"}) 
+                    password: String @authentication(operations: [UPDATE], jwt: { roles: { includes: "admin" }}) 
                 }
             `;
 
@@ -1020,7 +993,7 @@ describe("auth/is-authenticated", () => {
             const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [UPDATE]) 
+                    password: String @authentication(operations: [UPDATE]) 
                 }
             `;
 
@@ -1045,10 +1018,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -1061,7 +1030,7 @@ describe("auth/is-authenticated", () => {
                 }
                 type ${User} @node {
                     id: ID
-                    password: String  @authentication(operations: [UPDATE],  jwt: { roles_INCLUDES: "admin" }) 
+                    password: String  @authentication(operations: [UPDATE],  jwt: { roles: { includes: "admin" } }) 
                 }
             `;
 
@@ -1134,7 +1103,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1175,7 +1144,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [CREATE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
+                    @authentication(operations: [CREATE_RELATIONSHIP], jwt: {roles: { includes: "admin" }}) 
 
                 extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
@@ -1199,7 +1168,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1261,7 +1230,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1322,7 +1291,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1337,10 +1306,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -1385,7 +1350,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1400,10 +1365,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -1431,7 +1392,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
+                    @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles: { includes: "admin" } }) 
 
                 extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP]) 
             `;
@@ -1455,7 +1416,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1495,7 +1456,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
+                extend type ${Post} @authentication(operations: [CREATE_RELATIONSHIP],  jwt: { roles: {includes: "admin"} }) 
             `;
 
             const userId = generate({
@@ -1517,7 +1478,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1542,7 +1503,7 @@ describe("auth/is-authenticated", () => {
         test("should not throw if authenticated", async () => {
             const Post = testHelper.createUniqueType("Post");
 
-            const typeDefs = /* GraphLQ */ `
+            const typeDefs = /* GraphQL */ `
                 type ${Post} @node {
                     id: String
                     content: String
@@ -1578,9 +1539,9 @@ describe("auth/is-authenticated", () => {
                 },
             });
 
-            const query = /* GraphLQ */ `
+            const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1621,7 +1582,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [DELETE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
+                    @authentication(operations: [DELETE_RELATIONSHIP], jwt: {roles: { includes: "admin" } }) 
 
                 extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP]) 
             `;
@@ -1645,7 +1606,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: {eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: {eq: "${postId}"} } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1685,7 +1646,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP], jwt: {roles_INCLUDES:"admin"}) 
+                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP], jwt: {roles: { includes: "admin" } }) 
             `;
 
             const userId = generate({
@@ -1707,7 +1668,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1768,7 +1729,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1783,10 +1744,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -1831,7 +1788,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1846,10 +1803,6 @@ describe("auth/is-authenticated", () => {
                     CREATE (:${User} {id: "${userId}"})
                     CREATE (:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -1877,7 +1830,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 extend type ${User}
-                    @authentication(operations: [DELETE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
+                    @authentication(operations: [DELETE_RELATIONSHIP],  jwt: { roles: { includes: "admin" } }) 
 
                 extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP]) 
             `;
@@ -1901,7 +1854,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1941,7 +1894,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP],  jwt: { roles_INCLUDES: "admin" }) 
+                extend type ${Post} @authentication(operations: [DELETE_RELATIONSHIP], jwt: { roles: { includes: "admin" } }) 
             `;
 
             const userId = generate({
@@ -1963,7 +1916,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -1987,7 +1940,7 @@ describe("auth/is-authenticated", () => {
     describe("delete", () => {
         test("should not throw if authenticated on type definition", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${User} @authentication(operations: [DELETE])  @node {
+                type ${User} @authentication(operations: [DELETE]) @node {
                     id: ID
                     name: String
                 }
@@ -2023,7 +1976,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [DELETE], jwt: {roles_INCLUDES: "admin"}) @node {
+                type ${User} @authentication(operations: [DELETE], jwt: {roles: { includes: "admin" }}) @node {
                     id: ID
                     name: String
                 }
@@ -2055,7 +2008,7 @@ describe("auth/is-authenticated", () => {
 
         test("should throw if not authenticated on type definition", async () => {
             const typeDefs = /* GraphQL */ `
-                type ${User} @authentication(operations: [DELETE])  @node {
+                type ${User} @authentication(operations: [DELETE]) @node {
                     id: ID
                     name: String
                 }
@@ -2079,10 +2032,6 @@ describe("auth/is-authenticated", () => {
             `;
 
             const token = "not valid token";
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2122,7 +2071,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.delete}(where: {id_EQ: "${userId}"}, delete:{ posts: {where:{node: { id_EQ: "${postId}"}}} }) {
+                    ${User.operations.delete}(where: {id: { eq: "${userId}" }}, delete:{ posts: { where:{ node: { id: { eq: "${postId}" }}}} }) {
                         nodesDeleted
                     }
                 }
@@ -2133,10 +2082,6 @@ describe("auth/is-authenticated", () => {
             await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2149,7 +2094,7 @@ describe("auth/is-authenticated", () => {
                     roles: [String!]!
                 }
 
-                type ${User} @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" })  @node {
+                type ${User} @authentication(operations: [DELETE], jwt: { roles: { includes: "admin" } }) @node {
                     id: ID
                     name: String
                 }
@@ -2191,7 +2136,7 @@ describe("auth/is-authenticated", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type ${Post} @node @authentication(operations: [DELETE],  jwt: { roles_INCLUDES: "admin" }) {
+                type ${Post} @node @authentication(operations: [DELETE], jwt: { roles: { includes: "admin"} }) {
                     id: ID
                     name: String
                 }
@@ -2216,7 +2161,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.delete}(where: {id_EQ: "${userId}"}, delete:{posts: {where:{node: { id_EQ: "${postId}"}}} }) {
+                    ${User.operations.delete}(where: { id: { eq: "${userId}" } }, delete: { posts: { where: { node: { id: { eq: "${postId}" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -2266,7 +2211,7 @@ describe("auth/is-authenticated", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${User.operations.delete}(where: {id_EQ: "${userId}"}, delete:{ posts: {where:{node: { id_EQ: "${postId}"}}} }) {
+                    ${User.operations.delete}(where: {id: { eq: "${userId}" }}, delete:{ posts: { where: { node: { id: { eq: "${postId}" } } } } }) {
                         nodesDeleted
                     }
                 }
@@ -2277,10 +2222,6 @@ describe("auth/is-authenticated", () => {
             await testHelper.executeCypher(`
                     CREATE (:${User} {id: "${userId}"})-[:HAS_POST]->(:${Post} {id: "${postId}"})
                 `);
-
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -2337,7 +2278,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles: { includes: "admin" }})
                 }
             `;
 
@@ -2396,10 +2337,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2417,7 +2354,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Query {
-                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    users: [${User}] @cypher(statement: "MATCH (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles: { includes: "admin" }})
                 }
             `;
 
@@ -2493,7 +2430,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles: { includes: "admin" }})
                 }
             `;
 
@@ -2552,10 +2489,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2573,7 +2506,7 @@ describe("auth/is-authenticated", () => {
                 }
 
                 type Mutation {
-                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    createUser: ${User} @cypher(statement: "CREATE (u:${User}) RETURN u", columnName: "u") @authentication(jwt: {roles: { includes: "admin" }})
                 }
             `;
 
@@ -2659,7 +2592,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
-                        @authentication(operations: [READ], jwt: {roles_INCLUDES: "admin"}) 
+                        @authentication(operations: [READ], jwt: {roles: { includes: "admin" } }) 
                 }
             `;
 
@@ -2726,10 +2659,6 @@ describe("auth/is-authenticated", () => {
 
             const token = "not valid token";
 
-            const socket = new Socket({ readable: true });
-            const req = new IncomingMessage(socket);
-            req.headers.authorization = `Bearer ${token}`;
-
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -2751,7 +2680,7 @@ describe("auth/is-authenticated", () => {
                     id: ID
                     history: [${History}]
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${History}) RETURN h", columnName: "h")
-                        @authentication(operations: [READ], jwt: {roles_INCLUDES: "admin"}) 
+                        @authentication(operations: [READ], jwt: {roles: { includes: "admin" } }) 
                 }
             `;
 
@@ -2825,7 +2754,7 @@ describe("auth/is-authenticated", () => {
                     name: String!
                 }
 
-                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "John"})  @node {
+                type ${Product} @authentication(operations: [READ], jwt: { name: { startsWith: "John" } }) @node {
                     id: ID
                     name: String
                 }
@@ -2867,7 +2796,7 @@ describe("auth/is-authenticated", () => {
                     name: String!
                 }
 
-                type ${Product} @authentication(operations: [READ], jwt: {name_STARTS_WITH: "Doe"})  @node {
+                type ${Product} @authentication(operations: [READ], jwt: {name: { startsWith: "Doe" } }) @node {
                     id: ID
                     name: String
                 }
@@ -3123,13 +3052,13 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
                     }
                 }
-            `;
+                `;
 
                 const token = "not valid token";
 
@@ -3158,7 +3087,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" }}, update: { posts: { connect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -3221,7 +3150,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -3256,7 +3185,7 @@ describe("auth/is-authenticated", () => {
 
                 const query = `
                 mutation {
-                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${User.operations.update}(where: { id: { eq: "${userId}" } }, update: { posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${User.plural} {
                             id
                         }
@@ -3357,12 +3286,12 @@ describe("auth/is-authenticated", () => {
 
             test("should throw if not authenticated type definition", async () => {
                 const query = `
-                query {
-                    allUsers {
-                        id
+                    query {
+                        allUsers {
+                            id
+                        }
                     }
-                }
-            `;
+                `;
 
                 const token = "not valid token";
 
@@ -3377,12 +3306,12 @@ describe("auth/is-authenticated", () => {
 
             test("should not throw if authenticated type definition", async () => {
                 const query = `
-                query {
-                    allUsers {
-                        id
+                    query {
+                        allUsers {
+                            id
+                        }
                     }
-                }
-            `;
+                `;
 
                 const token = createBearerToken(secret);
 

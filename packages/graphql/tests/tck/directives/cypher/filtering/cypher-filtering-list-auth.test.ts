@@ -26,7 +26,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_list: [String]
                     @cypher(
@@ -112,7 +112,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_list: [String]
                     @cypher(
@@ -194,7 +194,7 @@ describe("cypher directive filtering - List Auth", () => {
                         """
                         columnName: "list"
                     )
-                    @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
@@ -279,7 +279,7 @@ describe("cypher directive filtering - List Auth", () => {
                         """
                         columnName: "list"
                     )
-                    @authorization(filter: [{ where: { node: { custom_list_EQ: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: { eq: "$jwt.custom_value" } } } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
@@ -335,7 +335,9 @@ describe("cypher directive filtering - List Auth", () => {
 
             type Actor
                 @node
-                @authorization(filter: [{ where: { node: { movies_SOME: { custom_list_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    filter: [{ where: { node: { movies: { some: { custom_list: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -403,7 +405,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
-                    @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }])
                 custom_list: [String]
                     @cypher(
                         statement: """
@@ -476,7 +478,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                @authorization(validate: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_list: [String]
                     @cypher(

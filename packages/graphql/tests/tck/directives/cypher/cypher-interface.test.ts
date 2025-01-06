@@ -223,7 +223,7 @@ describe("Cypher directive on interface", () => {
                 moviesOrTVShows(title: "The Matrix") {
                     title
                     ... on Movie {
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                         }
                     }
@@ -406,7 +406,7 @@ describe("Cypher directive on interface", () => {
                 moviesOrTVShows(title: "The Matrix") {
                     title
                     ... on Movie {
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                         }
                     }
@@ -498,7 +498,7 @@ describe("Cypher directive on interface", () => {
                     moviesOrTVShows(title: "The Matrix") {
                         title
                         ... on Movie {
-                            actors(where: { name_EQ: "Keanu Reeves" }) {
+                            actors(where: { name: { eq: "Keanu Reeves" } }) {
                                 name
                             }
                         }

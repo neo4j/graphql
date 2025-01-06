@@ -47,7 +47,7 @@ describe("Cypher NULL", () => {
     test("Simple IS NULL", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: null }) {
+                movies(where: { title: { eq: null } }) {
                     title
                 }
             }
@@ -67,7 +67,7 @@ describe("Cypher NULL", () => {
     test("Simple IS NOT NULL", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { NOT: { title_EQ: null } }) {
+                movies(where: { NOT: { title: { eq: null } } }) {
                     title
                 }
             }
@@ -78,50 +78,6 @@ describe("Cypher NULL", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE NOT (this.title IS NULL)
-            RETURN this { .title } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("Simple relationship IS NULL", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies(where: { actors_SOME: null }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT (EXISTS {
-                MATCH (this)<-[:ACTED_IN]-(this0:Actor)
-            })
-            RETURN this { .title } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("Simple relationship IS NOT NULL", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies(where: { NOT: { actors_SOME: null } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE NOT (NOT (EXISTS {
-                MATCH (this)<-[:ACTED_IN]-(this0:Actor)
-            }))
             RETURN this { .title } AS this"
         `);
 

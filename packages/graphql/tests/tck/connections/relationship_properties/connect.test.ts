@@ -133,7 +133,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         {
                             title: "Forrest Gump"
                             actors: {
-                                connect: [{ where: { node: { name_EQ: "Tom Hanks" } }, edge: { screenTime: 60 } }]
+                                connect: [{ where: { node: { name: { eq: "Tom Hanks" } } }, edge: { screenTime: 60 } }]
                             }
                         }
                     ]
@@ -219,7 +219,7 @@ describe("Relationship Properties Connect Cypher", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Forrest Gump" }
+                    where: { title: { eq: "Forrest Gump" } }
                     update: { actors: { connect: { edge: { screenTime: 60 } } } }
                 ) {
                     movies {
@@ -295,9 +295,11 @@ describe("Relationship Properties Connect Cypher", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Forrest Gump" }
+                    where: { title: { eq: "Forrest Gump" } }
                     update: {
-                        actors: { connect: { where: { node: { name_EQ: "Tom Hanks" } }, edge: { screenTime: 60 } } }
+                        actors: {
+                            connect: { where: { node: { name: { eq: "Tom Hanks" } } }, edge: { screenTime: 60 } }
+                        }
                     }
                 ) {
                     movies {

@@ -74,24 +74,28 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             input AWSAccountUpdateInput {
-              accountName_SET: String
-              code_SET: String
+              accountName: StringScalarMutations
+              accountName_SET: String @deprecated(reason: \\"Please use the generic mutation 'accountName: { set: ... } }' instead.\\")
+              code: StringScalarMutations
+              code_SET: String @deprecated(reason: \\"Please use the generic mutation 'code: { set: ... } }' instead.\\")
             }
 
             input AWSAccountWhere {
               AND: [AWSAccountWhere!]
               NOT: AWSAccountWhere
               OR: [AWSAccountWhere!]
-              accountName_CONTAINS: String
-              accountName_ENDS_WITH: String
-              accountName_EQ: String
-              accountName_IN: [String]
-              accountName_STARTS_WITH: String
-              code_CONTAINS: String
-              code_ENDS_WITH: String
-              code_EQ: String
-              code_IN: [String]
-              code_STARTS_WITH: String
+              accountName: StringScalarFilters
+              accountName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { contains: ... }\\")
+              accountName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { endsWith: ... }\\")
+              accountName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { eq: ... }\\")
+              accountName_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter accountName: { in: ... }\\")
+              accountName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter accountName: { startsWith: ... }\\")
+              code: StringScalarFilters
+              code_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter code: { contains: ... }\\")
+              code_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter code: { endsWith: ... }\\")
+              code_EQ: String @deprecated(reason: \\"Please use the relevant generic filter code: { eq: ... }\\")
+              code_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter code: { in: ... }\\")
+              code_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter code: { startsWith: ... }\\")
             }
 
             type AwsAccountsConnection {
@@ -148,24 +152,28 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             input DNSZoneUpdateInput {
-              awsId_SET: String
-              zoneType_SET: String
+              awsId: StringScalarMutations
+              awsId_SET: String @deprecated(reason: \\"Please use the generic mutation 'awsId: { set: ... } }' instead.\\")
+              zoneType: StringScalarMutations
+              zoneType_SET: String @deprecated(reason: \\"Please use the generic mutation 'zoneType: { set: ... } }' instead.\\")
             }
 
             input DNSZoneWhere {
               AND: [DNSZoneWhere!]
               NOT: DNSZoneWhere
               OR: [DNSZoneWhere!]
-              awsId_CONTAINS: String
-              awsId_ENDS_WITH: String
-              awsId_EQ: String
-              awsId_IN: [String]
-              awsId_STARTS_WITH: String
-              zoneType_CONTAINS: String
-              zoneType_ENDS_WITH: String
-              zoneType_EQ: String
-              zoneType_IN: [String]
-              zoneType_STARTS_WITH: String
+              awsId: StringScalarFilters
+              awsId_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { contains: ... }\\")
+              awsId_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { endsWith: ... }\\")
+              awsId_EQ: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { eq: ... }\\")
+              awsId_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter awsId: { in: ... }\\")
+              awsId_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter awsId: { startsWith: ... }\\")
+              zoneType: StringScalarFilters
+              zoneType_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { contains: ... }\\")
+              zoneType_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { endsWith: ... }\\")
+              zoneType_EQ: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { eq: ... }\\")
+              zoneType_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter zoneType: { in: ... }\\")
+              zoneType_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter zoneType: { startsWith: ... }\\")
             }
 
             \\"\\"\\"
@@ -219,6 +227,20 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateAwsAccountsMutationResponse {

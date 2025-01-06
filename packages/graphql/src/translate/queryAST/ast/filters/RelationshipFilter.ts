@@ -34,7 +34,6 @@ export class RelationshipFilter extends Filter {
     protected targetNodeFilters: Filter[] = [];
     protected relationship: RelationshipAdapter;
     protected operator: RelationshipWhereOperator;
-    protected isNot: boolean;
     protected target: ConcreteEntityAdapter | InterfaceEntityAdapter;
 
     // TODO: remove this, this is not good
@@ -46,17 +45,14 @@ export class RelationshipFilter extends Filter {
     constructor({
         relationship,
         operator,
-        isNot,
         target,
     }: {
         relationship: RelationshipAdapter;
         operator: RelationshipWhereOperator;
-        isNot: boolean;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
     }) {
         super();
         this.relationship = relationship;
-        this.isNot = isNot;
         this.operator = operator;
         this.target = target;
     }
@@ -70,7 +66,7 @@ export class RelationshipFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.relationship.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.relationship.name}] <${this.operator}>`;
     }
 
     @Memoize()
@@ -94,7 +90,9 @@ export class RelationshipFilter extends Filter {
                     throw new Error("No parent node found!");
                 }
                 const selection = f.getSelection(context);
-                if (selection.length === 0) return undefined;
+                if (selection.length === 0) {
+                    return;
+                }
 
                 const pattern = new Cypher.Pattern(context.source)
                     .related({
@@ -184,9 +182,7 @@ export class RelationshipFilter extends Filter {
 
                 const subqueriesPredicate = Cypher.and(...subqueriesFilters);
 
-                // NOTE: NONE is SOME + isNot
-                // TODO: move to wrapInNullIfNeeded in getPredicate
-                const comparator = this.isNot ? Cypher.false : Cypher.true;
+                const comparator = this.operator === "NONE" ? Cypher.false : Cypher.true;
                 this.subqueryPredicate = Cypher.eq(returnVar, comparator);
 
                 const withAfterSubqueries = new Cypher.With("*");
@@ -263,11 +259,7 @@ export class RelationshipFilter extends Filter {
         switch (this.operator) {
             case "NONE":
             case "SOME":
-                if (this.relationship.isList) {
-                    return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
-                } else {
-                    return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
-                }
+                return Cypher.gt(Cypher.count(target), new Cypher.Literal(0));
             case "SINGLE":
                 return Cypher.eq(Cypher.count(target), new Cypher.Literal(1));
             case "ALL":
@@ -275,47 +267,11 @@ export class RelationshipFilter extends Filter {
         }
     }
 
-    protected shouldCreateOptionalMatch(): boolean {
-        return !this.relationship.isList && !this.relationship.isNullable;
-    }
-
-    public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-        if (this.shouldCreateOptionalMatch() && !this.subqueryPredicate) {
-            const nestedContext = this.getNestedContext(queryASTContext);
-            if (!nestedContext.hasTarget()) {
-                throw new Error("No parent node found!");
-            }
-
-            const pattern = new Cypher.Pattern(nestedContext.source)
-                .related({
-                    type: this.relationship.type,
-                    direction: this.relationship.getCypherDirection(),
-                })
-                .to(nestedContext.target, {
-                    labels: getEntityLabels(this.target, nestedContext.neo4jGraphQLContext),
-                });
-            return [
-                new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVariable]),
-            ];
-        }
-        return [];
-    }
-
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         if (this.subqueryPredicate) {
             return this.subqueryPredicate;
         }
         const nestedContext = this.getNestedContext(queryASTContext);
-
-        if (this.shouldCreateOptionalMatch()) {
-            const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
-            const innerPredicate = Cypher.and(...predicates);
-            if (this.isNot) {
-                return Cypher.and(Cypher.eq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-            } else {
-                return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-            }
-        }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
             .related({
@@ -327,9 +283,7 @@ export class RelationshipFilter extends Filter {
             });
 
         const predicate = this.createRelationshipOperation(pattern, nestedContext);
-        if (predicate) {
-            return this.wrapInNotIfNeeded(predicate);
-        }
+        return predicate;
     }
 
     protected getSingleRelationshipOperation({
@@ -382,25 +336,15 @@ export class RelationshipFilter extends Filter {
             case "SOME": {
                 const match = new Cypher.Match(pattern);
                 if (innerPredicate) {
-                    if (!this.relationship.isList) {
-                        return this.getSingleRelationshipOperation({
-                            pattern,
-                            queryASTContext,
-                            innerPredicate,
-                        });
-                    }
-                    return new Cypher.Exists(match.where(innerPredicate));
+                    match.where(innerPredicate);
                 }
 
-                return new Cypher.Exists(match);
+                const exists = new Cypher.Exists(match);
+                if (this.operator === "NONE") {
+                    return Cypher.not(exists);
+                }
+                return exists;
             }
         }
-    }
-
-    protected wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.not(predicate);
-        }
-        return predicate;
     }
 }

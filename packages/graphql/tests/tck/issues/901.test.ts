@@ -64,22 +64,26 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
                 where: {
                     OR: [
                         {
-                            manufacturerConnection_SOME: {
-                                edge: {
-                                    current_EQ: true,
-                                },
-                                node: {
-                                    name_EQ: "abc",
+                            manufacturerConnection: {
+                                some: {
+                                    edge: {
+                                        current: { eq: true },
+                                    },
+                                    node: {
+                                        name: { eq: "abc" },
+                                    },
                                 },
                             },
                         },
                         {
-                            brandConnection_SOME: {
-                                edge: {
-                                    current_EQ: true,
-                                },
-                                node: {
-                                    name_EQ: "smart",
+                            brandConnection: {
+                                some: {
+                                    edge: {
+                                        current: { eq: true },
+                                    },
+                                    node: {
+                                        name: { eq: "smart" },
+                                    },
                                 },
                             },
                         },

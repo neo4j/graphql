@@ -40,7 +40,7 @@ describe("Cypher Arrays", () => {
     test("WHERE INCLUDES", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { ratings_INCLUDES: 4.0 }) {
+                movies(where: { ratings: { includes: 4.0 } }) {
                     title
                     ratings
                 }
@@ -61,6 +61,4 @@ describe("Cypher Arrays", () => {
             }"
         `);
     });
-
-   
 });
