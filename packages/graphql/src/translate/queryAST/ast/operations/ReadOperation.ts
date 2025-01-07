@@ -92,20 +92,13 @@ export class ReadOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    protected getProjectionClause(
-        context: QueryASTContext,
-        returnVariable: Cypher.Variable,
-        isArray: boolean
-    ): Cypher.Return {
+    protected getProjectionClause(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
         if (!hasTarget(context)) {
             throw new Error("No parent node found!");
         }
         const projection = this.getProjectionMap(context);
 
-        let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);
-        if (!isArray) {
-            aggregationExpr = Cypher.head(aggregationExpr);
-        }
+        const aggregationExpr = Cypher.collect(context.target);
 
         const withClause = new Cypher.With([projection, context.target]);
         if (this.sortFields.length > 0 || this.pagination) {
@@ -148,7 +141,7 @@ export class ReadOperation extends Operation {
 
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
         const ret: Cypher.Return = this.relationship
-            ? this.getProjectionClause(nestedContext, context.returnVariable, this.relationship.isList)
+            ? this.getProjectionClause(nestedContext, context.returnVariable)
             : this.getReturnStatement(
                   isCreateSelection || isUpdateSelection ? context : nestedContext,
                   nestedContext.returnVariable
