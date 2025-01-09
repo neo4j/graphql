@@ -21,7 +21,7 @@ import { Kind } from "graphql";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
 import { GraphQLDate, GraphQLDateTime, GraphQLLocalDateTime } from "../../../../graphql/scalars";
 import { GraphQLLocalTime, parseLocalTime } from "../../../../graphql/scalars/LocalTime";
-import { GraphQLTime, parseTime } from "../../../../graphql/scalars/Time";
+import { GraphQLTime, validateTime } from "../../../../graphql/scalars/Time";
 import { DocumentValidationError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
@@ -60,7 +60,7 @@ export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
                 }
             } else if (expectedType === GraphQLTime.name) {
                 try {
-                    parseTime((defaultArg?.value as StringValueNode).value);
+                    validateTime((defaultArg?.value as StringValueNode).value);
                 } catch {
                     throw new DocumentValidationError(
                         `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
