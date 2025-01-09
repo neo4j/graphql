@@ -208,6 +208,11 @@ export class ReadOperation extends Operation {
             }
             matchBlock.push(...extraMatches, extraMatchesWith);
 
+            if (this.relationship) {
+                const distinctTargetWith = new Cypher.With(nestedContext.target).distinct();
+                matchBlock.push(distinctTargetWith);
+            }
+
             clause = Cypher.utils.concat(
                 ...matchBlock,
                 ...authFilterSubqueries,
