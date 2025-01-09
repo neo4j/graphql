@@ -170,4 +170,58 @@ describe("Relationship properties - connect on union", () => {
         const neo4jResult = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
         expect(neo4jResult.records).toHaveLength(1);
     });
+
+    test("should update an actor while connecting an existing relationship that has properties(with Union)", async () => {
+        const movieTitle = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
+
+        const source = /* GraphQL */ `
+            mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
+                ${Actor.operations.update}(
+                    where: { name_EQ: $actorName }
+                    update: {
+                        actedIn: {
+                            ${Movie}: {
+                                connect: {
+                                    where: { node: { title_EQ: $movieTitle } }
+                                    edge: { screenTime: $screenTime }
+                                }
+                            }
+                        }
+                    }
+                ) {
+                    ${Actor.plural} {
+                        name
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Movie} {title:$movieTitle})
+                    CREATE (:${Actor} {name:$actorName})-[:ACTED_IN {screenTime: 0}]->(:${Movie} {title: $movieTitle})
+                `,
+            { movieTitle, actorName }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(source, {
+            variableValues: { movieTitle, actorName, screenTime },
+        });
+        expect(gqlResult.errors).toBeFalsy();
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual([
+            {
+                name: actorName,
+            },
+        ]);
+
+        const cypher = `
+                MATCH (a:${Actor} {name: $actorName})-[:ACTED_IN {screenTime: $screenTime}]->(:${Movie} {title: $movieTitle})
+                RETURN a
+            `;
+
+        const neo4jResult = await testHelper.executeCypher(cypher, { movieTitle, screenTime, actorName });
+        expect(neo4jResult.records).toHaveLength(2);
+    });
 });

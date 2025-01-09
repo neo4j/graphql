@@ -668,7 +668,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect0_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
             		}
             	}
             WITH this0, this0_content_connect0_node
@@ -688,7 +688,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect1_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
             		}
             	}
             WITH this0, this0_content_connect1_node
@@ -761,7 +761,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect0_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
             		}
             	}
             WITH this0, this0_content_connect0_node
@@ -781,7 +781,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect1_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
             		}
             	}
             WITH this0, this0_content_connect1_node
@@ -848,7 +848,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -873,7 +873,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -933,7 +933,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -958,7 +958,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
