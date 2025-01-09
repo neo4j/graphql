@@ -45,12 +45,7 @@ export const GraphQLDateTime = new GraphQLScalarType({
             }
 
             return inputValue;
-            // return neo4j.types.DateTime.fromStandardDate(date);
         }
-
-        // if (isDateTime(inputValue)) {
-        //     return inputValue;
-        // }
 
         throw new GraphQLError(`DateTime cannot represent non string value: ${inputValue}`);
     },
