@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_activeOrganization0_connect0_node
-            			MERGE (this)-[:ACTIVELY_MANAGING]->(this_activeOrganization0_connect0_node)
+            			CREATE (this)-[:ACTIVELY_MANAGING]->(this_activeOrganization0_connect0_node)
             		}
             	}
             WITH this, this_activeOrganization0_connect0_node

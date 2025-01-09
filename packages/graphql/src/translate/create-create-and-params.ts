@@ -27,7 +27,6 @@ import {
     createAuthorizationAfterAndParamsField,
 } from "./authorization/compatibility/create-authorization-after-and-params";
 import createConnectAndParams from "./create-connect-and-params";
-import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import { assertNonAmbiguousUpdate } from "./utils/assert-non-ambiguous-update";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
@@ -57,7 +56,6 @@ function createCreateAndParams({
     context,
     callbackBucket,
     withVars,
-    includeRelationshipValidation,
     topLevelNodeVariable,
     authorizationPrefix = [0],
 }: {
@@ -67,7 +65,6 @@ function createCreateAndParams({
     context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     withVars: string[];
-    includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
     //used to build authorization variable in auth subqueries
     authorizationPrefix?: number[];
@@ -144,7 +141,6 @@ function createCreateAndParams({
                             node: refNode,
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
-                            includeRelationshipValidation: false,
                             topLevelNodeVariable,
                             authorizationPrefix: [...authorizationPrefix, reducerIndex, createIndex, refNodeIndex],
                         });
@@ -183,16 +179,6 @@ function createCreateAndParams({
                                 res.meta.authorizationSubqueries.push(...authorizationSubqueries);
                             }
                             res.meta.authorizationPredicates.push(...authorizationPredicates);
-                        }
-
-                        const relationshipValidationStr = createRelationshipValidationString({
-                            node: refNode,
-                            context,
-                            varName: nodeName,
-                        });
-                        if (relationshipValidationStr) {
-                            res.creates.push(`WITH *`);
-                            res.creates.push(relationshipValidationStr);
                         }
                     });
                 }
@@ -329,15 +315,6 @@ function createCreateAndParams({
         }
         authorizationPredicates.push(cypher);
         params = { ...params, ...authParams };
-    }
-
-    if (includeRelationshipValidation) {
-        const str = createRelationshipValidationString({ node, context, varName });
-
-        if (str) {
-            creates.push(`WITH *`);
-            creates.push(str);
-        }
     }
 
     return { create: creates.join("\n"), params, authorizationPredicates, authorizationSubqueries };

@@ -76,7 +76,7 @@ describe("interface relationships", () => {
         await testHelper.close();
     });
 
-    test("should nested create connect using interface relationship fields", async () => {
+    test("create->connect->connect should connect using interface relationship fields", async () => {
         const actorName1 = generate({
             readable: true,
             charset: "alphabetic",
@@ -155,6 +155,99 @@ describe("interface relationships", () => {
                                 runtime: movieRuntime,
                                 title: movieTitle,
                                 actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
+                            },
+                        ],
+                        name: actorName1,
+                    },
+                ],
+            },
+        });
+    });
+
+    test("create->connect->connect should create a new relationship using interface relationship fields", async () => {
+        const actorName1 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const actorName2 = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+
+        const movieTitle = generate({
+            readable: true,
+            charset: "alphabetic",
+        });
+        const movieRuntime = 20340;
+        const movieScreenTime = 87163;
+
+        const query = `
+            mutation CreateActorConnectMovie($name1: String!, $title: String, $screenTime: Int!, $name2: String) {
+                ${Actor.operations.create}(
+                    input: [
+                        {
+                            name: $name1
+                            actedIn: {
+                                connect: {
+                                    edge: { screenTime: $screenTime }
+                                    where: { node: { title_EQ: $title } }
+                                    connect: {
+                                        actors: { edge: { ActedIn: { screenTime: $screenTime } }, where: { node: { name_EQ: $name2 } } }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    ${Actor.plural} {
+                        name
+                        actedIn {
+                            title
+                            actors {
+                                name
+                            }
+                            ... on ${Movie} {
+                                runtime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:${Actor} { name: $name })-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
+
+            `,
+            { movieTitle, movieRuntime, name: actorName2, movieScreenTime }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: {
+                name1: actorName1,
+                title: movieTitle,
+                screenTime: movieScreenTime,
+                name2: actorName2,
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [Actor.operations.create]: {
+                [Actor.plural]: [
+                    {
+                        actedIn: [
+                            {
+                                runtime: movieRuntime,
+                                title: movieTitle,
+                                actors: expect.toIncludeSameMembers([
+                                    { name: actorName2 },
+                                    { name: actorName1 },
+                                    { name: actorName2 },
+                                ]),
                             },
                         ],
                         name: actorName1,

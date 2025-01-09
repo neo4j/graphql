@@ -348,7 +348,7 @@ describe("Batch Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -371,7 +371,7 @@ describe("Batch Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_actors_connect0_node
-            			MERGE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
+            			CREATE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
             		}
             	}
             WITH this1, this1_actors_connect0_node
