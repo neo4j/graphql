@@ -338,6 +338,7 @@ describe("Cypher sort deprecated", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 ORDER BY this1.name DESC
                 RETURN collect(this1) AS var2
@@ -366,6 +367,7 @@ describe("Cypher sort deprecated", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 ORDER BY this1.name ASC
                 RETURN collect(this1) AS var2
@@ -395,6 +397,7 @@ describe("Cypher sort deprecated", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     CALL {

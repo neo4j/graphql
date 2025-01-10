@@ -90,6 +90,7 @@ describe("cypher directive filtering", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
+                WITH DISTINCT this5
                 WITH this5 { .name } AS this5
                 RETURN collect(this5) AS var6
             }
@@ -159,6 +160,7 @@ describe("cypher directive filtering", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH DISTINCT this3
                 WITH this3 { .name } AS this3
                 RETURN collect(this3) AS var4
             }

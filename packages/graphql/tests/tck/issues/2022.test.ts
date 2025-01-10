@@ -98,9 +98,11 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:SOLD_AT_AUCTION_AS]->(this2:AuctionItem)
+                    WITH DISTINCT this2
                     CALL {
                         WITH this2
                         MATCH (this2)<-[this3:BOUGHT_ITEM_AT_AUCTION]-(this4:Organization)
+                        WITH DISTINCT this4
                         WITH this4 { .name, dbId: this4.id } AS this4
                         RETURN collect(this4) AS var5
                     }
@@ -110,6 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this7:OWNED_BY]->(this8:Organization)
+                    WITH DISTINCT this8
                     WITH this8 { .name, dbId: this8.id } AS this8
                     RETURN collect(this8) AS var9
                 }

@@ -499,6 +499,7 @@ describe("Arrays Methods", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -601,6 +602,7 @@ describe("Arrays Methods", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }

@@ -56,6 +56,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                    WITH DISTINCT this1
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -88,6 +89,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
+                    WITH DISTINCT this2
                     WITH this2 { .name } AS this2
                     RETURN collect(this2) AS var3
                 }
@@ -143,6 +145,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
+                    WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
                     RETURN collect(update_this1) AS update_var2
                 }
@@ -220,6 +223,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
+                    WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
                     RETURN collect(update_this1) AS update_var2
                 }
@@ -298,6 +302,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
+                    WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
                     RETURN collect(update_this1) AS update_var2
                 }
@@ -416,6 +421,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                    WITH DISTINCT this1
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -448,6 +454,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
+                    WITH DISTINCT this2
                     WITH this2 { .name } AS this2
                     RETURN collect(this2) AS var3
                 }
@@ -503,6 +510,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
+                    WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
                     RETURN collect(update_this1) AS update_var2
                 }
@@ -580,6 +588,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
+                    WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
                     RETURN collect(update_this1) AS update_var2
                 }
@@ -658,6 +667,7 @@ describe("queryDirection in relationships", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
+                    WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
                     RETURN collect(update_this1) AS update_var2
                 }

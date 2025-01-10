@@ -69,6 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
                     MATCH (this1)<-[:attends]-(this2:Person)
                     WHERE NOT (this2.age > $param0)
                 }))
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var3
             }

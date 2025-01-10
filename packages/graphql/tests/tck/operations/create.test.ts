@@ -404,6 +404,7 @@ describe("Cypher Create", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
+                    WITH DISTINCT create_this1
                     CALL {
                         WITH create_this1
                         MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)

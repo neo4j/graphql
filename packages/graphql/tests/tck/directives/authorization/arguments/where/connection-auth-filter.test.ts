@@ -200,6 +200,7 @@ describe("Connection auth filter", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                    WITH DISTINCT this2
                     WITH *
                     WHERE ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:HAS_POST]-(this3:User)
@@ -398,6 +399,7 @@ describe("Connection auth filter", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                    WITH DISTINCT this2
                     WITH *
                     WHERE (this2.content = $param2 AND ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:HAS_POST]-(this3:User)

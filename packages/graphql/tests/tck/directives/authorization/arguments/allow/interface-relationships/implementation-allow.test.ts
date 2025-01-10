@@ -174,6 +174,7 @@ describe("@auth allow on specific interface implementation", () => {
                         WITH this4
                         MATCH (this4)-[this6:HAS_COMMENT]->(this7:Comment)
                         WHERE this7.id = $param5
+                        WITH DISTINCT this7
                         WITH this7 { .content } AS this7
                         RETURN collect(this7) AS var8
                     }

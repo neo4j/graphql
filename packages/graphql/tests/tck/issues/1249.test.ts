@@ -85,6 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:MATERIAL_BULK]->(this1:Material)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)

@@ -215,6 +215,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+                WITH DISTINCT this1
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
                     MATCH (this1)<-[:CREATOR_OF]-(this2:User)

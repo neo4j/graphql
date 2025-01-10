@@ -120,6 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:BUSSED_ON]->(this2:TimeGraph)
+                    WITH DISTINCT this2
                     WITH this2 { .date } AS this2
                     RETURN collect(this2) AS var3
                 }

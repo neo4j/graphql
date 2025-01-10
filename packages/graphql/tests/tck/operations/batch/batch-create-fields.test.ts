@@ -294,6 +294,7 @@ describe("Batch Create, Scalar types", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }

@@ -1453,9 +1453,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                 CALL {
                     WITH this2
                     MATCH (this2)<-[this3:ACTED_IN]-(this4:Person)
+                    WITH DISTINCT this4
                     CALL {
                         WITH this4
                         MATCH (this4)-[this5:ACTED_IN]->(this6:Movie)
+                        WITH DISTINCT this6
                         CALL {
                             WITH this6
                             CALL {

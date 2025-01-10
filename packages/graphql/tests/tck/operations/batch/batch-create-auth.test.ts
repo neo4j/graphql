@@ -165,6 +165,7 @@ describe("Batch Create, Auth", () => {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this7.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }

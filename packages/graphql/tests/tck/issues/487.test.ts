@@ -103,6 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     CALL {
                         WITH this0
                         MATCH (this0)<-[this1:WROTE]-(this2:Author)
+                        WITH DISTINCT this2
                         WITH this2 { .id } AS this2
                         RETURN collect(this2) AS var3
                     }
@@ -115,6 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     CALL {
                         WITH this0
                         MATCH (this0)<-[this5:DIRECTED]-(this6:Director)
+                        WITH DISTINCT this6
                         WITH this6 { .id } AS this6
                         RETURN collect(this6) AS var7
                     }
@@ -212,6 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     CALL {
                         WITH this0
                         MATCH (this0)<-[this1:WROTE]-(this2:Author)
+                        WITH DISTINCT this2
                         WITH this2 { .id } AS this2
                         RETURN collect(this2) AS var3
                     }
@@ -224,6 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                     CALL {
                         WITH this0
                         MATCH (this0)<-[this5:DIRECTED]-(this6:Director)
+                        WITH DISTINCT this6
                         WITH this6 { .id } AS this6
                         RETURN collect(this6) AS var7
                     }

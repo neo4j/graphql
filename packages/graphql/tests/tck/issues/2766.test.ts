@@ -82,6 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH DISTINCT this2
                     CALL {
                         WITH this2
                         CALL {

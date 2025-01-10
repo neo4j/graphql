@@ -116,6 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)-[create_this6:REL]->(create_this7:Test)
+                WITH DISTINCT create_this7
                 CALL {
                     WITH create_this7
                     CALL {

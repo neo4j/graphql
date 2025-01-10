@@ -288,6 +288,7 @@ describe("Cypher directive on interface", () => {
                         WITH this0
                         MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
                         WHERE this7.name = $param2
+                        WITH DISTINCT this7
                         WITH this7 { .name } AS this7
                         RETURN collect(this7) AS var8
                     }
@@ -471,6 +472,7 @@ describe("Cypher directive on interface", () => {
                         WITH this0
                         MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
                         WHERE this7.name = $param2
+                        WITH DISTINCT this7
                         WITH this7 { .name } AS this7
                         RETURN collect(this7) AS var8
                     }
@@ -569,6 +571,7 @@ describe("Cypher directive on interface", () => {
                             WITH this0
                             MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
                             WHERE this7.name = $param2
+                            WITH DISTINCT this7
                             WITH this7 { .name } AS this7
                             RETURN collect(this7) AS var8
                         }

@@ -262,6 +262,7 @@ describe("Cypher directive on union", () => {
                         WITH this0
                         MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                         WHERE this2.name = $param1
+                        WITH DISTINCT this2
                         WITH this2 { .name } AS this2
                         RETURN collect(this2) AS var3
                     }
@@ -451,6 +452,7 @@ describe("Cypher directive on union", () => {
                         WITH this0
                         MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                         WHERE this2.name = $param1
+                        WITH DISTINCT this2
                         WITH this2 { .name } AS this2
                         RETURN collect(this2) AS var3
                     }
@@ -550,6 +552,7 @@ describe("Cypher directive on union", () => {
                             WITH this0
                             MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                             WHERE this2.name = $param1
+                            WITH DISTINCT this2
                             WITH this2 { .name } AS this2
                             RETURN collect(this2) AS var3
                         }

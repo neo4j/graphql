@@ -104,12 +104,14 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this4:HAS_BRAND]->(this5:Series)
+                WITH DISTINCT this5
                 WITH this5 { .name } AS this5
                 RETURN collect(this5) AS var6
             }
             CALL {
                 WITH this
                 MATCH (this)-[this7:HAS_MANUFACTURER]->(this8:Series)
+                WITH DISTINCT this8
                 WITH this8 { .name } AS this8
                 RETURN collect(this8) AS var9
             }
