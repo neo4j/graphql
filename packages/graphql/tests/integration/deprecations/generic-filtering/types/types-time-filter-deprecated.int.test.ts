@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { Time } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
@@ -46,16 +45,15 @@ describe("Time - deprecated filters", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         const id = generate({ readable: false });
-        const date = new Date("2024-02-17T11:49:48.322Z");
-        const time = date.toISOString().split("T")[1];
-        const neo4jTime = Time.fromStandardDate(date);
+        const time = "11:49:48.322000000Z";
 
         await testHelper.executeCypher(
             `
                         CREATE (movie:${Movie})
-                        SET movie = $movie
+                        SET movie.id = $id
+                        SET movie.time = time($time)
                     `,
-            { movie: { id, time: neo4jTime } }
+            { id, time }
         );
 
         const query = /* GraphQL */ `
