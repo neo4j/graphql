@@ -78,28 +78,32 @@ describe("Interface: Multiple relationships results difference between Connectio
         const source = /* GraphQL */ `
             query {
                 ${Production.operations.connection} {
-                    ...on ${Movie} {
-                        title
-                        actorsConnection {
-                            edges {
-                                node {
-                                    name
-                                }
-                                properties {
-                                    role
+                    edges {
+                        node {
+                            ...on ${Movie} {
+                                title
+                                actorsConnection {
+                                    edges {
+                                        node {
+                                            name
+                                        }
+                                        properties {
+                                            role
+                                        }
+                                    }
                                 }
                             }
-                        }
-                    }
-                    ...on ${Series} {
-                        title
-                        actorsConnection {
-                            edges {
-                                node {
-                                    name
-                                }
-                                properties {
-                                    role
+                            ...on ${Series} {
+                                title
+                                actorsConnection {
+                                    edges {
+                                        node {
+                                            name
+                                        }
+                                        properties {
+                                            role
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -112,54 +116,60 @@ describe("Interface: Multiple relationships results difference between Connectio
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [Production.plural]: expect.toIncludeSameMembers([
-                {
-                    title: "Movie One",
-                    actorsConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Movie role one",
-                                },
+            [Production.operations.connection]: {
+                edges: expect.toIncludeSameMembers([
+                    {
+                        node: {
+                            title: "Movie One",
+                            actorsConnection: {
+                                edges: expect.toIncludeSameMembers([
+                                    {
+                                        node: {
+                                            name: "Actor One",
+                                        },
+                                        properties: {
+                                            role: "Movie role one",
+                                        },
+                                    },
+                                    {
+                                        node: {
+                                            name: "Actor One",
+                                        },
+                                        properties: {
+                                            role: "Movie role two",
+                                        },
+                                    },
+                                ]),
                             },
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Movie role two",
-                                },
-                            },
-                        ]),
+                        },
                     },
-                },
-                {
-                    title: "Series One",
-                    actorsConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Series role one",
-                                },
+                    {
+                        node: {
+                            title: "Series One",
+                            actorsConnection: {
+                                edges: expect.toIncludeSameMembers([
+                                    {
+                                        node: {
+                                            name: "Actor One",
+                                        },
+                                        properties: {
+                                            role: "Series role one",
+                                        },
+                                    },
+                                    {
+                                        node: {
+                                            name: "Actor One",
+                                        },
+                                        properties: {
+                                            role: "Series role two",
+                                        },
+                                    },
+                                ]),
                             },
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Series role two",
-                                },
-                            },
-                        ]),
+                        },
                     },
-                },
-            ]),
+                ]),
+            },
         });
     });
 

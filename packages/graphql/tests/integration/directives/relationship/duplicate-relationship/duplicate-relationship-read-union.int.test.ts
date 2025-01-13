@@ -75,29 +75,22 @@ describe("Union: Multiple relationships results difference between Connection AP
     test("should return multiple relationship results for connection API", async () => {
         const source = /* GraphQL */ `
             query {
-                ${Production.plural} {
-                    ...on ${Movie} {
-                        title
-                        actorsConnection {
-                            edges {
-                                node {
-                                    name
-                                }
-                                properties {
-                                    role
-                                }
-                            }
-                        }
-                    }
-                    ...on ${Series} {
-                        title
-                        actorsConnection {
-                            edges {
-                                node {
-                                    name
-                                }
-                                properties {
-                                    role
+                ${Actor.operations.connection} {
+                    edges {
+                        node {
+                            productionsConnection {
+                                edges {
+                                    node {
+                                        ... on ${Movie} {
+                                            title
+                                        }
+                                        ... on ${Series} {
+                                            title
+                                        }
+                                    }
+                                    properties {
+                                        role
+                                    }
                                 }
                             }
                         }
@@ -110,73 +103,66 @@ describe("Union: Multiple relationships results difference between Connection AP
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [Production.plural]: expect.toIncludeSameMembers([
-                {
-                    title: "Movie One",
-                    actorsConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Movie role one",
-                                },
+            [Actor.operations.connection]: {
+                edges: [
+                    {
+                        node: {
+                            productionsConnection: {
+                                edges: [
+                                    {
+                                        node: {
+                                            title: "Movie One",
+                                        },
+                                        properties: {
+                                            role: "Movie role one",
+                                        },
+                                    },
+                                    {
+                                        node: {
+                                            title: "Movie One",
+                                        },
+                                        properties: {
+                                            role: "Movie role two",
+                                        },
+                                    },
+                                    {
+                                        node: {
+                                            title: "Series One",
+                                        },
+                                        properties: {
+                                            role: "Series role one",
+                                        },
+                                    },
+                                    {
+                                        node: {
+                                            title: "Series One",
+                                        },
+                                        properties: {
+                                            role: "Series role two",
+                                        },
+                                    },
+                                ],
                             },
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Movie role two",
-                                },
-                            },
-                        ]),
+                        },
                     },
-                },
-                {
-                    title: "Series One",
-                    actorsConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Series role one",
-                                },
-                            },
-                            {
-                                node: {
-                                    name: "Actor One",
-                                },
-                                properties: {
-                                    role: "Series role two",
-                                },
-                            },
-                        ]),
-                    },
-                },
-            ]),
+                ],
+            },
         });
     });
 
     test("should only return a single relationship result for simple API", async () => {
         const source = /* GraphQL */ `
             query {
-                ${Production.plural} {
-                    ...on ${Movie} {
-                        title
-                        actors {
-                            name
+                ${Actor.plural} {
+                    productions {
+                        ...on ${Movie} {
+                            title
+                        }
+                        ...on ${Series} {
+                            title
                         }
                     }
-                    ...on ${Series} {
-                        title
-                        actors {
-                            name
-                        }
-                    }
+                    name
                 }
             }
         `;
@@ -185,24 +171,19 @@ describe("Union: Multiple relationships results difference between Connection AP
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [Production.plural]: expect.toIncludeSameMembers([
+            [Actor.plural]: [
                 {
-                    title: "Movie One",
-                    actors: [
+                    productions: expect.toIncludeSameMembers([
                         {
-                            name: "Actor One",
+                            title: "Movie One",
                         },
-                    ],
-                },
-                {
-                    title: "Series One",
-                    actors: [
                         {
-                            name: "Actor One",
+                            title: "Series One",
                         },
-                    ],
+                    ]),
+                    name: "Actor One",
                 },
-            ]),
+            ],
         });
     });
 });
