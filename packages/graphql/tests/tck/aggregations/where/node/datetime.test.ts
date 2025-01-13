@@ -60,7 +60,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) = $param0 AS var2
+                RETURN min(this1.someDateTime) = datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -69,16 +69,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -101,7 +92,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) > $param0 AS var2
+                RETURN min(this1.someDateTime) > datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -110,16 +101,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -142,7 +124,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) >= $param0 AS var2
+                RETURN min(this1.someDateTime) >= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -151,16 +133,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -183,7 +156,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) < $param0 AS var2
+                RETURN min(this1.someDateTime) < datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -192,16 +165,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -224,7 +188,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) <= $param0 AS var2
+                RETURN min(this1.someDateTime) <= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -233,16 +197,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -265,7 +220,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) = $param0 AS var2
+                RETURN max(this1.someDateTime) = datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -274,16 +229,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -306,7 +252,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) > $param0 AS var2
+                RETURN max(this1.someDateTime) > datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -315,16 +261,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -347,7 +284,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) >= $param0 AS var2
+                RETURN max(this1.someDateTime) >= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -356,16 +293,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -388,7 +316,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) < $param0 AS var2
+                RETURN max(this1.someDateTime) < datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -397,16 +325,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -429,7 +348,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) <= $param0 AS var2
+                RETURN max(this1.someDateTime) <= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -438,16 +357,7 @@ describe("Cypher Aggregations where node with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });

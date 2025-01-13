@@ -77,6 +77,7 @@ function createCreateAndParams({
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
+        const temporalField = node.temporalFields.find((x) => key === x.fieldName);
         const dbFieldName = mapToDbProperty(node, key);
 
         if (primitiveField) {
@@ -252,6 +253,22 @@ function createCreateAndParams({
                 res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${varNameKey} | point(p)]`);
             } else {
                 res.creates.push(`SET ${varName}.${dbFieldName} = point($${varNameKey})`);
+            }
+
+            res.params[varNameKey] = value;
+
+            return res;
+        }
+
+        if (temporalField && ["DateTime", "Time"].includes(temporalField.typeMeta.name)) {
+            if (temporalField.typeMeta.array) {
+                res.creates.push(
+                    `SET ${varName}.${dbFieldName} = [t in $${varNameKey} | ${temporalField.typeMeta.name.toLowerCase()}(t)]`
+                );
+            } else {
+                res.creates.push(
+                    `SET ${varName}.${dbFieldName} = ${temporalField.typeMeta.name.toLowerCase()}($${varNameKey})`
+                );
             }
 
             res.params[varNameKey] = value;

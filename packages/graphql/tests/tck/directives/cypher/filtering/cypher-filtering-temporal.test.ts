@@ -63,7 +63,7 @@ describe("cypher directive filtering - Auth", () => {
                 RETURN this0 AS var1
             }
             WITH *
-            WHERE var1 > $param0
+            WHERE var1 > datetime($param0)
             CALL {
                 WITH this
                 CALL {
@@ -79,16 +79,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2024,
-                    \\"month\\": 9,
-                    \\"day\\": 2,
-                    \\"hour\\": 0,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2024-09-02T00:00:00Z\\"
             }"
         `);
     });

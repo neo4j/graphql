@@ -21,16 +21,16 @@ import Cypher from "@neo4j/cypher-builder";
 import type { AggregationLogicalOperator } from "../../../factory/parsers/parse-where-field";
 import { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 
-export class AggregationDurationFilter extends AggregationPropertyFilter {
+export class AggregationTimeFilter extends AggregationPropertyFilter {
     protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {
-        return this.createDurationOperation({
+        return this.createTimeOperation({
             operator: this.logicalOperator,
             property: expr,
             param: new Cypher.Param(this.comparisonValue),
         });
     }
 
-    private createDurationOperation({
+    private createTimeOperation({
         operator,
         property,
         param,
@@ -39,12 +39,11 @@ export class AggregationDurationFilter extends AggregationPropertyFilter {
         property: Cypher.Expr;
         param: Cypher.Expr;
     }) {
-        const variable = Cypher.plus(Cypher.datetime(), param);
-        const propertyRef = Cypher.plus(Cypher.datetime(), property);
+        const variable = Cypher.time(param);
 
         return this.createBaseOperation({
             operator,
-            property: propertyRef,
+            property,
             param: variable,
         });
     }

@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import { Time, isTime } from "neo4j-driver";
+import { isTime } from "neo4j-driver";
 import { generate } from "randomstring";
-import { parseTime } from "../../../src/graphql/scalars/Time";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -48,8 +47,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const time = "2024-01-29T03:57:32.358Z".split("T")[1];
-            const parsedTime = parseTime(time);
+            const time = "2024-01-29T03:57:32.358000000Z".split("T")[1];
 
             const mutation = `
                     mutation ($id: ID!, $time: Time!) {
@@ -71,7 +69,7 @@ describe("Time", () => {
             ][0];
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.id).toBe(id);
-            expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
+            expect(graphqlMovie.time).toStrictEqual(time);
 
             const neo4jResult = await testHelper.executeCypher(
                 `
@@ -85,7 +83,7 @@ describe("Time", () => {
             expect(neo4jMovie).toBeDefined();
             expect(neo4jMovie.id).toEqual(id);
             expect(isTime(neo4jMovie.time)).toBe(true);
-            expect(parseTime(neo4jMovie.time.toString())).toStrictEqual(parsedTime);
+            expect(neo4jMovie.time.toString()).toStrictEqual(time);
         });
 
         test("should create a movie (with many Times)", async () => {
@@ -99,8 +97,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const times = [...new Array(4)].map(() => "2023-06-09T11:17:47.789Z".split("T")[1]);
-            const parsedTimes = times.map((time) => parseTime(time));
+            const times = [...new Array(4)].map(() => "2023-06-09T11:17:47.789000000Z".split("T")[1]);
 
             const mutation = `
                     mutation ($id: ID!, $times: [Time!]!) {
@@ -123,10 +120,8 @@ describe("Time", () => {
             expect(graphqlMovie.id).toBe(id);
             expect(graphqlMovie.times).toHaveLength(times.length);
 
-            const parsedGraphQLTimes = graphqlMovie.times.map((time) => parseTime(time));
-
-            parsedTimes.forEach((parsedTime) => {
-                expect(parsedGraphQLTimes).toContainEqual(parsedTime);
+            times.forEach((time) => {
+                expect(graphqlMovie.times).toContainEqual(time);
             });
 
             const neo4jResult = await testHelper.executeCypher(
@@ -146,10 +141,8 @@ describe("Time", () => {
                 expect(isTime(time)).toBe(true);
             }
 
-            const parsedNeo4jTimes = neo4jMovie.times.map((time) => parseTime(time.toString()));
-
-            parsedTimes.forEach((parsedTime) => {
-                expect(parsedNeo4jTimes).toContainEqual(parsedTime);
+            neo4jMovie.times.forEach((time) => {
+                expect(times).toContainEqual(time.toString());
             });
         });
     });
@@ -166,8 +159,7 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const time = "2023-07-12T05:44:06.918Z".split("T")[1];
-            const parsedTime = parseTime(time);
+            const time = "2023-07-12T05:44:06.918000000Z".split("T")[1];
 
             await testHelper.executeCypher(
                 `
@@ -197,7 +189,7 @@ describe("Time", () => {
             ][0];
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.id).toEqual(id);
-            expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
+            expect(graphqlMovie.time).toStrictEqual(time);
 
             const neo4jResult = await testHelper.executeCypher(
                 `
@@ -211,7 +203,7 @@ describe("Time", () => {
             expect(neo4jMovie).toBeDefined();
             expect(neo4jMovie.id).toEqual(id);
             expect(isTime(neo4jMovie.time)).toBe(true);
-            expect(parseTime(neo4jMovie.time.toString())).toStrictEqual(parsedTime);
+            expect(neo4jMovie.time.toString()).toStrictEqual(time);
         });
     });
 
@@ -227,17 +219,15 @@ describe("Time", () => {
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
             const id = generate({ readable: false });
-            const date = new Date("2024-02-17T11:49:48.322Z");
-            const time = date.toISOString().split("T")[1];
-            const neo4jTime = Time.fromStandardDate(date);
-            const parsedTime = parseTime(time);
+            const time = "11:49:48.322000000Z";
 
             await testHelper.executeCypher(
                 `
                         CREATE (movie:${Movie})
-                        SET movie = $movie
+                        SET movie.id = $id
+                        SET movie.time = time($time)
                     `,
-                { movie: { id, time: neo4jTime } }
+                { id, time }
             );
 
             const query = /* GraphQL */ `
@@ -256,7 +246,7 @@ describe("Time", () => {
             const graphqlMovie: { id: string; time: string } = (graphqlResult.data as any)[Movie.plural][0];
             expect(graphqlMovie).toBeDefined();
             expect(graphqlMovie.id).toEqual(id);
-            expect(parseTime(graphqlMovie.time)).toStrictEqual(parsedTime);
+            expect(graphqlMovie.time).toStrictEqual(time);
         });
 
         test.each(["lt", "lte", "gt", "gte"])(
@@ -272,51 +262,33 @@ describe("Time", () => {
                 await testHelper.initNeo4jGraphQL({ typeDefs });
 
                 const futureId = generate({ readable: false });
-                const future = "13:00:00";
-                const parsedFuture = parseTime(future);
-                const neo4jFuture = new Time(
-                    parsedFuture.hour,
-                    parsedFuture.minute,
-                    parsedFuture.second,
-                    parsedFuture.nanosecond,
-                    parsedFuture.timeZoneOffsetSeconds
-                );
+                const future = "13:00:00Z";
 
                 const presentId = generate({ readable: false });
-                const present = "12:00:00";
-                const parsedPresent = parseTime(present);
-                const neo4jPresent = new Time(
-                    parsedPresent.hour,
-                    parsedPresent.minute,
-                    parsedPresent.second,
-                    parsedPresent.nanosecond,
-                    parsedPresent.timeZoneOffsetSeconds
-                );
+                const present = "12:00:00Z";
 
                 const pastId = generate({ readable: false });
-                const past = "11:00:00";
-                const parsedPast = parseTime(past);
-                const neo4jPast = new Time(
-                    parsedPast.hour,
-                    parsedPast.minute,
-                    parsedPast.second,
-                    parsedPast.nanosecond,
-                    parsedPast.timeZoneOffsetSeconds
-                );
+                const past = "11:00:00Z";
 
                 await testHelper.executeCypher(
                     `
-                                CREATE (future:${Movie})
-                                SET future = $future
-                                CREATE (present:${Movie})
-                                SET present = $present
-                                CREATE (past:${Movie})
-                                SET past = $past
-                            `,
+                                    CREATE (future:${Movie})
+                                    SET future.id = $futureId
+                                    SET future.time = time($future)
+                                    CREATE (present:${Movie})
+                                    SET present.id = $presentId
+                                    SET present.time = time($present)
+                                    CREATE (past:${Movie})
+                                    SET past.id = $pastId
+                                    SET past.time = time($past)
+                                `,
                     {
-                        future: { id: futureId, time: neo4jFuture },
-                        present: { id: presentId, time: neo4jPresent },
-                        past: { id: pastId, time: neo4jPast },
+                        futureId,
+                        future,
+                        presentId,
+                        present,
+                        pastId,
+                        past,
                     }
                 );
 
@@ -347,31 +319,31 @@ describe("Time", () => {
                 if (filter === "lt") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
-                    expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
+                    expect(graphqlMovies[0]?.time).toStrictEqual(past);
                 }
 
                 if (filter === "lte") {
                     expect(graphqlMovies).toHaveLength(2);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
-                    expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
+                    expect(graphqlMovies[0]?.time).toStrictEqual(past);
 
                     expect(graphqlMovies[1]?.id).toBe(presentId);
-                    expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
+                    expect(graphqlMovies[1]?.time).toStrictEqual(present);
                 }
 
                 if (filter === "gt") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(futureId);
-                    expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedFuture);
+                    expect(graphqlMovies[0]?.time).toStrictEqual(future);
                 }
 
                 if (filter === "gte") {
                     expect(graphqlMovies).toHaveLength(2);
                     expect(graphqlMovies[0]?.id).toBe(presentId);
-                    expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPresent);
+                    expect(graphqlMovies[0]?.time).toStrictEqual(present);
 
                     expect(graphqlMovies[1]?.id).toBe(futureId);
-                    expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedFuture);
+                    expect(graphqlMovies[1]?.time).toStrictEqual(future);
                 }
                 /* eslint-enable jest/no-conditional-expect */
             }
@@ -389,51 +361,33 @@ describe("Time", () => {
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
             const futureId = generate({ readable: false });
-            const future = "13:00:00";
-            const parsedFuture = parseTime(future);
-            const neo4jFuture = new Time(
-                parsedFuture.hour,
-                parsedFuture.minute,
-                parsedFuture.second,
-                parsedFuture.nanosecond,
-                parsedFuture.timeZoneOffsetSeconds
-            );
+            const future = "13:00:00Z";
 
             const presentId = generate({ readable: false });
-            const present = "12:00:00";
-            const parsedPresent = parseTime(present);
-            const neo4jPresent = new Time(
-                parsedPresent.hour,
-                parsedPresent.minute,
-                parsedPresent.second,
-                parsedPresent.nanosecond,
-                parsedPresent.timeZoneOffsetSeconds
-            );
+            const present = "12:00:00Z";
 
             const pastId = generate({ readable: false });
-            const past = "11:00:00";
-            const parsedPast = parseTime(past);
-            const neo4jPast = new Time(
-                parsedPast.hour,
-                parsedPast.minute,
-                parsedPast.second,
-                parsedPast.nanosecond,
-                parsedPast.timeZoneOffsetSeconds
-            );
+            const past = "11:00:00Z";
 
             await testHelper.executeCypher(
                 `
                                 CREATE (future:${Movie})
-                                SET future = $future
+                                SET future.id = $futureId
+                                SET future.time = time($future)
                                 CREATE (present:${Movie})
-                                SET present = $present
+                                SET present.id = $presentId
+                                SET present.time = time($present)
                                 CREATE (past:${Movie})
-                                SET past = $past
+                                SET past.id = $pastId
+                                SET past.time = time($past)
                             `,
                 {
-                    future: { id: futureId, time: neo4jFuture },
-                    present: { id: presentId, time: neo4jPresent },
-                    past: { id: pastId, time: neo4jPast },
+                    futureId,
+                    future,
+                    presentId,
+                    present,
+                    pastId,
+                    past,
                 }
             );
 
@@ -464,24 +418,24 @@ describe("Time", () => {
             /* eslint-disable jest/no-conditional-expect */
             if (sort === "ASC") {
                 expect(graphqlMovies[0]?.id).toBe(pastId);
-                expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedPast);
+                expect(graphqlMovies[0]?.time).toStrictEqual(past);
 
                 expect(graphqlMovies[1]?.id).toBe(presentId);
-                expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
+                expect(graphqlMovies[1]?.time).toStrictEqual(present);
 
                 expect(graphqlMovies[2]?.id).toBe(futureId);
-                expect(parseTime(graphqlMovies[2]?.time)).toStrictEqual(parsedFuture);
+                expect(graphqlMovies[2]?.time).toStrictEqual(future);
             }
 
             if (sort === "DESC") {
                 expect(graphqlMovies[0]?.id).toBe(futureId);
-                expect(parseTime(graphqlMovies[0]?.time)).toStrictEqual(parsedFuture);
+                expect(graphqlMovies[0]?.time).toStrictEqual(future);
 
                 expect(graphqlMovies[1]?.id).toBe(presentId);
-                expect(parseTime(graphqlMovies[1]?.time)).toStrictEqual(parsedPresent);
+                expect(graphqlMovies[1]?.time).toStrictEqual(present);
 
                 expect(graphqlMovies[2]?.id).toBe(pastId);
-                expect(parseTime(graphqlMovies[2]?.time)).toStrictEqual(parsedPast);
+                expect(graphqlMovies[2]?.time).toStrictEqual(past);
             }
             /* eslint-enable jest/no-conditional-expect */
         });
