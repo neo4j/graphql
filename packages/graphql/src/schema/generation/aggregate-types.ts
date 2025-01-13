@@ -45,11 +45,13 @@ export function withAggregateSelectionType({
     aggregationTypesMapper,
     propagatedDirectives,
     composer,
+    features,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     aggregationTypesMapper: AggregationTypesMapper;
     propagatedDirectives: DirectiveNode[];
     composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
 }): ObjectTypeComposer {
     const aggregateSelection = composer.createObjectTC({
         name: entityAdapter.operations.aggregateTypeNames.selection,
@@ -62,23 +64,25 @@ export function withAggregateSelectionType({
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
-    aggregateSelection.addFields(makeAggregableFields({ entityAdapter, aggregationTypesMapper }));
+    aggregateSelection.addFields(makeAggregableFields({ entityAdapter, aggregationTypesMapper, features }));
     return aggregateSelection;
 }
 
 function makeAggregableFields({
     entityAdapter,
     aggregationTypesMapper,
+    features,
 }: {
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
     aggregationTypesMapper: AggregationTypesMapper;
+    features: Neo4jFeaturesSettings | undefined;
 }): ObjectTypeComposerFieldConfigMapDefinition<any, any> {
     const aggregableFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {};
     const aggregableAttributes = entityAdapter.aggregableFields;
     for (const attribute of aggregableAttributes) {
         const objectTypeComposer = aggregationTypesMapper.getAggregationType(attribute.getTypeName());
         if (objectTypeComposer) {
-            aggregableFields[attribute.name] = objectTypeComposer.NonNull;
+            aggregableFields[attribute.name] = { type: objectTypeComposer.NonNull };
         }
     }
     return aggregableFields;
@@ -214,7 +218,7 @@ function makeAggregationFields(
 function addDeprecatedAggregationFieldsByType(
     attribute: AttributeAdapter,
     directivesOnField: DirectiveNode[] | undefined,
-    fields: InputTypeComposerFieldConfigMapDefinition
+    fields: InputTypeComposerFieldConfigMapDefinition,
 ): InputTypeComposerFieldConfigMapDefinition {
     if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {

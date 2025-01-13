@@ -18,13 +18,12 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../src";
 
 describe("Aggregations", () => {
     test("Top Level Aggregations", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 id: ID
                 isbn: String!
@@ -527,9 +526,9 @@ describe("Aggregations", () => {
     });
 
     test("Where Level Aggregations", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type User @node {
-                someId: ID
+                someID: ID
                 someString: String
                 someFloat: Float
                 someInt: Int
@@ -542,12 +541,13 @@ describe("Aggregations", () => {
             }
 
             type Post @node {
+                someID: ID
                 title: String
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
 
             type Likes @relationshipProperties {
-                someId: ID
+                someID: ID
                 someString: String
                 someFloat: Float
                 someInt: Int
@@ -779,7 +779,7 @@ describe("Aggregations", () => {
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
-              someId: ID
+              someID: ID
               someInt: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
@@ -937,7 +937,7 @@ describe("Aggregations", () => {
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
-              someId: ID
+              someID: ID
               someInt: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
@@ -950,7 +950,7 @@ describe("Aggregations", () => {
               someDateTime: SortDirection
               someDuration: SortDirection
               someFloat: SortDirection
-              someId: SortDirection
+              someID: SortDirection
               someInt: SortDirection
               someLocalDateTime: SortDirection
               someLocalTime: SortDirection
@@ -973,8 +973,8 @@ describe("Aggregations", () => {
               someFloat_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { multiply: ... } }' instead.\\")
               someFloat_SET: Float @deprecated(reason: \\"Please use the generic mutation 'someFloat: { set: ... } }' instead.\\")
               someFloat_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { subtract: ... } }' instead.\\")
-              someId: IDScalarMutations
-              someId_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someId: { set: ... } }' instead.\\")
+              someID: IDScalarMutations
+              someID_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someID: { set: ... } }' instead.\\")
               someInt: IntScalarMutations
               someInt_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { decrement: ... } }' instead.\\")
               someInt_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { increment: ... } }' instead.\\")
@@ -1021,12 +1021,12 @@ describe("Aggregations", () => {
               someFloat_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { in: ... }\\")
               someFloat_LT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lt: ... }\\")
               someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
-              someId: IDScalarFilters
-              someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
-              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { endsWith: ... }\\")
-              someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
-              someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
-              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { startsWith: ... }\\")
+              someID: IDScalarFilters
+              someID_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { contains: ... }\\")
+              someID_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { endsWith: ... }\\")
+              someID_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { eq: ... }\\")
+              someID_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someID: { in: ... }\\")
+              someID_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { startsWith: ... }\\")
               someInt: IntScalarFilters
               someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
@@ -1144,6 +1144,7 @@ describe("Aggregations", () => {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
               likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
+              someID: ID
               title: String
             }
 
@@ -1154,6 +1155,7 @@ describe("Aggregations", () => {
 
             input PostCreateInput {
               likes: PostLikesFieldInput
+              someID: ID
               title: String
             }
 
@@ -1410,11 +1412,14 @@ describe("Aggregations", () => {
             Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
             \\"\\"\\"
             input PostSort {
+              someID: SortDirection
               title: SortDirection
             }
 
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
+              someID: IDScalarMutations
+              someID_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someID: { set: ... } }' instead.\\")
               title: StringScalarMutations
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
@@ -1480,6 +1485,12 @@ describe("Aggregations", () => {
               likes_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  single: ... }' instead.\\")
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'likes: {  some: ... }' instead.\\")
+              someID: IDScalarFilters
+              someID_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { contains: ... }\\")
+              someID_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { endsWith: ... }\\")
+              someID_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { eq: ... }\\")
+              someID_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someID: { in: ... }\\")
+              someID_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { startsWith: ... }\\")
               title: StringScalarFilters
               title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
               title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
@@ -1591,7 +1602,7 @@ describe("Aggregations", () => {
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
-              someId: ID
+              someID: ID
               someInt: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
@@ -1621,7 +1632,7 @@ describe("Aggregations", () => {
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
-              someId: ID
+              someID: ID
               someInt: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
@@ -1653,7 +1664,7 @@ describe("Aggregations", () => {
               someDateTime: SortDirection
               someDuration: SortDirection
               someFloat: SortDirection
-              someId: SortDirection
+              someID: SortDirection
               someInt: SortDirection
               someLocalDateTime: SortDirection
               someLocalTime: SortDirection
@@ -1676,8 +1687,8 @@ describe("Aggregations", () => {
               someFloat_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { multiply: ... } }' instead.\\")
               someFloat_SET: Float @deprecated(reason: \\"Please use the generic mutation 'someFloat: { set: ... } }' instead.\\")
               someFloat_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { subtract: ... } }' instead.\\")
-              someId: IDScalarMutations
-              someId_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someId: { set: ... } }' instead.\\")
+              someID: IDScalarMutations
+              someID_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someID: { set: ... } }' instead.\\")
               someInt: IntScalarMutations
               someInt_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { decrement: ... } }' instead.\\")
               someInt_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { increment: ... } }' instead.\\")
@@ -1724,12 +1735,12 @@ describe("Aggregations", () => {
               someFloat_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { in: ... }\\")
               someFloat_LT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lt: ... }\\")
               someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
-              someId: IDScalarFilters
-              someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
-              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { endsWith: ... }\\")
-              someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
-              someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
-              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { startsWith: ... }\\")
+              someID: IDScalarFilters
+              someID_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { contains: ... }\\")
+              someID_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { endsWith: ... }\\")
+              someID_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { eq: ... }\\")
+              someID_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someID: { in: ... }\\")
+              someID_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { startsWith: ... }\\")
               someInt: IntScalarFilters
               someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")
@@ -1775,9 +1786,9 @@ describe("Aggregations", () => {
     });
 
     test("Where Level Aggregations with arrays", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type User @node {
-                someId: ID
+                someID: ID
                 someString: String
                 someFloat: Float
                 someInt: Int
@@ -1795,7 +1806,7 @@ describe("Aggregations", () => {
             }
 
             type Likes @relationshipProperties {
-                someId: [ID!]!
+                someID: [ID!]!
                 someString: [String!]!
                 someFloat: [Float!]!
                 someInt: [Int!]!
@@ -2063,7 +2074,7 @@ describe("Aggregations", () => {
               someDateTime: [DateTime!]!
               someDuration: [Duration!]!
               someFloat: [Float!]!
-              someId: [ID!]!
+              someID: [ID!]!
               someInt: [Int!]!
               someLocalDateTime: [LocalDateTime!]!
               someLocalTime: [LocalTime!]!
@@ -2076,7 +2087,7 @@ describe("Aggregations", () => {
               someDateTime: [DateTime!]!
               someDuration: [Duration!]!
               someFloat: [Float!]!
-              someId: [ID!]!
+              someID: [ID!]!
               someInt: [Int!]!
               someLocalDateTime: [LocalDateTime!]!
               someLocalTime: [LocalTime!]!
@@ -2089,7 +2100,7 @@ describe("Aggregations", () => {
               someDateTime: SortDirection
               someDuration: SortDirection
               someFloat: SortDirection
-              someId: SortDirection
+              someID: SortDirection
               someInt: SortDirection
               someLocalDateTime: SortDirection
               someLocalTime: SortDirection
@@ -2114,10 +2125,10 @@ describe("Aggregations", () => {
               someFloat_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someFloat: { pop: ... } }' instead.\\")
               someFloat_PUSH: [Float!] @deprecated(reason: \\"Please use the generic mutation 'someFloat: { push: ... } }' instead.\\")
               someFloat_SET: [Float!] @deprecated(reason: \\"Please use the generic mutation 'someFloat: { set: ... } }' instead.\\")
-              someId: ListIDMutations
-              someId_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someId: { pop: ... } }' instead.\\")
-              someId_PUSH: [ID!] @deprecated(reason: \\"Please use the generic mutation 'someId: { push: ... } }' instead.\\")
-              someId_SET: [ID!] @deprecated(reason: \\"Please use the generic mutation 'someId: { set: ... } }' instead.\\")
+              someID: ListIDMutations
+              someID_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someID: { pop: ... } }' instead.\\")
+              someID_PUSH: [ID!] @deprecated(reason: \\"Please use the generic mutation 'someID: { push: ... } }' instead.\\")
+              someID_SET: [ID!] @deprecated(reason: \\"Please use the generic mutation 'someID: { set: ... } }' instead.\\")
               someInt: ListIntMutations
               someInt_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someInt: { pop: ... } }' instead.\\")
               someInt_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someInt: { push: ... } }' instead.\\")
@@ -2156,9 +2167,9 @@ describe("Aggregations", () => {
               someFloat: FloatListFilters
               someFloat_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { eq: ... }\\")
               someFloat_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { includes: ... }\\")
-              someId: IDListFilters
-              someId_EQ: [ID!] @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
-              someId_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { includes: ... }\\")
+              someID: IDListFilters
+              someID_EQ: [ID!] @deprecated(reason: \\"Please use the relevant generic filter someID: { eq: ... }\\")
+              someID_INCLUDES: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { includes: ... }\\")
               someInt: IntListFilters
               someInt_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { includes: ... }\\")
@@ -2784,7 +2795,7 @@ describe("Aggregations", () => {
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
-              someId: ID
+              someID: ID
               someInt: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
@@ -2814,7 +2825,7 @@ describe("Aggregations", () => {
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
-              someId: ID
+              someID: ID
               someInt: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
@@ -2846,7 +2857,7 @@ describe("Aggregations", () => {
               someDateTime: SortDirection
               someDuration: SortDirection
               someFloat: SortDirection
-              someId: SortDirection
+              someID: SortDirection
               someInt: SortDirection
               someLocalDateTime: SortDirection
               someLocalTime: SortDirection
@@ -2869,8 +2880,8 @@ describe("Aggregations", () => {
               someFloat_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { multiply: ... } }' instead.\\")
               someFloat_SET: Float @deprecated(reason: \\"Please use the generic mutation 'someFloat: { set: ... } }' instead.\\")
               someFloat_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'someFloat: { subtract: ... } }' instead.\\")
-              someId: IDScalarMutations
-              someId_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someId: { set: ... } }' instead.\\")
+              someID: IDScalarMutations
+              someID_SET: ID @deprecated(reason: \\"Please use the generic mutation 'someID: { set: ... } }' instead.\\")
               someInt: IntScalarMutations
               someInt_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { decrement: ... } }' instead.\\")
               someInt_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'someInt: { increment: ... } }' instead.\\")
@@ -2917,12 +2928,12 @@ describe("Aggregations", () => {
               someFloat_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter someFloat: { in: ... }\\")
               someFloat_LT: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lt: ... }\\")
               someFloat_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter someFloat: { lte: ... }\\")
-              someId: IDScalarFilters
-              someId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { contains: ... }\\")
-              someId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { endsWith: ... }\\")
-              someId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { eq: ... }\\")
-              someId_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someId: { in: ... }\\")
-              someId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someId: { startsWith: ... }\\")
+              someID: IDScalarFilters
+              someID_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { contains: ... }\\")
+              someID_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { endsWith: ... }\\")
+              someID_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { eq: ... }\\")
+              someID_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter someID: { in: ... }\\")
+              someID_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter someID: { startsWith: ... }\\")
               someInt: IntScalarFilters
               someInt_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { eq: ... }\\")
               someInt_GT: Int @deprecated(reason: \\"Please use the relevant generic filter someInt: { gt: ... }\\")

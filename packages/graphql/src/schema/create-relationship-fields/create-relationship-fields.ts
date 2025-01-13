@@ -268,7 +268,10 @@ export function createRelationshipFields({
             // make a new fn augmentObjectTypeWithAggregationField
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
-            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(relationshipAdapter);
+            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
+                relationshipAdapter,
+                features
+            );
 
             const aggregationFieldsBaseArgs = {
                 where: relationshipTarget.operations.whereInputTypeName,

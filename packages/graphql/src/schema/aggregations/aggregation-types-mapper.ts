@@ -50,7 +50,7 @@ export class AggregationTypesMapper {
             resolve: numericalResolver,
             args: {},
         };
-
+        // TODO: REMOVE ID FIELD ON 7.x
         const composeId = {
             type: "ID",
             resolve: idResolver,
@@ -64,6 +64,7 @@ export class AggregationTypesMapper {
             fields?: Record<string, any>;
             directives?: string[];
         }> = [
+            // TODO: REMOVE ID FIELD ON 7.x
             {
                 name: "ID",
                 fields: {
@@ -140,6 +141,7 @@ export class AggregationTypesMapper {
     }): ObjectTypeComposer<any, any> {
         return composer.getOrCreateOTC(`${name}AggregateSelection`, (tc) => {
             tc.addFields(fields ?? { min: name, max: name });
+
             for (const directive of directives) {
                 tc.setDirectiveByName(directive);
             }
