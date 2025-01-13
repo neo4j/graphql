@@ -243,11 +243,7 @@ describe("interface relationships", () => {
                             {
                                 runtime: movieRuntime,
                                 title: movieTitle,
-                                actors: expect.toIncludeSameMembers([
-                                    { name: actorName2 },
-                                    { name: actorName1 },
-                                    { name: actorName2 },
-                                ]),
+                                actors: expect.toIncludeSameMembers([{ name: actorName2 }, { name: actorName1 }]),
                             },
                         ],
                         name: actorName1,
