@@ -69,6 +69,7 @@ describe("Cypher alias directive", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH DISTINCT this1
                 WITH this1 { .title, rating: this1.ratingPropInDb } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -193,6 +194,7 @@ describe("Cypher alias directive", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)-[create_this6:ACTED_IN]->(create_this7:Movie)
+                WITH DISTINCT create_this7
                 WITH create_this7 { .title, rating: create_this7.ratingPropInDb } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }

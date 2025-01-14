@@ -70,6 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 WITH this
                 MATCH (this)-[this1:dcterms__title]->(this2:dcterms_title:property)
                 WHERE this2.value CONTAINS $param2
+                WITH DISTINCT this2
                 WITH this2 { .value } AS this2
                 RETURN collect(this2) AS var3
             }

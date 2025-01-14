@@ -186,6 +186,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                WITH DISTINCT this1
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
@@ -363,6 +364,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                WITH DISTINCT this1
                 WITH *
                 WHERE (this1.content = $param4 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
@@ -722,6 +724,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_POST]->(update_this1:Post)
+                WITH DISTINCT update_this1
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
                     MATCH (update_this1)<-[:HAS_POST]-(update_this2:User)

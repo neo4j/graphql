@@ -81,6 +81,7 @@ describe("Label in Node directive", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }

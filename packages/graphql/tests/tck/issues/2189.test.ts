@@ -284,6 +284,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(create_this9:Test_Feedback)
+                WITH DISTINCT create_this9
                 WITH create_this9 { .uuid, .int, .str, .bool } AS create_this9
                 RETURN collect(create_this9) AS create_var10
             }
@@ -378,6 +379,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this7:Test_Feedback)
+                WITH DISTINCT create_this7
                 WITH create_this7 { .uuid, .int, .str, .bool } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }
