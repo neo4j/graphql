@@ -43,7 +43,7 @@ describe("Update: Multiple relationships results difference between Connection A
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        // Deliberately create duplicate relationships
+        // Create duplicate relationships
         await testHelper.executeCypher(`
             CREATE (m:${Movie} {title: "Movie One"})
             CREATE (a:${Actor} {name: "Actor One"})
