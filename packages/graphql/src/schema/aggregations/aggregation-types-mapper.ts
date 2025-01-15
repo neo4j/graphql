@@ -19,7 +19,6 @@
 
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
-import { idResolver } from "../resolvers/field/id";
 import { numericalResolver } from "../resolvers/field/numerical";
 
 export class AggregationTypesMapper {
@@ -50,12 +49,6 @@ export class AggregationTypesMapper {
             resolve: numericalResolver,
             args: {},
         };
-        // TODO: REMOVE ID FIELD ON 7.x
-        const composeId = {
-            type: "ID",
-            resolve: idResolver,
-            args: {},
-        };
 
         const directives: string[] = this.subgraph ? [this.subgraph.getFullyQualifiedDirectiveName("shareable")] : [];
 
@@ -64,15 +57,6 @@ export class AggregationTypesMapper {
             fields?: Record<string, any>;
             directives?: string[];
         }> = [
-            // TODO: REMOVE ID FIELD ON 7.x
-            {
-                name: "ID",
-                fields: {
-                    shortest: composeId,
-                    longest: composeId,
-                },
-                directives,
-            },
             {
                 name: "String",
                 fields: {
