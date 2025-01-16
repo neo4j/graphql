@@ -69,6 +69,7 @@ import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
+import { nodeMissingValidation } from "./custom-rules/valid-types/node-missing-validation";
 
 function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
@@ -231,6 +232,7 @@ function runValidationRulesOnFilteredDocument({
             }),
             ValidListInNodeType,
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
+            nodeMissingValidation,
         ],
         schema
     );
