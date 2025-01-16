@@ -20,22 +20,14 @@
 import { GraphQLSchema } from "graphql";
 import { gql } from "graphql-tag";
 import {
-    cypherDirective,
-    filterableDirective,
     fulltextDirective,
-    idDirective,
     mutationDirective,
-    populatedByDirective,
     queryDirective,
     relationshipDirective,
     relayIdDirective,
-    selectableDirective,
-    settableDirective,
     subscriptionDirective,
-    timestampDirective,
     vectorDirective,
 } from "../../../../graphql/directives";
-import { authenticationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authentication";
 import { authorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authorization";
 import { subscriptionsAuthorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 import { validateSDL } from "../../validate-sdl";
@@ -44,7 +36,6 @@ import { nodeMissingValidation } from "./node-missing-validation";
 describe("node missing validation", () => {
     test.each([
         authorizationDirectiveScaffold.name,
-        authenticationDirectiveScaffold.name,
         subscriptionsAuthorizationDirectiveScaffold.name,
         queryDirective.name,
         mutationDirective.name,
@@ -65,7 +56,6 @@ describe("node missing validation", () => {
 
     test.each([
         authorizationDirectiveScaffold.name,
-        authenticationDirectiveScaffold.name,
         subscriptionsAuthorizationDirectiveScaffold.name,
         queryDirective.name,
         mutationDirective.name,
@@ -129,17 +119,9 @@ describe("node missing validation", () => {
 
     test.each([
         authorizationDirectiveScaffold.name,
-        authenticationDirectiveScaffold.name,
         subscriptionsAuthorizationDirectiveScaffold.name,
         relationshipDirective.name,
-        cypherDirective.name,
-        idDirective.name,
         relayIdDirective.name,
-        timestampDirective.name,
-        populatedByDirective.name,
-        selectableDirective.name,
-        settableDirective.name,
-        filterableDirective.name,
     ])(
         "when the %s directive is used on a field on a type non annotated with @node an error should be raised",
         (name) => {
@@ -157,17 +139,9 @@ describe("node missing validation", () => {
 
     test.each([
         authorizationDirectiveScaffold.name,
-        authenticationDirectiveScaffold.name,
         subscriptionsAuthorizationDirectiveScaffold.name,
         relationshipDirective.name,
-        cypherDirective.name,
-        idDirective.name,
         relayIdDirective.name,
-        timestampDirective.name,
-        populatedByDirective.name,
-        selectableDirective.name,
-        settableDirective.name,
-        filterableDirective.name,
     ])(
         "when the %s directive is used on a field on a type non annotated with @node an error should be raised",
         (name) => {

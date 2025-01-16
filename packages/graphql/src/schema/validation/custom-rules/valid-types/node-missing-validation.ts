@@ -21,23 +21,15 @@ import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, ObjectT
 import { Kind } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
 import {
-    cypherDirective,
-    filterableDirective,
     fulltextDirective,
-    idDirective,
     mutationDirective,
     nodeDirective,
-    populatedByDirective,
     queryDirective,
     relationshipDirective,
     relayIdDirective,
-    selectableDirective,
-    settableDirective,
     subscriptionDirective,
-    timestampDirective,
     vectorDirective,
 } from "../../../../graphql/directives";
-import { authenticationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authentication";
 import { authorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authorization";
 import { subscriptionsAuthorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 import { asArray } from "../../../../utils/utils";
@@ -48,6 +40,25 @@ type ObjectExtensionsTypeMap = {
     extensions: ObjectTypeExtensionNode[];
     definition: ObjectTypeDefinitionNode;
 };
+/**
+ *  The below validation is here to help users to catch common issues
+ *  when using directives that are supposed to be used within the `@node` directive
+ *  but the `@node` directive is missing.
+ *  The below will raise an error if any of these cases are found:
+ *  if any of the following directive are found in a type that is not annotated with `@node`:
+ *  - authorization
+ *  - subscriptionAuthorization
+ *  - query
+ *  - mutation
+ *  - subscription
+ *  - fulltext
+ *  - vector
+ *  if any of the following directive are found in a field that is not annotated with `@node`:
+ *  - authorization
+ *  - subscriptionAuthorization
+ *  - relationship
+ *  - relayId
+ **/
 export function nodeMissingValidation(context: SDLValidationContext): ASTVisitor {
     const extensionsTypeMap: Record<string, ObjectExtensionsTypeMap> = context
         .getDocument()
@@ -71,6 +82,9 @@ export function nodeMissingValidation(context: SDLValidationContext): ASTVisitor
         }, {});
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            if (!fieldDefinitionNode.directives?.length) {
+                return;
+            }
             const [_pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             if (!parentOfTraversedDef) {
                 return;
@@ -91,17 +105,9 @@ export function nodeMissingValidation(context: SDLValidationContext): ASTVisitor
             const { isValid, errorMsg } = assertValid(() => {
                 const nodeRelatedDirectives = [
                     authorizationDirectiveScaffold.name,
-                    authenticationDirectiveScaffold.name,
                     subscriptionsAuthorizationDirectiveScaffold.name,
                     relationshipDirective.name,
-                    cypherDirective.name,
-                    idDirective.name,
                     relayIdDirective.name,
-                    timestampDirective.name,
-                    populatedByDirective.name,
-                    selectableDirective.name,
-                    settableDirective.name,
-                    filterableDirective.name,
                 ];
 
                 for (const directive of fieldDefinitionNode.directives ?? []) {
@@ -141,7 +147,6 @@ export function nodeMissingValidation(context: SDLValidationContext): ASTVisitor
             // if `@node` is not found then check that check that no directives that requires `@node` are present
             const nodeRelatedDirectives = [
                 authorizationDirectiveScaffold.name,
-                authenticationDirectiveScaffold.name,
                 subscriptionsAuthorizationDirectiveScaffold.name,
                 queryDirective.name,
                 mutationDirective.name,
