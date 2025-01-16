@@ -35,7 +35,7 @@ describe("Cypher Advanced Filtering", () => {
                 genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
             }
 
-            type Genre @node {
+            type Genre @node @authorization(filter: [{ where: { node: { name: { eq: "some genre" } } } }]) {
                 name: String
                 movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
             }

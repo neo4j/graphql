@@ -36,6 +36,7 @@ function createWherePredicate({
     whereInput,
     targetElement,
     targetEntity,
+    context,
 }: {
     factory: QueryASTFactory;
     queryASTContext: QueryASTContext;
@@ -43,23 +44,25 @@ function createWherePredicate({
     whereInput: GraphQLWhereArg;
     targetElement: Cypher.Node | Cypher.Relationship;
     targetEntity?: ConcreteEntityAdapter; // It's required for interface entities to be passed in
+    context: Neo4jGraphQLTranslationContext;
 }): {
     predicate: Cypher.Predicate | undefined;
     preComputedSubqueries?: Cypher.CompositeClause | undefined;
 } {
     const filters: Filter[] = [];
     if (entityOrRel instanceof RelationshipAdapter) {
-        filters.push(...factory.filterFactory.createEdgeFilters(entityOrRel, whereInput));
+        filters.push(...factory.filterFactory.createEdgeFilters(entityOrRel, whereInput, context));
     } else if (isInterfaceEntity(entityOrRel)) {
         filters.push(
             ...factory.filterFactory.createInterfaceNodeFilters({
                 entity: entityOrRel,
                 targetEntity,
                 whereFields: whereInput,
+                context,
             })
         );
     } else {
-        filters.push(...factory.filterFactory.createNodeFilters(entityOrRel, whereInput));
+        filters.push(...factory.filterFactory.createNodeFilters(entityOrRel, whereInput, context));
     }
 
     const subqueries = wrapSubqueriesInCypherCalls(queryASTContext, filters, [targetElement]);
@@ -105,6 +108,7 @@ export function createWhereNodePredicate({
         whereInput,
         targetElement,
         targetEntity,
+        context,
     });
 }
 
@@ -134,5 +138,12 @@ export function createWhereEdgePredicate({
         neo4jGraphQLContext: context,
     });
 
-    return createWherePredicate({ factory, queryASTContext, entityOrRel: relationship, whereInput, targetElement });
+    return createWherePredicate({
+        factory,
+        queryASTContext,
+        entityOrRel: relationship,
+        whereInput,
+        targetElement,
+        context,
+    });
 }

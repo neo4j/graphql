@@ -77,7 +77,7 @@ export class AuthFilterFactory extends FilterFactory {
             }
 
             if (key === "node") {
-                return this.createNodeFilters(entity, value);
+                return this.createNodeFilters(entity, value, context);
             } else if (key === "jwt") {
                 return this.createJWTFilters(context.authorization.jwtParam, value, context);
             }
@@ -147,12 +147,14 @@ export class AuthFilterFactory extends FilterFactory {
         operator,
         attachedTo,
         relationship,
+        context,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: FilterOperator | undefined;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
+        context: Neo4jGraphQLTranslationContext;
     }): Filter {
         const isCypherVariable =
             comparisonValue instanceof Cypher.Variable ||
@@ -182,6 +184,7 @@ export class AuthFilterFactory extends FilterFactory {
                             target: entityAdapter,
                             operator: legacyOperator,
                             attribute,
+                            context,
                         });
                     });
                     return new LogicalFilter({
@@ -198,6 +201,7 @@ export class AuthFilterFactory extends FilterFactory {
                         target: entityAdapter,
                         operator,
                         attribute,
+                        context,
                     }),
                 });
             }

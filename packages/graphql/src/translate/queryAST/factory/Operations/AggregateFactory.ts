@@ -170,7 +170,7 @@ export class AggregateFactory {
                     context,
                 });
 
-                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs, context); // Aggregation filters only apply to target node
 
                 operation.addFilters(...filters);
                 operation.addAuthFilters(...authFilters);
@@ -274,10 +274,11 @@ export class AggregateFactory {
                 const filters = this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
                     entity,
                     whereFields: whereArgs,
+                    context,
                 });
                 operation.addFilters(...filters);
             } else {
-                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs, context); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
 
                 const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, nodeRawFields);
@@ -306,10 +307,11 @@ export class AggregateFactory {
                 const filters = this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
                     entity,
                     whereFields: whereArgs,
+                    context,
                 });
                 operation.addFilters(...filters);
             } else {
-                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
+                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs, context); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
                 const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
                     entity,

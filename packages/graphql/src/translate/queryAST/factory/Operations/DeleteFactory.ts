@@ -79,7 +79,7 @@ export class DeleteFactory {
             target: entity,
             alias: varName,
         });
-        const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node);
+        const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node, context);
         const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
             operations: ["DELETE"],
@@ -215,11 +215,12 @@ export class DeleteFactory {
                 entity: partialOf,
                 targetEntity: target,
                 whereFields: whereArg.node,
+                context,
             });
         } else {
-            nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node);
+            nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node, context);
         }
-        const edgeFilters = this.queryASTFactory.filterFactory.createEdgeFilters(relationship, whereArg.edge);
+        const edgeFilters = this.queryASTFactory.filterFactory.createEdgeFilters(relationship, whereArg.edge, context);
 
         const filters = [...nodeFilters, ...edgeFilters];
 

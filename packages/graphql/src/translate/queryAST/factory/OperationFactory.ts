@@ -318,10 +318,11 @@ export class OperationsFactory {
                 entity: partialOf,
                 targetEntity: entity,
                 whereFields: whereArgs,
+                context,
             });
             operation.addFilters(...filters);
         } else {
-            const filters = this.filterFactory.createNodeFilters(entity, whereArgs);
+            const filters = this.filterFactory.createNodeFilters(entity, whereArgs, context);
             operation.addFilters(...filters);
         }
 

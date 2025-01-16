@@ -20,10 +20,12 @@
 import Cypher from "@neo4j/cypher-builder";
 import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { filterTruthy } from "../../../../../utils/utils";
 import { hasTarget } from "../../../utils/context-has-target";
 import { getEntityLabels } from "../../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { AuthorizationFilters } from "../authorization-filters/AuthorizationFilters";
 import { Filter } from "../Filter";
 import type { LogicalFilter } from "../LogicalFilter";
 import type { AggregationPropertyFilter } from "./AggregationPropertyFilter";
@@ -34,6 +36,8 @@ export class AggregationFilter extends Filter {
 
     private filters: Array<AggregationPropertyFilter | CountFilter | LogicalFilter> = [];
 
+    private authFilters: AuthorizationFilters[] = [];
+
     private subqueryReturnVariable: Cypher.Variable | undefined;
 
     constructor(relationship: RelationshipAdapter) {
@@ -43,6 +47,10 @@ export class AggregationFilter extends Filter {
 
     public addFilters(...filter: Array<AggregationPropertyFilter | CountFilter | LogicalFilter>) {
         this.filters.push(...filter);
+    }
+
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
     }
 
     public getChildren(): QueryASTNode[] {
@@ -101,5 +109,13 @@ export class AggregationFilter extends Filter {
         // should this throw instead?
         if (!this.subqueryReturnVariable) return undefined;
         return Cypher.eq(this.subqueryReturnVariable, Cypher.true);
+    }
+
+    private getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+        return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    }
+
+    private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 }

@@ -45,9 +45,9 @@ export class AuthRelationshipFilter extends RelationshipFilter {
 
     protected createRelationshipOperation(
         pattern: Cypher.Pattern,
-        queryASTContext: QueryASTContext
+        context: QueryASTContext
     ): Cypher.Predicate | undefined {
-        const predicates = this.targetNodeFilters.map((c) => c.getPredicate(queryASTContext));
+        const predicates = this.targetNodeFilters.map((c) => c.getPredicate(context));
         const innerPredicate = Cypher.and(...predicates);
         if (!innerPredicate) {
             return;
@@ -62,7 +62,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             case "SINGLE": {
                 return this.getSingleRelationshipOperation({
                     pattern,
-                    queryASTContext,
+                    context,
                     innerPredicate,
                 });
             }

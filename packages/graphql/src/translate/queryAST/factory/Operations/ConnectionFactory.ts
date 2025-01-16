@@ -377,6 +377,7 @@ export class ConnectionFactory {
             rel: relationship,
             entity: target,
             where: whereArgs,
+            context,
         });
 
         operation.setNodeFields(nodeFields);
