@@ -42,11 +42,15 @@ export class AggregateFactory {
     }
 
     // TODO: dupe from read operation
-    public createAggregationOperation(
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
-    ): AggregationOperation | CompositeAggregationOperation {
+    public createAggregationOperation({
+        entityOrRel,
+        resolveTree,
+        context,
+    }: {
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+    }): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter; // TODO: check this seems wrong but outside of the scope of this PR

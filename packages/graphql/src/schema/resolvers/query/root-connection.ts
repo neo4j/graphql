@@ -25,7 +25,7 @@ import {
     type GraphQLResolveInfo,
     type SelectionSetNode,
 } from "graphql";
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -72,7 +72,7 @@ export function rootConnectionResolver({
 
         const connection = createConnectionWithEdgeProperties({
             selectionSet: resolveTree as unknown as SelectionSetNode,
-            source: { edges: record.edges },
+            source: { edges: record.edges, aggregate: record.aggregate },
             args: { first: args.first, after: args.after },
             totalCount,
         });
@@ -81,6 +81,7 @@ export function rootConnectionResolver({
             totalCount,
             edges: connection.edges,
             pageInfo: connection.pageInfo,
+            aggregate: connection.aggregate,
         };
     }
 
@@ -93,13 +94,19 @@ export function rootConnectionResolver({
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
+    const rootFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {
+        totalCount: new GraphQLNonNull(GraphQLInt),
+        pageInfo: new GraphQLNonNull(PageInfo),
+        edges: rootEdge.NonNull.List.NonNull,
+    };
+
+    if (entityAdapter.isAggregable) {
+        rootFields["aggregate"] = `${entityAdapter.operations.aggregateTypeNames.connection}!`;
+    }
+
     const rootConnection = composer.createObjectTC({
         name: `${entityAdapter.upperFirstPlural}Connection`,
-        fields: {
-            totalCount: new GraphQLNonNull(GraphQLInt),
-            pageInfo: new GraphQLNonNull(PageInfo),
-            edges: rootEdge.NonNull.List.NonNull,
-        },
+        fields: rootFields,
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
