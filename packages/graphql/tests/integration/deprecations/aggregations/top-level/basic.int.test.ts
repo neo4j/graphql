@@ -40,21 +40,14 @@ describe("aggregations-top_level-basic", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${randomType.name} {id: "asd"})
-            CREATE (:${randomType.name} {id: "asd3"})
+            CREATE (:${randomType.name} {id: randomUUID()})
+            CREATE (:${randomType.name} {id: randomUUID()})
         `);
 
         const query = `
                 {
-                    ${randomType.operations.connection} {
-                        aggregate {
-                            node {
-                                count
-                                id {
-                                    longest 
-                                }
-                            }
-                        }
+                    ${randomType.operations.aggregate} {
+                        count
                     }
                 }
             `;
@@ -63,17 +56,8 @@ describe("aggregations-top_level-basic", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [randomType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        count: 2,
-                        id: {
-                            longest: "asd3",
-                        },
-                    },
-                },
-            },
+        expect((gqlResult.data as any)[randomType.operations.aggregate]).toEqual({
+            count: 2,
         });
     });
 });

@@ -24,6 +24,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { ConnectionAggregationField } from "../fields/ConnectionAggregationField";
 import type { Field } from "../fields/Field";
 import { OperationField } from "../fields/OperationField";
 import type { Filter } from "../filters/Filter";
@@ -42,7 +43,10 @@ export class ConnectionReadOperation extends Operation {
 
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
-    protected filters: Filter[] = [];
+
+    public aggregationField: ConnectionAggregationField | undefined;
+
+    public filters: Filter[] = [];
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
@@ -97,6 +101,7 @@ export class ConnectionReadOperation extends Operation {
             this.selection,
             ...this.nodeFields,
             ...this.edgeFields,
+            this.aggregationField,
             ...this.filters,
             ...this.authFilters,
             this.pagination,
@@ -107,7 +112,8 @@ export class ConnectionReadOperation extends Operation {
     protected getWithCollectEdgesAndTotalCount(
         nestedContext: QueryASTContext<Cypher.Node>,
         edgesVar: Cypher.Variable,
-        totalCount: Cypher.Variable
+        totalCount: Cypher.Variable,
+        extraColumns?: Array<[Cypher.Expr, Cypher.Variable]>
     ): Cypher.With {
         const nodeAndRelationshipMap = new Cypher.Map({
             node: nestedContext.target,
@@ -117,10 +123,11 @@ export class ConnectionReadOperation extends Operation {
             nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
-            Cypher.size(edgesVar),
-            totalCount,
-        ]);
+        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...(extraColumns ?? [])).with(
+            edgesVar,
+            [Cypher.size(edgesVar), totalCount],
+            ...(extraColumns ?? []).map((c) => c[1])
+        );
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -148,6 +155,21 @@ export class ConnectionReadOperation extends Operation {
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
 
+        const returnMap: Record<string, Cypher.Variable> = {};
+        let extraFieldsSubqueries: Cypher.Clause[] = [];
+        let extraFields: Array<[Cypher.Expr, Cypher.Variable]> = [];
+        if (this.aggregationField) {
+            extraFieldsSubqueries = this.aggregationField.getSubqueries(nestedContext);
+
+            const aggregationProjectionField = this.aggregationField.getProjectionField();
+
+            extraFields = Object.entries(aggregationProjectionField).map(([key, value]) => {
+                const variable = new Cypher.Variable();
+                returnMap[key] = variable;
+                return [value, variable];
+            });
+        }
+
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();
@@ -169,13 +191,15 @@ export class ConnectionReadOperation extends Operation {
         const withCollectEdgesAndTotalCount = this.getWithCollectEdgesAndTotalCount(
             nestedContext,
             edgesVar,
-            totalCount
+            totalCount,
+            extraFields
         );
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
                 edges: edgesProjectionVar,
                 totalCount: totalCount,
+                ...returnMap,
             }),
             context.returnVariable,
         ]);
@@ -187,6 +211,7 @@ export class ConnectionReadOperation extends Operation {
                     selectionClause,
                     ...filtersSubqueries,
                     withWhere,
+                    ...extraFieldsSubqueries,
                     withCollectEdgesAndTotalCount,
                     unwindAndProjectionSubquery,
                     returnClause

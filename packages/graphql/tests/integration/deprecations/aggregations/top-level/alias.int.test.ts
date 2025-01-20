@@ -18,8 +18,8 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level-alias", () => {
     const testHelper = new TestHelper();
@@ -67,28 +67,24 @@ describe("aggregations-top_level-alias", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${typeMovie.operations.connection}(where: { testString_EQ: "${testString}" }) {
-                        aggr: aggregate {
-                            n: node {
-                                _count: count
-                                _id: id {
-                                    _shortest: shortest
-                                    _longest: longest
-                                }
-                                _title: title {
-                                    _shortest: shortest
-                                    _longest: longest
-                                }
-                                _imdbRating: imdbRating {
-                                    _min: min
-                                    _max: max
-                                    _average: average
-                                }
-                                _createdAt: createdAt {
-                                    _min: min
-                                    _max: max
-                                }
-                            }
+                    ${typeMovie.operations.aggregate}(where: { testString_EQ: "${testString}" }) {
+                        _count: count
+                        _id: id {
+                            _shortest: shortest
+                            _longest: longest
+                        }
+                        _title: title {
+                            _shortest: shortest
+                            _longest: longest
+                        }
+                        _imdbRating: imdbRating {
+                            _min: min
+                            _max: max
+                            _average: average
+                        }
+                        _createdAt: createdAt {
+                            _min: min
+                            _max: max
                         }
                     }
                 }
@@ -98,30 +94,24 @@ describe("aggregations-top_level-alias", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [typeMovie.operations.connection]: {
-                aggr: {
-                    n: {
-                        _count: 4,
-                        _id: {
-                            _shortest: "1",
-                            _longest: "4444",
-                        },
-                        _title: {
-                            _shortest: "1",
-                            _longest: "4444",
-                        },
-                        _imdbRating: {
-                            _min: 1,
-                            _max: 4,
-                            _average: 2.5,
-                        },
-                        _createdAt: {
-                            _min: minDate.toISOString(),
-                            _max: maxDate.toISOString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            _count: 4,
+            _id: {
+                _shortest: "1",
+                _longest: "4444",
+            },
+            _title: {
+                _shortest: "1",
+                _longest: "4444",
+            },
+            _imdbRating: {
+                _min: 1,
+                _max: 4,
+                _average: 2.5,
+            },
+            _createdAt: {
+                _min: minDate.toISOString(),
+                _max: maxDate.toISOString(),
             },
         });
     });

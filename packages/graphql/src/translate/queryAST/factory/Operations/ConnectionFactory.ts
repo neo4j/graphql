@@ -31,6 +31,8 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
+import { getResolveTreeByFieldName } from "../../../utils/resolveTree";
+import { ConnectionAggregationField } from "../../ast/fields/ConnectionAggregationField";
 import type { Field } from "../../ast/fields/Field";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
 import { CompositeConnectionPartial } from "../../ast/operations/composite/CompositeConnectionPartial";
@@ -46,15 +48,18 @@ import { isUnionEntity } from "../../utils/is-union-entity";
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
+import { AggregateFactory } from "./AggregateFactory";
 import { FulltextFactory } from "./FulltextFactory";
 
 export class ConnectionFactory {
     private queryASTFactory: QueryASTFactory;
     private fulltextFactory: FulltextFactory;
+    private aggregateFactory: AggregateFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
+        this.aggregateFactory = new AggregateFactory(queryASTFactory);
     }
 
     public createCompositeConnectionOperationAST({
@@ -88,20 +93,22 @@ export class ConnectionFactory {
                     directed,
                     targetOverride: concreteEntity,
                 });
-                resolveTreeEdgeFields = this.parseConnectionFields({
+                const { edges } = this.parseConnectionFields({
                     entityOrRel: relationship,
                     target: concreteEntity,
                     resolveTree,
                 });
+                resolveTreeEdgeFields = edges;
             } else {
                 selection = new NodeSelection({
                     target: concreteEntity,
                 });
-                resolveTreeEdgeFields = this.parseConnectionFields({
+                const { edges } = this.parseConnectionFields({
                     entityOrRel: concreteEntity,
                     target: concreteEntity,
                     resolveTree,
                 });
+                resolveTreeEdgeFields = edges;
             }
 
             const connectionPartial = new CompositeConnectionPartial({
@@ -162,16 +169,19 @@ export class ConnectionFactory {
 
         let selection: EntitySelection;
         let resolveTreeEdgeFields: Record<string, ResolveTree>;
+        let resolveTreeAggregate: ResolveTree | undefined;
         if (relationship) {
             selection = new RelationshipSelection({
                 relationship,
                 directed: resolveTree.args.directed as boolean | undefined,
             });
-            resolveTreeEdgeFields = this.parseConnectionFields({
+            const { edges, aggregate } = this.parseConnectionFields({
                 entityOrRel: relationship,
                 target,
                 resolveTree,
             });
+            resolveTreeEdgeFields = edges;
+            resolveTreeAggregate = aggregate;
         } else {
             if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                 selection = this.fulltextFactory.getFulltextSelection(target, context);
@@ -180,15 +190,38 @@ export class ConnectionFactory {
                     target,
                 });
             }
-            resolveTreeEdgeFields = this.parseConnectionFields({
+            const { edges, aggregate } = this.parseConnectionFields({
                 entityOrRel: target,
                 target,
                 resolveTree,
             });
+            resolveTreeEdgeFields = edges;
+            resolveTreeAggregate = aggregate;
         }
         const operation = new ConnectionReadOperation({ relationship, target, selection });
+        const resolveTreeAggregateFields =
+            resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
+        if (resolveTreeAggregate && resolveTreeAggregateFields) {
+            const nodeField = getResolveTreeByFieldName({ fieldName: "node", selection: resolveTreeAggregateFields });
+            if (nodeField) {
+                // Maybe this should be using operationFactory instead
+                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                    entityOrRel: relationship ?? target,
+                    resolveTree: nodeField,
+                    context,
+                });
 
-        return this.hydrateConnectionOperationAST({
+                const aggregationField = new ConnectionAggregationField({
+                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                    nodeAlias: nodeField.alias,
+                    operation: aggregationOperation,
+                });
+
+                operation.aggregationField = aggregationField;
+            }
+        }
+
+        this.hydrateConnectionOperationAST({
             relationship,
             target: target,
             resolveTree,
@@ -197,11 +230,15 @@ export class ConnectionFactory {
             whereArgs: resolveTreeWhere,
             resolveTreeEdgeFields,
         });
+
+        if (operation.aggregationField) {
+            operation.aggregationField.operation.addFilters(...operation.filters);
+        }
+        return operation;
     }
 
-    // eslint-disable-next-line @typescript-eslint/comma-dangle
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | CompositeConnectionReadOperation
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation,
     >({
         entityOrRel,
         resolveTree,
@@ -399,7 +436,7 @@ export class ConnectionFactory {
         entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
         target: ConcreteEntityAdapter;
         resolveTree: ResolveTree;
-    }): Record<string, ResolveTree> {
+    }): { edges: Record<string, ResolveTree>; aggregate: ResolveTree | undefined } {
         // Get interfaces of the entity
         const entityInterfaces = getEntityInterfaces(target);
 
@@ -420,13 +457,13 @@ export class ConnectionFactory {
         ]);
 
         const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
-
+        const aggregateFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "aggregate");
         const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
             return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
         });
 
         const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
 
-        return mergeDeep([...interfacesEdgeFields, concreteEdgeFields]);
+        return { edges: mergeDeep([...interfacesEdgeFields, concreteEdgeFields]), aggregate: aggregateFieldsRaw[0] };
     }
 }

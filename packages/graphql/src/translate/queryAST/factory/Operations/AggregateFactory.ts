@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
@@ -138,6 +138,7 @@ export class AggregateFactory {
             }
         } else {
             if (isConcreteEntity(entity)) {
+                // HERE
                 let selection: EntitySelection;
                 // NOTE: If we introduce vector index aggregation, checking the phrase will cause a problem
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
@@ -232,8 +233,16 @@ export class AggregateFactory {
         edge: ResolveTree | undefined;
         fields: Record<string, ResolveTree>;
     } {
+        // Handle new aggregation node inside connection
+        let nodeFields: Record<string, ResolveTree> = {};
+        if (adapter instanceof ConcreteEntityAdapter) {
+            nodeFields = resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.node] ?? {};
+        }
+
         const rawProjectionFields = {
+            // Handle deprecated aggregations
             ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+            ...nodeFields,
         };
 
         return this.queryASTFactory.operationsFactory.splitConnectionFields(rawProjectionFields);
@@ -301,8 +310,10 @@ export class AggregateFactory {
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
         } else {
+            console.log("HERE");
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
+                ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.node], // Handles both, deprecated and new aggregation parsing
             };
 
             const fields = this.queryASTFactory.fieldFactory.createAggregationFields(entity, rawProjectionFields);
