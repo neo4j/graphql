@@ -18,7 +18,7 @@
  */
 
 import { generate } from "randomstring";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level-bigint", () => {
     const testHelper = new TestHelper();
@@ -35,7 +35,7 @@ describe("aggregations-top_level-bigint", () => {
         const movieType = testHelper.createUniqueType("Movie");
 
         const typeDefs = `
-            type ${movieType} @node {
+            type ${movieType.name} @node {
                 testString: String
                 imdbRatingBigInt: BigInt
             }
@@ -50,10 +50,10 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.executeCypher(
             `
-                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
-                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
-                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
-                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
+                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
+                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
+                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
                 `,
             {
                 testString,
@@ -62,13 +62,9 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRatingBigInt {
-                                    min
-                                }
-                            }
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        imdbRatingBigInt {
+                            min
                         }
                     }
                 }
@@ -78,15 +74,9 @@ describe("aggregations-top_level-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [movieType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        imdbRatingBigInt: {
-                            min: `${bigInt}1`,
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
+            imdbRatingBigInt: {
+                min: `${bigInt}1`,
             },
         });
     });
@@ -122,14 +112,10 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                    aggregate { 
-                        node {
-                            imdbRatingBigInt {
-                                max
-                                }
-                            }
-                        }    
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        imdbRatingBigInt {
+                            max
+                        }
                     }
                 }
             `;
@@ -138,15 +124,9 @@ describe("aggregations-top_level-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [movieType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        imdbRatingBigInt: {
-                            max: `${bigInt}4`,
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
+            imdbRatingBigInt: {
+                max: `${bigInt}4`,
             },
         });
     });
@@ -182,15 +162,11 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                    aggregate { 
-                        node {
-                            imdbRatingBigInt {
-                                average
-                                }
-                            }
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        imdbRatingBigInt {
+                            average
                         }
-                    }    
+                    }
                 }
             `;
 
@@ -198,15 +174,9 @@ describe("aggregations-top_level-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [movieType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        imdbRatingBigInt: {
-                            average: `${bigInt}2.5`,
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
+            imdbRatingBigInt: {
+                average: `${bigInt}2.5`,
             },
         });
     });
@@ -242,14 +212,10 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRatingBigInt {
-                                    sum
-                                }
-                            }
-                        }    
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        imdbRatingBigInt {
+                            sum
+                        }
                     }
                 }
             `;
@@ -258,15 +224,9 @@ describe("aggregations-top_level-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [movieType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        imdbRatingBigInt: {
-                            sum: "85899345890",
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
+            imdbRatingBigInt: {
+                sum: "85899345890",
             },
         });
     });
@@ -302,17 +262,13 @@ describe("aggregations-top_level-bigint", () => {
 
         const query = `
                 {
-                    ${movieType.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRatingBigInt {
-                                    min
-                                    max
-                                    average
-                                    sum
-                                }
-                            }
-                        }    
+                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        imdbRatingBigInt {
+                            min
+                            max
+                            average
+                            sum
+                        }
                     }
                 }
             `;
@@ -321,18 +277,12 @@ describe("aggregations-top_level-bigint", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [movieType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        imdbRatingBigInt: {
-                            min: `${bigInt}1`,
-                            max: `${bigInt}4`,
-                            average: `${bigInt}2.5`,
-                            sum: "85899345890",
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
+            imdbRatingBigInt: {
+                min: `${bigInt}1`,
+                max: `${bigInt}4`,
+                average: `${bigInt}2.5`,
+                sum: "85899345890",
             },
         });
     });

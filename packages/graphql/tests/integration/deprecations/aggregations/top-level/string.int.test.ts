@@ -18,8 +18,8 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level-string", () => {
     const testHelper = new TestHelper();
@@ -70,15 +70,11 @@ describe("aggregations-top_level-string", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.connection}(where: {testId_EQ: "${id}"}) {
-                    aggregate {
-                        node {    
-                    title {
+                    ${typeMovie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
+                        title {
                             shortest
                         }
-                            }
-                        }
-                       }
+                    }
                 }
             `;
 
@@ -90,15 +86,9 @@ describe("aggregations-top_level-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [typeMovie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        title: {
-                            shortest: titles[0],
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            title: {
+                shortest: titles[0],
             },
         });
     });
@@ -132,15 +122,11 @@ describe("aggregations-top_level-string", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.connection}(where: {testId_EQ: "${id}"}) {
-                    aggregate {
-                        node {    
-                    title {
+                    ${typeMovie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
+                        title {
                             longest
                         }
-                            }
-                        }
-                       }
+                    }
                 }
             `;
 
@@ -152,15 +138,9 @@ describe("aggregations-top_level-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [typeMovie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        title: {
-                            longest: titles[3],
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            title: {
+                longest: titles[3],
             },
         });
     });
@@ -194,15 +174,11 @@ describe("aggregations-top_level-string", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.connection}(where: {testId_EQ: "${id}"}) {
-                    aggregate {
-                        node {    
-                    title {
+                    ${typeMovie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
+                        title {
                             shortest
                             longest
-                            }
-                            }
-                       }
+                        }
                     }
                 }
             `;
@@ -215,16 +191,10 @@ describe("aggregations-top_level-string", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [typeMovie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        title: {
-                            shortest: titles[0],
-                            longest: titles[3],
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            title: {
+                shortest: titles[0],
+                longest: titles[3],
             },
         });
     });

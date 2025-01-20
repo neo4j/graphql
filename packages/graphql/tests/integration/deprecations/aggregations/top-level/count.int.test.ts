@@ -18,7 +18,7 @@
  */
 
 import { generate } from "randomstring";
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Aggregate -> count", () => {
     const testHelper = new TestHelper();
@@ -49,12 +49,8 @@ describe("Aggregate -> count", () => {
 
         const query = `
                 {
-                    ${randomType.operations.connection}{
-                        aggregate {
-                            node {
-                                count
-                            }
-                        }
+                    ${randomType.operations.aggregate}{
+                      count
                     }
                 }
             `;
@@ -62,15 +58,7 @@ describe("Aggregate -> count", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data).toEqual({
-            [randomType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        count: 2,
-                    },
-                },
-            },
-        });
+        expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
     });
 
     test("should count nodes with where and or predicate", async () => {
@@ -92,27 +80,18 @@ describe("Aggregate -> count", () => {
             charset: "alphabetic",
         });
 
-        const id3 = generate({
-            charset: "alphabetic",
-        });
-
         await testHelper.executeCypher(
             `
                 CREATE (:${randomType.name} {id: $id1})
                 CREATE (:${randomType.name} {id: $id2})
-                CREATE (:${randomType.name} {id: $id3})
             `,
-            { id1, id2, id3 }
+            { id1, id2 }
         );
 
         const query = `
                 {
-                  ${randomType.operations.connection}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
-                    aggregate {
-                        node {
-                            count
-                        }
-                    }
+                  ${randomType.operations.aggregate}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
+                    count
                   }
                 }
             `;
@@ -121,14 +100,6 @@ describe("Aggregate -> count", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [randomType.operations.connection]: {
-                aggregate: {
-                    node: {
-                        count: 2,
-                    },
-                },
-            },
-        });
+        expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
     });
 });

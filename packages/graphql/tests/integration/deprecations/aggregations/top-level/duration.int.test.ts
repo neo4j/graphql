@@ -19,8 +19,8 @@
 
 import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level-duration", () => {
     const testHelper = new TestHelper();
@@ -68,13 +68,9 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                runningTime {
-                                    min
-                                }
-                            }
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        runningTime {
+                            min
                         }
                     }
                 }
@@ -84,15 +80,9 @@ describe("aggregations-top_level-duration", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        runningTime: {
-                            min: minDuration.toString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            runningTime: {
+                min: minDuration.toString(),
             },
         });
     });
@@ -122,13 +112,9 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                runningTime {
-                                    max
-                                }
-                            }
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        runningTime {
+                            max
                         }
                     }
                 }
@@ -138,15 +124,9 @@ describe("aggregations-top_level-duration", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        runningTime: {
-                            max: maxDuration.toString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            runningTime: {
+                max: maxDuration.toString(),
             },
         });
     });
@@ -176,14 +156,10 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                runningTime {
-                                    min
-                                    max
-                                }
-                            }
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        runningTime {
+                            min
+                            max
                         }
                     }
                 }
@@ -193,16 +169,10 @@ describe("aggregations-top_level-duration", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        runningTime: {
-                            min: minDuration.toString(),
-                            max: maxDuration.toString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            runningTime: {
+                min: minDuration.toString(),
+                max: maxDuration.toString(),
             },
         });
     });

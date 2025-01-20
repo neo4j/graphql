@@ -18,8 +18,8 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level-datetime", () => {
     const testHelper = new TestHelper();
@@ -64,13 +64,9 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                createdAt {
-                                    min
-                                }
-                            }
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        createdAt {
+                            min
                         }
                     }
                 }
@@ -80,15 +76,9 @@ describe("aggregations-top_level-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        createdAt: {
-                            min: minDate.toISOString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            createdAt: {
+                min: minDate.toISOString(),
             },
         });
     });
@@ -118,14 +108,10 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                createdAt {
-                                    max
-                                }
-                            }
-                        }    
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        createdAt {
+                            max
+                        }
                     }
                 }
             `;
@@ -134,15 +120,9 @@ describe("aggregations-top_level-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        createdAt: {
-                            max: maxDate.toISOString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            createdAt: {
+                max: maxDate.toISOString(),
             },
         });
     });
@@ -172,16 +152,12 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                createdAt {
-                                    min
-                                    max
-                                }
-                            }
+                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
+                        createdAt {
+                            min
+                            max
                         }
-                    }    
+                    }
                 }
             `;
 
@@ -189,16 +165,10 @@ describe("aggregations-top_level-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [Movie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        createdAt: {
-                            min: minDate.toISOString(),
-                            max: maxDate.toISOString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
+            createdAt: {
+                min: minDate.toISOString(),
+                max: maxDate.toISOString(),
             },
         });
     });

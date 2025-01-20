@@ -18,8 +18,8 @@
  */
 
 import { generate } from "randomstring";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level-many", () => {
     const testHelper = new TestHelper();
@@ -67,29 +67,25 @@ describe("aggregations-top_level-many", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.connection}(where: { testId_EQ: "${testId}" }) {
-                        aggregate {
-                            node {
-                                id {
-                                        shortest
-                                        longest
-                                    }
-                                    title {
-                                        shortest
-                                        longest
-                                    }
-                                    imdbRating {
-                                        min
-                                        max
-                                        average
-                                    }
-                                    createdAt {
-                                        min
-                                        max
-                                    }
-                                }
-                            }
-                    }  
+                    ${typeMovie.operations.aggregate}(where: { testId_EQ: "${testId}" }) {
+                        id {
+                            shortest
+                            longest
+                        }
+                        title {
+                            shortest
+                            longest
+                        }
+                        imdbRating {
+                            min
+                            max
+                            average
+                        }
+                        createdAt {
+                            min
+                            max
+                        }
+                    }
                 }
             `;
 
@@ -101,29 +97,23 @@ describe("aggregations-top_level-many", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(gqlResult.data).toEqual({
-            [typeMovie.operations.connection]: {
-                aggregate: {
-                    node: {
-                        id: {
-                            shortest: "1",
-                            longest: "4444",
-                        },
-                        title: {
-                            shortest: "1",
-                            longest: "4444",
-                        },
-                        imdbRating: {
-                            min: 1,
-                            max: 4,
-                            average: 2.5,
-                        },
-                        createdAt: {
-                            min: minDate.toISOString(),
-                            max: maxDate.toISOString(),
-                        },
-                    },
-                },
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            id: {
+                shortest: "1",
+                longest: "4444",
+            },
+            title: {
+                shortest: "1",
+                longest: "4444",
+            },
+            imdbRating: {
+                min: 1,
+                max: 4,
+                average: 2.5,
+            },
+            createdAt: {
+                min: minDate.toISOString(),
+                max: maxDate.toISOString(),
             },
         });
     });

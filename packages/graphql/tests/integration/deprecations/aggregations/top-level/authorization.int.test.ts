@@ -18,8 +18,8 @@
  */
 
 import { generate } from "randomstring";
-import { createBearerToken } from "../../../utils/create-bearer-token";
-import { TestHelper } from "../../../utils/tests-helper";
+import { createBearerToken } from "../../../../utils/create-bearer-token";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-top_level authorization", () => {
     const testHelper = new TestHelper();
@@ -46,12 +46,8 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                ${randomType.operations.connection} {
-                    aggregate {
-                        node {
-                            count
-                        }
-                    }
+                ${randomType.operations.aggregate} {
+                    count
                 }
             }
         `;
@@ -77,21 +73,18 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should append auth where to predicate and return post count for this user", async () => {
-        const Post = testHelper.createUniqueType("Post");
-        const User = testHelper.createUniqueType("User");
-
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
+            type User @node {
                 id: ID
-                posts: [${Post}!]! @relationship(type: "POSTED", direction: OUT)
+                posts: [Post!]! @relationship(type: "POSTED", direction: OUT)
             }
 
-            type ${Post} @node {
+            type Post @node {
                 content: String
-                creator: ${User}! @relationship(type: "POSTED", direction: IN)
+                creator: User! @relationship(type: "POSTED", direction: IN)
             }
 
-            extend type ${Post}
+            extend type Post
                 @authorization(
                     filter: [{ operations: [AGGREGATE], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }]
                 )
@@ -103,12 +96,8 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                ${Post.operations.connection} {
-                    aggregate {
-                        node {
-                            count
-                        }
-                    }
+                postsAggregate {
+                    count
                 }
             }
         `;
@@ -123,7 +112,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:${User} {id: "${userId}"})-[:POSTED]->(:${Post} {content: randomUUID()})
+                CREATE (:User {id: "${userId}"})-[:POSTED]->(:Post {content: randomUUID()})
             `);
 
         const token = createBearerToken(secret, { sub: userId });
@@ -133,12 +122,8 @@ describe("aggregations-top_level authorization", () => {
         expect(gqlResult.errors).toBeUndefined();
 
         expect(gqlResult.data).toEqual({
-            [Post.operations.connection]: {
-                aggregate: {
-                    node: {
-                        count: 1,
-                    },
-                },
+            postsAggregate: {
+                count: 1,
             },
         });
     });
@@ -167,14 +152,10 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            imdbRatingInt {
-                                min
-                                max
-                            }
-                        }
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    imdbRatingInt {
+                        min
+                        max
                     }
                 }
             }
@@ -224,14 +205,10 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            someId {
-                                shortest
-                                longest
-                            }
-                        }
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    someId {
+                        shortest
+                        longest
                     }
                 }
             }
@@ -281,15 +258,11 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            someString {
-                                shortest
-                                longest
-                            }
-                        }
-                    }    
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    someString {
+                        shortest
+                        longest
+                    }
                 }
             }
         `;
@@ -338,14 +311,10 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            imdbRatingFloat {
-                                min
-                                max
-                            }
-                        }
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    imdbRatingFloat {
+                        min
+                        max
                     }
                 }
             }
@@ -395,14 +364,10 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            imdbRatingBigInt {
-                                min
-                                max
-                            }
-                        }
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    imdbRatingBigInt {
+                        min
+                        max
                     }
                 }
             }
@@ -452,14 +417,10 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            createdAt {
-                                min
-                                max
-                            }
-                        }
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    createdAt {
+                        min
+                        max
                     }
                 }
             }
@@ -509,14 +470,10 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesConnection(where: {id_EQ: "${movieId}"}) {
-                    aggregate {
-                        node {
-                            screenTime {
-                                min
-                                max
-                            }
-                        }
+                moviesAggregate(where: {id_EQ: "${movieId}"}) {
+                    screenTime {
+                        min
+                        max
                     }
                 }
             }
