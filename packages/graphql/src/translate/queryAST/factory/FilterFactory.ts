@@ -684,6 +684,7 @@ export class FilterFactory {
                 }
 
                 if (fieldName === "edge" && relationship.propertiesTypeName) {
+                    // This conditional handles when the relationship is an interface which is also being accessed through an interface
                     if (
                         isInterfaceEntity(relationship.target) &&
                         Object.keys(value).includes(relationship.propertiesTypeName)
