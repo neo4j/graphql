@@ -553,16 +553,16 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -1777,19 +1777,19 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               episodes(limit: Int, offset: Int, options: EpisodeOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
+              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"episodesConnection\\\\\\"\\")
               episodesConnection(after: String, first: Int, sort: [EpisodeSort!], where: EpisodeWhere): EpisodesConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -3305,19 +3305,19 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               episodes(limit: Int, offset: Int, options: EpisodeOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
+              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"episodesConnection\\\\\\"\\")
               episodesConnection(after: String, first: Int, sort: [EpisodeSort!], where: EpisodeWhere): EpisodesConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -4188,25 +4188,25 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, options: Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1sConnection\\\\\\"\\")
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, options: Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2sConnection\\\\\\"\\")
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, options: Type1Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
+              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface1sConnection\\\\\\"\\")
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, options: Type1Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
+              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface2sConnection\\\\\\"\\")
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, options: Type1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection!
+              type1sAggregate(where: Type1Where): Type1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1sConnection\\\\\\"\\")
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, options: Type2Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
+              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface1sConnection\\\\\\"\\")
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, options: Type2Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
+              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface2sConnection\\\\\\"\\")
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -5506,25 +5506,25 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, options: Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1sConnection\\\\\\"\\")
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, options: Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2sConnection\\\\\\"\\")
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, options: Type1Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
+              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface1sConnection\\\\\\"\\")
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, options: Type1Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
+              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface2sConnection\\\\\\"\\")
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, options: Type1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection!
+              type1sAggregate(where: Type1Where): Type1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1sConnection\\\\\\"\\")
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, options: Type2Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
+              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface1sConnection\\\\\\"\\")
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, options: Type2Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
+              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface2sConnection\\\\\\"\\")
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -6805,25 +6805,25 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, options: Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
+              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1sConnection\\\\\\"\\")
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, options: Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
+              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2sConnection\\\\\\"\\")
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, options: Type1Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
+              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface1sConnection\\\\\\"\\")
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, options: Type1Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
+              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface2sConnection\\\\\\"\\")
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, options: Type1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection!
+              type1sAggregate(where: Type1Where): Type1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1sConnection\\\\\\"\\")
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, options: Type2Interface1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
+              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface1sConnection\\\\\\"\\")
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, options: Type2Interface2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
+              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface2sConnection\\\\\\"\\")
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -8696,16 +8696,16 @@ describe("Interface Relationships", () => {
 
             type Query {
               comments(limit: Int, offset: Int, options: CommentOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CommentSort!], where: CommentWhere): [Comment!]!
-              commentsAggregate(where: CommentWhere): CommentAggregateSelection!
+              commentsAggregate(where: CommentWhere): CommentAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"commentsConnection\\\\\\"\\")
               commentsConnection(after: String, first: Int, sort: [CommentSort!], where: CommentWhere): CommentsConnection!
               contents(limit: Int, offset: Int, options: ContentOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ContentSort!], where: ContentWhere): [Content!]!
-              contentsAggregate(where: ContentWhere): ContentAggregateSelection!
+              contentsAggregate(where: ContentWhere): ContentAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"contentsConnection\\\\\\"\\")
               contentsConnection(after: String, first: Int, sort: [ContentSort!], where: ContentWhere): ContentsConnection!
               posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\"\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -9651,19 +9651,19 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
               shows(limit: Int, offset: Int, options: ShowOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ShowSort!], where: ShowWhere): [Show!]!
-              showsAggregate(where: ShowWhere): ShowAggregateSelection!
+              showsAggregate(where: ShowWhere): ShowAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"showsConnection\\\\\\"\\")
               showsConnection(after: String, first: Int, sort: [ShowSort!], where: ShowWhere): ShowsConnection!
             }
 

@@ -841,13 +841,13 @@ describe("Unions", () => {
 
             type Query {
               authors(limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
+              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorsConnection\\\\\\"\\")
               authorsConnection(after: String, first: Int, sort: [AuthorSort!], where: AuthorWhere): AuthorsConnection!
               books(limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksAggregate(where: BookWhere): BookAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"booksConnection\\\\\\"\\")
               booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
               journals(limit: Int, offset: Int, options: JournalOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [JournalSort!], where: JournalWhere): [Journal!]!
-              journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              journalsAggregate(where: JournalWhere): JournalAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"journalsConnection\\\\\\"\\")
               journalsConnection(after: String, first: Int, sort: [JournalSort!], where: JournalWhere): JournalsConnection!
               publications(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PublicationWhere): [Publication!]!
             }

@@ -370,10 +370,10 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type Query {
               crewMembers(limit: Int, offset: Int, options: CrewMemberOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CrewMemberWhere): [CrewMember!]!
-              crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection!
+              crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"crewMembersConnection\\\\\\"\\")
               crewMembersConnection(after: String, first: Int, where: CrewMemberWhere): CrewMembersConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

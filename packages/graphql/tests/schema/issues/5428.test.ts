@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
 
             type Query {
               test(limit: Int, offset: Int, options: TestOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TestSort!], where: TestWhere): [Test!]!
-              testAggregate(where: TestWhere): TestAggregateSelection!
+              testAggregate(where: TestWhere): TestAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"testConnection\\\\\\"\\")
               testConnection(after: String, first: Int, sort: [TestSort!], where: TestWhere): TestConnection!
             }
 
