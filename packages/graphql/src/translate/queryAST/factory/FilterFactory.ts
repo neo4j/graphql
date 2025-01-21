@@ -683,8 +683,11 @@ export class FilterFactory {
                     );
                 }
 
-                if (fieldName === "edge") {
-                    if (isInterfaceEntity(relationship.target)) {
+                if (fieldName === "edge" && relationship.propertiesTypeName) {
+                    if (
+                        isInterfaceEntity(relationship.target) &&
+                        Object.keys(value).includes(relationship.propertiesTypeName)
+                    ) {
                         return Object.entries(value).flatMap(([k, v]) => {
                             if (k === relationship.propertiesTypeName) {
                                 return this.createAggregationNodeFilters(v as Record<string, any>, relationship);

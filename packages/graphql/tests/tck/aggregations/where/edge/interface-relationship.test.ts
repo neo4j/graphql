@@ -70,7 +70,7 @@ describe("Cypher Aggregations where edge with String", () => {
     test("should count number of interface relationships", async () => {
         const query = /* GraphQL */ `
             query ActorsAggregate {
-                actors(where: { productionsAggregate: { count: { lt: 3 } } }) {
+                actors(where: { productionsAggregate: { count_LT: 3 } }) {
                     name
                 }
             }
@@ -107,10 +107,7 @@ describe("Cypher Aggregations where edge with String", () => {
                 people(
                     where: {
                         productionsAggregate: {
-                            edge: {
-                                AppearedIn: { role: { shortestLength: { lt: 3 } } }
-                                ActedIn: { role: { averageLength: { lt: 5 } } }
-                            }
+                            edge: { AppearedIn: { role_SHORTEST_LENGTH_LT: 3 }, ActedIn: { role_AVERAGE_LENGTH_LT: 5 } }
                         }
                     }
                 ) {
