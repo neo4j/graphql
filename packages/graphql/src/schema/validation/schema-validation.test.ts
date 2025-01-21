@@ -89,7 +89,9 @@ describe("schema validation", () => {
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @node @authorization(filter: [{ where: { jwt: { thisClaimDoesNotExist: "something" } } }]) {
+                    type User
+                        @node
+                        @authorization(filter: [{ where: { jwt: { thisClaimDoesNotExist: "something" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -727,7 +729,9 @@ describe("schema validation", () => {
 
             test("should validate directive argument name", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -1446,7 +1450,9 @@ describe("schema validation", () => {
                         name: String!
                     }
 
-                    type Post @node @subscriptionsAuthorization(filter: [{ where: { node: { content: "$jwt.sub" } } }]) {
+                    type Post
+                        @node
+                        @subscriptionsAuthorization(filter: [{ where: { node: { content: "$jwt.sub" } } }]) {
                         content: String!
                         author: User! @relationship(type: "HAS_AUTHOR", direction: OUT)
                     }
@@ -2391,7 +2397,11 @@ describe("schema validation", () => {
                 const userDocument = gql`
                     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
-                    type User @node @shareable @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+                    type User
+                        @node
+                        @shareable
+                        @authorization(wrongFilter: [{ where: { node: { id: "$jwt.sub" } } }])
+                        @node {
                         id: ID!
                         name: String!
                     }
@@ -2631,7 +2641,10 @@ describe("schema validation", () => {
                 `;
                 const userDocument = gql`
                     ${jwtType}
-                    type User @node @plural(value: "Users") @authentication(operations: [CREATE], jwt: { sub: "test" }) {
+                    type User
+                        @node
+                        @plural(value: "Users")
+                        @authentication(operations: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -3495,7 +3508,11 @@ describe("schema validation", () => {
                     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@shareable"])
 
                     ${jwtType}
-                    type User @node @plural(value: "Users") @shareable @authentication(ops: [CREATE], jwt: { sub: "test" }) {
+                    type User
+                        @node
+                        @plural(value: "Users")
+                        @shareable
+                        @authentication(ops: [CREATE], jwt: { sub: "test" }) {
                         id: ID!
                         name: String!
                     }
@@ -3580,11 +3597,13 @@ describe("schema validation", () => {
                 });
 
             const errors = getError(executeValidate);
-            expect(errors).toHaveLength(2);
+            expect(errors).toHaveLength(3);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty("message", "Field cannot be named keanu");
             expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[1]).toHaveProperty("message", "Field cannot be named keanu");
+            expect(errors[2]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[2]).toHaveProperty("message", "Field cannot be named keanu");
         });
     });
 
@@ -3867,7 +3886,8 @@ describe("schema validation", () => {
                             name: String!
                         }
 
-                        type Post @node
+                        type Post
+                            @node
                             @authorization(
                                 filter: [{ where: { node: { author_NOT_A_QUANTIFIER: { name: "Simone" } } } }]
                             ) {
