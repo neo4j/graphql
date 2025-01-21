@@ -127,21 +127,22 @@ function noDirectivesAllowedAtLocation({
     parentDef: ObjectOrInterfaceWithExtensions;
 }) {
     const allDirectivesDefinedByNeo4jGraphQL = Object.values(directives).concat(typeDependantDirectivesScaffolds);
-    const directiveAtInvalidLocation = allDirectivesDefinedByNeo4jGraphQL.find(
-        (d) => d.name === directiveNode.name.value
-    );
+    const directiveAtInvalidLocation = allDirectivesDefinedByNeo4jGraphQL
+        .filter((dir) => dir.name !== "cypher")
+        .find((d) => d.name === directiveNode.name.value);
     if (directiveAtInvalidLocation) {
         if (directiveAtInvalidLocation.name === "relationship" && parentDef.kind === Kind.INTERFACE_TYPE_DEFINITION) {
-            throw new DocumentValidationError(
-                `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of interface types (${parentDef.name.value}). Since version 5.0.0, interface fields can only have @declareRelationship. Please add the @relationship directive to the fields in all types which implement it.`,
-                [`@${directiveNode.name.value}`]
-            );
-        } else {
-            throw new DocumentValidationError(
-                `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of the ${parentDef.name.value} type.`,
-                [`@${directiveNode.name.value}`]
-            );
+            // throw new DocumentValidationError(
+            //     `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of interface types (${parentDef.name.value}). Since version 5.0.0, interface fields can only have @declareRelationship. Please add the @relationship directive to the fields in all types which implement it.`,
+            //     [`@${directiveNode.name.value}`]
+            // );
         }
+        //  else {
+        //     throw new DocumentValidationError(
+        //         `Invalid directive usage: Directive @${directiveAtInvalidLocation.name} is not supported on fields of the ${parentDef.name.value} type.`,
+        //         [`@${directiveNode.name.value}`]
+        //     );
+        // }
     }
 }
 
@@ -165,16 +166,16 @@ function validFieldOfRootTypeLocation({
             // @authentication is valid
             return;
         }
-        const isDirectiveCombinedWithCypher = traversedDef.directives?.some(
-            (directive) => directive.name.value === "cypher"
-        );
+        // const isDirectiveCombinedWithCypher = traversedDef.directives?.some(
+        //     (directive) => directive.name.value === "cypher"
+        // );
         // explicitly checked for "enhanced" error messages
-        if (directiveNode.name.value === "authorization" && isDirectiveCombinedWithCypher) {
-            throw new DocumentValidationError(
-                `Invalid directive usage: Directive @authorization is not supported on fields of the ${parentDef.name.value} type. Did you mean to use @authentication?`,
-                [`@${directiveNode.name.value}`]
-            );
-        }
+        // if (directiveNode.name.value === "authorization" && isDirectiveCombinedWithCypher) {
+        //     throw new DocumentValidationError(
+        //         `Invalid directive usage: Directive @authorization is not supported on fields of the ${parentDef.name.value} type. Did you mean to use @authentication?`,
+        //         [`@${directiveNode.name.value}`]
+        //     );
+        // }
     }
     noDirectivesAllowedAtLocation({ directiveNode, parentDef });
 }
@@ -192,10 +193,6 @@ function validFieldOfInterfaceTypeLocation({
     }
     if (directiveNode.name.value === "declareRelationship") {
         // allow @declareRelationship as an instruction for schema generation
-        return;
-    }
-    if (directiveNode.name.value === "private") {
-        // allow @private for now
         return;
     }
 

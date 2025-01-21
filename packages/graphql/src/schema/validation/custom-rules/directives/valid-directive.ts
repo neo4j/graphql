@@ -30,7 +30,6 @@ import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import type { ValidationFunction } from "../utils/document-validation-error";
 import { assertValid, createGraphQLError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { verifyAuthorization } from "./authorization";
 import { verifyCoalesce } from "./coalesce";
 import { verifyDefault } from "./default";
 import { verifyFulltext } from "./fulltext";
@@ -70,8 +69,8 @@ function getValidationFunction(
                 interfaceToImplementationsMap,
                 extra
             );
-        case "authorization":
-            return verifyAuthorization();
+        // case "authorization":
+        // return verifyAuthorization();
         default:
             return;
     }

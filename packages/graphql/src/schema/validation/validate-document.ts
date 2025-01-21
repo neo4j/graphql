@@ -46,6 +46,15 @@ import { Point } from "../../graphql/objects/Point";
 import * as scalars from "../../graphql/scalars";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { isRootType } from "../../utils/is-root-type";
+import { validateAuthenticationDirective } from "./custom-rules/directives/test-rules/authentication";
+import { validateAuthorizationDirective } from "./custom-rules/directives/test-rules/authorization";
+import { validateCypherDirective } from "./custom-rules/directives/test-rules/cypher";
+import { validateIdDirective } from "./custom-rules/directives/test-rules/id";
+import { validateLimitDirective } from "./custom-rules/directives/test-rules/limit";
+import { validatePopulatedByDirective } from "./custom-rules/directives/test-rules/populated-by";
+import { validateRelationshipDirective } from "./custom-rules/directives/test-rules/relationship";
+import { validateRelayIdDirective } from "./custom-rules/directives/test-rules/relay-id";
+import { validateTimestampDirective } from "./custom-rules/directives/test-rules/timestamp";
 import { directiveIsValid } from "./custom-rules/directives/valid-directive";
 import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
 import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
@@ -69,7 +78,6 @@ import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
-import { nodeMissingValidation } from "./custom-rules/valid-types/node-missing-validation";
 
 function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
@@ -232,7 +240,16 @@ function runValidationRulesOnFilteredDocument({
             }),
             ValidListInNodeType,
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
-            nodeMissingValidation,
+            validateAuthorizationDirective,
+            validateAuthenticationDirective,
+            validateCypherDirective,
+            validateRelayIdDirective,
+            validatePopulatedByDirective,
+            validateRelationshipDirective,
+            validateIdDirective,
+            validateTimestampDirective,
+            validateLimitDirective,
+            // nodeMissingValidation,
         ],
         schema
     );

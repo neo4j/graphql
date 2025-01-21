@@ -18,19 +18,20 @@
  */
 
 import type { Maybe } from "@graphql-tools/utils/typings/types";
-import type { DocumentNode, GraphQLSchema, GraphQLError } from "graphql";
+import type { ASTVisitor, DocumentNode, GraphQLError, GraphQLSchema } from "graphql";
 import { visit, visitInParallel } from "graphql";
-import type { SDLValidationRule } from "graphql/validation/ValidationContext";
-import { SDLValidationContext } from "graphql/validation/ValidationContext";
+import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { Neo4jValidationContext } from "./Neo4jValidationContext";
 import { mapError } from "./utils/map-error";
 
+type Neo4jValidationRule = <T extends SDLValidationContext>(context: T) => ASTVisitor;
 export function validateSDL(
     documentAST: DocumentNode,
-    rules: ReadonlyArray<SDLValidationRule>,
+    rules: ReadonlyArray<Neo4jValidationRule>,
     schemaToExtend?: Maybe<GraphQLSchema>
 ): ReadonlyArray<GraphQLError> {
     const errors: Array<GraphQLError> = [];
-    const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
+    const context = new Neo4jValidationContext(documentAST, schemaToExtend, (error) => {
         const mappedError = mapError(error);
         errors.push(mappedError);
     });

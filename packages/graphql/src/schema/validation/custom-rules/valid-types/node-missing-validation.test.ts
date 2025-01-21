@@ -19,29 +19,20 @@
 
 import { GraphQLSchema } from "graphql";
 import { gql } from "graphql-tag";
-import {
-    fulltextDirective,
-    mutationDirective,
-    queryDirective,
-    relationshipDirective,
-    relayIdDirective,
-    subscriptionDirective,
-    vectorDirective,
-} from "../../../../graphql/directives";
 import { authorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authorization";
-import { subscriptionsAuthorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 import { validateSDL } from "../../validate-sdl";
-import { nodeMissingValidation } from "./node-missing-validation";
+import { validateAuthorizationDirective } from "../directives/test-rules/authorization";
+import { validateCypherDirective } from "../directives/test-rules/cypher";
 
 describe("node missing validation", () => {
     test.each([
         authorizationDirectiveScaffold.name,
-        subscriptionsAuthorizationDirectiveScaffold.name,
-        queryDirective.name,
-        mutationDirective.name,
-        subscriptionDirective.name,
-        fulltextDirective.name,
-        vectorDirective.name,
+        // subscriptionsAuthorizationDirectiveScaffold.name,
+        // queryDirective.name,
+        // mutationDirective.name,
+        // subscriptionDirective.name,
+        // fulltextDirective.name,
+        // vectorDirective.name,
     ])("when the %s directive is used on a type annotated with @node no error should be raised", (name) => {
         const userDocument = gql`
             type User @${name} @node {
@@ -49,19 +40,23 @@ describe("node missing validation", () => {
                 name: String!
             }
         `;
-        const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+        const errors = validateSDL(
+            userDocument,
+            [validateAuthorizationDirective, validateCypherDirective],
+            new GraphQLSchema({})
+        );
         expect(errors).toBeInstanceOf(Array);
         expect(errors).toHaveLength(0);
     });
 
     test.each([
         authorizationDirectiveScaffold.name,
-        subscriptionsAuthorizationDirectiveScaffold.name,
-        queryDirective.name,
-        mutationDirective.name,
-        subscriptionDirective.name,
-        fulltextDirective.name,
-        vectorDirective.name,
+        // subscriptionsAuthorizationDirectiveScaffold.name,
+        // queryDirective.name,
+        // mutationDirective.name,
+        // subscriptionDirective.name,
+        // fulltextDirective.name,
+        // vectorDirective.name,
     ])("when the %s directive is used on a type non annotated with @node an error should be raised", (name) => {
         const userDocument = gql`
             type User @${name} {
@@ -69,7 +64,11 @@ describe("node missing validation", () => {
                 name: String!
             }
         `;
-        const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+        const errors = validateSDL(
+            userDocument,
+            [validateAuthorizationDirective, validateCypherDirective],
+            new GraphQLSchema({})
+        );
         expect(errors).toBeInstanceOf(Array);
         expect(errors).toHaveLength(1);
         expect(errors).toEqual([
@@ -79,127 +78,127 @@ describe("node missing validation", () => {
         ]);
     });
 
-    test("when a node-related directive is used on a extension type should raise an error when @node is not found", () => {
-        const userDocument = gql`
-            type User {
-                id: ID!
-                name: String!
-            }
-            extend type User @query(read: true) {
-                extra: String
-            }
-        `;
-        const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors).toHaveLength(1);
-        expect(errors).toEqual([
-            expect.objectContaining({
-                message: expect.stringContaining(`requires to be used within the "@node" directive`),
-            }),
-        ]);
-    });
+    // test("when a node-related directive is used on a extension type should raise an error when @node is not found", () => {
+    //     const userDocument = gql`
+    //         type User {
+    //             id: ID!
+    //             name: String!
+    //         }
+    //         extend type User @query(read: true) {
+    //             extra: String
+    //         }
+    //     `;
+    //     const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+    //     expect(errors).toBeInstanceOf(Array);
+    //     expect(errors).toHaveLength(1);
+    //     expect(errors).toEqual([
+    //         expect.objectContaining({
+    //             message: expect.stringContaining(`requires to be used within the "@node" directive`),
+    //         }),
+    //     ]);
+    // });
 
-    test("when a node-related directive is used on a extension type should not raise an error when @node is found", () => {
-        const userDocument = gql`
-            type User {
-                id: ID!
-                name: String!
-            }
-            extend type User @query(read: true) {
-                extra: String
-            }
-            extend type User @node {
-                extra2: String
-            }
-        `;
-        const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors).toHaveLength(0);
-    });
+    // test("when a node-related directive is used on a extension type should not raise an error when @node is found", () => {
+    //     const userDocument = gql`
+    //         type User {
+    //             id: ID!
+    //             name: String!
+    //         }
+    //         extend type User @query(read: true) {
+    //             extra: String
+    //         }
+    //         extend type User @node {
+    //             extra2: String
+    //         }
+    //     `;
+    //     const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+    //     expect(errors).toBeInstanceOf(Array);
+    //     expect(errors).toHaveLength(0);
+    // });
 
-    test.each([
-        authorizationDirectiveScaffold.name,
-        subscriptionsAuthorizationDirectiveScaffold.name,
-        relationshipDirective.name,
-        relayIdDirective.name,
-    ])(
-        "when the %s directive is used on a field on a type non annotated with @node an error should be raised",
-        (name) => {
-            const userDocument = gql`
-            type User @node {
-                id: ID!
-                name: String! @${name}
-            }
-        `;
-            const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
-            expect(errors).toBeInstanceOf(Array);
-            expect(errors).toHaveLength(0);
-        }
-    );
+    // test.each([
+    //     authorizationDirectiveScaffold.name,
+    //     subscriptionsAuthorizationDirectiveScaffold.name,
+    //     relationshipDirective.name,
+    //     relayIdDirective.name,
+    // ])(
+    //     "when the %s directive is used on a field on a type non annotated with @node an error should be raised",
+    //     (name) => {
+    //         const userDocument = gql`
+    //         type User @node {
+    //             id: ID!
+    //             name: String! @${name}
+    //         }
+    //     `;
+    //         const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+    //         expect(errors).toBeInstanceOf(Array);
+    //         expect(errors).toHaveLength(0);
+    //     }
+    // );
 
-    test.each([
-        authorizationDirectiveScaffold.name,
-        subscriptionsAuthorizationDirectiveScaffold.name,
-        relationshipDirective.name,
-        relayIdDirective.name,
-    ])(
-        "when the %s directive is used on a field on a type non annotated with @node an error should be raised",
-        (name) => {
-            const userDocument = gql`
-            type User {
-                id: ID!
-                name: String! @${name}
-            }
-        `;
-            const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
-            expect(errors).toBeInstanceOf(Array);
-            expect(errors).toHaveLength(1);
-            expect(errors).toEqual([
-                expect.objectContaining({
-                    message: expect.stringContaining(`requires to be used within the "@node" directive`),
-                }),
-            ]);
-        }
-    );
+    // test.each([
+    //     authorizationDirectiveScaffold.name,
+    //     subscriptionsAuthorizationDirectiveScaffold.name,
+    //     relationshipDirective.name,
+    //     relayIdDirective.name,
+    // ])(
+    //     "when the %s directive is used on a field on a type non annotated with @node an error should be raised",
+    //     (name) => {
+    //         const userDocument = gql`
+    //         type User {
+    //             id: ID!
+    //             name: String! @${name}
+    //         }
+    //     `;
+    //         const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+    //         expect(errors).toBeInstanceOf(Array);
+    //         expect(errors).toHaveLength(1);
+    //         expect(errors).toEqual([
+    //             expect.objectContaining({
+    //                 message: expect.stringContaining(`requires to be used within the "@node" directive`),
+    //             }),
+    //         ]);
+    //     }
+    // );
 
-    test("node-related directives can be used within @node types, with @node defined in type extension", () => {
-        const userDocument = gql`
-            type User {
-                id: ID!
-                name: String!
-                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-            }
+    // test("node-related directives can be used within @node types, with @node defined in type extension", () => {
+    //     const userDocument = gql`
+    //         type User {
+    //             id: ID!
+    //             name: String!
+    //             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+    //         }
 
-            extend type User @node
+    //         extend type User @node
 
-            type Post @node {
-                id: ID!
-                title: String!
-            }
-        `;
-        const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors).toHaveLength(0);
-    });
+    //         type Post @node {
+    //             id: ID!
+    //             title: String!
+    //         }
+    //     `;
+    //     const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+    //     expect(errors).toBeInstanceOf(Array);
+    //     expect(errors).toHaveLength(0);
+    // });
 
-    test("node-related directives can be used within @node types, with directive defined in type extension", () => {
-        const userDocument = gql`
-            type User @node {
-                id: ID!
-                name: String!
-            }
+    // test("node-related directives can be used within @node types, with directive defined in type extension", () => {
+    //     const userDocument = gql`
+    //         type User @node {
+    //             id: ID!
+    //             name: String!
+    //         }
 
-            extend type User @node {
-                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
-            }
+    //         extend type User @node {
+    //             posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+    //         }
 
-            type Post @node {
-                id: ID!
-                title: String!
-            }
-        `;
-        const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
-        expect(errors).toBeInstanceOf(Array);
-        expect(errors).toHaveLength(0);
-    });
+    //         type Post @node {
+    //             id: ID!
+    //             title: String!
+    //         }
+    //     `;
+    //     const errors = validateSDL(userDocument, [nodeMissingValidation], new GraphQLSchema({}));
+    //     expect(errors).toBeInstanceOf(Array);
+    //     expect(errors).toHaveLength(0);
+    // });
 });

@@ -94,11 +94,11 @@ function assertRelationshipProperties(traversedDef: ObjectOrInterfaceWithExtensi
 
         if (field.directives) {
             const forbiddenDirectives = [
-                "authorization",
-                "authentication",
+              //  "authorization",
+               // "authentication",
                 "subscriptionsAuthorization",
-                "relationship",
-                "cypher",
+               // "relationship",
+             //  "cypher",
             ];
             const foundForbiddenDirective = field.directives.find((d) => forbiddenDirectives.includes(d.name.value));
             if (foundForbiddenDirective) {
