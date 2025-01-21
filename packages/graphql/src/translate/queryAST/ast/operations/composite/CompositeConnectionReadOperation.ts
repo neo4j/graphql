@@ -25,6 +25,7 @@ import { filterTruthy } from "../../../../../utils/utils";
 import { hasTarget } from "../../../utils/context-has-target";
 import { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import type { ConnectionAggregationField } from "../../fields/ConnectionAggregationField";
 import type { Pagination } from "../../pagination/Pagination";
 import type { Sort, SortField } from "../../sort/Sort";
 import type { CompositeConnectionPartial } from "./CompositeConnectionPartial";
@@ -34,9 +35,39 @@ export class CompositeConnectionReadOperation extends Operation {
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     private pagination: Pagination | undefined;
 
+    public aggregationField: ConnectionAggregationField | undefined; // TODO: multiple aggregations
+
     constructor(children: CompositeConnectionPartial[]) {
         super();
         this.children = children;
+    }
+
+    // NOTE: duplicate from ConnectionReadOperation
+    protected transpileAggregation(context: QueryASTContext): {
+        subqueries: Cypher.Clause[];
+        fields: Array<[Cypher.Expr, Cypher.Variable]>;
+        returnMap: Record<string, Cypher.Variable>;
+    } {
+        const returnMap: Record<string, Cypher.Variable> = {};
+        let extraFieldsSubqueries: Cypher.Clause[] = [];
+        let extraFields: Array<[Cypher.Expr, Cypher.Variable]> = [];
+        if (this.aggregationField) {
+            extraFieldsSubqueries = this.aggregationField.getSubqueries(context);
+
+            const aggregationProjectionField = this.aggregationField.getProjectionField();
+
+            extraFields = Object.entries(aggregationProjectionField).map(([key, value]) => {
+                const variable = new Cypher.Variable();
+                returnMap[key] = variable;
+                return [value, variable];
+            });
+        }
+
+        return {
+            fields: extraFields,
+            subqueries: extraFieldsSubqueries,
+            returnMap,
+        };
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -94,18 +125,31 @@ export class CompositeConnectionReadOperation extends Operation {
             orderSubquery = new Cypher.Call(extraWithOrder).importWith(edgesVar);
         }
 
-        nestedSubquery.with([Cypher.collect(edgeVar), edgesVar]).with(edgesVar, [Cypher.size(edgesVar), totalCount]);
+        const {
+            fields: extraFields,
+            subqueries: aggregateSubqueries,
+            returnMap: aggregateReturnMap,
+        } = this.transpileAggregation(context);
+
+        const subqueryWith = new Cypher.With([Cypher.collect(edgeVar), edgesVar], ...extraFields).with(
+            edgesVar,
+            [Cypher.size(edgesVar), totalCount],
+            ...(extraFields ?? []).map((c) => c[1])
+        );
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
                 edges: returnEdgesVar,
                 totalCount: totalCount,
+                ...aggregateReturnMap,
             }),
             context.returnVariable,
         ]);
 
         return {
-            clauses: [Cypher.utils.concat(nestedSubquery, orderSubquery, returnClause)],
+            clauses: [
+                Cypher.utils.concat(nestedSubquery, ...aggregateSubqueries, subqueryWith, orderSubquery, returnClause),
+            ],
             projectionExpr: context.returnVariable,
         };
     }
@@ -123,7 +167,7 @@ export class CompositeConnectionReadOperation extends Operation {
             return [...s.edge, ...s.node];
         });
 
-        return filterTruthy([...this.children, ...sortFields, this.pagination]);
+        return filterTruthy([...this.children, this.aggregationField, ...sortFields, this.pagination]);
     }
 
     protected getSortFields(

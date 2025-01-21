@@ -310,7 +310,6 @@ export class AggregateFactory {
             operation.setNodeFields(nodeFields);
             operation.setEdgeFields(edgeFields);
         } else {
-            console.log("HERE");
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.node], // Handles both, deprecated and new aggregation parsing

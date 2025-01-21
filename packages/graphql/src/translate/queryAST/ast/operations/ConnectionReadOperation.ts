@@ -44,7 +44,7 @@ export class ConnectionReadOperation extends Operation {
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
 
-    public aggregationField: ConnectionAggregationField | undefined;
+    public aggregationField: ConnectionAggregationField | undefined; // TODO: multiple aggregations
 
     public filters: Filter[] = [];
     protected pagination: Pagination | undefined;
@@ -130,6 +130,33 @@ export class ConnectionReadOperation extends Operation {
         );
     }
 
+    protected transpileAggregation(context: QueryASTContext): {
+        subqueries: Cypher.Clause[];
+        fields: Array<[Cypher.Expr, Cypher.Variable]>;
+        returnMap: Record<string, Cypher.Variable>;
+    } {
+        const returnMap: Record<string, Cypher.Variable> = {};
+        let extraFieldsSubqueries: Cypher.Clause[] = [];
+        let extraFields: Array<[Cypher.Expr, Cypher.Variable]> = [];
+        if (this.aggregationField) {
+            extraFieldsSubqueries = this.aggregationField.getSubqueries(context);
+
+            const aggregationProjectionField = this.aggregationField.getProjectionField();
+
+            extraFields = Object.entries(aggregationProjectionField).map(([key, value]) => {
+                const variable = new Cypher.Variable();
+                returnMap[key] = variable;
+                return [value, variable];
+            });
+        }
+
+        return {
+            fields: extraFields,
+            subqueries: extraFieldsSubqueries,
+            returnMap,
+        };
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error();
 
@@ -155,20 +182,11 @@ export class ConnectionReadOperation extends Operation {
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
 
-        const returnMap: Record<string, Cypher.Variable> = {};
-        let extraFieldsSubqueries: Cypher.Clause[] = [];
-        let extraFields: Array<[Cypher.Expr, Cypher.Variable]> = [];
-        if (this.aggregationField) {
-            extraFieldsSubqueries = this.aggregationField.getSubqueries(nestedContext);
-
-            const aggregationProjectionField = this.aggregationField.getProjectionField();
-
-            extraFields = Object.entries(aggregationProjectionField).map(([key, value]) => {
-                const variable = new Cypher.Variable();
-                returnMap[key] = variable;
-                return [value, variable];
-            });
-        }
+        const {
+            returnMap,
+            fields: extraFields,
+            subqueries: extraFieldsSubqueries,
+        } = this.transpileAggregation(nestedContext);
 
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");

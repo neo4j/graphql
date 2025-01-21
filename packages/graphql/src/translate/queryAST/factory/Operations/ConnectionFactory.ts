@@ -87,6 +87,7 @@ export class ConnectionFactory {
         const concreteConnectionOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
             let selection: EntitySelection;
             let resolveTreeEdgeFields: Record<string, ResolveTree>;
+
             if (relationship) {
                 selection = new RelationshipSelection({
                     relationship,
@@ -129,6 +130,43 @@ export class ConnectionFactory {
         });
 
         const compositeConnectionOp = new CompositeConnectionReadOperation(concreteConnectionOperations);
+
+        if (isInterfaceEntity(target)) {
+            const fields = resolveTree.fieldsByTypeName[target.operations.connectionFieldTypename];
+            if (fields) {
+                const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(fields, "aggregate")[0];
+                if (resolveTreeAggregate) {
+                    const resolveTreeAggregateFields =
+                        resolveTreeAggregate.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
+
+                    if (resolveTreeAggregateFields) {
+                        // Maybe this should be using operationFactory instead
+                        const nodeField = getResolveTreeByFieldName({
+                            fieldName: "node",
+                            selection: resolveTreeAggregateFields,
+                        });
+
+                        if (nodeField) {
+                            const typeNameNode = target.operations.aggregateTypeNames.node;
+                            // Sugar syntax for aggregations. This allows to use normal aggregations in each composite field, by renaming the type name
+                            nodeField.fieldsByTypeName[typeNameNode] =
+                                nodeField.fieldsByTypeName[target.operations.aggregateTypeNames.node] ?? {};
+                            const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                                entityOrRel: relationship ?? target,
+                                resolveTree: nodeField,
+                                context,
+                            });
+                            const aggregationField = new ConnectionAggregationField({
+                                alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                                nodeAlias: nodeField.alias,
+                                operation: aggregationOperation,
+                            });
+                            compositeConnectionOp.aggregationField = aggregationField;
+                        }
+                    }
+                }
+            }
+        }
 
         // These sort fields will be duplicated on nested "CompositeConnectionPartial"
 

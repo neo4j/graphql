@@ -18,8 +18,8 @@
  */
 
 import type { GraphQLError } from "graphql";
-import { createBearerToken } from "../../../utils/create-bearer-token";
-import { TestHelper } from "../../../utils/tests-helper";
+import { createBearerToken } from "../../../../utils/create-bearer-token";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Top-level interface query fields with authorization", () => {
     const secret = "the-secret";
@@ -77,15 +77,11 @@ describe("Top-level interface query fields with authorization", () => {
     test("top level count and string fields", async () => {
         const query = `
             query {
-                productionsConnection {
-                    aggregate {
-                        node {
-                            count
-                            title {
-                                longest
-                                shortest
-                            }
-                        }
+                productionsAggregate {
+                    count
+                    title {
+                        longest
+                        shortest
                     }
                 }
             }
@@ -95,15 +91,11 @@ describe("Top-level interface query fields with authorization", () => {
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsConnection: {
-                aggregate: {
-                    node: {
-                        count: 4,
-                        title: {
-                            longest: "The Matrix is a very interesting movie: The Documentary",
-                            shortest: "The Show",
-                        },
-                    },
+            productionsAggregate: {
+                count: 4,
+                title: {
+                    longest: "The Matrix is a very interesting movie: The Documentary",
+                    shortest: "The Show",
                 },
             },
         });
@@ -112,15 +104,11 @@ describe("Top-level interface query fields with authorization", () => {
     test("top level count and string fields with no roles should fail", async () => {
         const query = `
             query {
-                productionsConnection {
-                    aggregate  {
-                        node {
-                            count
-                            title {
-                                longest
-                                shortest
-                            }
-                        }
+                productionsAggregate {
+                    count
+                    title {
+                        longest
+                        shortest
                     }
                 }
             }
@@ -136,15 +124,11 @@ describe("Top-level interface query fields with authorization", () => {
     test("top level number fields", async () => {
         const query = `
             query {
-                productionsConnection {
-                    aggregate  {
-                        node {
-                            cost {
-                                max
-                                min
-                                average
-                            }
-                        }
+                productionsAggregate {
+                    cost {
+                        max
+                        min
+                        average
                     }
                 }
             }
@@ -154,15 +138,11 @@ describe("Top-level interface query fields with authorization", () => {
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsConnection: {
-                aggregate: {
-                    node: {
-                        cost: {
-                            min: 1,
-                            max: 20,
-                            average: 8.25,
-                        },
-                    },
+            productionsAggregate: {
+                cost: {
+                    min: 1,
+                    max: 20,
+                    average: 8.25,
                 },
             },
         });
@@ -171,15 +151,11 @@ describe("Top-level interface query fields with authorization", () => {
     test("top level number fields with no roles should fail", async () => {
         const query = `
             query {
-                productionsConnection {
-                    aggregate  {
-                        node {
-                            cost {
-                                max
-                                min
-                                average
-                            }
-                        }
+                productionsAggregate {
+                    cost {
+                        max
+                        min
+                        average
                     }
                 }
             }
