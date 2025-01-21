@@ -267,6 +267,16 @@ describe("Alias", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              city: StringAggregateSelection!
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               city: StringAggregateSelection!
               count: Int!
@@ -373,6 +383,7 @@ describe("Alias", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -421,6 +432,16 @@ describe("Alias", () => {
             type Movie {
               rating: Float
               title: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              rating: FloatAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -491,6 +512,7 @@ describe("Alias", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

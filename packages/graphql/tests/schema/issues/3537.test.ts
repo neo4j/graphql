@@ -335,6 +335,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               username: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               password: StringAggregateSelection!
@@ -382,6 +392,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -389,6 +400,15 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Movie {
               title: String
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -430,6 +450,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -540,6 +561,16 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               username: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               password: StringAggregateSelection!
@@ -629,6 +660,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -670,6 +702,15 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Movie {
               title: String
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -743,6 +784,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

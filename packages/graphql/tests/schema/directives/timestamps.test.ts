@@ -80,6 +80,17 @@ describe("Timestamps", () => {
               updatedAt: DateTime!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              updatedAt: DateTimeAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
@@ -149,6 +160,7 @@ describe("Timestamps", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

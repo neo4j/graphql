@@ -61,6 +61,15 @@ describe("Unions", () => {
               publicationsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
+            type AuthorAggregate {
+              node: AuthorAggregateNode!
+            }
+
+            type AuthorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type AuthorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -297,6 +306,7 @@ describe("Unions", () => {
             }
 
             type AuthorsConnection {
+              aggregate: AuthorAggregate!
               edges: [AuthorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -307,6 +317,15 @@ describe("Unions", () => {
               authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
+            }
+
+            type BookAggregate {
+              node: BookAggregateNode!
+            }
+
+            type BookAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type BookAggregateSelection {
@@ -518,6 +537,7 @@ describe("Unions", () => {
             }
 
             type BooksConnection {
+              aggregate: BookAggregate!
               edges: [BookEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -566,6 +586,15 @@ describe("Unions", () => {
               authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
+            }
+
+            type JournalAggregate {
+              node: JournalAggregateNode!
+            }
+
+            type JournalAggregateNode {
+              count: Int!
+              subject: StringAggregateSelection!
             }
 
             type JournalAggregateSelection {
@@ -777,6 +806,7 @@ describe("Unions", () => {
             }
 
             type JournalsConnection {
+              aggregate: JournalAggregate!
               edges: [JournalEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -69,6 +69,14 @@ describe("Enum", () => {
               status: Status
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -113,6 +121,7 @@ describe("Enum", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

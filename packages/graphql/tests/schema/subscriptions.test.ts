@@ -57,6 +57,15 @@ describe("Subscriptions", () => {
               name: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -144,6 +153,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -315,6 +325,17 @@ describe("Subscriptions", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -484,6 +505,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -594,6 +616,14 @@ describe("Subscriptions", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+            }
+
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
             }
 
             type ActorAggregateSelection {
@@ -824,6 +854,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -965,6 +996,17 @@ describe("Subscriptions", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type MovieAggregateSelection {
@@ -1148,6 +1190,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1457,6 +1500,17 @@ describe("Subscriptions", () => {
               Star: [MovieActorsStarUpdateFieldInput!]
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -1637,6 +1691,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1663,6 +1718,7 @@ describe("Subscriptions", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1672,6 +1728,14 @@ describe("Subscriptions", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): PersonMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
             }
 
             type PersonAggregateSelection {
@@ -1934,6 +1998,14 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
             }
 
+            type StarAggregate {
+              node: StarAggregateNode!
+            }
+
+            type StarAggregateNode {
+              count: Int!
+            }
+
             type StarAggregateSelection {
               count: Int!
             }
@@ -2162,6 +2234,7 @@ describe("Subscriptions", () => {
             }
 
             type StarsConnection {
+              aggregate: StarAggregate!
               edges: [StarEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2307,6 +2380,14 @@ describe("Subscriptions", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+            }
+
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
             }
 
             type ActorAggregateSelection {
@@ -2537,6 +2618,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2693,6 +2775,17 @@ describe("Subscriptions", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type MovieAggregateSelection {
@@ -2876,6 +2969,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2979,6 +3073,15 @@ describe("Subscriptions", () => {
               name: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -3066,6 +3169,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3237,6 +3341,17 @@ describe("Subscriptions", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -3352,6 +3467,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3457,6 +3573,16 @@ describe("Subscriptions", () => {
               owner(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): User
               ownerAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): AgreementUserOwnerAggregationSelection
               ownerConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AgreementOwnerConnectionSort!], where: AgreementOwnerConnectionWhere): AgreementOwnerConnection!
+            }
+
+            type AgreementAggregate {
+              node: AgreementAggregateNode!
+            }
+
+            type AgreementAggregateNode {
+              count: Int!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type AgreementAggregateSelection {
@@ -3692,6 +3818,7 @@ describe("Subscriptions", () => {
             }
 
             type AgreementsConnection {
+              aggregate: AgreementAggregate!
               edges: [AgreementEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3795,6 +3922,16 @@ describe("Subscriptions", () => {
               username: String!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -3858,6 +3995,7 @@ describe("Subscriptions", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4104,6 +4242,17 @@ describe("Subscriptions", () => {
               Star: [MovieActorsStarUpdateFieldInput!]
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -4284,6 +4433,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4310,6 +4460,7 @@ describe("Subscriptions", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4319,6 +4470,14 @@ describe("Subscriptions", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): PersonMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
             }
 
             type PersonAggregateSelection {
@@ -4581,6 +4740,14 @@ describe("Subscriptions", () => {
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
             }
 
+            type StarAggregate {
+              node: StarAggregateNode!
+            }
+
+            type StarAggregateNode {
+              count: Int!
+            }
+
             type StarAggregateSelection {
               count: Int!
             }
@@ -4794,6 +4961,7 @@ describe("Subscriptions", () => {
             }
 
             type StarsConnection {
+              aggregate: StarAggregate!
               edges: [StarEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4906,6 +5074,14 @@ describe("Subscriptions", () => {
             interface Creature {
               movies(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type CreatureAggregate {
+              node: CreatureAggregateNode!
+            }
+
+            type CreatureAggregateNode {
+              count: Int!
             }
 
             type CreatureAggregateSelection {
@@ -5045,6 +5221,7 @@ describe("Subscriptions", () => {
             }
 
             type CreaturesConnection {
+              aggregate: CreatureAggregate!
               edges: [CreatureEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5084,6 +5261,16 @@ describe("Subscriptions", () => {
               directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -5207,6 +5394,7 @@ describe("Subscriptions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5233,6 +5421,7 @@ describe("Subscriptions", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5242,6 +5431,14 @@ describe("Subscriptions", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
             }
 
             type PersonAggregateSelection {
@@ -5373,6 +5570,15 @@ describe("Subscriptions", () => {
               director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
+            }
+
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type ProductionAggregateSelection {
@@ -5513,6 +5719,7 @@ describe("Subscriptions", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5545,6 +5752,17 @@ describe("Subscriptions", () => {
               title: String!
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episode: IntAggregateSelection!
@@ -5553,6 +5771,7 @@ describe("Subscriptions", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

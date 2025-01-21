@@ -75,6 +75,15 @@ describe("String Comparators", () => {
               title: String
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -127,6 +136,7 @@ describe("String Comparators", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -224,6 +234,15 @@ describe("String Comparators", () => {
               title: String
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -272,6 +291,7 @@ describe("String Comparators", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -378,6 +398,15 @@ describe("String Comparators", () => {
               title: String
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -428,6 +457,7 @@ describe("String Comparators", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -691,6 +721,15 @@ describe("String Comparators", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -800,6 +839,7 @@ describe("String Comparators", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -956,6 +996,15 @@ describe("String Comparators", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -1051,6 +1100,7 @@ describe("String Comparators", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -77,6 +77,16 @@ describe("Bigint", () => {
               size: BigInt!
             }
 
+            type FileAggregate {
+              node: FileAggregateNode!
+            }
+
+            type FileAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              size: BigIntAggregateSelection!
+            }
+
             type FileAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -139,6 +149,7 @@ describe("Bigint", () => {
             }
 
             type FilesConnection {
+              aggregate: FileAggregate!
               edges: [FileEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

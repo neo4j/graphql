@@ -165,6 +165,18 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               updatedAt: DateTime!
             }
 
+            type ResourceAggregate {
+              node: ResourceAggregateNode!
+            }
+
+            type ResourceAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
+              updatedAt: DateTimeAggregateSelection!
+            }
+
             type ResourceAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
@@ -348,6 +360,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceEntitiesConnection {
+              aggregate: ResourceEntityAggregate!
               edges: [ResourceEntityEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -361,6 +374,16 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               tags: [Tag!]
               \\"\\"\\"Allowed resource types (enums)\\"\\"\\"
               type: ResourceType!
+            }
+
+            type ResourceEntityAggregate {
+              node: ResourceEntityAggregateNode!
+            }
+
+            type ResourceEntityAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
             }
 
             type ResourceEntityAggregateSelection {
@@ -568,6 +591,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourcesConnection {
+              aggregate: ResourceAggregate!
               edges: [ResourceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

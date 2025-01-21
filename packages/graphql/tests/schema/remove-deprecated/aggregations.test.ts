@@ -168,6 +168,15 @@ describe("Aggregations", () => {
               title: String
             }
 
+            type PostAggregate {
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type PostAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -372,6 +381,7 @@ describe("Aggregations", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -422,6 +432,15 @@ describe("Aggregations", () => {
             type User {
               someID: ID
               someString: String
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              someString: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -486,6 +505,7 @@ describe("Aggregations", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

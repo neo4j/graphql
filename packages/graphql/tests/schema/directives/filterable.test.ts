@@ -901,6 +901,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -1129,6 +1139,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1297,6 +1308,15 @@ describe("@filterable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -1423,6 +1443,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1534,6 +1555,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -1784,6 +1815,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1950,6 +1982,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -2078,6 +2119,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2187,6 +2229,16 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -2439,6 +2491,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2607,6 +2660,15 @@ describe("@filterable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -2715,6 +2777,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2829,6 +2892,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -3079,6 +3152,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3196,6 +3270,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -3323,6 +3406,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3436,6 +3520,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -3686,6 +3780,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3854,6 +3949,15 @@ describe("@filterable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -3980,6 +4084,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4093,6 +4198,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -4343,6 +4458,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4511,6 +4627,15 @@ describe("@filterable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -4613,6 +4738,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4724,6 +4850,16 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -4976,6 +5112,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5093,6 +5230,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -5220,6 +5366,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5338,6 +5485,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -5576,6 +5733,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5676,6 +5834,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -5812,6 +5979,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5835,6 +6003,7 @@ describe("@filterable directive", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5842,6 +6011,15 @@ describe("@filterable directive", () => {
 
                     interface Person {
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -6000,6 +6178,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -6238,6 +6426,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6372,6 +6561,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -6509,6 +6707,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6532,6 +6731,7 @@ describe("@filterable directive", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6539,6 +6739,15 @@ describe("@filterable directive", () => {
 
                     interface Person {
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -6697,6 +6906,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -6935,6 +7154,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7035,6 +7255,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -7171,6 +7400,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7194,6 +7424,7 @@ describe("@filterable directive", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7201,6 +7432,15 @@ describe("@filterable directive", () => {
 
                     interface Person {
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -7363,6 +7603,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -7613,6 +7863,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7624,6 +7875,16 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type AppearanceAggregate {
+                      node: AppearanceAggregateNode!
+                    }
+
+                    type AppearanceAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type AppearanceAggregateSelection {
@@ -7876,6 +8137,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearancesConnection {
+                      aggregate: AppearanceAggregate!
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8055,6 +8317,15 @@ describe("@filterable directive", () => {
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -8180,6 +8451,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8330,6 +8602,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -8580,6 +8862,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8591,6 +8874,16 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type AppearanceAggregate {
+                      node: AppearanceAggregateNode!
+                    }
+
+                    type AppearanceAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type AppearanceAggregateSelection {
@@ -8843,6 +9136,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearancesConnection {
+                      aggregate: AppearanceAggregate!
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9022,6 +9316,15 @@ describe("@filterable directive", () => {
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -9147,6 +9450,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9297,6 +9601,16 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -9547,6 +9861,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9558,6 +9873,16 @@ describe("@filterable directive", () => {
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type AppearanceAggregate {
+                      node: AppearanceAggregateNode!
+                    }
+
+                    type AppearanceAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type AppearanceAggregateSelection {
@@ -9810,6 +10135,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearancesConnection {
+                      aggregate: AppearanceAggregate!
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9989,6 +10315,15 @@ describe("@filterable directive", () => {
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -10114,6 +10449,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!

@@ -70,6 +70,16 @@ describe("Autogenerate", () => {
               name: String!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -126,6 +136,7 @@ describe("Autogenerate", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

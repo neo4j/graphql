@@ -116,6 +116,15 @@ describe("Query Direction", () => {
               name: String!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -313,6 +322,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -412,6 +422,15 @@ describe("Query Direction", () => {
               name: String!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -609,6 +628,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -708,6 +728,15 @@ describe("Query Direction", () => {
               name: String!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -905,6 +934,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

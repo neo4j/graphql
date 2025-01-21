@@ -174,6 +174,21 @@ describe("@default directive", () => {
               verifiedDate: DateTime!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              fromInterface: StringAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
+              numberOfFriends: IntAggregateSelection!
+              rating: FloatAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
+              verifiedDate: DateTimeAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               fromInterface: StringAggregateSelection!
@@ -205,6 +220,16 @@ describe("@default directive", () => {
             interface UserInterface {
               fromInterface: String!
               toBeOverridden: String!
+            }
+
+            type UserInterfaceAggregate {
+              node: UserInterfaceAggregateNode!
+            }
+
+            type UserInterfaceAggregateNode {
+              count: Int!
+              fromInterface: StringAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
             }
 
             type UserInterfaceAggregateSelection {
@@ -260,6 +285,7 @@ describe("@default directive", () => {
             }
 
             type UserInterfacesConnection {
+              aggregate: UserInterfaceAggregate!
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -373,6 +399,7 @@ describe("@default directive", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

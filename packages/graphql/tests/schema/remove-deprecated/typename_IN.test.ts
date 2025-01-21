@@ -100,6 +100,16 @@ describe("typename_IN", () => {
               title: String!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -159,6 +169,7 @@ describe("typename_IN", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -184,6 +195,16 @@ describe("typename_IN", () => {
             interface Production {
               id: ID!
               title: String!
+            }
+
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
             }
 
             type ProductionAggregateSelection {
@@ -239,6 +260,7 @@ describe("typename_IN", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -262,6 +284,17 @@ describe("typename_IN", () => {
               title: String!
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              numberOfEpisodes: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -270,6 +303,7 @@ describe("typename_IN", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

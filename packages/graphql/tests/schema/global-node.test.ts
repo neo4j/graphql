@@ -71,6 +71,16 @@ describe("Node Interface Types", () => {
               title: String!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              imdb: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               imdb: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -131,6 +141,7 @@ describe("Node Interface Types", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

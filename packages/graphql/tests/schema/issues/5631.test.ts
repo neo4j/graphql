@@ -63,6 +63,14 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
               custom_string_with_zero_param: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+            }
+
             type ActorAggregateSelection {
               count: Int!
             }
@@ -116,6 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -151,6 +160,14 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
               custom_actor_with_zero_param: Actor
               custom_actors_with_params(title: String): [Actor]
               custom_string_with_non_nullable_param(param: String!): String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -189,6 +206,7 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -89,6 +89,15 @@ describe("Interfaces", () => {
               nodes: [MovieNode]
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -194,6 +203,15 @@ describe("Interfaces", () => {
               id: ID
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+            }
+
+            type MovieNodeAggregate {
+              node: MovieNodeAggregateNode!
+            }
+
+            type MovieNodeAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type MovieNodeAggregateSelection {
@@ -327,6 +345,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodesConnection {
+              aggregate: MovieNodeAggregate!
               edges: [MovieNodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -397,6 +416,7 @@ describe("Interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -519,6 +539,15 @@ describe("Interfaces", () => {
               nodes: [MovieNode]
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -624,6 +653,15 @@ describe("Interfaces", () => {
               id: ID
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+            }
+
+            type MovieNodeAggregate {
+              node: MovieNodeAggregateNode!
+            }
+
+            type MovieNodeAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type MovieNodeAggregateSelection {
@@ -757,6 +795,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodesConnection {
+              aggregate: MovieNodeAggregate!
               edges: [MovieNodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -827,6 +866,7 @@ describe("Interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

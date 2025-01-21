@@ -92,6 +92,14 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
+            type CreatureAggregate {
+              node: CreatureAggregateNode!
+            }
+
+            type CreatureAggregateNode {
+              count: Int!
+            }
+
             type CreatureAggregateSelection {
               count: Int!
             }
@@ -229,6 +237,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type CreaturesConnection {
+              aggregate: CreatureAggregate!
               edges: [CreatureEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -268,6 +277,16 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -391,6 +410,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -417,6 +437,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -426,6 +447,14 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
             }
 
             type PersonAggregateSelection {
@@ -557,6 +586,15 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
+            }
+
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type ProductionAggregateSelection {
@@ -697,6 +735,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -729,6 +768,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: String!
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episode: IntAggregateSelection!
@@ -737,6 +787,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

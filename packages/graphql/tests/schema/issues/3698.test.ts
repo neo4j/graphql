@@ -112,6 +112,15 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               productConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
+            type GenreAggregate {
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type GenreAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -382,6 +391,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -392,6 +402,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type IProductAggregate {
+              node: IProductAggregateNode!
+            }
+
+            type IProductAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              info: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type IProductAggregateSelection {
@@ -472,6 +493,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type IProductsConnection {
+              aggregate: IProductAggregate!
               edges: [IProductEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -484,6 +506,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -713,6 +745,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -876,6 +909,15 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               product(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               productAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
+            }
+
+            type GenreAggregate {
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type GenreAggregateSelection {
@@ -1151,6 +1193,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1162,6 +1205,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type IProductAggregate {
+              node: IProductAggregateNode!
+            }
+
+            type IProductAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              info: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type IProductAggregateSelection {
@@ -1360,6 +1414,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type IProductsConnection {
+              aggregate: IProductAggregate!
               edges: [IProductEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1372,6 +1427,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -1569,6 +1634,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1745,6 +1811,15 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               product(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: IProductOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [IProductSort!], where: IProductWhere): [IProduct!]!
               productAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: IProductWhere): GenreIProductProductAggregationSelection
               productConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
+            }
+
+            type GenreAggregate {
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type GenreAggregateSelection {
@@ -2020,6 +2095,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2031,6 +2107,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type IProductAggregate {
+              node: IProductAggregateNode!
+            }
+
+            type IProductAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              info: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type IProductAggregateSelection {
@@ -2231,6 +2318,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type IProductsConnection {
+              aggregate: IProductAggregate!
               edges: [IProductEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2243,6 +2331,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -2440,6 +2538,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2489,6 +2588,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: String!
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              info: StringAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               id: StringAggregateSelection!
@@ -2497,6 +2607,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

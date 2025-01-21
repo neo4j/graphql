@@ -139,6 +139,17 @@ describe("@customResolver directive", () => {
               username: String!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              password: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -159,6 +170,15 @@ describe("@customResolver directive", () => {
 
             interface UserInterface {
               customResolver: String
+            }
+
+            type UserInterfaceAggregate {
+              node: UserInterfaceAggregateNode!
+            }
+
+            type UserInterfaceAggregateNode {
+              count: Int!
+              customResolver: StringAggregateSelection!
             }
 
             type UserInterfaceAggregateSelection {
@@ -206,6 +226,7 @@ describe("@customResolver directive", () => {
             }
 
             type UserInterfacesConnection {
+              aggregate: UserInterfaceAggregate!
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -263,6 +284,7 @@ describe("@customResolver directive", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

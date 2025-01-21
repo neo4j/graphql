@@ -208,6 +208,15 @@ describe("Arrays Methods", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -309,6 +318,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -473,6 +483,16 @@ describe("Arrays Methods", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               averageRating: FloatAggregateSelection!
               count: Int!
@@ -588,6 +608,7 @@ describe("Arrays Methods", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

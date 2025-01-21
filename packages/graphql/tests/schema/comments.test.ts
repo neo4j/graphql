@@ -132,6 +132,17 @@ describe("Comments", () => {
               isActive: Boolean
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -230,6 +241,7 @@ describe("Comments", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -306,6 +318,15 @@ describe("Comments", () => {
                   name: String
                 }
 
+                type ActorAggregate {
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
+                  count: Int!
+                  name: StringAggregateSelection!
+                }
+
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -358,6 +379,7 @@ describe("Comments", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -505,6 +527,15 @@ describe("Comments", () => {
                   where: MovieActorsConnectionWhere
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -584,6 +615,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -852,6 +884,15 @@ describe("Comments", () => {
                   where: ActorActedInConnectionWhere
                 }
 
+                type ActorAggregate {
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
+                  count: Int!
+                  name: StringAggregateSelection!
+                }
+
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -945,6 +986,7 @@ describe("Comments", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -991,6 +1033,16 @@ describe("Comments", () => {
                 type Movie implements Production {
                   runtime: Int!
                   title: String!
+                }
+
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  runtime: IntAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type MovieAggregateSelection {
@@ -1055,6 +1107,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1082,6 +1135,15 @@ describe("Comments", () => {
 
                 interface Production {
                   title: String!
+                }
+
+                type ProductionAggregate {
+                  node: ProductionAggregateNode!
+                }
+
+                type ProductionAggregateNode {
+                  count: Int!
+                  title: StringAggregateSelection!
                 }
 
                 type ProductionAggregateSelection {
@@ -1144,6 +1206,7 @@ describe("Comments", () => {
                 }
 
                 type ProductionsConnection {
+                  aggregate: ProductionAggregate!
                   edges: [ProductionEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1169,6 +1232,16 @@ describe("Comments", () => {
                   title: String!
                 }
 
+                type SeriesAggregate {
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
+                  count: Int!
+                  episodes: IntAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 type SeriesAggregateSelection {
                   count: Int!
                   episodes: IntAggregateSelection!
@@ -1176,6 +1249,7 @@ describe("Comments", () => {
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1329,6 +1403,15 @@ describe("Comments", () => {
                   id: ID
                 }
 
+                type GenreAggregate {
+                  node: GenreAggregateNode!
+                }
+
+                type GenreAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+                }
+
                 type GenreAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -1381,6 +1464,7 @@ describe("Comments", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1396,6 +1480,15 @@ describe("Comments", () => {
                   search(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: SearchWhere): [Search!]!
                   searchConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
                   searchNoDirective: Search
+                }
+
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 type MovieAggregateSelection {
@@ -1614,6 +1707,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

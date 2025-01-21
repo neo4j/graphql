@@ -115,6 +115,15 @@ describe("Implicit SET field", () => {
               name: String
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -318,6 +327,7 @@ describe("Implicit SET field", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -479,6 +489,15 @@ describe("Implicit SET field", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -569,6 +588,7 @@ describe("Implicit SET field", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

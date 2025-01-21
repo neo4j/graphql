@@ -91,6 +91,15 @@ describe("Connection with interfaces", () => {
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
+            type CreatureAggregate {
+              node: CreatureAggregateNode!
+            }
+
+            type CreatureAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type CreatureAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -248,6 +257,7 @@ describe("Connection with interfaces", () => {
             }
 
             type CreaturesConnection {
+              aggregate: CreatureAggregate!
               edges: [CreatureEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -279,6 +289,16 @@ describe("Connection with interfaces", () => {
               directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -446,6 +466,7 @@ describe("Connection with interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -472,6 +493,7 @@ describe("Connection with interfaces", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -482,6 +504,15 @@ describe("Connection with interfaces", () => {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type PersonAggregateSelection {
@@ -619,6 +650,15 @@ describe("Connection with interfaces", () => {
               director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
+            }
+
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type ProductionAggregateSelection {
@@ -810,6 +850,7 @@ describe("Connection with interfaces", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -842,6 +883,17 @@ describe("Connection with interfaces", () => {
               title: String!
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episode: IntAggregateSelection!
@@ -850,6 +902,7 @@ describe("Connection with interfaces", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

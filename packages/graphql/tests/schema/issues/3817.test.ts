@@ -157,6 +157,7 @@ describe("3817", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -167,6 +168,15 @@ describe("3817", () => {
               friendsAggregate(where: PersonWhere): PersonPersonFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               id: ID!
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type PersonAggregateSelection {

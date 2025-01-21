@@ -63,6 +63,15 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               name: String!
             }
 
+            type Actor2Aggregate {
+              node: Actor2AggregateNode!
+            }
+
+            type Actor2AggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type Actor2AggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -267,9 +276,19 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor2sConnection {
+              aggregate: Actor2Aggregate!
               edges: [Actor2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type ActorAggregateSelection {
@@ -476,6 +495,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -520,6 +540,16 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type Movie {
               id: ID!
               title: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -595,6 +625,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

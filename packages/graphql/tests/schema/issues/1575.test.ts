@@ -64,6 +64,14 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               point: Point
             }
 
+            type FooAggregate {
+              node: FooAggregateNode!
+            }
+
+            type FooAggregateNode {
+              count: Int!
+            }
+
             type FooAggregateSelection {
               count: Int!
             }
@@ -125,6 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             type FoosConnection {
+              aggregate: FooAggregate!
               edges: [FooEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -121,6 +121,15 @@ describe("@private directive", () => {
               id: ID
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type UserAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -137,6 +146,15 @@ describe("@private directive", () => {
 
             interface UserInterface {
               id: ID
+            }
+
+            type UserInterfaceAggregate {
+              node: UserInterfaceAggregateNode!
+            }
+
+            type UserInterfaceAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type UserInterfaceAggregateSelection {
@@ -184,6 +202,7 @@ describe("@private directive", () => {
             }
 
             type UserInterfacesConnection {
+              aggregate: UserInterfaceAggregate!
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -223,6 +242,7 @@ describe("@private directive", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -334,6 +354,16 @@ describe("@private directive", () => {
               private: String
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              private: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -352,6 +382,15 @@ describe("@private directive", () => {
 
             interface UserInterface {
               id: ID
+            }
+
+            type UserInterfaceAggregate {
+              node: UserInterfaceAggregateNode!
+            }
+
+            type UserInterfaceAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type UserInterfaceAggregateSelection {
@@ -399,6 +438,7 @@ describe("@private directive", () => {
             }
 
             type UserInterfacesConnection {
+              aggregate: UserInterfaceAggregate!
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -447,6 +487,7 @@ describe("@private directive", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

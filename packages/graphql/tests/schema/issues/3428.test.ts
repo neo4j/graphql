@@ -148,6 +148,15 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -231,6 +240,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -254,6 +264,7 @@ describe("Relationship nested operations", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -262,6 +273,16 @@ describe("Relationship nested operations", () => {
             type Person {
               id: ID!
               name: String
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
             }
 
             type PersonAggregateSelection {
@@ -461,6 +482,15 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -533,6 +563,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -562,6 +593,15 @@ describe("Relationship nested operations", () => {
 
             type PersonOne {
               name: String
+            }
+
+            type PersonOneAggregate {
+              node: PersonOneAggregateNode!
+            }
+
+            type PersonOneAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type PersonOneAggregateSelection {
@@ -612,6 +652,7 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonOnesConnection {
+              aggregate: PersonOneAggregate!
               edges: [PersonOneEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -619,6 +660,15 @@ describe("Relationship nested operations", () => {
 
             type PersonTwo {
               nameTwo: String
+            }
+
+            type PersonTwoAggregate {
+              node: PersonTwoAggregateNode!
+            }
+
+            type PersonTwoAggregateNode {
+              count: Int!
+              nameTwo: StringAggregateSelection!
             }
 
             type PersonTwoAggregateSelection {
@@ -669,6 +719,7 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonTwosConnection {
+              aggregate: PersonTwoAggregate!
               edges: [PersonTwoEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

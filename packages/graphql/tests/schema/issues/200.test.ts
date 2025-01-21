@@ -42,6 +42,7 @@ describe("200", () => {
             }
 
             type CategoriesConnection {
+              aggregate: CategoryAggregate!
               edges: [CategoryEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -52,6 +53,17 @@ describe("200", () => {
               description: String!
               exampleImageLocations: [String!]
               name: String!
+            }
+
+            type CategoryAggregate {
+              node: CategoryAggregateNode!
+            }
+
+            type CategoryAggregateNode {
+              categoryId: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              count: Int!
+              description: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type CategoryAggregateSelection {

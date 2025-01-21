@@ -195,6 +195,18 @@ describe("@populatedBy tests", () => {
                   id: ID
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  callback1: StringAggregateSelection!
+                  callback2: StringAggregateSelection!
+                  callback3: StringAggregateSelection!
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+                }
+
                 type MovieAggregateSelection {
                   callback1: StringAggregateSelection!
                   callback2: StringAggregateSelection!
@@ -270,6 +282,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -400,6 +413,18 @@ describe("@populatedBy tests", () => {
                   id: ID
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  callback1: IntAggregateSelection!
+                  callback2: IntAggregateSelection!
+                  callback3: IntAggregateSelection!
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+                }
+
                 type MovieAggregateSelection {
                   callback1: IntAggregateSelection!
                   callback2: IntAggregateSelection!
@@ -480,6 +505,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -739,6 +765,15 @@ describe("@populatedBy tests", () => {
                   id: ID!
                 }
 
+                type GenreAggregate {
+                  node: GenreAggregateNode!
+                }
+
+                type GenreAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+                }
+
                 type GenreAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -791,6 +826,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -806,6 +842,15 @@ describe("@populatedBy tests", () => {
                   genresAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
+                }
+
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 type MovieAggregateSelection {
@@ -1000,6 +1045,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1261,6 +1307,15 @@ describe("@populatedBy tests", () => {
                   id: ID!
                 }
 
+                type GenreAggregate {
+                  node: GenreAggregateNode!
+                }
+
+                type GenreAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+                }
+
                 type GenreAggregateSelection {
                   count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -1313,6 +1368,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1335,6 +1391,15 @@ describe("@populatedBy tests", () => {
                   genresAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
+                }
+
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 type MovieAggregateSelection {
@@ -1529,6 +1594,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

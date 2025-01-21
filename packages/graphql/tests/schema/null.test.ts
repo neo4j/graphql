@@ -114,6 +114,19 @@ describe("Null", () => {
               names: [String!]!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -282,6 +295,7 @@ describe("Null", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

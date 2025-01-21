@@ -234,6 +234,15 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -339,6 +348,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -482,6 +492,17 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ShowActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              release: DateTimeAggregateSelection!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               release: DateTimeAggregateSelection!
@@ -587,6 +608,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -718,6 +740,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ShowActorsConnectionWhere
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelection!
@@ -725,6 +757,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -968,6 +1001,15 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ShowActorsConnectionWhere
             }
 
+            type ShowAggregate {
+              node: ShowAggregateNode!
+            }
+
+            type ShowAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type ShowAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -1066,6 +1108,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ShowsConnection {
+              aggregate: ShowAggregate!
               edges: [ShowEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

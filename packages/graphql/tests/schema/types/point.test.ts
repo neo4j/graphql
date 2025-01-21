@@ -63,6 +63,14 @@ describe("Point", () => {
               filmedAt: Point!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -112,6 +120,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -251,6 +260,14 @@ describe("Point", () => {
               partLocation: CartesianPoint!
             }
 
+            type MachineAggregate {
+              node: MachineAggregateNode!
+            }
+
+            type MachineAggregateNode {
+              count: Int!
+            }
+
             type MachineAggregateSelection {
               count: Int!
             }
@@ -300,6 +317,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -390,6 +408,14 @@ describe("Point", () => {
               filmedAt: [Point!]!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -425,6 +451,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -543,6 +570,14 @@ describe("Point", () => {
               partLocations: [CartesianPoint!]!
             }
 
+            type MachineAggregate {
+              node: MachineAggregateNode!
+            }
+
+            type MachineAggregateNode {
+              count: Int!
+            }
+
             type MachineAggregateSelection {
               count: Int!
             }
@@ -578,6 +613,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

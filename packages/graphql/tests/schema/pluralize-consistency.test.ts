@@ -109,12 +109,14 @@ describe("Pluralize consistency", () => {
             }
 
             type SuperFriendsConnection {
+              aggregate: super_friendAggregate!
               edges: [super_friendEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
             type SuperUsersConnection {
+              aggregate: super_userAggregate!
               edges: [super_userEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -142,6 +144,15 @@ describe("Pluralize consistency", () => {
 
             type super_friend {
               name: String!
+            }
+
+            type super_friendAggregate {
+              node: super_friendAggregateNode!
+            }
+
+            type super_friendAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type super_friendAggregateSelection {
@@ -200,6 +211,15 @@ describe("Pluralize consistency", () => {
               my_friendAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
               my_friendConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
+            }
+
+            type super_userAggregate {
+              node: super_userAggregateNode!
+            }
+
+            type super_userAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type super_userAggregateSelection {

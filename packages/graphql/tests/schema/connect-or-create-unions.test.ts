@@ -247,6 +247,15 @@ describe("Connect Or Create", () => {
               Series: [ActorActedInSeriesUpdateFieldInput!]
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -325,6 +334,7 @@ describe("Connect Or Create", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -364,6 +374,16 @@ describe("Connect Or Create", () => {
             type Movie {
               isan: String!
               title: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -443,6 +463,7 @@ describe("Connect Or Create", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -499,6 +520,16 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              isan: StringAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               isan: StringAggregateSelection!
@@ -514,6 +545,7 @@ describe("Connect Or Create", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

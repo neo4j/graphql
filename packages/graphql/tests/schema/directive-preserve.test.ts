@@ -76,6 +76,15 @@ describe("Directive-preserve", () => {
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -124,6 +133,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -235,6 +245,15 @@ describe("Directive-preserve", () => {
               moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
+            }
+
+            type GenreAggregate {
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type GenreAggregateSelection {
@@ -476,6 +495,7 @@ describe("Directive-preserve", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -495,6 +515,17 @@ describe("Directive-preserve", () => {
               imdbRating: Float
               title: String
               year: Int
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              imdbRating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -724,6 +755,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1001,6 +1033,15 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -1106,6 +1147,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1240,6 +1282,16 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               runtime: IntAggregateSelection!
@@ -1333,6 +1385,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1510,6 +1563,15 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
+            }
+
             type ProductionAggregateSelection {
               count: Int!
               title: StringAggregateSelection!
@@ -1608,6 +1670,7 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1719,6 +1782,16 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelection!
@@ -1726,6 +1799,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2066,6 +2140,15 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -2171,6 +2254,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2340,6 +2424,16 @@ describe("Directive-preserve", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               runtime: IntAggregateSelection!
@@ -2433,6 +2527,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2461,6 +2556,15 @@ describe("Directive-preserve", () => {
             interface Production {
               actors: [Actor!]!
               title: String!
+            }
+
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type ProductionAggregateSelection {
@@ -2523,6 +2627,7 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2669,6 +2774,16 @@ describe("Directive-preserve", () => {
               where: SeriesActorsConnectionWhere
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelection!
@@ -2676,6 +2791,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3004,6 +3120,15 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -3109,6 +3234,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3278,6 +3404,16 @@ describe("Directive-preserve", () => {
               where: MovieActorsConnectionWhere
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              runtime: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               runtime: IntAggregateSelection!
@@ -3371,6 +3507,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3399,6 +3536,15 @@ describe("Directive-preserve", () => {
             interface Production {
               actors: [Actor!]! @deprecated(reason: \\"Do not use\\")
               title: String!
+            }
+
+            type ProductionAggregate {
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type ProductionAggregateSelection {
@@ -3461,6 +3607,7 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3607,6 +3754,16 @@ describe("Directive-preserve", () => {
               where: SeriesActorsConnectionWhere
             }
 
+            type SeriesAggregate {
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              count: Int!
+              episodes: IntAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type SeriesAggregateSelection {
               count: Int!
               episodes: IntAggregateSelection!
@@ -3614,6 +3771,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3780,6 +3938,15 @@ describe("Directive-preserve", () => {
               postsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PostWhere): BlogPostPostsAggregationSelection
               postsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [BlogPostsConnectionSort!], where: BlogPostsConnectionWhere): BlogPostsConnection!
               title: String
+            }
+
+            type BlogAggregate {
+              node: BlogAggregateNode!
+            }
+
+            type BlogAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type BlogAggregateSelection {
@@ -3976,6 +4143,7 @@ describe("Directive-preserve", () => {
             }
 
             type BlogsConnection {
+              aggregate: BlogAggregate!
               edges: [BlogEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4043,6 +4211,15 @@ describe("Directive-preserve", () => {
               content: String @deprecated(reason: \\"Do not use post.content\\")
             }
 
+            type PostAggregate {
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
+              content: StringAggregateSelection!
+              count: Int!
+            }
+
             type PostAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
@@ -4095,6 +4272,7 @@ describe("Directive-preserve", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4161,6 +4339,15 @@ describe("Directive-preserve", () => {
               content(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ContentWhere): [Content!]! @deprecated(reason: \\"Do not use user.content\\")
               contentConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: UserContentConnectionWhere): UserContentConnection! @deprecated(reason: \\"Do not use user.content\\")
               name: String
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -4357,6 +4544,7 @@ describe("Directive-preserve", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -51,6 +51,7 @@ describe("lower case type names", () => {
             }
 
             type ActorsConnection {
+              aggregate: actorAggregate!
               edges: [actorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -98,6 +99,7 @@ describe("lower case type names", () => {
             }
 
             type MoviesConnection {
+              aggregate: movieAggregate!
               edges: [movieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -169,6 +171,17 @@ describe("lower case type names", () => {
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
               year: Int
+            }
+
+            type actorAggregate {
+              node: actorAggregateNode!
+            }
+
+            type actorAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type actorAggregateSelection {
@@ -576,6 +589,18 @@ describe("lower case type names", () => {
               disconnect: [movieActorsDisconnectFieldInput!]
               update: movieActorsUpdateConnectionInput
               where: movieActorsConnectionWhere
+            }
+
+            type movieAggregate {
+              node: movieAggregateNode!
+            }
+
+            type movieAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              testId: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type movieAggregateSelection {

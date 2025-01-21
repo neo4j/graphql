@@ -147,6 +147,25 @@ describe("Aggregations", () => {
               title: String
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              imdbRating: FloatAggregateSelection!
+              isbn: StringAggregateSelection!
+              screenTime: DurationAggregateSelection!
+              someBigInt: BigIntAggregateSelection!
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someTime: TimeAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               createdAt: DateTimeAggregateSelection!
@@ -321,6 +340,7 @@ describe("Aggregations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -837,6 +857,16 @@ describe("Aggregations", () => {
               title: String
             }
 
+            type PostAggregate {
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
+              count: Int!
+              someID: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
             type PostAggregateSelection {
               count: Int!
               someID: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -1185,6 +1215,7 @@ describe("Aggregations", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1251,6 +1282,24 @@ describe("Aggregations", () => {
               someLocalTime: LocalTime
               someString: String
               someTime: Time
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              someBigInt: BigIntAggregateSelection!
+              someDateTime: DateTimeAggregateSelection!
+              someDuration: DurationAggregateSelection!
+              someFloat: FloatAggregateSelection!
+              someID: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someInt: IntAggregateSelection!
+              someLocalDateTime: LocalDateTimeAggregateSelection!
+              someLocalTime: LocalTimeAggregateSelection!
+              someString: StringAggregateSelection!
+              someTime: TimeAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -1420,6 +1469,7 @@ describe("Aggregations", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -151,6 +151,16 @@ describe("Union Interface Relationships", () => {
               name: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               id: IntAggregateSelection!
@@ -421,6 +431,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -511,6 +522,17 @@ describe("Union Interface Relationships", () => {
               url: String!
             }
 
+            type InfluencerAggregate {
+              node: InfluencerAggregateNode!
+            }
+
+            type InfluencerAggregateNode {
+              count: Int!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
+              url: StringAggregateSelection!
+            }
+
             type InfluencerAggregateSelection {
               count: Int!
               reputation: IntAggregateSelection!
@@ -587,6 +609,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type InfluencersConnection {
+              aggregate: InfluencerAggregate!
               edges: [InfluencerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -761,6 +784,16 @@ describe("Union Interface Relationships", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -1244,6 +1277,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1273,6 +1307,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1286,6 +1321,18 @@ describe("Union Interface Relationships", () => {
               name: String!
               reputation: Int!
               reviewerId: Int
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             type PersonAggregateSelection {
@@ -1682,6 +1729,16 @@ describe("Union Interface Relationships", () => {
               reviewerId: Int
             }
 
+            type ReviewerAggregate {
+              node: ReviewerAggregateNode!
+            }
+
+            type ReviewerAggregateNode {
+              count: Int!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
+            }
+
             type ReviewerAggregateSelection {
               count: Int!
               reputation: IntAggregateSelection!
@@ -1758,6 +1815,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ReviewersConnection {
+              aggregate: ReviewerAggregate!
               edges: [ReviewerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

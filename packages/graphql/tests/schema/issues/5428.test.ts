@@ -98,12 +98,22 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               Name: String
             }
 
+            type TestAggregate {
+              node: TestAggregateNode!
+            }
+
+            type TestAggregateNode {
+              Name: StringAggregateSelection!
+              count: Int!
+            }
+
             type TestAggregateSelection {
               Name: StringAggregateSelection!
               count: Int!
             }
 
             type TestConnection {
+              aggregate: TestAggregate!
               edges: [TestEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

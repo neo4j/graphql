@@ -85,6 +85,15 @@ describe("Sort", () => {
               relatedToConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
+            type Node1Aggregate {
+              node: Node1AggregateNode!
+            }
+
+            type Node1AggregateNode {
+              count: Int!
+              property: StringAggregateSelection!
+            }
+
             type Node1AggregateSelection {
               count: Int!
               property: StringAggregateSelection!
@@ -251,6 +260,7 @@ describe("Sort", () => {
             }
 
             type Node1sConnection {
+              aggregate: Node1Aggregate!
               edges: [Node1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -260,6 +270,14 @@ describe("Sort", () => {
               relatedTo(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: Node1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Node1Sort!], where: Node1Where): [Node1!]!
               relatedToAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: Node1Where): Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
+            }
+
+            type Node2Aggregate {
+              node: Node2AggregateNode!
+            }
+
+            type Node2AggregateNode {
+              count: Int!
             }
 
             type Node2AggregateSelection {
@@ -438,6 +456,7 @@ describe("Sort", () => {
             }
 
             type Node2sConnection {
+              aggregate: Node2Aggregate!
               edges: [Node2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!

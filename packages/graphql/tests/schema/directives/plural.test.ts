@@ -101,6 +101,16 @@ describe("Plural option", () => {
               value: String
             }
 
+            type TechAggregate {
+              node: TechAggregateNode!
+            }
+
+            type TechAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
+            }
+
             type TechAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -160,6 +170,7 @@ describe("Plural option", () => {
             }
 
             type TechsConnection {
+              aggregate: TechAggregate!
               edges: [TechEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -260,6 +271,16 @@ describe("Plural option", () => {
               value: String
             }
 
+            type TechAggregate {
+              node: TechAggregateNode!
+            }
+
+            type TechAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
+            }
+
             type TechAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -319,6 +340,7 @@ describe("Plural option", () => {
             }
 
             type TechsConnection {
+              aggregate: TechAggregate!
               edges: [TechEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -419,6 +441,16 @@ describe("Plural option", () => {
               value: String
             }
 
+            type TechAggregate {
+              node: TechAggregateNode!
+            }
+
+            type TechAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
+            }
+
             type TechAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -478,6 +510,7 @@ describe("Plural option", () => {
             }
 
             type TechnologiesConnection {
+              aggregate: TechAggregate!
               edges: [TechEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -577,12 +610,22 @@ describe("Plural option", () => {
               value: String
             }
 
+            type TechsAggregate {
+              node: TechsAggregateNode!
+            }
+
+            type TechsAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
+            }
+
             type TechsAggregateSelection {
               count: Int!
               value: StringAggregateSelection!
             }
 
             type TechsConnection {
+              aggregate: TechsAggregate!
               edges: [TechsEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -721,6 +764,7 @@ describe("Plural option", () => {
             }
 
             type TechsConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -743,6 +787,15 @@ describe("Plural option", () => {
 
             type User {
               value: String
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -886,6 +939,15 @@ describe("Plural option", () => {
               value: String
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               value: StringAggregateSelection!
@@ -934,6 +996,7 @@ describe("Plural option", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1033,12 +1096,22 @@ describe("Plural option", () => {
               value: String
             }
 
+            type UsersAggregate {
+              node: UsersAggregateNode!
+            }
+
+            type UsersAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
+            }
+
             type UsersAggregateSelection {
               count: Int!
               value: StringAggregateSelection!
             }
 
             type UsersConnection {
+              aggregate: UsersAggregate!
               edges: [UsersEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

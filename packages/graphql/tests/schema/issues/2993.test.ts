@@ -149,6 +149,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: String!
             }
 
+            type ProfileAggregate {
+              node: ProfileAggregateNode!
+            }
+
+            type ProfileAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              userName: StringAggregateSelection!
+            }
+
             type ProfileAggregateSelection {
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
@@ -217,6 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type ProfilesConnection {
+              aggregate: ProfileAggregate!
               edges: [ProfileEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -265,6 +276,16 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               followingConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              userName: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -474,6 +495,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

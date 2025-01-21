@@ -79,6 +79,16 @@ describe("Arrays", () => {
               ratings: [Float!]!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
             type MovieAggregateSelection {
               averageRating: FloatAggregateSelection!
               count: Int!
@@ -151,6 +161,7 @@ describe("Arrays", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

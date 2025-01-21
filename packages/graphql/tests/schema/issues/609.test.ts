@@ -63,6 +63,15 @@ describe("609", () => {
               deprecatedField: String @deprecated
             }
 
+            type DeprecatedAggregate {
+              node: DeprecatedAggregateNode!
+            }
+
+            type DeprecatedAggregateNode {
+              count: Int!
+              deprecatedField: StringAggregateSelection!
+            }
+
             type DeprecatedAggregateSelection {
               count: Int!
               deprecatedField: StringAggregateSelection!
@@ -111,6 +120,7 @@ describe("609", () => {
             }
 
             type DeprecatedsConnection {
+              aggregate: DeprecatedAggregate!
               edges: [DeprecatedEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
