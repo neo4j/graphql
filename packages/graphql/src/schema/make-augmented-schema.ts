@@ -84,6 +84,7 @@ import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
@@ -581,16 +582,17 @@ function generateObjectType({
             features,
         });
 
-        // TODO: remove with deprecated flag
-        composer.Query.addFields({
-            [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                entityAdapter: concreteEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(concreteEntityAdapter.operations.rootTypeFieldNames.aggregate, [
-            ...graphqlDirectivesToCompose(propagatedDirectives),
-            DEPRECATE_AGGREGATION(concreteEntityAdapter),
-        ]);
+        if (shouldAddDeprecatedFields(features, "deprecatedAggregateOperations")) {
+            composer.Query.addFields({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                    entityAdapter: concreteEntityAdapter,
+                }),
+            });
+            composer.Query.setFieldDirectives(concreteEntityAdapter.operations.rootTypeFieldNames.aggregate, [
+                ...graphqlDirectivesToCompose(propagatedDirectives),
+                DEPRECATE_AGGREGATION(concreteEntityAdapter),
+            ]);
+        }
     }
 
     if (concreteEntityAdapter.isCreatable) {
@@ -722,14 +724,17 @@ function generateInterfaceObjectType({
             features,
         });
 
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                entityAdapter: interfaceEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate, [
-            ...graphqlDirectivesToCompose(propagatedDirectives),
-            DEPRECATE_AGGREGATION(interfaceEntityAdapter),
-        ]);
+        if (shouldAddDeprecatedFields(features, "deprecatedAggregateOperations")) {
+            composer.Query.addFields({
+                [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                    entityAdapter: interfaceEntityAdapter,
+                }),
+            });
+
+            composer.Query.setFieldDirectives(interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate, [
+                ...graphqlDirectivesToCompose(propagatedDirectives),
+                DEPRECATE_AGGREGATION(interfaceEntityAdapter),
+            ]);
+        }
     }
 }
