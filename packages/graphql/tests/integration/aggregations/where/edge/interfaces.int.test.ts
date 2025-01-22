@@ -87,8 +87,8 @@ describe("aggregations-where-edge-string interface relationships of interface ty
                     where: {
                         productionsAggregate: {
                             edge: {
-                                AppearedIn: { role_SHORTEST_LENGTH_LT: 3 }
-                                ActedIn: { role_AVERAGE_LENGTH_LT: 5 }
+                                AppearedIn: { role: { shortestLength: { lt: 3 } } }
+                                ActedIn: { role: { averageLength: { lt: 5 } } }
                             }
                         }
                     }
@@ -132,7 +132,7 @@ describe("aggregations-where-edge-string interface relationships of interface ty
         const query = /* GraphQL */ `
             query People {
                 ${Person.plural}(
-                    where: { productionsAggregate: { edge: { ActedIn: { role_AVERAGE_LENGTH_LT: 5 } }, count_LT: 3 } }
+                    where: { productionsAggregate: { edge: { ActedIn: { role: { averageLength: { lt:5 } } } }, count_LT: 3 } }
                 ) {
                     name
                 }
