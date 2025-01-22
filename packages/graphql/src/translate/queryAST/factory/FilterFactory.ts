@@ -683,7 +683,19 @@ export class FilterFactory {
                     );
                 }
 
-                if (fieldName === "edge") {
+                if (fieldName === "edge" && relationship.propertiesTypeName) {
+                    // This conditional handles when the relationship is an interface which is also being accessed through an interface
+                    if (
+                        isInterfaceEntity(relationship.target) &&
+                        Object.keys(value).some((v) => relationship.siblings?.includes(v))
+                    ) {
+                        return Object.entries(value).flatMap(([k, v]) => {
+                            if (k === relationship.propertiesTypeName) {
+                                return this.createAggregationNodeFilters(v as Record<string, any>, relationship);
+                            }
+                            return [];
+                        });
+                    }
                     return this.createAggregationNodeFilters(value as Record<string, any>, relationship);
                 }
 
