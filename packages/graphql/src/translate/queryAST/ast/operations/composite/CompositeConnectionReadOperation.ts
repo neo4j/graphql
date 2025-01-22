@@ -35,7 +35,7 @@ export class CompositeConnectionReadOperation extends Operation {
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     private pagination: Pagination | undefined;
 
-    private aggregationField: ConnectionAggregationField | undefined; // TODO: multiple aggregations
+    private aggregationField: ConnectionAggregationField | undefined;
 
     constructor(children: CompositeConnectionPartial[]) {
         super();

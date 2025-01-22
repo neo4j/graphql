@@ -44,7 +44,7 @@ export class ConnectionReadOperation extends Operation {
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
 
-    private aggregationField: ConnectionAggregationField | undefined; // TODO: multiple aggregations
+    private aggregationField: ConnectionAggregationField | undefined;
 
     public filters: Filter[] = [];
     protected pagination: Pagination | undefined;

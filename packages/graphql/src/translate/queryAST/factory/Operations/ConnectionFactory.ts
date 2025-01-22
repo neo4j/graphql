@@ -227,7 +227,7 @@ export class ConnectionFactory {
         });
         this.hydrateConnectionOperationWithAggregation({
             target,
-            resolveTreeAggregate: resolveTreeAggregate[0], //TODO: suport for multiple aggregate fields
+            resolveTreeAggregate: resolveTreeAggregate[0],
             relationship,
             context,
             operation,
