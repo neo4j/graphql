@@ -158,4 +158,62 @@ describe("Cypher Aggregations where edge with String", () => {
             }"
         `);
     });
+
+    test("should generate Cypher to aggregate over edge properties and count", async () => {
+        const query = /* GraphQL */ `
+            query People {
+                people(
+                    where: { productionsAggregate: { edge: { ActedIn: { role_AVERAGE_LENGTH_LT: 5 } }, count_LTE: 10 } }
+                ) {
+                    name
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+                MATCH (this0:Actor)
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:ACTED_IN]->(this2)
+                    WHERE (this2:Movie OR this2:Series)
+                    RETURN (count(this2) <= $param0 AND avg(size(this1.role)) < $param1) AS var3
+                }
+                WITH *
+                WHERE var3 = true
+                WITH this0 { .name, __resolveType: \\"Actor\\", __id: id(this0) } AS this0
+                RETURN this0 AS this
+                UNION
+                MATCH (this4:Cameo)
+                CALL {
+                    WITH this4
+                    MATCH (this4)-[this5:APPEARED_IN]->(this6)
+                    WHERE (this6:Movie OR this6:Series)
+                    RETURN count(this6) <= $param2 AS var7
+                }
+                WITH *
+                WHERE var7 = true
+                WITH this4 { .name, __resolveType: \\"Cameo\\", __id: id(this4) } AS this4
+                RETURN this4 AS this
+            }
+            WITH this
+            RETURN this AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"param1\\": 5,
+                \\"param2\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
 });
