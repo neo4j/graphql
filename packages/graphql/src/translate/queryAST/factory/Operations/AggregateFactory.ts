@@ -138,7 +138,6 @@ export class AggregateFactory {
             }
         } else {
             if (isConcreteEntity(entity)) {
-                // HERE
                 let selection: EntitySelection;
                 // NOTE: If we introduce vector index aggregation, checking the phrase will cause a problem
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
@@ -233,7 +232,6 @@ export class AggregateFactory {
         edge: ResolveTree | undefined;
         fields: Record<string, ResolveTree>;
     } {
-        // Handle new aggregation node inside connection
         let nodeFields: Record<string, ResolveTree> = {};
         if (adapter instanceof ConcreteEntityAdapter) {
             nodeFields = resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.node] ?? {};

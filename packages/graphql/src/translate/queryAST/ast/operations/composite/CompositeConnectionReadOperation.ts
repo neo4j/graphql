@@ -35,39 +35,11 @@ export class CompositeConnectionReadOperation extends Operation {
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     private pagination: Pagination | undefined;
 
-    public aggregationField: ConnectionAggregationField | undefined; // TODO: multiple aggregations
+    private aggregationField: ConnectionAggregationField | undefined; // TODO: multiple aggregations
 
     constructor(children: CompositeConnectionPartial[]) {
         super();
         this.children = children;
-    }
-
-    // NOTE: duplicate from ConnectionReadOperation
-    protected transpileAggregation(context: QueryASTContext): {
-        subqueries: Cypher.Clause[];
-        fields: Array<[Cypher.Expr, Cypher.Variable]>;
-        returnMap: Record<string, Cypher.Variable>;
-    } {
-        const returnMap: Record<string, Cypher.Variable> = {};
-        let extraFieldsSubqueries: Cypher.Clause[] = [];
-        let extraFields: Array<[Cypher.Expr, Cypher.Variable]> = [];
-        if (this.aggregationField) {
-            extraFieldsSubqueries = this.aggregationField.getSubqueries(context);
-
-            const aggregationProjectionField = this.aggregationField.getProjectionField();
-
-            extraFields = Object.entries(aggregationProjectionField).map(([key, value]) => {
-                const variable = new Cypher.Variable();
-                returnMap[key] = variable;
-                return [value, variable];
-            });
-        }
-
-        return {
-            fields: extraFields,
-            subqueries: extraFieldsSubqueries,
-            returnMap,
-        };
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -126,15 +98,16 @@ export class CompositeConnectionReadOperation extends Operation {
         }
 
         const {
-            fields: extraFields,
+            fields: aggregateFields,
             subqueries: aggregateSubqueries,
-            returnMap: aggregateReturnMap,
+            projectionMap: aggregateReturnMap,
         } = this.transpileAggregation(context);
 
-        const subqueryWith = new Cypher.With([Cypher.collect(edgeVar), edgesVar], ...extraFields).with(
+        const aggregateVariables = aggregateFields.map((c) => c[1]);
+        const subqueryWith = new Cypher.With([Cypher.collect(edgeVar), edgesVar], ...aggregateFields).with(
             edgesVar,
             [Cypher.size(edgesVar), totalCount],
-            ...(extraFields ?? []).map((c) => c[1])
+            ...aggregateVariables
         );
 
         const returnClause = new Cypher.Return([
@@ -162,6 +135,10 @@ export class CompositeConnectionReadOperation extends Operation {
         this.pagination = pagination;
     }
 
+    public setAggregationField(aggregationField: ConnectionAggregationField): void {
+        this.aggregationField = aggregationField;
+    }
+
     public getChildren(): QueryASTNode[] {
         const sortFields = this.sortFields.flatMap((s) => {
             return [...s.edge, ...s.node];
@@ -181,5 +158,39 @@ export class CompositeConnectionReadOperation extends Operation {
 
             return [...nodeFields, ...edgeFields];
         });
+    }
+
+    // NOTE: duplicate from ConnectionReadOperation
+    private transpileAggregation(context: QueryASTContext): {
+        subqueries: Cypher.Clause[];
+        fields: Array<[Cypher.Expr, Cypher.Variable]>;
+        projectionMap: Record<string, Cypher.Variable>;
+    } {
+        if (!this.aggregationField) {
+            return {
+                fields: [],
+                subqueries: [],
+                projectionMap: {},
+            };
+        }
+        const projectionMap: Record<string, Cypher.Variable> = {};
+
+        const subqueries = this.aggregationField.getSubqueries(context);
+
+        const aggregationProjectionField = this.aggregationField.getProjectionField();
+
+        const fields: Array<[Cypher.Expr, Cypher.Variable]> = Object.entries(aggregationProjectionField).map(
+            ([key, value]) => {
+                const variable = new Cypher.Variable();
+                projectionMap[key] = variable;
+                return [value, variable];
+            }
+        );
+
+        return {
+            fields,
+            subqueries,
+            projectionMap,
+        };
     }
 }

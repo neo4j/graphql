@@ -21,16 +21,14 @@ import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationOperation } from "../operations/AggregationOperation";
-import { CypherOperation } from "../operations/CypherOperation";
-import { CypherScalarOperation } from "../operations/CypherScalarOperation";
 import type { CompositeAggregationOperation } from "../operations/composite/CompositeAggregationOperation";
-import { CompositeCypherOperation } from "../operations/composite/CompositeCypherOperation";
 import { Field } from "./Field";
 
+/** An aggregate field inside connection */
 export class ConnectionAggregationField extends Field {
     public operation: AggregationOperation | CompositeAggregationOperation;
 
-    public nodeAlias: string;
+    private nodeAlias: string;
 
     private projectionExpr: Cypher.Expr | undefined;
 
@@ -64,15 +62,5 @@ export class ConnectionAggregationField extends Field {
         const result = this.operation.transpile(subqueryContext);
         this.projectionExpr = result.projectionExpr;
         return result.clauses;
-    }
-
-    public isCypherField(): this is this & {
-        operation: CypherOperation | CypherScalarOperation | CompositeCypherOperation;
-    } {
-        return (
-            this.operation instanceof CypherOperation ||
-            this.operation instanceof CypherScalarOperation ||
-            this.operation instanceof CompositeCypherOperation
-        );
     }
 }

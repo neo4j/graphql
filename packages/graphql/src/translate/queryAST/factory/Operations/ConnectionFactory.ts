@@ -94,22 +94,20 @@ export class ConnectionFactory {
                     directed,
                     targetOverride: concreteEntity,
                 });
-                const { edges } = this.parseConnectionFields({
+                resolveTreeEdgeFields = this.parseConnectionFields({
                     entityOrRel: relationship,
                     target: concreteEntity,
                     resolveTree,
                 });
-                resolveTreeEdgeFields = edges;
             } else {
                 selection = new NodeSelection({
                     target: concreteEntity,
                 });
-                const { edges } = this.parseConnectionFields({
+                resolveTreeEdgeFields = this.parseConnectionFields({
                     entityOrRel: concreteEntity,
                     target: concreteEntity,
                     resolveTree,
                 });
-                resolveTreeEdgeFields = edges;
             }
 
             const connectionPartial = new CompositeConnectionPartial({
@@ -131,43 +129,6 @@ export class ConnectionFactory {
 
         const compositeConnectionOp = new CompositeConnectionReadOperation(concreteConnectionOperations);
 
-        if (isInterfaceEntity(target)) {
-            const fields = resolveTree.fieldsByTypeName[target.operations.connectionFieldTypename];
-            if (fields) {
-                const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(fields, "aggregate")[0];
-                if (resolveTreeAggregate) {
-                    const resolveTreeAggregateFields =
-                        resolveTreeAggregate.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
-
-                    if (resolveTreeAggregateFields) {
-                        // Maybe this should be using operationFactory instead
-                        const nodeField = getResolveTreeByFieldName({
-                            fieldName: "node",
-                            selection: resolveTreeAggregateFields,
-                        });
-
-                        if (nodeField) {
-                            const typeNameNode = target.operations.aggregateTypeNames.node;
-                            // Sugar syntax for aggregations. This allows to use normal aggregations in each composite field, by renaming the type name
-                            nodeField.fieldsByTypeName[typeNameNode] =
-                                nodeField.fieldsByTypeName[target.operations.aggregateTypeNames.node] ?? {};
-                            const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                                entityOrRel: relationship ?? target,
-                                resolveTree: nodeField,
-                                context,
-                            });
-                            const aggregationField = new ConnectionAggregationField({
-                                alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                                nodeAlias: nodeField.alias,
-                                operation: aggregationOperation,
-                            });
-                            compositeConnectionOp.aggregationField = aggregationField;
-                        }
-                    }
-                }
-            }
-        }
-
         // These sort fields will be duplicated on nested "CompositeConnectionPartial"
 
         this.hydrateConnectionOperationsASTWithSort({
@@ -176,6 +137,22 @@ export class ConnectionFactory {
             operation: compositeConnectionOp,
             context,
         });
+
+        if (isInterfaceEntity(target)) {
+            const fields = resolveTree.fieldsByTypeName[target.operations.connectionFieldTypename];
+            if (fields) {
+                const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(fields, "aggregate")[0];
+
+                this.hydrateConnectionOperationWithAggregation({
+                    target,
+                    resolveTreeAggregate,
+                    relationship,
+                    context,
+                    operation: compositeConnectionOp,
+                });
+            }
+        }
+
         return compositeConnectionOp;
     }
 
@@ -207,19 +184,16 @@ export class ConnectionFactory {
 
         let selection: EntitySelection;
         let resolveTreeEdgeFields: Record<string, ResolveTree>;
-        let resolveTreeAggregate: ResolveTree | undefined;
         if (relationship) {
             selection = new RelationshipSelection({
                 relationship,
                 directed: resolveTree.args.directed as boolean | undefined,
             });
-            const { edges, aggregate } = this.parseConnectionFields({
+            resolveTreeEdgeFields = this.parseConnectionFields({
                 entityOrRel: relationship,
                 target,
                 resolveTree,
             });
-            resolveTreeEdgeFields = edges;
-            resolveTreeAggregate = aggregate;
         } else {
             if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                 selection = this.fulltextFactory.getFulltextSelection(target, context);
@@ -228,36 +202,13 @@ export class ConnectionFactory {
                     target,
                 });
             }
-            const { edges, aggregate } = this.parseConnectionFields({
+            resolveTreeEdgeFields = this.parseConnectionFields({
                 entityOrRel: target,
                 target,
                 resolveTree,
             });
-            resolveTreeEdgeFields = edges;
-            resolveTreeAggregate = aggregate;
         }
         const operation = new ConnectionReadOperation({ relationship, target, selection });
-        const resolveTreeAggregateFields =
-            resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
-        if (resolveTreeAggregate && resolveTreeAggregateFields) {
-            const nodeField = getResolveTreeByFieldName({ fieldName: "node", selection: resolveTreeAggregateFields });
-            if (nodeField) {
-                // Maybe this should be using operationFactory instead
-                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                    entityOrRel: relationship ?? target,
-                    resolveTree: nodeField,
-                    context,
-                });
-
-                const aggregationField = new ConnectionAggregationField({
-                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                    nodeAlias: nodeField.alias,
-                    operation: aggregationOperation,
-                });
-
-                operation.aggregationField = aggregationField;
-            }
-        }
 
         this.hydrateConnectionOperationAST({
             relationship,
@@ -269,10 +220,54 @@ export class ConnectionFactory {
             resolveTreeEdgeFields,
         });
 
-        if (operation.aggregationField) {
-            operation.aggregationField.operation.addFilters(...operation.filters);
-        }
+        const resolveTreeAggregate = this.parseAggregateFields({
+            entityOrRel: relationship ?? target,
+            target,
+            resolveTree,
+        });
+        this.hydrateConnectionOperationWithAggregation({
+            target,
+            resolveTreeAggregate: resolveTreeAggregate[0], //TODO: suport for multiple aggregate fields
+            relationship,
+            context,
+            operation,
+        });
+
         return operation;
+    }
+
+    private hydrateConnectionOperationWithAggregation({
+        target,
+        resolveTreeAggregate,
+        relationship,
+        context,
+        operation,
+    }: {
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        resolveTreeAggregate: ResolveTree | undefined;
+        relationship: RelationshipAdapter | undefined;
+        context: Neo4jGraphQLTranslationContext;
+        operation: ConnectionReadOperation | CompositeConnectionReadOperation;
+    }) {
+        const resolveTreeAggregateFields =
+            resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
+        if (resolveTreeAggregate && resolveTreeAggregateFields) {
+            const nodeField = getResolveTreeByFieldName({ fieldName: "node", selection: resolveTreeAggregateFields });
+            if (nodeField) {
+                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                    entityOrRel: relationship ?? target,
+                    resolveTree: nodeField,
+                    context,
+                });
+                const aggregationField = new ConnectionAggregationField({
+                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                    nodeAlias: nodeField.alias,
+                    operation: aggregationOperation,
+                });
+
+                operation.setAggregationField(aggregationField);
+            }
+        }
     }
 
     private hydrateConnectionOperationsASTWithSort<
@@ -466,6 +461,23 @@ export class ConnectionFactory {
         return operation;
     }
 
+    private parseAggregateFields({
+        target,
+        resolveTree,
+        entityOrRel,
+    }: {
+        entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
+        target: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+    }): ResolveTree[] {
+        const resolveTreeConnectionFields = this.parseConnectionResolveTree({
+            entityOrRel,
+            target,
+            resolveTree,
+        });
+        return findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "aggregate");
+    }
+
     private parseConnectionFields({
         target,
         resolveTree,
@@ -474,7 +486,33 @@ export class ConnectionFactory {
         entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
         target: ConcreteEntityAdapter;
         resolveTree: ResolveTree;
-    }): { edges: Record<string, ResolveTree>; aggregate: ResolveTree | undefined } {
+    }): Record<string, ResolveTree> {
+        const resolveTreeConnectionFields = this.parseConnectionResolveTree({
+            entityOrRel,
+            target,
+            resolveTree,
+        });
+
+        const entityInterfaces = getEntityInterfaces(target);
+        const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
+        const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
+            return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
+        });
+
+        const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
+
+        return mergeDeep([...interfacesEdgeFields, concreteEdgeFields]);
+    }
+
+    private parseConnectionResolveTree({
+        target,
+        resolveTree,
+        entityOrRel,
+    }: {
+        entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
+        target: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+    }): Record<string, ResolveTree> {
         // Get interfaces of the entity
         const entityInterfaces = getEntityInterfaces(target);
 
@@ -489,19 +527,6 @@ export class ConnectionFactory {
                 ]),
         };
 
-        const resolveTreeConnectionFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
-            ...interfacesFields,
-            concreteProjectionFields,
-        ]);
-
-        const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
-        const aggregateFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "aggregate");
-        const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
-            return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
-        });
-
-        const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
-
-        return { edges: mergeDeep([...interfacesEdgeFields, concreteEdgeFields]), aggregate: aggregateFieldsRaw[0] };
+        return mergeDeep<Record<string, ResolveTree>[]>([...interfacesFields, concreteProjectionFields]);
     }
 }
