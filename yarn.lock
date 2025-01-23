@@ -2120,6 +2120,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/utils@npm:10.6.1":
+  version: 10.6.1
+  resolution: "@graphql-tools/utils@npm:10.6.1"
+  dependencies:
+    "@graphql-typed-document-node/core": "npm:^3.1.1"
+    cross-inspect: "npm:1.0.1"
+    dset: "npm:^3.1.2"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 10c0/00cd131e34e0adf85c4b879fc301fcf0b51709d8b802efe0349d0207dbc64990b018f3588d8bc122de805c0759f96e145ec1f80083a2f95a37f4ea83ce0329ed
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/utils@npm:8.9.0":
   version: 8.9.0
   resolution: "@graphql-tools/utils@npm:8.9.0"
@@ -2840,7 +2854,7 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
-    "@graphql-tools/utils": "npm:^10.0.0"
+    "@graphql-tools/utils": "npm:10.6.1"
     "@neo4j/cypher-builder": "npm:^1.20.1"
     "@types/deep-equal": "npm:1.0.4"
     "@types/is-uuid": "npm:1.0.2"
