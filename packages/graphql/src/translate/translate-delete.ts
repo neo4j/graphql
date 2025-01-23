@@ -52,7 +52,9 @@ function translateUsingQueryAST({
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);
-    return clause.build();
+    return clause.build({
+        cypherVersion: "5",
+    });
 }
 export function translateDelete({
     context,

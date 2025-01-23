@@ -50,7 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
+                "CYPHER 5
+                MATCH (this:Actor)
                 WHERE this.age > $param0
                 RETURN this { .name, .age } AS this"
             `);
@@ -78,7 +79,8 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
+                "CYPHER 5
+                MATCH (this:Actor)
                 WHERE this.age > $param0
                 RETURN this { .name, .age } AS this"
             `);

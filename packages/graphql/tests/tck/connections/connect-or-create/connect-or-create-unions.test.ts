@@ -96,7 +96,8 @@ describe("Create or connect with unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH this0
@@ -192,7 +193,8 @@ describe("Create or connect with unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             SET this.name = $this_update_name_SET
             WITH this

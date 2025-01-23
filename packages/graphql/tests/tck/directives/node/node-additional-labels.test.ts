@@ -55,7 +55,8 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "CYPHER 5
+            MATCH (this:Film:Multimedia)
             RETURN this { .title } AS this"
         `);
 
@@ -77,7 +78,8 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "CYPHER 5
+            MATCH (this:Film:Multimedia)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor:Person)
@@ -109,7 +111,8 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Film:Multimedia)
@@ -174,7 +177,8 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "CYPHER 5
+            MATCH (this:Film:Multimedia)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -200,7 +204,8 @@ describe("Node directive with additionalLabels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film:Multimedia)
+            "CYPHER 5
+            MATCH (this:Film:Multimedia)
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             RETURN collect(DISTINCT this { .id }) AS data"

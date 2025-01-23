@@ -104,7 +104,8 @@ describe("Cypher Disconnect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Product)
+            "CYPHER 5
+            MATCH (this:Product)
             SET this.id = $this_update_id_SET
             SET this.name = $this_update_name_SET
             WITH this

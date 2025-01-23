@@ -57,7 +57,8 @@ describe("#360", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Event)
+            "CYPHER 5
+            MATCH (this:Event)
             WHERE (this.start >= $param0 AND this.start <= $param1)
             RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
@@ -91,7 +92,9 @@ describe("#360", () => {
     test("Should exclude undefined members in OR", async () => {
         const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                events(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }) {
+                events(
+                    where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }
+                ) {
                     start
                     activity
                 }
@@ -103,7 +106,8 @@ describe("#360", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Event)
+            "CYPHER 5
+            MATCH (this:Event)
             WHERE (this.start >= $param0 OR this.start <= $param1)
             RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);

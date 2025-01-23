@@ -65,7 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/5887", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Test)
+            "CYPHER 5
+            MATCH (this:Test)
             OPTIONAL MATCH (this)-[:HAS]->(this0:A)
             WITH *, count(this0) AS var1
             OPTIONAL MATCH (this)-[:HAS]->(this2:B)
@@ -113,7 +114,8 @@ describe("https://github.com/neo4j/graphql/issues/5887", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Test)
+            "CYPHER 5
+            MATCH (this:Test)
             OPTIONAL MATCH (this)-[:HAS]->(this0:A)
             WITH *, count(this0) AS var1
             OPTIONAL MATCH (this)-[:HAS]->(this2:B)
@@ -161,7 +163,8 @@ describe("https://github.com/neo4j/graphql/issues/5887", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Test)
+            "CYPHER 5
+            MATCH (this:Test)
             OPTIONAL MATCH (this)-[:HAS]->(this0:A)
             WITH *, count(this0) AS var1
             OPTIONAL MATCH (this)-[:HAS]->(this2:B)

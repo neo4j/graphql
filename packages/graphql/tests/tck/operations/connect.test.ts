@@ -106,7 +106,8 @@ describe("Cypher Connect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name

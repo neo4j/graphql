@@ -90,7 +90,8 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Exprlabel:test:Resource)
+            "CYPHER 5
+            MATCH (this:Exprlabel:test:Resource)
             WHERE single(this0 IN [(this)-[:realizationOf]->(this0:WorkLabel:test:Resource) WHERE EXISTS {
                 MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
                 WHERE this1.uri = $param0
@@ -140,7 +141,8 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Exprlabel:test:Resource)
+            "CYPHER 5
+            MATCH (this:Exprlabel:test:Resource)
             WHERE single(this0 IN [(this)-[:realizationOf]->(this0:WorkLabel:test:Resource) WHERE EXISTS {
                 MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
                 WHERE this1.uri = $param0
@@ -206,7 +208,8 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Exprlabel:test:Resource)
+            "CYPHER 5
+            MATCH (this:Exprlabel:test:Resource)
             WHERE single(this0 IN [(this)-[:realizationOf]->(this0:WorkLabel:test:Resource) WHERE EXISTS {
                 MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
                 WHERE this1.uri = $param0

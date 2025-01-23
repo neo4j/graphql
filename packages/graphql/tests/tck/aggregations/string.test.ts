@@ -51,7 +51,8 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH this
                 ORDER BY size(this.title) DESC
@@ -78,7 +79,8 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH this
                 ORDER BY size(this.title) DESC
@@ -106,7 +108,8 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH this
                 ORDER BY size(this.title) DESC
@@ -133,7 +136,8 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WHERE this.testId = $param0
                 WITH this

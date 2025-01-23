@@ -76,7 +76,8 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
         const result = await translateQuery(neoSchema, mutation);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:MyNode)
             SET this0.id = randomUUID()
             SET this0.name = $this0_name

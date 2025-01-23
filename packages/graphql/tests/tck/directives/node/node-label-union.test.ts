@@ -66,7 +66,8 @@ describe("Node directive with unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.title = $param0
             CALL {
                 WITH this

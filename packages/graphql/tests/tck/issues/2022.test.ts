@@ -88,7 +88,8 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:ArtPiece)
+            "CYPHER 5
+            MATCH (this0:ArtPiece)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

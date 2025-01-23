@@ -118,7 +118,8 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
         const result = await translateQuery(neoSchema, query, { variableValues });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
+            "CYPHER 5
+            MATCH (this:Series)
             WHERE (this.current = $param0 AND single(this2 IN [(this)-[this3:ARCHITECTURE]->(this2:MasterData) WHERE (single(this0 IN [(this2)-[this1:HAS_NAME]->(this0:NameDetails) WHERE (this0.fullName = $param1 AND this1.current = $param2) | 1] WHERE true) AND this3.current = $param3) | 1] WHERE true) AND single(this4 IN [(this)-[this5:HAS_NAME]->(this4:NameDetails) WHERE (this4.fullName CONTAINS $param4 AND this5.current = $param5) | 1] WHERE true))
             CALL {
                 WITH this

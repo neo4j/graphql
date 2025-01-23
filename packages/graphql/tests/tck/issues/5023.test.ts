@@ -115,7 +115,8 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tenant)
+            "CYPHER 5
+            MATCH (this:Tenant)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[:ADMIN_IN]-(this0:User) WHERE ($jwt.id IS NOT NULL AND this0.userId = $jwt.id) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this

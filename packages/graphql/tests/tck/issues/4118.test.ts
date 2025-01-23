@@ -130,7 +130,8 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:LOL)
             WITH *
             CALL {

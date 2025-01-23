@@ -48,7 +48,8 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             RETURN this0 { .title } AS this"
         `);
@@ -76,7 +77,8 @@ describe("Cypher -> fulltext -> Match", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND this0.title = $param2)
             RETURN this0 { .title } AS this"
         `);

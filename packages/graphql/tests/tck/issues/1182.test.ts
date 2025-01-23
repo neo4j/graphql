@@ -77,7 +77,8 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.id = randomUUID()
             SET this0.title = $this0_title

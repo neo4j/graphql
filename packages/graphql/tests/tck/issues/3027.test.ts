@@ -84,7 +84,8 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Book)
+                "CYPHER 5
+                MATCH (this:Book)
                 WHERE this.isbn = $param0
                 WITH this
                 WITH *
@@ -186,7 +187,8 @@ describe("https://github.com/neo4j/graphql/issues/3027", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Book)
+                "CYPHER 5
+                MATCH (this:Book)
                 WHERE this.isbn = $param0
                 WITH this
                 CALL {

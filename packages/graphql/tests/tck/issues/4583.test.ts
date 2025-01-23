@@ -88,7 +88,8 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         const result = await translateQuery(neoSchema, mutation);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
@@ -181,7 +182,8 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         const result = await translateQuery(neoSchema, mutation);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
@@ -280,7 +282,8 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         const result = await translateQuery(neoSchema, mutation);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *

@@ -71,7 +71,8 @@ describe("Interface Relationships - Delete delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH *
             CALL {
                 WITH *
@@ -127,7 +128,8 @@ describe("Interface Relationships - Delete delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH *
             CALL {
                 WITH *

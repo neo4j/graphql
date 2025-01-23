@@ -84,5 +84,7 @@ export function translateTopLevelCypher({
     const projectionStatements = queryASTResult.clauses.length
         ? Cypher.utils.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
-    return projectionStatements.build();
+    return projectionStatements.build({
+        cypherVersion: "5",
+    });
 }

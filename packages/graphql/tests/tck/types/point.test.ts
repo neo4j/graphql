@@ -53,7 +53,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.point = point($param0)
             RETURN this { .point } AS this"
         `);
@@ -83,7 +84,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE NOT (this.point = point($param0))
             RETURN this { .point } AS this"
         `);
@@ -114,7 +116,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.point IN [var0 IN $param0 | point(var0)]
             RETURN this { .point } AS this"
         `);
@@ -147,7 +150,8 @@ describe("Cypher Points", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
+                "CYPHER 5
+                MATCH (this:PointContainer)
                 WHERE point.distance(this.point, point($param0.point)) < $param0.distance
                 RETURN this { .point } AS this"
             `);
@@ -180,7 +184,8 @@ describe("Cypher Points", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
+                "CYPHER 5
+                MATCH (this:PointContainer)
                 WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
                 RETURN this { .point } AS this"
             `);
@@ -213,7 +218,8 @@ describe("Cypher Points", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
+                "CYPHER 5
+                MATCH (this:PointContainer)
                 WHERE point.distance(this.point, point($param0.point)) > $param0.distance
                 RETURN this { .point } AS this"
             `);
@@ -246,7 +252,8 @@ describe("Cypher Points", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
+                "CYPHER 5
+                MATCH (this:PointContainer)
                 WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
                 RETURN this { .point } AS this"
             `);
@@ -281,7 +288,8 @@ describe("Cypher Points", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
+                "CYPHER 5
+                MATCH (this:PointContainer)
                 WHERE point.distance(this.point, point($param0.point)) = $param0.distance
                 RETURN this { .point } AS this"
             `);
@@ -318,7 +326,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:PointContainer)
@@ -364,7 +373,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.id = $param0
             SET this.point = point($this_update_point_SET)
             RETURN collect(DISTINCT this { .point }) AS data"

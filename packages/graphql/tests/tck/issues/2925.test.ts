@@ -55,7 +55,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE single(this0 IN [(this)-[:HAS_GROUP]->(this0:Group) WHERE this0.name IN $param0 | 1] WHERE true)
             RETURN this { .name } AS this"
         `);
@@ -81,7 +82,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             OPTIONAL MATCH (this)-[:HAS_REQUIRED_GROUP]->(this0:Group)
             WITH *, count(this0) AS var1
             WITH *
@@ -110,7 +112,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Group)
+            "CYPHER 5
+            MATCH (this:Group)
             WHERE EXISTS {
                 MATCH (this)<-[:HAS_GROUP]-(this0:User)
                 WHERE single(this1 IN [(this0)-[:HAS_GROUP]->(this1:Group) WHERE this1.name IN $param0 | 1] WHERE true)
@@ -139,7 +142,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Group)
+            "CYPHER 5
+            MATCH (this:Group)
             CALL {
                 WITH this
                 MATCH (this)<-[:HAS_GROUP]-(this0:User)

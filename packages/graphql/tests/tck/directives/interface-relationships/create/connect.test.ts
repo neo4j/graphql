@@ -87,7 +87,8 @@ describe("Interface Relationships - Create connect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *

@@ -58,7 +58,8 @@ describe("Subscriptions metadata on delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -82,7 +83,8 @@ describe("Subscriptions metadata on delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -132,7 +134,8 @@ describe("Subscriptions metadata on delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {

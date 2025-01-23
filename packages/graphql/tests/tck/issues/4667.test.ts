@@ -47,7 +47,8 @@ describe("https://github.com/neo4j/graphql/issues/4667", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:MyThing)
+            "CYPHER 5
+            MATCH (this:MyThing)
             WHERE NOT (EXISTS {
                 MATCH (this)-[:THE_STUFF]->(this0:MyStuff)
             })

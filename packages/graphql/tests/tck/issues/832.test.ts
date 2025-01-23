@@ -83,7 +83,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -308,7 +309,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -438,7 +440,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -579,7 +582,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -865,7 +869,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind

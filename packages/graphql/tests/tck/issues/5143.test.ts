@@ -78,7 +78,8 @@ describe("https://github.com/neo4j/graphql/issues/5143", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (video:Video)
                 RETURN video
                 LIMIT 1

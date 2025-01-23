@@ -81,7 +81,8 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:BibliographicReference:Resource)
+            "CYPHER 5
+            MATCH (this:BibliographicReference:Resource)
             WHERE this.uri = $param0
             SET this.prefLabel = $this_update_prefLabel_SET
             WITH this

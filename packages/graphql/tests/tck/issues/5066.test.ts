@@ -124,7 +124,8 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Party)
+            "CYPHER 5
+            MATCH (this:Party)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:CREATED_PARTY]-(this1:AdminGroup)

@@ -75,7 +75,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE ($isAuthenticated = true AND size([(this0)<-[:DIRECTED]-(this2:Person) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0)
@@ -134,7 +135,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:DIRECTED]-(this2:Person) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -193,7 +195,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:DIRECTED]-(this2:Person) WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -257,7 +260,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this3:DIRECTED]-(this2:Person) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -321,7 +325,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this3:DIRECTED]-(this2:Person) WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -389,7 +394,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this2:DIRECTED]-(this3:Person) WHERE ($param3 IS NOT NULL AND this2.year = $param3) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -451,7 +457,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this2:DIRECTED]-(this3:Person) WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -507,7 +514,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE ($isAuthenticated = true AND EXISTS {
@@ -569,7 +577,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
@@ -631,7 +640,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
@@ -701,7 +711,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
@@ -768,7 +779,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
@@ -842,7 +854,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
@@ -907,7 +920,8 @@ describe("Cypher -> fulltext -> Auth", () => {
             const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+                "CYPHER 5
+                CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
                 WHERE $param1 IN labels(this0)
                 WITH *
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {

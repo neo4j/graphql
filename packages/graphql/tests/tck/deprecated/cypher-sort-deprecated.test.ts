@@ -107,7 +107,8 @@ describe("Cypher sort deprecated", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { .id, .title } AS this"
@@ -129,7 +130,8 @@ describe("Cypher sort deprecated", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { .title, .id, aliased: this.id } AS this"
@@ -150,7 +152,8 @@ describe("Cypher sort deprecated", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 ORDER BY this.id DESC
                 RETURN this { .title, .id } AS this"
@@ -172,7 +175,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -204,7 +208,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -221,7 +226,7 @@ describe("Cypher sort deprecated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
-    
+
     test("Simple Sort On Cypher Field", async () => {
         const query = /* GraphQL */ `
             {
@@ -234,7 +239,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -267,7 +273,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             ORDER BY this.id DESC, this.title ASC
             RETURN this { .id, .title } AS this"
@@ -294,7 +301,8 @@ describe("Cypher sort deprecated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             ORDER BY this.id DESC, this.title ASC
@@ -332,7 +340,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
@@ -360,7 +369,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
@@ -389,7 +399,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
@@ -443,7 +454,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -533,7 +545,8 @@ describe("Cypher sort deprecated", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)

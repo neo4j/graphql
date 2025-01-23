@@ -81,7 +81,8 @@ describe("Connect or create with @alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:BibliographicReference:Resource)
+            "CYPHER 5
+            MATCH (this:BibliographicReference:Resource)
             WHERE this._uri = $param0
             SET this.prefLabel = $this_update_prefLabel_SET
             WITH this

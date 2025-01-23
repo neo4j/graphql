@@ -96,7 +96,8 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
+            "CYPHER 5
+            MATCH (this:File)
             WHERE this.id = $param0
             WITH this
             CALL {

@@ -112,7 +112,8 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PreviewClip)
+            "CYPHER 5
+            MATCH (this:PreviewClip)
             OPTIONAL MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this0:Video)
             WITH *, count(this0) AS var1
             CALL {
@@ -159,7 +160,8 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Video)
+            "CYPHER 5
+            MATCH (this:Video)
             OPTIONAL MATCH (this)<-[:PUBLISHER]-(this0:User)
             WITH *, count(this0) AS var1
             WITH *

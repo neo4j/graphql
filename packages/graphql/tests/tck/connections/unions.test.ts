@@ -80,7 +80,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -136,7 +137,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -196,7 +198,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -265,7 +268,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -331,7 +335,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {

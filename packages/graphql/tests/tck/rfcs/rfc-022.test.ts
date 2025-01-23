@@ -66,7 +66,8 @@ describe("tck/rfs/022 subquery projection", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
@@ -108,7 +109,8 @@ describe("tck/rfs/022 subquery projection", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
@@ -156,7 +158,10 @@ describe("tck/rfs/022 subquery projection", () => {
                     @authorization(
                         filter: [{ where: { node: { name_EQ: "The Matrix" } } }]
                         validate: [
-                            { when: [BEFORE], where: { node: { name_EQ: "$jwt.test" }, jwt: { roles_INCLUDES: "admin" } } }
+                            {
+                                when: [BEFORE]
+                                where: { node: { name_EQ: "$jwt.test" }, jwt: { roles_INCLUDES: "admin" } }
+                            }
                         ]
                     ) {
                     name: String!
@@ -194,7 +199,8 @@ describe("tck/rfs/022 subquery projection", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this

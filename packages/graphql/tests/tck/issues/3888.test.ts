@@ -54,7 +54,11 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
             mutation {
                 createPosts(
                     input: [
-                        { title: "Test1", content: "Test1", author: { connect: { where: { node: { id_EQ: "michel" } } } } }
+                        {
+                            title: "Test1"
+                            content: "Test1"
+                            author: { connect: { where: { node: { id_EQ: "michel" } } } }
+                        }
                     ]
                 ) {
                     posts {
@@ -70,7 +74,8 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Post)
             SET this0.title = $this0_title
             SET this0.content = $this0_content

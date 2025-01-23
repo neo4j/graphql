@@ -92,7 +92,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -137,7 +138,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE (this0.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -186,7 +188,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -248,7 +251,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -317,7 +321,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -383,7 +388,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -444,7 +450,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -513,7 +520,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -583,7 +591,8 @@ describe("Connection auth filter", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:User)
+            "CYPHER 5
+            MATCH (this0:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount

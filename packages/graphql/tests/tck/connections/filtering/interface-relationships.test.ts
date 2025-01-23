@@ -88,7 +88,8 @@ describe("interface relationships with aliased fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1)
                 WHERE (CASE
@@ -138,7 +139,8 @@ describe("interface relationships with aliased fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1)
                 WHERE (CASE
@@ -178,7 +180,8 @@ describe("interface relationships with aliased fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ProtectedActor)
+            "CYPHER 5
+            MATCH (this:ProtectedActor)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0) WHERE (($jwt.title IS NOT NULL AND CASE
                 WHEN this0:Movie THEN this0.movieTitle

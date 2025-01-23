@@ -2059,10 +2059,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@npm:2.0.2":
-  version: 2.0.2
-  resolution: "@neo4j/cypher-builder@npm:2.0.2"
-  checksum: 10c0/776f7204df4c226bf26c1e9e8db472b6498d85b7aacf4ca67ec210ca4c6e884a1c08e5bd7779dccadef4b79a22775c9f7d99b73cba9c8d38e518551792a38f03
+"@neo4j/cypher-builder@npm:2.3.0":
+  version: 2.3.0
+  resolution: "@neo4j/cypher-builder@npm:2.3.0"
+  checksum: 10c0/bd7d98b8c3a84e9562ff88b9f2ad10a9258aabc2204dba247d4aa83944bce6f5100a3e14199a688dea62de2313910b90e03da7a9b1a423d0a279b022e5909fc3
   languageName: node
   linkType: hard
 
@@ -2083,7 +2083,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
     "@graphql-tools/utils": "npm:^10.0.0"
-    "@neo4j/cypher-builder": "npm:2.0.2"
+    "@neo4j/cypher-builder": "npm:2.3.0"
     "@types/deep-equal": "npm:1.0.4"
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:29.5.14"

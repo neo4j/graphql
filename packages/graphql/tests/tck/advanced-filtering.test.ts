@@ -72,7 +72,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -96,7 +97,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -120,7 +122,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this._id IN $param0
             RETURN this { ._id } AS this"
         `);
@@ -146,7 +149,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id =~ $param0
             RETURN this { .id } AS this"
         `);
@@ -170,7 +174,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE NOT (this.id = $param0)
             RETURN this { .id } AS this"
         `);
@@ -194,7 +199,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id CONTAINS $param0
             RETURN this { .id } AS this"
         `);
@@ -218,7 +224,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id STARTS WITH $param0
             RETURN this { .id } AS this"
         `);
@@ -242,7 +249,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id ENDS WITH $param0
             RETURN this { .id } AS this"
         `);
@@ -266,7 +274,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.actorCount < $param0
             RETURN this { .actorCount } AS this"
         `);
@@ -293,7 +302,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.budget < $param0
             RETURN this { .budget } AS this"
         `);
@@ -319,7 +329,8 @@ describe("Cypher Advanced Filtering", () => {
 
         const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title < $param0
             RETURN this { .title } AS this"
         `);
@@ -343,7 +354,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.actorCount <= $param0
             RETURN this { .actorCount } AS this"
         `);
@@ -370,7 +382,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.budget <= $param0
             RETURN this { .budget } AS this"
         `);
@@ -396,7 +409,8 @@ describe("Cypher Advanced Filtering", () => {
 
         const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title <= $param0
             RETURN this { .title } AS this"
         `);
@@ -420,7 +434,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.actorCount > $param0
             RETURN this { .actorCount } AS this"
         `);
@@ -447,7 +462,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.budget > $param0
             RETURN this { .budget } AS this"
         `);
@@ -473,7 +489,8 @@ describe("Cypher Advanced Filtering", () => {
 
         const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title > $param0
             RETURN this { .title } AS this"
         `);
@@ -497,7 +514,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.actorCount >= $param0
             RETURN this { .actorCount } AS this"
         `);
@@ -524,7 +542,8 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.budget >= $param0
             RETURN this { .budget } AS this"
         `);
@@ -550,7 +569,8 @@ describe("Cypher Advanced Filtering", () => {
 
         const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title >= $param0
             RETURN this { .title } AS this"
         `);
@@ -575,7 +595,8 @@ describe("Cypher Advanced Filtering", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE EXISTS {
                     MATCH (this)-[:IN_GENRE]->(this0:Genre)
                     WHERE this0.name = $param0
@@ -602,7 +623,8 @@ describe("Cypher Advanced Filtering", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE NOT (EXISTS {
                     MATCH (this)-[:IN_GENRE]->(this0:Genre)
                     WHERE this0.name = $param0
@@ -634,7 +656,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE (EXISTS {
                         MATCH (this)-[:IN_GENRE]->(this0:Genre)
                         WHERE this0.name = $param0
@@ -656,7 +679,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE NOT (EXISTS {
                         MATCH (this)-[:IN_GENRE]->(this0:Genre)
                         WHERE this0.name = $param0
@@ -675,7 +699,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE single(this0 IN [(this)-[:IN_GENRE]->(this0:Genre) WHERE this0.name = $param0 | 1] WHERE true)
                     RETURN this { .actorCount } AS this"
                 `);
@@ -691,7 +716,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE EXISTS {
                         MATCH (this)-[:IN_GENRE]->(this0:Genre)
                         WHERE this0.name = $param0
@@ -720,7 +746,8 @@ describe("Cypher Advanced Filtering", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE EXISTS {
                     MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                     WHERE this1.name = $param0
@@ -747,7 +774,8 @@ describe("Cypher Advanced Filtering", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE NOT (EXISTS {
                     MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                     WHERE this1.name = $param0
@@ -779,7 +807,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE (EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                         WHERE this1.name = $param0
@@ -801,7 +830,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE NOT (EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                         WHERE this1.name = $param0
@@ -820,7 +850,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE single(this0 IN [(this)-[this1:IN_GENRE]->(this0:Genre) WHERE this0.name = $param0 | 1] WHERE true)
                     RETURN this { .actorCount } AS this"
                 `);
@@ -836,7 +867,8 @@ describe("Cypher Advanced Filtering", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Movie)
+                    "CYPHER 5
+                    MATCH (this:Movie)
                     WHERE EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                         WHERE this1.name = $param0

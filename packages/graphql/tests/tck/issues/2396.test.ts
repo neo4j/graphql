@@ -152,7 +152,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
             WITH *, count(this0) AS var1
             WITH *
@@ -220,7 +221,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             OPTIONAL MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
             WITH *, count(this0) AS var1
             WITH *
@@ -296,7 +298,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
@@ -400,7 +403,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
@@ -515,7 +519,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)

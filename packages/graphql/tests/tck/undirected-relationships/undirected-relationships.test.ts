@@ -52,7 +52,8 @@ describe("Undirected relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
@@ -111,7 +112,8 @@ describe("Undirected relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
                 CALL {
@@ -179,7 +181,8 @@ describe("Undirected relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -237,7 +240,8 @@ describe("Undirected relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Foo)
+            "CYPHER 5
+            MATCH (this:Foo)
             CALL {
                 WITH this
                 MATCH (this)-[this0:DRINKS_AT]->(this1:Bar)

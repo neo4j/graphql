@@ -72,7 +72,8 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
+            "CYPHER 5
+            MATCH (this:Journalist)
             WHERE EXISTS {
                 MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
                 WHERE this1.type = $param0
@@ -126,7 +127,8 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
+            "CYPHER 5
+            MATCH (this:Journalist)
             WHERE NOT (EXISTS {
                 MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
                 WHERE this1.type = $param0

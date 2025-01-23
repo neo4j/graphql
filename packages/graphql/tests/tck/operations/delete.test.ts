@@ -55,7 +55,8 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -70,7 +71,10 @@ describe("Cypher Delete", () => {
     test("Single Nested Delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id_EQ: 123 }, delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }) {
+                deleteMovies(
+                    where: { id_EQ: 123 }
+                    delete: { actors: { where: { node: { name_EQ: "Actor to delete" } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -79,7 +83,8 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -125,7 +130,8 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -183,7 +189,8 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -247,7 +254,8 @@ describe("Cypher Delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {

@@ -68,7 +68,8 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 RETURN count(this) AS var0
             }

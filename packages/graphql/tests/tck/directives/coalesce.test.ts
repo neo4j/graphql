@@ -89,7 +89,8 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND coalesce(this.numberOfFriends, 0) > $param2 AND coalesce(this.rating, 2.5) < $param3 AND this.fromInterface = $param4 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param5 AND NOT (coalesce(this.verified, false) = $param6))
             RETURN this { .name } AS this"
         `);
@@ -145,7 +146,8 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
             RETURN this { .id, .status } AS this"
         `);
@@ -202,7 +204,8 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -265,7 +268,8 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)

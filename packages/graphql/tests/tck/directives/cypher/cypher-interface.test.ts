@@ -140,7 +140,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -185,7 +186,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -246,7 +248,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -340,7 +343,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -418,7 +422,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -464,7 +469,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -526,7 +532,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -621,7 +628,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -714,7 +722,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {

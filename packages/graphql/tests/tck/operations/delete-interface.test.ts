@@ -89,7 +89,8 @@ describe("Cypher Delete - interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             DETACH DELETE this"
         `);
@@ -104,7 +105,10 @@ describe("Cypher Delete - interface", () => {
     test("Single Nested Delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteActors(where: { name_EQ: "Keanu" }, delete: { actedIn: { where: { node: { title_EQ: "Matrix" } } } }) {
+                deleteActors(
+                    where: { name_EQ: "Keanu" }
+                    delete: { actedIn: { where: { node: { title_EQ: "Matrix" } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -113,7 +117,8 @@ describe("Cypher Delete - interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH *
             CALL {
@@ -166,7 +171,8 @@ describe("Cypher Delete - interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH *
             CALL {
@@ -221,7 +227,8 @@ describe("Cypher Delete - interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH *
             CALL {
@@ -281,7 +288,8 @@ describe("Cypher Delete - interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH *
             CALL {

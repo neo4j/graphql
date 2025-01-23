@@ -158,7 +158,8 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:TransactionItem)
             SET this0.name = $this0_name
             SET this0.price = $this0_price

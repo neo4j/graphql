@@ -49,7 +49,8 @@ describe("Simple Cypher tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -74,7 +75,8 @@ describe("Simple Cypher tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .id, .title } AS this"
         `);
@@ -101,7 +103,8 @@ describe("Simple Cypher tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .id, .title } AS this"
         `);

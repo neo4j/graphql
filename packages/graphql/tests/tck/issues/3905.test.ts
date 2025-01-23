@@ -75,7 +75,8 @@ describe("https://github.com/neo4j/graphql/issues/3905", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 WITH [[{entity_id:1, other_entity_id: 2}],[{entity_id: 2, other_entity_id:3},{entity_id:3, other_entity_id: 4}]] as paths
                 RETURN {paths: paths} as result
             }

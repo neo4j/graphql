@@ -58,7 +58,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -79,7 +80,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName, .lastName } AS this"
             `);
 
@@ -99,7 +101,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName, .lastName } AS this"
             `);
 
@@ -118,7 +121,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName, .lastName } AS this"
             `);
 
@@ -161,7 +165,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -180,7 +185,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this {  } AS this"
             `);
 
@@ -243,7 +249,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 CALL {
                     WITH this
                     MATCH (this)-[this0:LIVES_AT]->(this1:Address)
@@ -274,7 +281,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -299,7 +307,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 CALL {
                     WITH this
                     MATCH (this)-[this0:LIVES_AT]->(this1:Address)
@@ -330,7 +339,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 CALL {
                     WITH this
                     MATCH (this)-[this0:LIVES_AT]->(this1:Address)
@@ -408,7 +418,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -443,7 +454,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 RETURN this { .name } AS this"
             `);
 
@@ -467,7 +479,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -502,7 +515,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -589,7 +603,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -624,7 +639,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 RETURN this { .name } AS this"
             `);
 
@@ -648,7 +664,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -683,7 +700,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {

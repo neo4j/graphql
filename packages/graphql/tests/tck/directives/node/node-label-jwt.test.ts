@@ -60,7 +60,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             RETURN this { .title } AS this"
         `);
 
@@ -83,7 +84,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor:Person)
+            "CYPHER 5
+            MATCH (this:Actor:Person)
             WHERE this.age > $param0
             CALL {
                 WITH this
@@ -117,11 +119,12 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person"  });
+        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person" });
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Film)

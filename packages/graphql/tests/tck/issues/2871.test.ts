@@ -61,7 +61,8 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:FirstLevel)
+            "CYPHER 5
+            MATCH (this:FirstLevel)
             OPTIONAL MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:SecondLevel)
             WITH *, count(this0) AS var1
             WITH *
@@ -92,7 +93,8 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:FirstLevel)
+            "CYPHER 5
+            MATCH (this:FirstLevel)
             OPTIONAL MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:SecondLevel)
             WITH *, count(this0) AS var1
             WITH *
@@ -126,7 +128,8 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:FirstLevel)
+            "CYPHER 5
+            MATCH (this:FirstLevel)
             OPTIONAL MATCH (this)-[:HAS_SECOND_LEVEL]->(this0:SecondLevel)
             WITH *, count(this0) AS var1
             WITH *

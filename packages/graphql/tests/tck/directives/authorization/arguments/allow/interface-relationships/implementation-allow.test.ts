@@ -94,7 +94,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
                 CALL {
@@ -153,7 +154,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE this.id = $param0
             CALL {
                 WITH this
@@ -226,7 +228,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -335,7 +338,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE this.id = $param0
             WITH *
             CALL {

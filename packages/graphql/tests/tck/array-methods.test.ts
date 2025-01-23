@@ -48,7 +48,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -93,7 +94,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -152,7 +154,8 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
@@ -207,7 +210,8 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -258,7 +262,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
@@ -304,7 +309,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
@@ -361,7 +367,8 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
@@ -415,7 +422,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -482,7 +490,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -584,7 +593,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
             CALL {

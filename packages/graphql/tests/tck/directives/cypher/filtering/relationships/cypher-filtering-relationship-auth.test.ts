@@ -78,7 +78,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {
@@ -170,7 +171,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {
@@ -262,7 +264,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {
@@ -354,7 +357,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {

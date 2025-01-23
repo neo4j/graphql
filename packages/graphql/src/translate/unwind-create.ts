@@ -44,5 +44,5 @@ export default function unwindCreate({
 
     const clauses = queryAST.build(context);
 
-    return clauses.build({ prefix: "create_" });
+    return clauses.build({ prefix: "create_", cypherVersion: "5" });
 }

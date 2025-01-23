@@ -87,7 +87,8 @@ describe("#324", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             WHERE this.identifier = $param0
             WITH this
             CALL {

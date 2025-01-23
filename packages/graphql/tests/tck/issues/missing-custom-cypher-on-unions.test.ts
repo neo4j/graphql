@@ -149,7 +149,8 @@ describe("Missing custom Cypher on unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:HierarchicalComponent:Resource)
+            "CYPHER 5
+            MATCH (this:HierarchicalComponent:Resource)
             OPTIONAL MATCH (this)-[:isContained]->(this0:HierarchicalRoot:Resource)
             WITH *, count(this0) AS var1
             WITH *

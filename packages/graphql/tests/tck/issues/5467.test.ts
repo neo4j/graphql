@@ -66,7 +66,8 @@ describe("https://github.com/neo4j/graphql/issues/5467", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MERGE (t:Test {name: $param0}) SET t.groups = $param1
                 return t
             }
