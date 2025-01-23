@@ -61,9 +61,13 @@ describe("aggregations-top_level-id", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
-                        id {
-                            shortest
+                    ${Movie.operations.connection}(where: {testId_EQ: "${id}"}) {
+                        aggregate {
+                            node {
+                                id {
+                                    shortest
+                                }
+                            }
                         }
                     }
                 }
@@ -77,9 +81,15 @@ describe("aggregations-top_level-id", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            id: {
-                shortest: "1",
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        id: {
+                            shortest: "1",
+                        },
+                    },
+                },
             },
         });
     });
@@ -104,10 +114,14 @@ describe("aggregations-top_level-id", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
-                        id {
-                            longest
-                        }
+                    ${Movie.operations.connection}(where: {testId_EQ: "${id}"}) {
+                        aggregate {
+                        node {
+                            id {
+                                    longest
+                                }
+                            }
+                        }    
                     }
                 }
             `;
@@ -120,9 +134,15 @@ describe("aggregations-top_level-id", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            id: {
-                longest: "4444",
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        id: {
+                            longest: "4444",
+                        },
+                    },
+                },
             },
         });
     });
@@ -147,10 +167,14 @@ describe("aggregations-top_level-id", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testId_EQ: "${id}"}) {
-                        id {
-                            shortest
-                            longest
+                    ${Movie.operations.connection}(where: {testId_EQ: "${id}"}) {
+                        aggregate {
+                            node {
+                                id {
+                                    shortest
+                                    longest
+                                }
+                            }
                         }
                     }
                 }
@@ -164,10 +188,16 @@ describe("aggregations-top_level-id", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            id: {
-                shortest: "1",
-                longest: "4444",
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        id: {
+                            shortest: "1",
+                            longest: "4444",
+                        },
+                    },
+                },
             },
         });
     });

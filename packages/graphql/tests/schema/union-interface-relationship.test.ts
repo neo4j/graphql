@@ -151,6 +151,16 @@ describe("Union Interface Relationships", () => {
               name: String!
             }
 
+            type ActorAggregate {
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              count: Int!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
             type ActorAggregateSelection {
               count: Int!
               id: IntAggregateSelection!
@@ -421,6 +431,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -511,6 +522,17 @@ describe("Union Interface Relationships", () => {
               url: String!
             }
 
+            type InfluencerAggregate {
+              node: InfluencerAggregateNode!
+            }
+
+            type InfluencerAggregateNode {
+              count: Int!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
+              url: StringAggregateSelection!
+            }
+
             type InfluencerAggregateSelection {
               count: Int!
               reputation: IntAggregateSelection!
@@ -587,6 +609,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type InfluencersConnection {
+              aggregate: InfluencerAggregate!
               edges: [InfluencerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -761,6 +784,16 @@ describe("Union Interface Relationships", () => {
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
               where: MovieActorsConnectionWhere
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              imdbId: IntAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -1244,6 +1277,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1273,6 +1307,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1286,6 +1321,18 @@ describe("Union Interface Relationships", () => {
               name: String!
               reputation: Int!
               reviewerId: Int
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             type PersonAggregateSelection {
@@ -1591,20 +1638,20 @@ describe("Union Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               directors(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: DirectorWhere): [Director!]!
               influencers(limit: Int, offset: Int, options: InfluencerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [InfluencerSort!], where: InfluencerWhere): [Influencer!]!
-              influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection!
+              influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"influencersConnection\\\\\\"\\")
               influencersConnection(after: String, first: Int, sort: [InfluencerSort!], where: InfluencerWhere): InfluencersConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               reviewers(limit: Int, offset: Int, options: ReviewerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
+              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"reviewersConnection\\\\\\"\\")
               reviewersConnection(after: String, first: Int, sort: [ReviewerSort!], where: ReviewerWhere): ReviewersConnection!
             }
 
@@ -1680,6 +1727,16 @@ describe("Union Interface Relationships", () => {
             interface Reviewer {
               reputation: Int!
               reviewerId: Int
+            }
+
+            type ReviewerAggregate {
+              node: ReviewerAggregateNode!
+            }
+
+            type ReviewerAggregateNode {
+              count: Int!
+              reputation: IntAggregateSelection!
+              reviewerId: IntAggregateSelection!
             }
 
             type ReviewerAggregateSelection {
@@ -1758,6 +1815,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ReviewersConnection {
+              aggregate: ReviewerAggregate!
               edges: [ReviewerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

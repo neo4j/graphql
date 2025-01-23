@@ -69,11 +69,15 @@ describe("Top-level interface query fields", () => {
     test("top level count and string fields", async () => {
         const query = `
             query {
-                productionsAggregate {
-                    count
-                    title {
-                        longest
-                        shortest
+                productionsConnection {
+                    aggregate {
+                        node {
+                            count
+                            title {
+                                longest
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -83,11 +87,15 @@ describe("Top-level interface query fields", () => {
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                count: 4,
-                title: {
-                    longest: "The Matrix is a very interesting movie: The Documentary",
-                    shortest: "The Show",
+            productionsConnection: {
+                aggregate: {
+                    node: {
+                        count: 4,
+                        title: {
+                            longest: "The Matrix is a very interesting movie: The Documentary",
+                            shortest: "The Show",
+                        },
+                    },
                 },
             },
         });
@@ -96,11 +104,15 @@ describe("Top-level interface query fields", () => {
     test("top level number fields", async () => {
         const query = `
             query {
-                productionsAggregate {
-                    cost {
-                        max
-                        min
-                        average
+                productionsConnection {
+                    aggregate {
+                        node {
+                            cost {
+                                max
+                                min
+                                average
+                            }
+                        }
                     }
                 }
             }
@@ -110,11 +122,15 @@ describe("Top-level interface query fields", () => {
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                cost: {
-                    min: 1,
-                    max: 20,
-                    average: 8.25,
+            productionsConnection: {
+                aggregate: {
+                    node: {
+                        cost: {
+                            min: 1,
+                            max: 20,
+                            average: 8.25,
+                        },
+                    },
                 },
             },
         });

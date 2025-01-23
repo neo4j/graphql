@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
@@ -42,11 +42,15 @@ export class AggregateFactory {
     }
 
     // TODO: dupe from read operation
-    public createAggregationOperation(
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
-    ): AggregationOperation | CompositeAggregationOperation {
+    public createAggregationOperation({
+        entityOrRel,
+        resolveTree,
+        context,
+    }: {
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+    }): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter; // TODO: check this seems wrong but outside of the scope of this PR
@@ -228,8 +232,15 @@ export class AggregateFactory {
         edge: ResolveTree | undefined;
         fields: Record<string, ResolveTree>;
     } {
+        let nodeFields: Record<string, ResolveTree> = {};
+        if (adapter instanceof ConcreteEntityAdapter) {
+            nodeFields = resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.node] ?? {};
+        }
+
         const rawProjectionFields = {
+            // Handle deprecated aggregations
             ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+            ...nodeFields,
         };
 
         return this.queryASTFactory.operationsFactory.splitConnectionFields(rawProjectionFields);
@@ -299,6 +310,7 @@ export class AggregateFactory {
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
+                ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.node], // Handles both, deprecated and new aggregation parsing
             };
 
             const fields = this.queryASTFactory.fieldFactory.createAggregationFields(entity, rawProjectionFields);

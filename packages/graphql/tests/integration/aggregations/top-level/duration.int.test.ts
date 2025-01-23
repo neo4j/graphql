@@ -68,9 +68,13 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        runningTime {
-                            min
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                runningTime {
+                                    min
+                                }
+                            }
                         }
                     }
                 }
@@ -80,9 +84,15 @@ describe("aggregations-top_level-duration", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            runningTime: {
-                min: minDuration.toString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        runningTime: {
+                            min: minDuration.toString(),
+                        },
+                    },
+                },
             },
         });
     });
@@ -112,9 +122,13 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        runningTime {
-                            max
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                runningTime {
+                                    max
+                                }
+                            }
                         }
                     }
                 }
@@ -124,9 +138,15 @@ describe("aggregations-top_level-duration", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            runningTime: {
-                max: maxDuration.toString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        runningTime: {
+                            max: maxDuration.toString(),
+                        },
+                    },
+                },
             },
         });
     });
@@ -156,10 +176,14 @@ describe("aggregations-top_level-duration", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        runningTime {
-                            min
-                            max
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                runningTime {
+                                    min
+                                    max
+                                }
+                            }
                         }
                     }
                 }
@@ -169,10 +193,16 @@ describe("aggregations-top_level-duration", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            runningTime: {
-                min: minDuration.toString(),
-                max: maxDuration.toString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        runningTime: {
+                            min: minDuration.toString(),
+                            max: maxDuration.toString(),
+                        },
+                    },
+                },
             },
         });
     });

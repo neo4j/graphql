@@ -18,6 +18,8 @@
  */
 
 import { DEPRECATED } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
     name: DEPRECATED,
@@ -61,7 +63,6 @@ export const DEPRECATE_OVERWRITE = {
     },
 };
 
-
 export const DEPRECATE_ID_AGGREGATION = {
     name: DEPRECATED,
     args: {
@@ -75,3 +76,12 @@ export const DEPRECATE_TYPENAME_IN = {
         reason: "The typename_IN filter is deprecated, please use the typename filter instead",
     },
 };
+
+export function DEPRECATE_AGGREGATION(entity: ConcreteEntityAdapter | InterfaceEntityAdapter) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the explicit the field "aggregate" inside "${entity.operations.rootTypeFieldNames.connection}"`,
+        },
+    };
+}

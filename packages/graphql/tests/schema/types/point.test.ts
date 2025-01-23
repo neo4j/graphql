@@ -63,6 +63,14 @@ describe("Point", () => {
               filmedAt: Point!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -112,6 +120,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -158,7 +167,7 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -251,6 +260,14 @@ describe("Point", () => {
               partLocation: CartesianPoint!
             }
 
+            type MachineAggregate {
+              node: MachineAggregateNode!
+            }
+
+            type MachineAggregateNode {
+              count: Int!
+            }
+
             type MachineAggregateSelection {
               count: Int!
             }
@@ -300,6 +317,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -321,7 +339,7 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, options: MachineOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MachineSort!], where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\"\\")
               machinesConnection(after: String, first: Int, sort: [MachineSort!], where: MachineWhere): MachinesConnection!
             }
 
@@ -390,6 +408,14 @@ describe("Point", () => {
               filmedAt: [Point!]!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -425,6 +451,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -464,7 +491,7 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -543,6 +570,14 @@ describe("Point", () => {
               partLocations: [CartesianPoint!]!
             }
 
+            type MachineAggregate {
+              node: MachineAggregateNode!
+            }
+
+            type MachineAggregateNode {
+              count: Int!
+            }
+
             type MachineAggregateSelection {
               count: Int!
             }
@@ -578,6 +613,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -599,7 +635,7 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, options: MachineOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\"\\")
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 

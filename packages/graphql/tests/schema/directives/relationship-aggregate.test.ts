@@ -232,6 +232,16 @@ describe("@relationship directive, aggregate argument", () => {
                   username: String!
                 }
 
+                type ActorAggregate {
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
+                  count: Int!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
+                }
+
                 type ActorAggregateSelection {
                   count: Int!
                   password: StringAggregateSelection!
@@ -295,6 +305,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -441,6 +452,15 @@ describe("@relationship directive, aggregate argument", () => {
                   where: MovieActorsConnectionWhere
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  title: StringAggregateSelection!
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   title: StringAggregateSelection!
@@ -520,6 +540,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -544,10 +565,10 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -613,6 +634,16 @@ describe("@relationship directive, aggregate argument", () => {
                   username: String!
                 }
 
+                type ActorAggregate {
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
+                  count: Int!
+                  password: StringAggregateSelection!
+                  username: StringAggregateSelection!
+                }
+
                 type ActorAggregateSelection {
                   count: Int!
                   password: StringAggregateSelection!
@@ -676,6 +707,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -833,6 +865,15 @@ describe("@relationship directive, aggregate argument", () => {
                   where: MovieActorsConnectionWhere
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  title: StringAggregateSelection!
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   title: StringAggregateSelection!
@@ -912,6 +953,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -936,10 +978,10 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1011,6 +1053,16 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -1070,6 +1122,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1212,6 +1265,15 @@ describe("@relationship directive, aggregate argument", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -1291,6 +1353,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1314,6 +1377,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1322,6 +1386,16 @@ describe("@relationship directive, aggregate argument", () => {
                     interface Person {
                       password: String!
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -1393,13 +1467,13 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -1469,6 +1543,16 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -1528,6 +1612,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1671,6 +1756,15 @@ describe("@relationship directive, aggregate argument", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -1760,6 +1854,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1783,6 +1878,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1791,6 +1887,16 @@ describe("@relationship directive, aggregate argument", () => {
                     interface Person {
                       password: String!
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -1862,13 +1968,13 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -1942,6 +2048,16 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -2005,6 +2121,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2167,6 +2284,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Person: [MovieActorsPersonUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -2245,6 +2371,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2271,6 +2398,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2278,6 +2406,15 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Person {
                       name: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      name: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -2333,14 +2470,14 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       castMembers(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -2422,6 +2559,16 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
+                    type ActorAggregate {
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      count: Int!
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
+                    }
+
                     type ActorAggregateSelection {
                       count: Int!
                       password: StringAggregateSelection!
@@ -2485,6 +2632,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2647,6 +2795,15 @@ describe("@relationship directive, aggregate argument", () => {
                       Person: [MovieActorsPersonUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      count: Int!
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -2725,6 +2882,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2751,6 +2909,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2758,6 +2917,15 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Person {
                       name: String!
+                    }
+
+                    type PersonAggregate {
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      count: Int!
+                      name: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -2813,14 +2981,14 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       castMembers(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CastMemberWhere): [CastMember!]!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 

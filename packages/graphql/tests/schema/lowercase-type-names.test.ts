@@ -51,6 +51,7 @@ describe("lower case type names", () => {
             }
 
             type ActorsConnection {
+              aggregate: actorAggregate!
               edges: [actorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -98,6 +99,7 @@ describe("lower case type names", () => {
             }
 
             type MoviesConnection {
+              aggregate: movieAggregate!
               edges: [movieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -122,10 +124,10 @@ describe("lower case type names", () => {
 
             type Query {
               actors(limit: Int, offset: Int, options: actorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): actorAggregateSelection!
+              actorsAggregate(where: actorWhere): actorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
               actorsConnection(after: String, first: Int, sort: [actorSort!], where: actorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, options: movieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): movieAggregateSelection!
+              moviesAggregate(where: movieWhere): movieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [movieSort!], where: movieWhere): MoviesConnection!
             }
 
@@ -169,6 +171,17 @@ describe("lower case type names", () => {
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
               year: Int
+            }
+
+            type actorAggregate {
+              node: actorAggregateNode!
+            }
+
+            type actorAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type actorAggregateSelection {
@@ -576,6 +589,18 @@ describe("lower case type names", () => {
               disconnect: [movieActorsDisconnectFieldInput!]
               update: movieActorsUpdateConnectionInput
               where: movieActorsConnectionWhere
+            }
+
+            type movieAggregate {
+              node: movieAggregateNode!
+            }
+
+            type movieAggregateNode {
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              name: StringAggregateSelection!
+              testId: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type movieAggregateSelection {

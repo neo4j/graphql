@@ -79,7 +79,7 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, options: TechOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechSort!], where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection!
+              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\"\\")
               techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
@@ -99,6 +99,16 @@ describe("Plural option", () => {
             type Tech {
               name: String
               value: String
+            }
+
+            type TechAggregate {
+              node: TechAggregateNode!
+            }
+
+            type TechAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
             }
 
             type TechAggregateSelection {
@@ -160,6 +170,7 @@ describe("Plural option", () => {
             }
 
             type TechsConnection {
+              aggregate: TechAggregate!
               edges: [TechEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -238,7 +249,7 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, options: TechOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechSort!], where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection!
+              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\"\\")
               techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
@@ -258,6 +269,16 @@ describe("Plural option", () => {
             type Tech {
               name: String
               value: String
+            }
+
+            type TechAggregate {
+              node: TechAggregateNode!
+            }
+
+            type TechAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
             }
 
             type TechAggregateSelection {
@@ -319,6 +340,7 @@ describe("Plural option", () => {
             }
 
             type TechsConnection {
+              aggregate: TechAggregate!
               edges: [TechEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -397,7 +419,7 @@ describe("Plural option", () => {
 
             type Query {
               technologies(limit: Int, offset: Int, options: TechOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechSort!], where: TechWhere): [Tech!]!
-              technologiesAggregate(where: TechWhere): TechAggregateSelection!
+              technologiesAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"technologiesConnection\\\\\\"\\")
               technologiesConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechnologiesConnection!
             }
 
@@ -417,6 +439,16 @@ describe("Plural option", () => {
             type Tech {
               name: String
               value: String
+            }
+
+            type TechAggregate {
+              node: TechAggregateNode!
+            }
+
+            type TechAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              value: StringAggregateSelection!
             }
 
             type TechAggregateSelection {
@@ -478,6 +510,7 @@ describe("Plural option", () => {
             }
 
             type TechnologiesConnection {
+              aggregate: TechAggregate!
               edges: [TechEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -556,7 +589,7 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, options: TechsOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TechsSort!], where: TechsWhere): [Techs!]!
-              techsAggregate(where: TechsWhere): TechsAggregateSelection!
+              techsAggregate(where: TechsWhere): TechsAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\"\\")
               techsConnection(after: String, first: Int, sort: [TechsSort!], where: TechsWhere): TechsConnection!
             }
 
@@ -577,12 +610,22 @@ describe("Plural option", () => {
               value: String
             }
 
+            type TechsAggregate {
+              node: TechsAggregateNode!
+            }
+
+            type TechsAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
+            }
+
             type TechsAggregateSelection {
               count: Int!
               value: StringAggregateSelection!
             }
 
             type TechsConnection {
+              aggregate: TechsAggregate!
               edges: [TechsEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -703,7 +746,7 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              techsAggregate(where: UserWhere): UserAggregateSelection!
+              techsAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\"\\")
               techsConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): TechsConnection!
             }
 
@@ -721,6 +764,7 @@ describe("Plural option", () => {
             }
 
             type TechsConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -743,6 +787,15 @@ describe("Plural option", () => {
 
             type User {
               value: String
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -850,7 +903,7 @@ describe("Plural option", () => {
 
             type Query {
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -884,6 +937,15 @@ describe("Plural option", () => {
 
             type User {
               value: String
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -934,6 +996,7 @@ describe("Plural option", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -997,7 +1060,7 @@ describe("Plural option", () => {
 
             type Query {
               users(limit: Int, offset: Int, options: UsersOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UsersSort!], where: UsersWhere): [Users!]!
-              usersAggregate(where: UsersWhere): UsersAggregateSelection!
+              usersAggregate(where: UsersWhere): UsersAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UsersSort!], where: UsersWhere): UsersConnection!
             }
 
@@ -1033,12 +1096,22 @@ describe("Plural option", () => {
               value: String
             }
 
+            type UsersAggregate {
+              node: UsersAggregateNode!
+            }
+
+            type UsersAggregateNode {
+              count: Int!
+              value: StringAggregateSelection!
+            }
+
             type UsersAggregateSelection {
               count: Int!
               value: StringAggregateSelection!
             }
 
             type UsersConnection {
+              aggregate: UsersAggregate!
               edges: [UsersEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

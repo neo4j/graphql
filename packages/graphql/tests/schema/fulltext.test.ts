@@ -79,6 +79,16 @@ describe("@fulltext schema", () => {
               title: String
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
+            }
+
             type MovieAggregateSelection {
               count: Int!
               description: StringAggregateSelection!
@@ -169,6 +179,7 @@ describe("@fulltext schema", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -206,7 +217,7 @@ describe("@fulltext schema", () => {
                 \\"\\"\\"
                 fulltext: MovieFulltext
                 where: MovieWhere
-              ): MovieAggregateSelection!
+              ): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(
                 after: String
                 first: Int
