@@ -50,7 +50,8 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND $param2 IN labels(this0))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -108,7 +109,8 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND $param2 IN labels(this0))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount

@@ -45,5 +45,7 @@ export function translateRead({
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);
-    return clause.build();
+    return clause.build({
+        cypherVersion: "5",
+    });
 }

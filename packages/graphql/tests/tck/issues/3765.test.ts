@@ -66,16 +66,17 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND (count(this1) > $param1 AND count(this1) < $param2)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN (count(this1) > $param0 AND (count(this1) > $param1 AND count(this1) < $param2)) AS var2
+                    }
+                    WITH *
+                    WHERE var2 = true
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                                     "{
@@ -107,7 +108,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -155,16 +157,17 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND (count(this1) > $param1 OR count(this1) < $param2)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN (count(this1) > $param0 AND (count(this1) > $param1 OR count(this1) < $param2)) AS var2
+                    }
+                    WITH *
+                    WHERE var2 = true
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                                     "{
@@ -203,7 +206,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -242,7 +246,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count: {gt: 10}
+                                    count: { gt: 10 }
                                     OR: [
                                         { AND: [{ count: { gt: 25 } }, { count: { lte: 99 } }] }
                                         { count: { lt: 33 } }
@@ -258,16 +262,17 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND ((count(this1) > $param1 AND count(this1) <= $param2) OR count(this1) < $param3)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN (count(this1) > $param0 AND ((count(this1) > $param1 AND count(this1) <= $param2) OR count(this1) < $param3)) AS var2
+                    }
+                    WITH *
+                    WHERE var2 = true
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                                     "{
@@ -317,7 +322,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -365,7 +371,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -418,7 +425,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -471,7 +479,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -530,7 +539,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -587,7 +597,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE (this.content = $param0 AND this.alternateContent = $param1)
                 RETURN this { .content } AS this"
             `);
@@ -619,7 +630,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE ((this.content = $param0 AND this.alternateContent = $param1) OR this.content = $param2)
                 RETURN this { .content } AS this"
             `);
@@ -645,7 +657,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE NOT (this.content = $param0 AND this.alternateContent = $param1)
                 RETURN this { .content } AS this"
             `);
@@ -672,7 +685,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE EXISTS {
                     MATCH (this)<-[:LIKES]-(this0:User)
                     WHERE (this0.name = $param0 AND this0.otherName = $param1)
@@ -700,7 +714,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE ((EXISTS {
                     MATCH (this)<-[:LIKES]-(this0:User)
                     WHERE this0.otherName = $param0
@@ -742,7 +757,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE (EXISTS {
                     MATCH (this)<-[:LIKES]-(this0:User)
                     WHERE this0.name = $param0

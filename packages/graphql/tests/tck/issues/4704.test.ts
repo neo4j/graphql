@@ -84,7 +84,8 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE ((EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE (EXISTS {
@@ -171,7 +172,8 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE (single(this1 IN [(this)-[this3:ACTED_IN]->(this1:Movie) WHERE single(this0 IN [(this1)<-[this2:ACTED_IN]-(this0:Actor) WHERE this0.name = $param0 | 1] WHERE true) | 1] WHERE true) XOR single(this5 IN [(this)-[this7:ACTED_IN]->(this5:Series) WHERE single(this4 IN [(this5)<-[this6:STARRED_IN]-(this4:Actor) WHERE this4.name = $param1 | 1] WHERE true) | 1] WHERE true))
             CALL {
                 WITH this
@@ -220,7 +222,8 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE (NOT (EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE NOT (EXISTS {

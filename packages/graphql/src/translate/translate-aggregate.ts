@@ -43,5 +43,7 @@ export function translateAggregate({
     const queryAST = queryASTFactory.createQueryAST({ resolveTree, entityAdapter, context });
     debug(queryAST.print());
     const clause = queryAST.buildNew(context);
-    return clause.build();
+    return clause.build({
+        cypherVersion: "5",
+    });
 }

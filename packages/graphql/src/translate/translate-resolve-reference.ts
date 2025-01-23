@@ -18,11 +18,11 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import Debug from "debug";
-import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
-import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import { DEBUG_TRANSLATE } from "../constants";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -46,5 +46,7 @@ export function translateResolveReference({
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, "this");
-    return clause.build();
+    return clause.build({
+        cypherVersion: "5",
+    });
 }
