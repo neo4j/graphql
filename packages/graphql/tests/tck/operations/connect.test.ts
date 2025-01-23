@@ -122,7 +122,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_colors_connect0_node
-            			MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
+            			CREATE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
             		}
             	}
             WITH this0, this0_colors_connect0_node
@@ -137,7 +137,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_colors_connect0_node
             			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node
-            			MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
+            			CREATE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
             		}
             	}
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
@@ -152,7 +152,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_colors_connect0_node_photos0_node
             			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node_color0_node
-            			MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
+            			CREATE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
             		}
             	}
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
@@ -174,7 +174,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_photos_connect0_node
-            			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
+            			CREATE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
             		}
             	}
             WITH this0, this0_photos_connect0_node
@@ -189,7 +189,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos_connect0_node
             			UNWIND connectedNodes as this0_photos_connect0_node_color0_node
-            			MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
+            			CREATE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
             		}
             	}
             WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
@@ -209,7 +209,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_photos_connect1_node
-            			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
+            			CREATE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
             		}
             	}
             WITH this0, this0_photos_connect1_node
@@ -224,7 +224,7 @@ describe("Cypher Connect", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos_connect1_node
             			UNWIND connectedNodes as this0_photos_connect1_node_color0_node
-            			MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
+            			CREATE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
             		}
             	}
             WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node

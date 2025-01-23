@@ -87,6 +87,7 @@ describe("Mixed nesting", () => {
                         WITH this1
                         MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                         WHERE NOT (this3.title = $param2)
+                        WITH DISTINCT this3
                         WITH this3 { .title } AS this3
                         RETURN collect(this3) AS var4
                     }
@@ -164,6 +165,7 @@ describe("Mixed nesting", () => {
                                 WITH this3
                                 MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                                 WHERE NOT (this5.name = $param3)
+                                WITH DISTINCT this5
                                 WITH this5 { .name } AS this5
                                 RETURN collect(this5) AS var6
                             }
@@ -219,6 +221,7 @@ describe("Mixed nesting", () => {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)

@@ -138,7 +138,7 @@ describe("createConnectAndParams", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this0_node
-            			MERGE (this)-[:\`SIMILAR\`]->(this0_node)
+            			CREATE (this)-[:\`SIMILAR\`]->(this0_node)
             		}
             	}
             WITH this, this0_node
@@ -153,7 +153,7 @@ describe("createConnectAndParams", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_node
             			UNWIND connectedNodes as this0_node_similarMovies0_node
-            			MERGE (this0_node)-[:\`SIMILAR\`]->(this0_node_similarMovies0_node)
+            			CREATE (this0_node)-[:\`SIMILAR\`]->(this0_node_similarMovies0_node)
             		}
             	}
             WITH this, this0_node, this0_node_similarMovies0_node

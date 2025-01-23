@@ -193,7 +193,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_transaction_connect0_node
-            			MERGE (this0)-[:ITEM_TRANSACTED]->(this0_transaction_connect0_node)
+            			CREATE (this0)-[:ITEM_TRANSACTED]->(this0_transaction_connect0_node)
             		}
             	}
             WITH this0, this0_transaction_connect0_node
@@ -229,9 +229,11 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                         MATCH (create_this1)-[:TRANSACTION]->(create_this2:Store)
                         WHERE ($jwt.store IS NOT NULL AND create_this2.id = $jwt.store)
                     }))
+                    WITH DISTINCT create_this1
                     CALL {
                         WITH create_this1
                         MATCH (create_this1)-[create_this3:TRANSACTION]->(create_this4:Store)
+                        WITH DISTINCT create_this4
                         WITH create_this4 { .name } AS create_this4
                         RETURN collect(create_this4) AS create_var5
                     }

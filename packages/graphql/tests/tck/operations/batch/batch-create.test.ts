@@ -261,6 +261,7 @@ describe("Batch Create", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }
@@ -348,7 +349,7 @@ describe("Batch Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -371,7 +372,7 @@ describe("Batch Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_actors_connect0_node
-            			MERGE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
+            			CREATE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
             		}
             	}
             WITH this1, this1_actors_connect0_node
@@ -384,6 +385,7 @@ describe("Batch Create", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
+                    WITH DISTINCT create_this1
                     WITH create_this1 { .name } AS create_this1
                     RETURN collect(create_this1) AS create_var2
                 }
@@ -394,6 +396,7 @@ describe("Batch Create", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)<-[create_this4:ACTED_IN]-(create_this5:Actor)
+                    WITH DISTINCT create_this5
                     WITH create_this5 { .name } AS create_this5
                     RETURN collect(create_this5) AS create_var6
                 }

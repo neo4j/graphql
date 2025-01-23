@@ -18,8 +18,8 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { AggregationLogicalOperator } from "../../../factory/parsers/parse-where-field";
+import { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 
 export class AggregationDurationFilter extends AggregationPropertyFilter {
     protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {

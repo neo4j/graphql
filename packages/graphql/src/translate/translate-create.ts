@@ -84,7 +84,6 @@ export default async function translateCreate({
                 context,
                 varName,
                 withVars,
-                includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
                 callbackBucket,
             });

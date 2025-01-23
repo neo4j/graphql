@@ -262,6 +262,7 @@ describe("Cypher Sort tests", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     CALL {

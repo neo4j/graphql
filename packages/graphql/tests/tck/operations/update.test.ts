@@ -281,7 +281,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node
@@ -337,7 +337,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node
@@ -355,7 +355,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect1_node
-            			MERGE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
+            			CREATE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
             		}
             	}
             WITH this, this_actors0_connect1_node
@@ -566,6 +566,7 @@ describe("Cypher Update", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -614,6 +615,7 @@ describe("Cypher Update", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -673,6 +675,7 @@ describe("Cypher Update", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }

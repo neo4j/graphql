@@ -134,6 +134,7 @@ describe("update", () => {
 
         expect(gqlResult?.data?.[Movie.operations.update]).toEqual({ [Movie.plural]: [{ id, name: updatedName }] });
     });
+
     test("should connect through interface relationship", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} implements Production @subscription(events: []) @node {
@@ -217,7 +218,7 @@ describe("update", () => {
                 `
         );
 
-        expect(cypherResult.records).toHaveLength(1);
+        expect(cypherResult.records).toHaveLength(2);
 
         expect(gqlResult?.data?.[Movie.operations.update]).toEqual({
             [Movie.plural]: [{ id: "1", title: "Movie1" }],

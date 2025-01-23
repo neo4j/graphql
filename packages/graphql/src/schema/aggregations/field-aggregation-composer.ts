@@ -18,13 +18,14 @@
  */
 
 import { GraphQLInt, GraphQLNonNull } from "graphql";
-import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposer, ObjectTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import type { Neo4jFeaturesSettings } from "../../types";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
@@ -39,21 +40,20 @@ export class FieldAggregationComposer {
 
     private createAggregationField(
         name: string,
-        fields: Record<string, ObjectTypeComposer>
+        fields: ObjectTypeComposerFieldConfigMapDefinition<any, any>
     ): ObjectTypeComposer | undefined {
         if (Object.keys(fields).length > 0) {
             return this.composer.createObjectTC({
                 name,
-                fields: {
-                    ...fields,
-                },
+                fields,
             });
         }
         return undefined;
     }
 
     public createAggregationTypeObject(
-        relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
+        relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter,
+        features: Neo4jFeaturesSettings | undefined
     ): ObjectTypeComposer {
         let aggregateSelectionEdge: ObjectTypeComposer | undefined;
 
@@ -61,7 +61,7 @@ export class FieldAggregationComposer {
             throw new Error("UnionEntityAdapter not implemented");
         }
 
-        const aggregateSelectionNodeFields = this.getAggregationFields(relationshipAdapter.target);
+        const aggregateSelectionNodeFields = this.getAggregationFields(relationshipAdapter.target, features);
         const aggregateSelectionNodeName = relationshipAdapter.operations.getAggregationFieldTypename("node");
 
         const aggregateSelectionNode = this.createAggregationField(
@@ -70,7 +70,7 @@ export class FieldAggregationComposer {
         );
 
         if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.attributes.size > 0) {
-            const aggregateSelectionEdgeFields = this.getAggregationFields(relationshipAdapter);
+            const aggregateSelectionEdgeFields = this.getAggregationFields(relationshipAdapter, features);
             const aggregateSelectionEdgeName = relationshipAdapter.operations.getAggregationFieldTypename("edge");
 
             aggregateSelectionEdge = this.createAggregationField(
@@ -94,13 +94,19 @@ export class FieldAggregationComposer {
     }
 
     private getAggregationFields(
-        entity: RelationshipAdapter | ConcreteEntityAdapter | InterfaceEntityAdapter
-    ): Record<string, ObjectTypeComposer> {
+        entity: RelationshipAdapter | ConcreteEntityAdapter | InterfaceEntityAdapter,
+        _features: Neo4jFeaturesSettings | undefined
+    ): ObjectTypeComposerFieldConfigMapDefinition<any, any> {
         return entity.aggregableFields.reduce((res, field) => {
             const objectTypeComposer = this.aggregationTypesMapper.getAggregationType(field.getTypeName());
 
-            if (!objectTypeComposer) return res;
+            if (!objectTypeComposer) {
+                return res;
+            }
 
+            if (field.typeHelper.isID()) {
+                return res;
+            }
             res[field.name] = objectTypeComposer.NonNull;
 
             return res;

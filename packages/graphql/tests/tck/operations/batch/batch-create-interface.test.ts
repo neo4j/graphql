@@ -305,7 +305,7 @@ describe("Batch Create, Interface", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect0_node
-            			MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
+            			CREATE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
             		}
             	}
             WITH this3, this3_workers_connect0_node
@@ -322,7 +322,7 @@ describe("Batch Create, Interface", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect1_node
-            			MERGE (this3)<-[this3_workers_connect1_relationship:EMPLOYED]-(this3_workers_connect1_node)
+            			CREATE (this3)<-[this3_workers_connect1_relationship:EMPLOYED]-(this3_workers_connect1_node)
             		}
             	}
             WITH this3, this3_workers_connect1_node
@@ -335,6 +335,7 @@ describe("Batch Create, Interface", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[create_this0:HAS_WEBSITE]->(create_this1:Website)
+                    WITH DISTINCT create_this1
                     WITH create_this1 { .address } AS create_this1
                     RETURN collect(create_this1) AS create_var2
                 }
@@ -361,6 +362,7 @@ describe("Batch Create, Interface", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[create_this9:HAS_WEBSITE]->(create_this10:Website)
+                    WITH DISTINCT create_this10
                     WITH create_this10 { .address } AS create_this10
                     RETURN collect(create_this10) AS create_var11
                 }
@@ -387,6 +389,7 @@ describe("Batch Create, Interface", () => {
                 CALL {
                     WITH this2
                     MATCH (this2)-[create_this18:HAS_WEBSITE]->(create_this19:Website)
+                    WITH DISTINCT create_this19
                     WITH create_this19 { .address } AS create_this19
                     RETURN collect(create_this19) AS create_var20
                 }
@@ -413,6 +416,7 @@ describe("Batch Create, Interface", () => {
                 CALL {
                     WITH this3
                     MATCH (this3)-[create_this27:HAS_WEBSITE]->(create_this28:Website)
+                    WITH DISTINCT create_this28
                     WITH create_this28 { .address } AS create_this28
                     RETURN collect(create_this28) AS create_var29
                 }

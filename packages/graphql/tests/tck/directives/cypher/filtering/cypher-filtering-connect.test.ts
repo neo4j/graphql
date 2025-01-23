@@ -110,7 +110,7 @@ describe("cypher directive filtering", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -123,6 +123,7 @@ describe("cypher directive filtering", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
+                    WITH DISTINCT create_this1
                     WITH create_this1 { .name } AS create_this1
                     RETURN collect(create_this1) AS create_var2
                 }

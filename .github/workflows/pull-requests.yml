@@ -26,7 +26,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@9a6606695f1ef9709cce821919ca3b2a6d5e6bb5 # v1.32.0
+      - uses: reviewdog/action-eslint@9b5b0150e399e1f007ee3c27bc156549810a64e3 # v1.33.0
         with:
           fail_on_error: true
           eslint_flags: "."

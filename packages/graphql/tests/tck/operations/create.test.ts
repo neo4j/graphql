@@ -328,7 +328,7 @@ describe("Cypher Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -391,7 +391,7 @@ describe("Cypher Create", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_movies_connect0_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
             		}
             	}
             WITH this0, this0_movies_connect0_node
@@ -404,6 +404,7 @@ describe("Cypher Create", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
+                    WITH DISTINCT create_this1
                     CALL {
                         WITH create_this1
                         MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)

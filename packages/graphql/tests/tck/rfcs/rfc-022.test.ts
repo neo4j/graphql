@@ -72,6 +72,7 @@ describe("tck/rfs/022 subquery projection", () => {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
+                    WITH DISTINCT this1
                     WITH this1 { .name } AS this1
                     RETURN collect(this1) AS var2
                 }
@@ -114,9 +115,11 @@ describe("tck/rfs/022 subquery projection", () => {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
+                    WITH DISTINCT this1
                     CALL {
                         WITH this1
                         MATCH (this1)-[this2:DIRECTED]->(this3:Movie)
+                        WITH DISTINCT this3
                         WITH this3 { .title, .released } AS this3
                         RETURN collect(this3) AS var4
                     }
@@ -202,6 +205,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WITH DISTINCT this1
                     WITH *
                     WHERE (this1.name = $param1 AND ($isAuthenticated = true AND ($param3 IS NOT NULL AND this1.name = $param3)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.test IS NOT NULL AND this1.name = $jwt.test) AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this1 { .name } AS this1

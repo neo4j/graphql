@@ -69,11 +69,22 @@ export function getMutationFieldStatements({
         switch (operator ?? "SET") {
             case "SET": {
                 const isSpatial = SPATIAL_TYPES.includes(settableField.typeMeta.name);
+                const isZonedTemporal = ["DateTime", "Time"].includes(settableField.typeMeta.name);
                 if (isSpatial) {
                     if (settableField.typeMeta.array) {
                         strs.push(`SET ${varName}.${dbFieldName} = [p in $${param} | point(p)]`);
                     } else {
                         strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
+                    }
+                } else if (isZonedTemporal) {
+                    if (settableField.typeMeta.array) {
+                        strs.push(
+                            `SET ${varName}.${dbFieldName} = [t in $${param} | ${settableField.typeMeta.name.toLowerCase()}(t)]`
+                        );
+                    } else {
+                        strs.push(
+                            `SET ${varName}.${dbFieldName} = ${settableField.typeMeta.name.toLowerCase()}($${param})`
+                        );
                     }
                 } else {
                     strs.push(`SET ${varName}.${dbFieldName} = $${param}`);
@@ -95,10 +106,19 @@ export function getMutationFieldStatements({
             }
             case "PUSH": {
                 const pointArrayField = nodeOrRel.pointFields.find((x) => x.fieldName === settableField.fieldName);
+                const zonedTemporalArrayField = nodeOrRel.temporalFields.find(
+                    (x) =>
+                        x.fieldName === settableField.fieldName &&
+                        ["DateTime", "Time"].includes(settableField.typeMeta.name)
+                );
 
                 if (pointArrayField) {
                     strs.push(
                         `SET ${varName}.${dbFieldName} = ${varName}.${dbFieldName} + [p in $${param} | point(p)]`
+                    );
+                } else if (zonedTemporalArrayField) {
+                    strs.push(
+                        `SET ${varName}.${dbFieldName} = ${varName}.${dbFieldName} + [t in $${param} | ${settableField.typeMeta.name.toLowerCase()}(t)]`
                     );
                 } else {
                     strs.push(`SET ${varName}.${dbFieldName} = ${varName}.${dbFieldName} + $${param}`);

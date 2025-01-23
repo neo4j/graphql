@@ -78,7 +78,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE (this0.startDate > $param0 AND this0.endDateTime < $param1)
+                WHERE (this0.startDate > $param0 AND this0.endDateTime < datetime($param1))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
@@ -99,16 +99,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                     \\"month\\": 1,
                     \\"day\\": 1
                 },
-                \\"param1\\": {
-                    \\"year\\": 2010,
-                    \\"month\\": 1,
-                    \\"day\\": 1,
-                    \\"hour\\": 0,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param1\\": \\"2010-01-01T00:00:00.000Z\\"
             }"
         `);
     });

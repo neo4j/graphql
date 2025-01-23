@@ -36,14 +36,18 @@ import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/f
 import { isLegacyRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
+import { AggregationDateTimeFilter } from "../ast/filters/aggregation/AggregationDateTimePropertyFilter";
 import { AggregationDurationFilter } from "../ast/filters/aggregation/AggregationDurationPropertyFilter";
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
+import { AggregationTimeFilter } from "../ast/filters/aggregation/AggregationTimePropertyFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
+import { DateTimeFilter } from "../ast/filters/property-filters/DateTimeFilter";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
 import { PointFilter } from "../ast/filters/property-filters/PointFilter";
 import { PropertyFilter } from "../ast/filters/property-filters/PropertyFilter";
+import { TimeFilter } from "../ast/filters/property-filters/TimeFilter";
 import { TypenameFilter } from "../ast/filters/property-filters/TypenameFilter";
 import { CustomCypherSelection } from "../ast/selection/CustomCypherSelection";
 import { getConcreteEntities } from "../utils/get-concrete-entities";
@@ -286,6 +290,22 @@ export class FilterFactory {
         }
         if (attribute.typeHelper.isPoint() || attribute.typeHelper.isCartesianPoint()) {
             return new PointFilter({
+                attribute,
+                comparisonValue,
+                operator,
+                attachedTo,
+            });
+        }
+        if (attribute.typeHelper.isDateTime()) {
+            return new DateTimeFilter({
+                attribute,
+                comparisonValue,
+                operator,
+                attachedTo,
+            });
+        }
+        if (attribute.typeHelper.isTime()) {
+            return new TimeFilter({
                 attribute,
                 comparisonValue,
                 operator,
@@ -898,7 +918,19 @@ export class FilterFactory {
                     );
                 }
 
-                if (fieldName === "edge") {
+                if (fieldName === "edge" && relationship.propertiesTypeName) {
+                    // This conditional handles when the relationship is an interface which is also being accessed through an interface
+                    if (
+                        isInterfaceEntity(relationship.target) &&
+                        Object.keys(value).some((v) => relationship.siblings?.includes(v))
+                    ) {
+                        return Object.entries(value).flatMap(([k, v]) => {
+                            if (k === relationship.propertiesTypeName) {
+                                return this.createAggregationNodeFilters(v as Record<string, any>, relationship);
+                            }
+                            return [];
+                        });
+                    }
                     return this.createAggregationNodeFilters(value as Record<string, any>, relationship);
                 }
 
@@ -999,6 +1031,26 @@ export class FilterFactory {
                             });
                         }
 
+                        if (attr.typeHelper.isDateTime()) {
+                            return new AggregationDateTimeFilter({
+                                attribute: attr,
+                                comparisonValue: value,
+                                logicalOperator: parsedOperator || "EQUAL",
+                                aggregationOperator: parsedAggregationOperation,
+                                attachedTo,
+                            });
+                        }
+
+                        if (attr.typeHelper.isTime()) {
+                            return new AggregationTimeFilter({
+                                attribute: attr,
+                                comparisonValue: value,
+                                logicalOperator: parsedOperator || "EQUAL",
+                                aggregationOperator: parsedAggregationOperation,
+                                attachedTo,
+                            });
+                        }
+
                         return new AggregationPropertyFilter({
                             attribute: attr,
                             relationship,
@@ -1014,6 +1066,26 @@ export class FilterFactory {
 
             if (attr.typeHelper.isDuration()) {
                 return new AggregationDurationFilter({
+                    attribute: attr,
+                    comparisonValue: value,
+                    logicalOperator: logicalOperator || "EQUAL",
+                    aggregationOperator: aggregationOperator,
+                    attachedTo,
+                });
+            }
+
+            if (attr.typeHelper.isDateTime()) {
+                return new AggregationDateTimeFilter({
+                    attribute: attr,
+                    comparisonValue: value,
+                    logicalOperator: logicalOperator || "EQUAL",
+                    aggregationOperator: aggregationOperator,
+                    attachedTo,
+                });
+            }
+
+            if (attr.typeHelper.isTime()) {
+                return new AggregationTimeFilter({
                     attribute: attr,
                     comparisonValue: value,
                     logicalOperator: logicalOperator || "EQUAL",

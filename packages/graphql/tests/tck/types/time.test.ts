@@ -50,19 +50,13 @@ describe("Cypher Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE this.time = $param0
+            WHERE this.time = time($param0)
             RETURN this { .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 12,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"12:00:00\\"
             }"
         `);
     });
@@ -80,19 +74,13 @@ describe("Cypher Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE this.time >= $param0
+            WHERE this.time >= time($param0)
             RETURN this { .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"hour\\": 13,
-                    \\"minute\\": 45,
-                    \\"second\\": 33,
-                    \\"nanosecond\\": 250000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"13:45:33.250\\"
             }"
         `);
     });
@@ -116,7 +104,7 @@ describe("Cypher Time", () => {
                 WITH create_var0
                 CREATE (create_this1:Movie)
                 SET
-                    create_this1.time = create_var0.time
+                    create_this1.time = time(create_var0.time)
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .time }) AS data"
@@ -126,13 +114,7 @@ describe("Cypher Time", () => {
             "{
                 \\"create_param0\\": [
                     {
-                        \\"time\\": {
-                            \\"hour\\": 22,
-                            \\"minute\\": 0,
-                            \\"second\\": 15,
-                            \\"nanosecond\\": 555000000,
-                            \\"timeZoneOffsetSeconds\\": -3600
-                        }
+                        \\"time\\": \\"22:00:15.555-01:00\\"
                     }
                 ]
             }"
@@ -155,19 +137,13 @@ describe("Cypher Time", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            SET this.time = $this_update_time_SET
+            SET this.time = time($this_update_time_SET)
             RETURN collect(DISTINCT this { .id, .time }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_time_SET\\": {
-                    \\"hour\\": 9,
-                    \\"minute\\": 24,
-                    \\"second\\": 40,
-                    \\"nanosecond\\": 845512000,
-                    \\"timeZoneOffsetSeconds\\": 23400
-                },
+                \\"this_update_time_SET\\": \\"09:24:40.845512+06:30\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -192,7 +168,7 @@ describe("Cypher Time", () => {
                 WITH create_var0
                 CREATE (create_this1:Movie)
                 SET
-                    create_this1.time = create_var0.time
+                    create_this1.time = time(create_var0.time)
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .time }) AS data"
@@ -202,13 +178,7 @@ describe("Cypher Time", () => {
             "{
                 \\"create_param0\\": [
                     {
-                        \\"time\\": {
-                            \\"hour\\": 22,
-                            \\"minute\\": 0,
-                            \\"second\\": 0,
-                            \\"nanosecond\\": 0,
-                            \\"timeZoneOffsetSeconds\\": 0
-                        }
+                        \\"time\\": \\"22:00\\"
                     }
                 ]
             }"

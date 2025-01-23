@@ -91,6 +91,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this5:ACTED_IN]-(this6:Actor)
+                WITH DISTINCT this6
                 WITH this6 { .name } AS this6
                 RETURN collect(this6) AS var7
             }
@@ -147,6 +148,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     CALL {
@@ -227,6 +229,7 @@ describe("cypher directive filtering - Auth", () => {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
                 WHERE this3.name = $param1
+                WITH DISTINCT this3
                 WITH this3 { .name } AS this3
                 RETURN collect(this3) AS var4
             }
@@ -319,6 +322,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
+                WITH DISTINCT this5
                 WITH this5 { .name } AS this5
                 RETURN collect(this5) AS var6
             }
@@ -397,6 +401,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH DISTINCT this3
                 CALL {
                     WITH this3
                     CALL {

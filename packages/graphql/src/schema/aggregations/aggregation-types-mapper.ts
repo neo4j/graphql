@@ -19,7 +19,6 @@
 
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
-import { idResolver } from "../resolvers/field/id";
 import { numericalResolver } from "../resolvers/field/numerical";
 
 export class AggregationTypesMapper {
@@ -51,12 +50,6 @@ export class AggregationTypesMapper {
             args: {},
         };
 
-        const composeId = {
-            type: "ID",
-            resolve: idResolver,
-            args: {},
-        };
-
         const directives: string[] = this.subgraph ? [this.subgraph.getFullyQualifiedDirectiveName("shareable")] : [];
 
         const aggregationSelectionTypeMatrix: Array<{
@@ -64,14 +57,6 @@ export class AggregationTypesMapper {
             fields?: Record<string, any>;
             directives?: string[];
         }> = [
-            {
-                name: "ID",
-                fields: {
-                    shortest: composeId,
-                    longest: composeId,
-                },
-                directives,
-            },
             {
                 name: "String",
                 fields: {
@@ -140,6 +125,7 @@ export class AggregationTypesMapper {
     }): ObjectTypeComposer<any, any> {
         return composer.getOrCreateOTC(`${name}AggregateSelection`, (tc) => {
             tc.addFields(fields ?? { min: name, max: name });
+
             for (const directive of directives) {
                 tc.setDirectiveByName(directive);
             }

@@ -158,6 +158,7 @@ describe("tck/rfcs/query-limits", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WITH DISTINCT this1
                     WITH this1 { .id } AS this1
                     LIMIT $param1
                     RETURN collect(this1) AS var2
@@ -356,6 +357,7 @@ describe("tck/rfcs/query-limits", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WITH DISTINCT this1
                     WITH this1 { .id } AS this1
                     LIMIT $param1
                     RETURN collect(this1) AS var2

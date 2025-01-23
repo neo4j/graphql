@@ -125,6 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:CREATED_PAGE]->(this1:Page)
+                WITH DISTINCT this1
                 WITH *
                 WHERE ($isAuthenticated = true AND (EXISTS {
                     MATCH (this1)<-[:CREATED_PAGE]-(this2:User)
@@ -191,6 +192,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this2:HAS_PAGE]->(this3:Page)
+                WITH DISTINCT this3
                 WITH *
                 WHERE ($isAuthenticated = true AND (EXISTS {
                     MATCH (this3)<-[:CREATED_PAGE]-(this4:User)

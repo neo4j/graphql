@@ -69,6 +69,7 @@ describe("#190", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:UserDemographics)
+                WITH DISTINCT this2
                 WITH this2 { .type, .value } AS this2
                 RETURN collect(this2) AS var3
             }
@@ -119,6 +120,7 @@ describe("#190", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:UserDemographics)
+                WITH DISTINCT this2
                 WITH this2 { .type, .value } AS this2
                 RETURN collect(this2) AS var3
             }

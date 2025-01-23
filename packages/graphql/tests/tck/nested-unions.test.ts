@@ -106,7 +106,7 @@ describe("Nested Unions", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node
-            			MERGE (this)<-[:ACTED_IN]-(this_actors_LeadActor0_connect0_node)
+            			CREATE (this)<-[:ACTED_IN]-(this_actors_LeadActor0_connect0_node)
             		}
             	}
             WITH this, this_actors_LeadActor0_connect0_node
@@ -121,7 +121,7 @@ describe("Nested Unions", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this_actors_LeadActor0_connect0_node
             			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node_actedIn_Series0_node
-            			MERGE (this_actors_LeadActor0_connect0_node)-[:ACTED_IN]->(this_actors_LeadActor0_connect0_node_actedIn_Series0_node)
+            			CREATE (this_actors_LeadActor0_connect0_node)-[:ACTED_IN]->(this_actors_LeadActor0_connect0_node_actedIn_Series0_node)
             		}
             	}
             WITH this, this_actors_LeadActor0_connect0_node, this_actors_LeadActor0_connect0_node_actedIn_Series0_node
