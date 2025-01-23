@@ -30,7 +30,6 @@ import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import type { ValidationFunction } from "../utils/document-validation-error";
 import { assertValid, createGraphQLError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { verifyCoalesce } from "./coalesce";
 import { verifyDefault } from "./default";
 import { verifyFulltext } from "./fulltext";
 import { verifyLimit } from "./limit";
@@ -53,8 +52,8 @@ function getValidationFunction(
     callbacks?: Neo4jGraphQLCallbacks
 ): ValidationFunction | undefined {
     switch (directiveName) {
-        case "coalesce":
-            return verifyCoalesce(extra.enums);
+        // case "coalesce":
+        //     return verifyCoalesce(extra.enums);
         case "default":
             return verifyDefault(extra.enums);
         case "fulltext":

@@ -20,6 +20,7 @@
 import type { Maybe } from "@graphql-tools/utils";
 import type {
     DocumentNode,
+    EnumTypeDefinitionNode,
     GraphQLError,
     GraphQLSchema,
     InterfaceTypeDefinitionNode,
@@ -32,19 +33,27 @@ import type {
 import { Kind } from "graphql";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
 
-export type ObjectExtensionsTypeMap = {
-    extensions: (ObjectTypeExtensionNode | InterfaceTypeExtensionNode | UnionTypeExtensionNode)[];
-    definition: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode | UnionTypeDefinitionNode;
-};
+export type ObjectExtensionsTypeMap = Record<
+    string,
+    {
+        extensions: (ObjectTypeExtensionNode | InterfaceTypeExtensionNode | UnionTypeExtensionNode)[];
+        definition:
+            | ObjectTypeDefinitionNode
+            | InterfaceTypeDefinitionNode
+            | UnionTypeDefinitionNode
+            | EnumTypeDefinitionNode;
+    }
+>;
 export class Neo4jValidationContext extends SDLValidationContext {
-    public readonly extensionsTypeMap?: Record<string, ObjectExtensionsTypeMap>;
+    public readonly extensionsTypeMap?: ObjectExtensionsTypeMap;
     constructor(ast: DocumentNode, schema: Maybe<GraphQLSchema>, onError: (error: GraphQLError) => void) {
         super(ast, schema, onError);
-        this.extensionsTypeMap = ast.definitions.reduce((acc, def): Record<string, ObjectExtensionsTypeMap> => {
+        this.extensionsTypeMap = ast.definitions.reduce((acc, def): ObjectExtensionsTypeMap => {
             if (
                 def.kind === Kind.OBJECT_TYPE_DEFINITION ||
                 def.kind === Kind.INTERFACE_TYPE_DEFINITION ||
                 def.kind === Kind.UNION_TYPE_DEFINITION ||
+                def.kind === Kind.ENUM_TYPE_DEFINITION ||
                 def.kind === Kind.OBJECT_TYPE_EXTENSION ||
                 def.kind === Kind.INTERFACE_TYPE_EXTENSION ||
                 def.kind === Kind.UNION_TYPE_EXTENSION

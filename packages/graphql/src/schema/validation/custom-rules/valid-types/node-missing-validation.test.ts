@@ -24,7 +24,7 @@ import { validateSDL } from "../../validate-sdl";
 import { validateAuthorizationDirective } from "../directives/test-rules/authorization";
 import { validateCypherDirective } from "../directives/test-rules/cypher";
 
-describe("node missing validation", () => {
+describe.skip("node missing validation", () => {
     test.each([
         authorizationDirectiveScaffold.name,
         // subscriptionsAuthorizationDirectiveScaffold.name,

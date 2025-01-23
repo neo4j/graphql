@@ -48,6 +48,7 @@ import type { Neo4jFeaturesSettings } from "../../types";
 import { isRootType } from "../../utils/is-root-type";
 import { validateAuthenticationDirective } from "./custom-rules/directives/test-rules/authentication";
 import { validateAuthorizationDirective } from "./custom-rules/directives/test-rules/authorization";
+import { validateCoalesceDirective } from "./custom-rules/directives/test-rules/coalesce";
 import { validateCypherDirective } from "./custom-rules/directives/test-rules/cypher";
 import { validateIdDirective } from "./custom-rules/directives/test-rules/id";
 import { validateLimitDirective } from "./custom-rules/directives/test-rules/limit";
@@ -249,6 +250,7 @@ function runValidationRulesOnFilteredDocument({
             validateIdDirective,
             validateTimestampDirective,
             validateLimitDirective,
+            validateCoalesceDirective,
             // nodeMissingValidation,
         ],
         schema

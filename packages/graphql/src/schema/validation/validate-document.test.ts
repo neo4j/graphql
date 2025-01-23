@@ -2514,7 +2514,7 @@ describe("validation 2.0", () => {
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "@coalesce is not supported by Spatial types.");
-                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce"]);
             });
 
             test("@coalesce not supported on Temporal types", () => {
@@ -2535,7 +2535,7 @@ describe("validation 2.0", () => {
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty("message", "@coalesce is not supported by Temporal types.");
-                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce", "value"]);
+                expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@coalesce"]);
             });
 
             test("@coalesce only supported on scalar types", () => {

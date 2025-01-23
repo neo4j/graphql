@@ -26,6 +26,7 @@ import { DocumentValidationError } from "../utils/document-validation-error";
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { getInnerTypeName, isArrayType } from "../utils/utils";
+import { defaultDirective } from "../../../../graphql/directives";
 
 // TODO: schema-generation: save enums as map
 
@@ -87,6 +88,6 @@ export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
                 );
             }
         }
-        assertArgumentHasSameTypeAsField({ directiveName: "@default", traversedDef, argument: defaultArg, enums });
+        assertArgumentHasSameTypeAsField({ directiveName: defaultDirective.name, traversedDef, argument: defaultArg, enums });
     };
 }

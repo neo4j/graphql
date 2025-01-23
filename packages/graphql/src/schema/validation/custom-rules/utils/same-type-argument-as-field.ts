@@ -38,7 +38,7 @@ export function assertArgumentHasSameTypeAsField({
     if (isArrayType(traversedDef)) {
         if (argument.value.kind !== Kind.LIST) {
             throw new DocumentValidationError(
-                `${directiveName}.${argument.name.value} on ${expectedType} list fields must be a list of ${expectedType} values`,
+                `@${directiveName}.${argument.name.value} on ${expectedType} list fields must be a list of ${expectedType} values`,
                 [argument.name.value]
             );
         }
@@ -50,7 +50,7 @@ export function assertArgumentHasSameTypeAsField({
             }
             if (!doTypesMatch(expectedType, v, enums)) {
                 throw new DocumentValidationError(
-                    `${directiveName}.${argument.name.value} on ${expectedType} list fields must be a list of ${expectedType} values`,
+                    `@${directiveName}.${argument.name.value} on ${expectedType} list fields must be a list of ${expectedType} values`,
                     [argument.name.value]
                 );
             }
@@ -58,7 +58,7 @@ export function assertArgumentHasSameTypeAsField({
     } else {
         if (!doTypesMatch(expectedType, argument.value, enums)) {
             throw new DocumentValidationError(
-                `${directiveName}.${argument.name.value} on ${expectedType} fields must be of type ${expectedType}`,
+                `@${directiveName}.${argument.name.value} on ${expectedType} fields must be of type ${expectedType}`,
                 [argument.name.value]
             );
         }
