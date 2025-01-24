@@ -19,9 +19,8 @@
 
 import type { ASTVisitor, FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
-import { GraphQLDate } from "graphql-compose";
 import { timestampDirective } from "../../../../../graphql/directives";
-import { GraphQLTime } from "../../../../../graphql/scalars";
+import { GraphQLDateTime, GraphQLTime } from "../../../../../graphql/scalars";
 import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
 import { getPathToNode } from "../../utils/path-parser";
@@ -75,7 +74,7 @@ function assertTypeIsSupportedByTimestamp(type: TypeNode): void {
         throw new DocumentValidationError("Cannot autogenerate an array.", [`@${timestampDirective.name}`]);
     }
 
-    if ([GraphQLDate.name, GraphQLTime.name].includes(type.name.value)) {
+    if (![GraphQLDateTime.name, GraphQLTime.name].includes(type.name.value)) {
         throw new DocumentValidationError("Cannot timestamp Temporal fields lacking time zone information.", [
             `@${timestampDirective.name}`,
         ]);

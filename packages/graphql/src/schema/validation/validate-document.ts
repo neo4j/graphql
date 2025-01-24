@@ -257,7 +257,8 @@ function runValidationRulesOnFilteredDocument({
             validateFulltextDirective,
             // nodeMissingValidation,
         ],
-        schema
+        schema,
+        features?.populatedBy?.callbacks
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {

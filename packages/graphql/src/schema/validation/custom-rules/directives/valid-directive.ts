@@ -30,7 +30,6 @@ import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import type { ValidationFunction } from "../utils/document-validation-error";
 import { assertValid, createGraphQLError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { verifyPopulatedBy } from "./populatedBy";
 import { verifyRelationshipArgumentValue } from "./relationship";
 
 function getValidationFunction(
@@ -55,8 +54,8 @@ function getValidationFunction(
         //     return verifyDefault(extra.enums);
         // case "fulltext":
         //     return verifyFulltext;
-        case "populatedBy":
-            return verifyPopulatedBy(callbacks);
+        // case "populatedBy":
+        //     return verifyPopulatedBy(callbacks);
         // case "limit":
         //     return verifyLimit;
         case "relationship":

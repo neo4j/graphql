@@ -1201,7 +1201,10 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on DateTime fields must be of type DateTime");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@default.value on DateTime fields must be of type DateTime"
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -1226,7 +1229,10 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value on DateTime fields must be of type DateTime");
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@default.value on DateTime fields must be of type DateTime"
+                );
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -3883,19 +3889,13 @@ describe("validation 2.0", () => {
 
             const errors = getError(executeValidate);
 
-            expect(errors).toHaveLength(2);
+            expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
                 'Directive "populatedBy" requires to be used within the "@node" directive or within the "@relationshipProperties" directive'
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
-            expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[1]).toHaveProperty(
-                "message",
-                "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
-            );
-            expect(errors[1]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
         });
 
         test("@authentication ok to be used on the field of a root type", () => {

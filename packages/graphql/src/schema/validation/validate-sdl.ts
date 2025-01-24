@@ -28,13 +28,19 @@ type Neo4jValidationRule = <T extends SDLValidationContext>(context: T) => ASTVi
 export function validateSDL(
     documentAST: DocumentNode,
     rules: ReadonlyArray<Neo4jValidationRule>,
-    schemaToExtend?: Maybe<GraphQLSchema>
+    schemaToExtend?: Maybe<GraphQLSchema>,
+    callbacks?: any
 ): ReadonlyArray<GraphQLError> {
     const errors: Array<GraphQLError> = [];
-    const context = new Neo4jValidationContext(documentAST, schemaToExtend, (error) => {
-        const mappedError = mapError(error);
-        errors.push(mappedError);
-    });
+    const context = new Neo4jValidationContext(
+        documentAST,
+        schemaToExtend,
+        (error) => {
+            const mappedError = mapError(error);
+            errors.push(mappedError);
+        },
+        callbacks
+    );
     const visitors = rules.map((rule) => rule(context));
     visit(documentAST, visitInParallel(visitors));
     return errors;

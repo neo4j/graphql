@@ -17,11 +17,30 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode } from "graphql";
+import {
+    GraphQLBoolean,
+    GraphQLFloat,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLString,
+    type ASTVisitor,
+    type FieldDefinitionNode,
+} from "graphql";
 import { populatedByDirective } from "../../../../../graphql/directives";
+import {
+    GraphQLBigInt,
+    GraphQLDate,
+    GraphQLDateTime,
+    GraphQLDuration,
+    GraphQLLocalDateTime,
+    GraphQLLocalTime,
+    GraphQLTime,
+} from "../../../../../graphql/scalars";
+import { parseValueNode } from "../../../../../schema-model/parser/parse-value-node";
 import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
 import { getPathToNode } from "../../utils/path-parser";
+import { getInnerTypeName } from "../../utils/utils";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validatePopulatedByDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -29,22 +48,62 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
+    const callbacks = context.callbacks;
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
-            if (
-                !fieldDefinitionNode.directives?.length ||
-                !fieldDefinitionNode.directives.find((directive) => directive.name.value === populatedByDirective.name)
-            ) {
+            const appliedPopulatedByDirective = fieldDefinitionNode.directives?.find(
+                (directive) => directive.name.value === populatedByDirective.name
+            );
+            if (!appliedPopulatedByDirective) {
+                return;
+            }
+            const callbackArg = appliedPopulatedByDirective.arguments?.find((x) => x.name.value === "callback");
+            if (!callbackArg) {
+                // delegate to DirectiveArgumentOfCorrectType rule
                 return;
             }
             const isValidLocation =
                 fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
                 fieldIsInRelationshipPropertiesType({ path, ancestors, extensionsTypeMap });
 
-            const { isValid, errorMsg } = assertValid(() => {
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
                         `Directive "${populatedByDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
+                        []
+                    );
+                }
+                const callbackName = parseValueNode(callbackArg.value);
+                if (!callbacks) {
+                    throw new DocumentValidationError(
+                        `@${populatedByDirective.name}.callback needs to be provided in features option.`,
+                        ["callback"]
+                    );
+                }
+                if (typeof (callbacks || {})[callbackName] !== "function") {
+                    throw new DocumentValidationError(
+                        `@${populatedByDirective.name}.callback \`${callbackName}\` must be of type Function.`,
+                        ["callback"]
+                    );
+                }
+                if (
+                    ![
+                        GraphQLInt.name,
+                        GraphQLFloat.name,
+                        GraphQLString.name,
+                        GraphQLBoolean.name,
+                        GraphQLID.name,
+                        GraphQLBigInt.name,
+                        GraphQLDateTime.name,
+                        GraphQLDate.name,
+                        GraphQLTime.name,
+                        GraphQLLocalDateTime.name,
+                        GraphQLLocalTime.name,
+                        GraphQLDuration.name,
+                    ].includes(getInnerTypeName(fieldDefinitionNode.type))
+                ) {
+                    throw new DocumentValidationError(
+                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration.",
                         []
                     );
                 }
@@ -55,7 +114,7 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${populatedByDirective.name}`],
+                        path: [...pathToHere[0], `@${populatedByDirective.name}`, ...errorPath],
                         errorMsg,
                     })
                 );

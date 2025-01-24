@@ -46,8 +46,15 @@ export type ObjectExtensionsTypeMap = Record<
 >;
 export class Neo4jValidationContext extends SDLValidationContext {
     public readonly extensionsTypeMap?: ObjectExtensionsTypeMap;
-    constructor(ast: DocumentNode, schema: Maybe<GraphQLSchema>, onError: (error: GraphQLError) => void) {
+    public readonly callbacks?: any;
+    constructor(
+        ast: DocumentNode,
+        schema: Maybe<GraphQLSchema>,
+        onError: (error: GraphQLError) => void,
+        callbacks?: any
+    ) {
         super(ast, schema, onError);
+        this.callbacks = callbacks;
         this.extensionsTypeMap = ast.definitions.reduce((acc, def): ObjectExtensionsTypeMap => {
             if (
                 def.kind === Kind.OBJECT_TYPE_DEFINITION ||
