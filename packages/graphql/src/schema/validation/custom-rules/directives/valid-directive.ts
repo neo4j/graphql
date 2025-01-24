@@ -54,8 +54,8 @@ function getValidationFunction(
     switch (directiveName) {
         // case "coalesce":
         //     return verifyCoalesce(extra.enums);
-        case "default":
-            return verifyDefault(extra.enums);
+        // case "default":
+        //     return verifyDefault(extra.enums);
         case "fulltext":
             return verifyFulltext;
         case "populatedBy":

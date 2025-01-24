@@ -19,15 +19,17 @@
 
 import type { ASTVisitor, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
-import { GRAPHQL_BUILTIN_SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../../../../../constants";
-import { coalesceDirective } from "../../../../../graphql/directives";
+import { GraphQLDate } from "graphql-compose";
+import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../../constants";
+import { defaultDirective } from "../../../../../graphql/directives";
+import { GraphQLDateTime, GraphQLLocalDateTime, GraphQLLocalTime, GraphQLTime } from "../../../../../graphql/scalars";
 import type { Neo4jValidationContext, ObjectExtensionsTypeMap } from "../../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
 import { getPathToNode } from "../../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../../utils/same-type-argument-as-field";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
-export function validateCoalesceDirective(context: Neo4jValidationContext): ASTVisitor {
+export function validateDefaultDirective(context: Neo4jValidationContext): ASTVisitor {
     const extensionsTypeMap = context.extensionsTypeMap;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
@@ -39,13 +41,13 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
 
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
-            const coalesce = fieldDefinitionNode.directives?.find(
-                (directive) => directive.name.value === coalesceDirective.name
+            const defDirective = fieldDefinitionNode.directives?.find(
+                (directive) => directive.name.value === defaultDirective.name
             );
-            if (!coalesce) {
+            if (!defDirective) {
                 return;
             }
-            const valueArg = coalesce.arguments?.find((arg) => arg.name.value === "value");
+            const valueArg = defDirective.arguments?.find((arg) => arg.name.value === "value");
             if (!valueArg) {
                 return;
             }
@@ -56,14 +58,14 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive @"${coalesceDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
+                        `Directive "${defaultDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
                         []
                     );
                 }
-                assertTypeIsSupportedByCoalesce(fieldDefinitionNode.type, extensionsTypeMap);
+                assertTypeIsSupportedByDefault(fieldDefinitionNode.type, extensionsTypeMap);
                 // for compatibility with previous helper we generate the enumTypes here, but it can be passed the typeMap instead.
                 assertArgumentHasSameTypeAsField({
-                    directiveName: coalesceDirective.name,
+                    directiveName: defaultDirective.name,
                     traversedDef: fieldDefinitionNode,
                     argument: valueArg,
                     enums: enumsTypes,
@@ -75,7 +77,7 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${coalesceDirective.name}`, ...errorPath],
+                        path: [...pathToHere[0], `@${defaultDirective.name}`, ...errorPath],
                         errorMsg,
                     })
                 );
@@ -84,26 +86,29 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
     };
 }
 
-function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap) {
+function assertTypeIsSupportedByDefault(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap) {
     if (typeNode.kind === Kind.LIST_TYPE) {
-        assertTypeIsSupportedByCoalesce(typeNode.type, extensionsTypeMap);
+        assertTypeIsSupportedByDefault(typeNode.type, extensionsTypeMap);
     }
     if (typeNode.kind === Kind.NON_NULL_TYPE) {
-        assertTypeIsSupportedByCoalesce(typeNode.type, extensionsTypeMap);
+        assertTypeIsSupportedByDefault(typeNode.type, extensionsTypeMap);
     }
 
     if (typeNode.kind === Kind.NAMED_TYPE) {
-        if (GRAPHQL_BUILTIN_SCALAR_TYPES.includes(typeNode.name.value)) {
+        if (
+            GRAPHQL_BUILTIN_SCALAR_TYPES.includes(typeNode.name.value) ||
+            [
+                GraphQLDateTime.name,
+                GraphQLLocalDateTime.name,
+                GraphQLDate.name,
+                GraphQLTime.name,
+                GraphQLLocalTime.name,
+            ].includes(typeNode.name.value) ||
+            typeNode.name.value === BigInt.name
+        ) {
             return;
         }
 
-        if (SPATIAL_TYPES.includes(typeNode.name.value)) {
-            throw new DocumentValidationError(`@${coalesceDirective.name} is not supported by Spatial types.`, []);
-        }
-
-        if (TEMPORAL_SCALAR_TYPES.includes(typeNode.name.value)) {
-            throw new DocumentValidationError(`@${coalesceDirective.name} is not supported by Temporal types.`, []);
-        }
         // check if the type is an enum
         const typeFromMap = extensionsTypeMap[typeNode.name.value];
         if (typeFromMap?.definition.kind === Kind.ENUM_TYPE_DEFINITION) {
@@ -111,7 +116,7 @@ function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: 
         }
 
         throw new DocumentValidationError(
-            `@${coalesceDirective.name} directive can only be used on types: Int | Float | String | Boolean | ID | Enum`,
+            `@${defaultDirective.name} directive can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime or LocalTime.`,
             []
         );
     }

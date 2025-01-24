@@ -50,6 +50,7 @@ import { validateAuthenticationDirective } from "./custom-rules/directives/test-
 import { validateAuthorizationDirective } from "./custom-rules/directives/test-rules/authorization";
 import { validateCoalesceDirective } from "./custom-rules/directives/test-rules/coalesce";
 import { validateCypherDirective } from "./custom-rules/directives/test-rules/cypher";
+import { validateDefaultDirective } from "./custom-rules/directives/test-rules/default";
 import { validateIdDirective } from "./custom-rules/directives/test-rules/id";
 import { validateLimitDirective } from "./custom-rules/directives/test-rules/limit";
 import { validatePopulatedByDirective } from "./custom-rules/directives/test-rules/populated-by";
@@ -251,6 +252,7 @@ function runValidationRulesOnFilteredDocument({
             validateTimestampDirective,
             validateLimitDirective,
             validateCoalesceDirective,
+            validateDefaultDirective,
             // nodeMissingValidation,
         ],
         schema

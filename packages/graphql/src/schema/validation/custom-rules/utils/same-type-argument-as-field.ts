@@ -17,8 +17,18 @@
  * limitations under the License.
  */
 import type { ArgumentNode, EnumTypeDefinitionNode, FieldDefinitionNode, ValueNode } from "graphql";
-import { Kind } from "graphql";
+import { GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind } from "graphql";
 import { isSpatial, isTemporal } from "../../../../constants";
+import {
+    GraphQLBigInt,
+    GraphQLDate,
+    GraphQLDateTime,
+    GraphQLLocalDateTime,
+    GraphQLLocalTime,
+    GraphQLTime,
+} from "../../../../graphql/scalars";
+import { parseLocalTime } from "../../../../graphql/scalars/LocalTime";
+import { validateTime } from "../../../../graphql/scalars/Time";
 import { DocumentValidationError } from "./document-validation-error";
 import { fromValueKind, getInnerTypeName, isArrayType } from "./utils";
 
@@ -66,21 +76,71 @@ export function assertArgumentHasSameTypeAsField({
 }
 
 function doTypesMatch(expectedType: string, argumentValueType: ValueNode, enums: EnumTypeDefinitionNode[]): boolean {
-    const isSpatialOrTemporal = isSpatial(expectedType) || isTemporal(expectedType);
-    if (isSpatialOrTemporal) {
-        return true;
-    }
-    if (expectedType.toLowerCase() === "id") {
-        return !!(fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === "string");
-    }
-    if (expectedType.toLowerCase() === "bigint") {
-        const kind = fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase();
-        return !!(kind == "int" || kind == "string");
+    if (expectedType === GraphQLID.name) {
+        return !!(fromValueKind(argumentValueType, enums, expectedType) === GraphQLString.name.toLowerCase());
     }
 
-    if (expectedType.toLowerCase() === "float") {
-        const kind = fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase();
-        return !!(kind == "int" || kind == "float");
+    if (expectedType === GraphQLBigInt.name) {
+        const kind = fromValueKind(argumentValueType, enums, expectedType);
+        return !!(kind == GraphQLInt.name.toLowerCase() || kind == GraphQLString.name.toLowerCase());
     }
+
+    if (expectedType === GraphQLFloat.name) {
+        const kind = fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase();
+        return !!(kind == GraphQLInt.name.toLowerCase() || kind == GraphQLFloat.name.toLowerCase());
+    }
+
+    if ([GraphQLDateTime.name, GraphQLLocalDateTime.name, GraphQLDate.name].includes(expectedType)) {
+        return isValidDateTime(argumentValueType);
+    }
+
+    if (expectedType === GraphQLTime.name) {
+        return isValidTime(argumentValueType);
+    }
+
+    if (expectedType === GraphQLLocalTime.name) {
+        return isValidLocalTime(argumentValueType);
+    }
+
+    // TODO: Spatial types and some of the temporal types values are not yet validated.
+    if (isSpatial(expectedType) || isTemporal(expectedType)) {
+        return true;
+    }
+
     return fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase() === expectedType.toLowerCase();
+}
+
+// TODO: isValidTime and isValidLocalTime are as they were in the original `@default` validation rules,
+// this is an improvement compared to the previous implementation as initially it was tested only for the default directive,
+// but it can be improved further without using the try-catch,
+
+function isValidTime(valueNode: ValueNode): boolean {
+    if (valueNode.kind !== Kind.STRING) {
+        return false;
+    }
+    try {
+        validateTime(valueNode.value);
+    } catch {
+        return false;
+    }
+    return true;
+}
+
+function isValidLocalTime(valueNode: ValueNode): boolean {
+    if (valueNode.kind !== Kind.STRING) {
+        return false;
+    }
+    try {
+        parseLocalTime(valueNode.value);
+    } catch {
+        return false;
+    }
+    return true;
+}
+
+function isValidDateTime(valueNode: ValueNode): boolean {
+    if (valueNode.kind !== Kind.STRING) {
+        return false;
+    }
+    return !Number.isNaN(Date.parse(valueNode.value));
 }

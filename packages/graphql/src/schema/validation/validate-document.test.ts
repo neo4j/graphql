@@ -1201,7 +1201,7 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
+                expect(errors[0]).toHaveProperty("message", "@default.value on DateTime fields must be of type DateTime");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
@@ -1226,7 +1226,7 @@ describe("validation 2.0", () => {
 
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty("message", "@default.value is not a valid DateTime");
+                expect(errors[0]).toHaveProperty("message", "@default.value on DateTime fields must be of type DateTime");
                 expect(errors[0]).toHaveProperty("path", ["User", "updatedAt", "@default", "value"]);
             });
 
