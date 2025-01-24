@@ -17,8 +17,11 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode } from "graphql";
+import type { ASTVisitor, FieldDefinitionNode, TypeNode } from "graphql";
+import { Kind } from "graphql";
+import { GraphQLDate } from "graphql-compose";
 import { timestampDirective } from "../../../../../graphql/directives";
+import { GraphQLTime } from "../../../../../graphql/scalars";
 import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
 import { getPathToNode } from "../../utils/path-parser";
@@ -47,6 +50,7 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
                         []
                     );
                 }
+                assertTypeIsSupportedByTimestamp(fieldDefinitionNode.type);
             });
             const pathToHere = getPathToNode(path, ancestors);
 
@@ -61,4 +65,19 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
             }
         },
     };
+}
+
+function assertTypeIsSupportedByTimestamp(type: TypeNode): void {
+    if (type.kind === Kind.NON_NULL_TYPE) {
+        return assertTypeIsSupportedByTimestamp(type.type);
+    }
+    if (type.kind === Kind.LIST_TYPE) {
+        throw new DocumentValidationError("Cannot autogenerate an array.", [`@${timestampDirective.name}`]);
+    }
+
+    if ([GraphQLDate.name, GraphQLTime.name].includes(type.name.value)) {
+        throw new DocumentValidationError("Cannot timestamp Temporal fields lacking time zone information.", [
+            `@${timestampDirective.name}`,
+        ]);
+    }
 }

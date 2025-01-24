@@ -84,7 +84,7 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
     };
 }
 
-function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap) {
+function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap): void {
     if (typeNode.kind === Kind.LIST_TYPE) {
         assertTypeIsSupportedByCoalesce(typeNode.type, extensionsTypeMap);
     }

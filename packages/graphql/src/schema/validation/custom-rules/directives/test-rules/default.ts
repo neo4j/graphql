@@ -86,7 +86,7 @@ export function validateDefaultDirective(context: Neo4jValidationContext): ASTVi
     };
 }
 
-function assertTypeIsSupportedByDefault(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap) {
+function assertTypeIsSupportedByDefault(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap): void {
     if (typeNode.kind === Kind.LIST_TYPE) {
         assertTypeIsSupportedByDefault(typeNode.type, extensionsTypeMap);
     }

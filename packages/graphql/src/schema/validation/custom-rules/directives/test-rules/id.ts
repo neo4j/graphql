@@ -66,7 +66,7 @@ export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor
     };
 }
 
-function assertTypeIsSupportedByID(type: TypeNode): boolean {
+function assertTypeIsSupportedByID(type: TypeNode): void {
     if (type.kind === Kind.LIST_TYPE) {
         throw new DocumentValidationError("Cannot autogenerate an array.", ["@id"]);
     }
@@ -76,5 +76,4 @@ function assertTypeIsSupportedByID(type: TypeNode): boolean {
     if (GraphQLID.name !== type.name.value) {
         throw new DocumentValidationError("Cannot autogenerate a non ID field.", ["@id"]);
     }
-    return true;
 }
