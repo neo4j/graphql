@@ -36,16 +36,6 @@ module.exports = {
                 project: "./**/tsconfig.json",
             },
             rules: {
-                "comma-dangle": "off",
-                "@typescript-eslint/comma-dangle": [
-                    "error",
-                    {
-                        ...commaDangle,
-                        enums: "always-multiline",
-                        generics: "always-multiline",
-                        tuples: "never", // Removed due to conflict with prettier
-                    },
-                ],
                 "@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "allow-with-description" }],
                 "@typescript-eslint/restrict-template-expressions": "off",
                 "@typescript-eslint/no-explicit-any": "off",
