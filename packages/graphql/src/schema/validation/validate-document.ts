@@ -51,6 +51,7 @@ import { validateAuthorizationDirective } from "./custom-rules/directives/test-r
 import { validateCoalesceDirective } from "./custom-rules/directives/test-rules/coalesce";
 import { validateCypherDirective } from "./custom-rules/directives/test-rules/cypher";
 import { validateDefaultDirective } from "./custom-rules/directives/test-rules/default";
+import { validateFulltextDirective } from "./custom-rules/directives/test-rules/fulltext";
 import { validateIdDirective } from "./custom-rules/directives/test-rules/id";
 import { validateLimitDirective } from "./custom-rules/directives/test-rules/limit";
 import { validatePopulatedByDirective } from "./custom-rules/directives/test-rules/populated-by";
@@ -253,6 +254,7 @@ function runValidationRulesOnFilteredDocument({
             validateLimitDirective,
             validateCoalesceDirective,
             validateDefaultDirective,
+            validateFulltextDirective,
             // nodeMissingValidation,
         ],
         schema

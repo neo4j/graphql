@@ -56,8 +56,8 @@ function getValidationFunction(
         //     return verifyCoalesce(extra.enums);
         // case "default":
         //     return verifyDefault(extra.enums);
-        case "fulltext":
-            return verifyFulltext;
+        // case "fulltext":
+        //     return verifyFulltext;
         case "populatedBy":
             return verifyPopulatedBy(callbacks);
         case "limit":

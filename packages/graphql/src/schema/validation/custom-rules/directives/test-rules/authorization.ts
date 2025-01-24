@@ -54,7 +54,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                 }
                 if (authorizationDirective.arguments?.length === 0) {
                     throw new DocumentValidationError(
-                        `@authorization requires at least one of ${[...authorizationDirectiveScaffold.args.map((arg) => arg.name)].join(", ")} arguments`,
+                        `@${authorizationDirectiveScaffold.name} requires at least one of ${[...authorizationDirectiveScaffold.args.map((arg) => arg.name)].join(", ")} arguments`,
                         []
                     );
                 }
@@ -94,7 +94,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                 }
                 if (authorizationDirective.arguments?.length === 0) {
                     throw new DocumentValidationError(
-                        `@authorization requires at least one of ${authorizationDirectiveScaffold.args.join(", ")} arguments`,
+                        `@${authorizationDirectiveScaffold.name} requires at least one of ${authorizationDirectiveScaffold.args.join(", ")} arguments`,
                         []
                     );
                 }
