@@ -26,7 +26,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@9a6606695f1ef9709cce821919ca3b2a6d5e6bb5 # v1.32.0
+      - uses: reviewdog/action-eslint@9b5b0150e399e1f007ee3c27bc156549810a64e3 # v1.33.0
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -63,7 +63,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5
+      - uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34 # v5
         with:
           go-version: "^1.17.0"
       - name: Install addlicense
