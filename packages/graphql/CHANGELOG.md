@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.2
+
+### Major Changes
+
+- [#5936](https://github.com/neo4j/graphql/pull/5936) [`d48ea32`](https://github.com/neo4j/graphql/commit/d48ea327db022774c73a8adfada1a8d498590c2d) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Changes the result projection where there are multiple relationships between two nodes.
+
+    In the case of using the connection API then multiple relationships will still be represented, as there is the ability to select the relationship properties. In the non-connection API case, the duplicate results will only return distinct results.
+
+- [#5931](https://github.com/neo4j/graphql/pull/5931) [`5ce7d1d`](https://github.com/neo4j/graphql/commit/5ce7d1dff5287aa9d24beaf3992f1f66c7b62d94) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `DateTime` and `Time` values are now converted from strings into temporal types in the generated Cypher instead of in server code using the driver. This could result in different values when the database is in a different timezone to the GraphQL server.
+
+- [#5933](https://github.com/neo4j/graphql/pull/5933) [`8bdcf6b`](https://github.com/neo4j/graphql/commit/8bdcf6b36fba1442f75fe8401cf170ed17339cdb) Thanks [@mjfwebb](https://github.com/mjfwebb)! - When performing a `connect` operation, new relationships are always created.
+
 ## 7.0.0-alpha.1
 
 ### Major Changes
