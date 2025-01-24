@@ -29,6 +29,8 @@ export class Neo4jDatabaseInfo {
     public edition: Neo4jEdition | undefined;
 
     constructor(version: string, edition?: Neo4jEdition) {
+        // Quick hack to support CalVar
+        version = version.replace(/\.0([0-9]+)/, ".$1");
         this.version = this.toSemVer(version);
         this.rawVersion = version;
         this.edition = edition;
