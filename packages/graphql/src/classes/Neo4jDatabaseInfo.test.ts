@@ -29,4 +29,9 @@ describe("Neo4jDatabaseInfo", () => {
             return new Neo4jDatabaseInfo("this_seems_not_valid", "enterprise");
         }).toThrow();
     });
+
+    test("should accept CalVar", () => {
+        const dbInfo = new Neo4jDatabaseInfo("2025.01.0-aura", "enterprise");
+        expect(dbInfo).toBeInstanceOf(Neo4jDatabaseInfo);
+    });
 });
