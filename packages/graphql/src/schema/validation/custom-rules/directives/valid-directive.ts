@@ -30,9 +30,6 @@ import type { Neo4jGraphQLCallbacks } from "../../../../types";
 import type { ValidationFunction } from "../utils/document-validation-error";
 import { assertValid, createGraphQLError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { verifyDefault } from "./default";
-import { verifyFulltext } from "./fulltext";
-import { verifyLimit } from "./limit";
 import { verifyPopulatedBy } from "./populatedBy";
 import { verifyRelationshipArgumentValue } from "./relationship";
 

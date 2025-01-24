@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode } from "graphql";
+import { GraphQLID, Kind, type ASTVisitor, type FieldDefinitionNode, type TypeNode } from "graphql";
 import { idDirective } from "../../../../../graphql/directives";
 import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
@@ -49,6 +49,7 @@ export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor
                         []
                     );
                 }
+                assertTypeIsSupportedByID(fieldDefinitionNode.type);
             });
             const pathToHere = getPathToNode(path, ancestors);
 
@@ -63,4 +64,17 @@ export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor
             }
         },
     };
+}
+
+function assertTypeIsSupportedByID(type: TypeNode): boolean {
+    if (type.kind === Kind.LIST_TYPE) {
+        throw new DocumentValidationError("Cannot autogenerate an array.", ["@id"]);
+    }
+    if (type.kind === Kind.NON_NULL_TYPE) {
+        return assertTypeIsSupportedByID(type.type);
+    }
+    if (GraphQLID.name !== type.name.value) {
+        throw new DocumentValidationError("Cannot autogenerate a non ID field.", ["@id"]);
+    }
+    return true;
 }
