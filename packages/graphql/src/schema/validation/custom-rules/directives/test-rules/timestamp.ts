@@ -32,8 +32,7 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
             if (
-                !fieldDefinitionNode.directives?.length ||
-                !fieldDefinitionNode.directives.find((directive) => directive.name.value === timestampDirective.name)
+                !fieldDefinitionNode.directives?.find((directive) => directive.name.value === timestampDirective.name)
             ) {
                 return;
             }

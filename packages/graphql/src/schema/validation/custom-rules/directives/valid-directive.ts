@@ -60,8 +60,8 @@ function getValidationFunction(
         //     return verifyFulltext;
         case "populatedBy":
             return verifyPopulatedBy(callbacks);
-        case "limit":
-            return verifyLimit;
+        // case "limit":
+        //     return verifyLimit;
         case "relationship":
             return verifyRelationshipArgumentValue(
                 objectTypeToFieldNameDirectionAndFieldTypePerRelationshipTypeMap,

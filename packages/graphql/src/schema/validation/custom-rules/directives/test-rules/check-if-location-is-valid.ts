@@ -162,7 +162,10 @@ export function fieldIsInRootType({
             `Validation error: field with path: ${pathToNode.join(", ")} is in a type that does not exist in the extensionsTypeMap`
         );
     }
-    if (isRootType(parentTypeAndExtensions.definition)) {
+    if (
+        parentTypeAndExtensions.definition.kind === Kind.OBJECT_TYPE_DEFINITION &&
+        isRootType(parentTypeAndExtensions.definition)
+    ) {
         return true;
     }
     return false;
