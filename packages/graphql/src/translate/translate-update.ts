@@ -25,6 +25,7 @@ import { DEBUG_TRANSLATE } from "../constants";
 import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
+import { getCypherVersion } from "../utils/get-cypher-version";
 import createConnectAndParams from "./create-connect-and-params";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -485,7 +486,7 @@ export default async function translateUpdate({
         ];
     });
 
-    const cypherResult = updateQuery.build({ prefix: "update_" });
+    const cypherResult = updateQuery.build({ prefix: "update_", cypherVersion: getCypherVersion(context) });
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: cypherResult.cypher,
     });

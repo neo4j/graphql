@@ -443,6 +443,7 @@ export type Neo4jFeaturesSettings = {
     populatedBy?: Neo4jPopulatedBySettings;
     authorization?: Neo4jAuthorizationSettings;
     subscriptions?: boolean | Neo4jGraphQLSubscriptionsCDCEngine;
+    addCypherVersion?: boolean;
     /** If set to `true`, removes `@neo4j/graphql` fields that are marked as deprecated to reduce schema size.
      *
      * NOTE: this will not remove user defined deprecated fields

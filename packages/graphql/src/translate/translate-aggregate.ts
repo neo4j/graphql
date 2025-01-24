@@ -22,6 +22,7 @@ import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getCypherVersion } from "../utils/get-cypher-version";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 const debug = Debug(DEBUG_TRANSLATE);
@@ -43,5 +44,7 @@ export function translateAggregate({
     const queryAST = queryASTFactory.createQueryAST({ resolveTree, entityAdapter, context });
     debug(queryAST.print());
     const clause = queryAST.buildNew(context);
-    return clause.build();
+    return clause.build({
+        cypherVersion: getCypherVersion(context),
+    });
 }
