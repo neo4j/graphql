@@ -115,14 +115,13 @@ describe("Node Directive", () => {
             "MATCH (this:Comment)
             WHERE (EXISTS {
                 MATCH (this)<-[:HAS_POST]-(this0:Person)
-                WHERE this0.id = $param0
+                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this0.id = $param2)
             } AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"123\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -130,6 +129,7 @@ describe("Node Directive", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
+                \\"param2\\": \\"123\\",
                 \\"param3\\": \\"admin\\"
             }"
         `);

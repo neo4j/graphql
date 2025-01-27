@@ -946,45 +946,18 @@ export class FilterFactory {
         where: AggregateWhereInput,
         context: Neo4jGraphQLTranslationContext
     ): AggregationFilter {
+        const aggregationFilter = new AggregationFilter(relationship);
         const filteredEntities = getConcreteEntities(relationship.target, where);
-        const relationshipFilters: RelationshipFilter[] = [];
         for (const concreteEntity of filteredEntities) {
-            const relationshipFilter = this.createRelationshipFilterTreeNode({
-                relationship,
-                target: concreteEntity,
-                operator: operator ?? "SOME",
-            });
-
             const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
                 entity: concreteEntity,
                 operations: ["READ"],
-                // attributes: this.getSelectedAttributes(entity, projectionFields),
                 context,
             });
-
-            relationshipFilter.addAuthFilters(...authFilters);
-
-            if (!isNull) {
-                const entityWhere = where[concreteEntity.name] ?? where;
-                const targetNodeFilters = this.createNodeFilters(concreteEntity, entityWhere, context);
-                relationshipFilter.addTargetNodeFilter(...targetNodeFilters);
-            }
-
-            relationshipFilters.push(relationshipFilter);
+            aggregationFilter.addAuthFilters(concreteEntity.name, ...authFilters);
         }
 
-        const aggregationFilter = new AggregationFilter(relationship);
         const nestedFilters = this.getAggregationNestedFilters(where, relationship);
-
-        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-            entity: concreteEntity,
-            operations: ["READ"],
-            // attributes: this.getSelectedAttributes(entity, projectionFields),
-            context,
-        });
-
-        aggregationFilter.addAuthFilters(...authFilters);
-
         aggregationFilter.addFilters(...nestedFilters);
 
         return aggregationFilter;

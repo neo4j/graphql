@@ -77,17 +77,18 @@ describe("https://github.com/neo4j/graphql/issues/5534", () => {
             "MATCH (this:Product)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:PRODUCT_HAS_FAMILY_PRODUCT]-(this1:Product|Banana)
-                RETURN count(this1) = $param0 AS var2
+                MATCH (this)<-[this0:PRODUCT_HAS_FAMILY_PRODUCT]-(this1:Product)
+                WHERE (($param0 IS NOT NULL AND this.isPublic = $param0) AND ($param1 IS NOT NULL AND this.isEmpty = $param1))
+                RETURN count(this1) = $param2 AS var2
             }
             WITH *
-            WHERE (var2 = true AND (($param1 IS NOT NULL AND this.isPublic = $param1) AND ($param2 IS NOT NULL AND this.isEmpty = $param2)))
+            WHERE (var2 = true AND (($param3 IS NOT NULL AND this.isPublic = $param3) AND ($param4 IS NOT NULL AND this.isEmpty = $param4)))
             WITH *
-            LIMIT $param3
+            LIMIT $param5
             CALL {
                 WITH this
                 MATCH (this)<-[this3:PRODUCT_HAS_FAMILY_PRODUCT]-(this4:Product)
-                WHERE (($param4 IS NOT NULL AND this4.isPublic = $param4) AND ($param5 IS NOT NULL AND this4.isEmpty = $param5))
+                WHERE (($param6 IS NOT NULL AND this4.isPublic = $param6) AND ($param7 IS NOT NULL AND this4.isEmpty = $param7))
                 RETURN count(this4) AS var5
             }
             RETURN this { .productId, variantsAggregate: { count: var5 } } AS this"
@@ -95,18 +96,20 @@ describe("https://github.com/neo4j/graphql/issues/5534", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"low\\": 1,
-                    \\"high\\": 0
-                },
+                \\"param0\\": true,
                 \\"param1\\": true,
-                \\"param2\\": true,
-                \\"param3\\": {
+                \\"param2\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 },
+                \\"param3\\": true,
                 \\"param4\\": true,
-                \\"param5\\": true
+                \\"param5\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
+                \\"param6\\": true,
+                \\"param7\\": true
             }"
         `);
     });

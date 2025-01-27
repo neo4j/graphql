@@ -36,7 +36,7 @@ export class AggregationFilter extends Filter {
 
     private filters: Array<AggregationPropertyFilter | CountFilter | LogicalFilter> = [];
 
-    private authFilters: AuthorizationFilters[] = [];
+    private authFilters: Record<string, AuthorizationFilters[]> = {};
 
     private subqueryReturnVariable: Cypher.Variable | undefined;
 
@@ -49,8 +49,8 @@ export class AggregationFilter extends Filter {
         this.filters.push(...filter);
     }
 
-    public addAuthFilters(...filter: AuthorizationFilters[]) {
-        this.authFilters.push(...filter);
+    public addAuthFilters(name: string, ...filter: AuthorizationFilters[]) {
+        this.authFilters[name] = filter;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -65,13 +65,19 @@ export class AggregationFilter extends Filter {
         const relatedNode: Cypher.Node = new Cypher.Node();
         let relatedNodeLabels: string[] = [];
         let labelsFilter: Cypher.Predicate | undefined;
+        let concreteAuthFilter: Cypher.Predicate | undefined;
 
         if (relatedEntity instanceof InterfaceEntityAdapter) {
-            const labelsForImplementations = relatedEntity.concreteEntities.map((e) =>
-                relatedNode.hasLabels(...e.getLabels())
-            );
+            const labelsForImplementations = relatedEntity.concreteEntities.map((e) => {
+                const authFilterPredicate = this.getAuthFilterPredicate(e.name, context);
+                return Cypher.and(relatedNode.hasLabels(...e.getLabels()), ...authFilterPredicate);
+            });
             labelsFilter = Cypher.or(...labelsForImplementations);
         } else {
+            const authFilterPredicate = this.getAuthFilterPredicate(relatedEntity.name, context);
+            if (authFilterPredicate.length) {
+                concreteAuthFilter = Cypher.and(...authFilterPredicate);
+            }
             relatedNodeLabels = getEntityLabels(relatedEntity, context.neo4jGraphQLContext);
         }
         const relationshipTarget = new Cypher.Relationship();
@@ -98,11 +104,12 @@ export class AggregationFilter extends Filter {
 
         if (returnColumns.length === 0) return []; // Maybe throw?
 
-        const subquery = labelsFilter
-            ? new Cypher.Match(pattern).where(labelsFilter).return(...returnColumns)
-            : new Cypher.Match(pattern).return(...returnColumns);
-
-        return [subquery];
+        if (labelsFilter) {
+            return [new Cypher.Match(pattern).where(labelsFilter).return(...returnColumns)];
+        } else if (concreteAuthFilter) {
+            return [new Cypher.Match(pattern).where(concreteAuthFilter).return(...returnColumns)];
+        }
+        return [new Cypher.Match(pattern).return(...returnColumns)];
     }
 
     public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -111,11 +118,14 @@ export class AggregationFilter extends Filter {
         return Cypher.eq(this.subqueryReturnVariable, Cypher.true);
     }
 
-    private getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        return this.authFilters.flatMap((f) => f.getSubqueries(context));
-    }
+    // private getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
+    //     return this.authFilters.flatMap((f) => f.getSubqueries(context));
+    // }
 
-    private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
-        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    private getAuthFilterPredicate(name: string, context: QueryASTContext): Cypher.Predicate[] {
+        const authFilters = this.authFilters[name];
+        if (!authFilters) return [];
+
+        return filterTruthy(authFilters.map((f) => f.getPredicate(context)));
     }
 }
