@@ -17,25 +17,22 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode, TypeNode } from "graphql";
-import { Kind } from "graphql";
-import { timestampDirective } from "../../../../../graphql/directives";
-import { GraphQLDateTime, GraphQLTime } from "../../../../../graphql/scalars";
-import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
-import { getPathToNode } from "../../utils/path-parser";
+import { GraphQLID, Kind, type ASTVisitor, type FieldDefinitionNode, type TypeNode } from "graphql";
+import { idDirective, relationshipPropertiesDirective } from "../../../../graphql/directives";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
-export function validateTimestampDirective(context: Neo4jValidationContext): ASTVisitor {
+export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor {
     const extensionsTypeMap = context.extensionsTypeMap;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
+
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
-            if (
-                !fieldDefinitionNode.directives?.find((directive) => directive.name.value === timestampDirective.name)
-            ) {
+            if (!fieldDefinitionNode.directives?.find((directive) => directive.name.value === idDirective.name)) {
                 return;
             }
             const isValidLocation =
@@ -45,11 +42,11 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${timestampDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
+                        `Directive "${idDirective.name}" requires to be used within the "@node" directive or within the "@${relationshipPropertiesDirective.name}" directive`,
                         []
                     );
                 }
-                assertTypeIsSupportedByTimestamp(fieldDefinitionNode.type);
+                assertTypeIsSupportedByID(fieldDefinitionNode.type);
             });
             const pathToHere = getPathToNode(path, ancestors);
 
@@ -57,7 +54,7 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${timestampDirective.name}`],
+                        path: [...pathToHere[0], `@${idDirective.name}`],
                         errorMsg,
                     })
                 );
@@ -66,17 +63,14 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
     };
 }
 
-function assertTypeIsSupportedByTimestamp(type: TypeNode): void {
-    if (type.kind === Kind.NON_NULL_TYPE) {
-        return assertTypeIsSupportedByTimestamp(type.type);
-    }
+function assertTypeIsSupportedByID(type: TypeNode): void {
     if (type.kind === Kind.LIST_TYPE) {
-        throw new DocumentValidationError("Cannot autogenerate an array.", [`@${timestampDirective.name}`]);
+        throw new DocumentValidationError("Cannot autogenerate an array.", ["@id"]);
     }
-
-    if (![GraphQLDateTime.name, GraphQLTime.name].includes(type.name.value)) {
-        throw new DocumentValidationError("Cannot timestamp Temporal fields lacking time zone information.", [
-            `@${timestampDirective.name}`,
-        ]);
+    if (type.kind === Kind.NON_NULL_TYPE) {
+        return assertTypeIsSupportedByID(type.type);
+    }
+    if (GraphQLID.name !== type.name.value) {
+        throw new DocumentValidationError("Cannot autogenerate a non ID field.", ["@id"]);
     }
 }

@@ -19,12 +19,12 @@
 
 import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, TypeNode } from "graphql";
 import { GraphQLID, GraphQLString, Kind } from "graphql";
-import { fulltextDirective } from "../../../../../graphql/directives";
-import type { FulltextField } from "../../../../../schema-model/annotation/FulltextAnnotation";
-import { parseValueNode } from "../../../../../schema-model/parser/parse-value-node";
-import { asArray } from "../../../../../utils/utils";
-import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
+import { fulltextDirective } from "../../../../graphql/directives";
+import type { FulltextField } from "../../../../schema-model/annotation/FulltextAnnotation";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
+import { asArray } from "../../../../utils/utils";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { typeIsANodeType } from "./check-if-location-is-valid";
 
 export function validateFulltextDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -68,7 +68,7 @@ export function validateFulltextDirective(context: Neo4jValidationContext): ASTV
                     const indexNames = indexesValues.filter((i) => indexName === i.indexName);
                     if (indexNames.length > 1) {
                         throw new DocumentValidationError(
-                            `@fulltext.indexes invalid value for: ${indexName}. Duplicate index name.`,
+                            `@${fulltextDirective.name}.indexes invalid value for: ${indexName}. Duplicate index name.`,
                             ["indexes"]
                         );
                     }
@@ -77,14 +77,14 @@ export function validateFulltextDirective(context: Neo4jValidationContext): ASTV
                     const queryNames = indexesValues.filter((i) => queryName === i.queryName);
                     if (queryNames.length > 1) {
                         throw new DocumentValidationError(
-                            `@fulltext.indexes invalid value for: ${queryName}. Duplicate query name.`,
+                            `@${fulltextDirective.name}.indexes invalid value for: ${queryName}. Duplicate query name.`,
                             ["indexes"]
                         );
                     }
                     asArray(indexValue.fields).forEach((indexField) => {
                         if (!compatibleFields[indexField]) {
                             throw new DocumentValidationError(
-                                `@fulltext.indexes invalid value for: ${indexValue.indexName}. Field ${indexField} is not of type String or ID.`,
+                                `@${fulltextDirective.name}.indexes invalid value for: ${indexValue.indexName}. Field ${indexField} is not of type String or ID.`,
                                 ["indexes"]
                             );
                         }

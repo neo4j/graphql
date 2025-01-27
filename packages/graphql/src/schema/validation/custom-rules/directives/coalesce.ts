@@ -19,12 +19,12 @@
 
 import type { ASTVisitor, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
-import { GRAPHQL_BUILTIN_SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../../../../../constants";
-import { coalesceDirective } from "../../../../../graphql/directives";
-import type { Neo4jValidationContext, ObjectExtensionsTypeMap } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
-import { getPathToNode } from "../../utils/path-parser";
-import { assertArgumentHasSameTypeAsField } from "../../utils/same-type-argument-as-field";
+import { GRAPHQL_BUILTIN_SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../../../../constants";
+import { coalesceDirective } from "../../../../graphql/directives";
+import type { Neo4jValidationContext, ObjectExtensionsTypeMap } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validateCoalesceDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -32,7 +32,6 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
-    // TODO: if this is needed to other validation rules, we could move these to the context
     const enumsTypes: EnumTypeDefinitionNode[] = Object.values(extensionsTypeMap)
         .map((type) => type.definition)
         .filter((definition): definition is EnumTypeDefinitionNode => definition.kind === Kind.ENUM_TYPE_DEFINITION);

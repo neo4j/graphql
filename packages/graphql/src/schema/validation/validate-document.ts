@@ -35,7 +35,10 @@ import { GraphQLSchema, Kind, extendSchema, specifiedDirectives, validateSchema 
 import { specifiedSDLRules } from "graphql/validation/specifiedRules";
 import pluralize from "pluralize";
 import * as directives from "../../graphql/directives";
+import { authenticationDirectiveScaffold } from "../../graphql/directives/type-dependant-directives/authentication";
+import { authorizationDirectiveScaffold } from "../../graphql/directives/type-dependant-directives/authorization";
 import { typeDependantDirectivesScaffolds } from "../../graphql/directives/type-dependant-directives/scaffolds";
+import { subscriptionsAuthorizationDirectiveScaffold } from "../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 import { SortDirection } from "../../graphql/enums/SortDirection";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
 import { CartesianPointInput } from "../../graphql/input-objects/CartesianPointInput";
@@ -46,20 +49,19 @@ import { Point } from "../../graphql/objects/Point";
 import * as scalars from "../../graphql/scalars";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { isRootType } from "../../utils/is-root-type";
-import { validateAuthenticationDirective } from "./custom-rules/directives/test-rules/authentication";
-import { validateAuthorizationDirective } from "./custom-rules/directives/test-rules/authorization";
-import { validateCoalesceDirective } from "./custom-rules/directives/test-rules/coalesce";
-import { validateCypherDirective } from "./custom-rules/directives/test-rules/cypher";
-import { validateDefaultDirective } from "./custom-rules/directives/test-rules/default";
-import { validateFulltextDirective } from "./custom-rules/directives/test-rules/fulltext";
-import { validateIdDirective } from "./custom-rules/directives/test-rules/id";
-import { validateLimitDirective } from "./custom-rules/directives/test-rules/limit";
-import { validatePopulatedByDirective } from "./custom-rules/directives/test-rules/populated-by";
-import { validateRelationshipDirective } from "./custom-rules/directives/test-rules/relationship";
-import { validateRelayIdDirective } from "./custom-rules/directives/test-rules/relay-id";
-import { validateTimestampDirective } from "./custom-rules/directives/test-rules/timestamp";
-import { directiveIsValid } from "./custom-rules/directives/valid-directive";
-import { ValidDirectiveAtFieldLocation } from "./custom-rules/directives/valid-directive-field-location";
+import { validateAuthenticationDirective } from "./custom-rules/directives/authentication";
+import { validateAuthorizationDirective } from "./custom-rules/directives/authorization";
+import { validateCoalesceDirective } from "./custom-rules/directives/coalesce";
+import { validateCypherDirective } from "./custom-rules/directives/cypher";
+import { validateDefaultDirective } from "./custom-rules/directives/default";
+import { validateFulltextDirective } from "./custom-rules/directives/fulltext";
+import { validateIdDirective } from "./custom-rules/directives/id";
+import { validateLimitDirective } from "./custom-rules/directives/limit";
+import { validatePopulatedByDirective } from "./custom-rules/directives/populated-by";
+import { validateRelationshipDirective } from "./custom-rules/directives/relationship";
+import { validateRelayIdDirective } from "./custom-rules/directives/relay-id";
+import { validateSubscriptionAuthorizationDirective } from "./custom-rules/directives/subscriptionAuthorization";
+import { validateTimestampDirective } from "./custom-rules/directives/timestamp";
 import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
@@ -150,7 +152,11 @@ function filterDocument(document: DocumentNode, filterDirectives: boolean = fals
     // currentDirectiveDirective is of type ConstDirectiveNode, has to be any to support GraphQL 15
     const filterDirectiveNodes = (directives: readonly any[] | undefined): any[] | undefined => {
         return directives?.filter((directive) => {
-            return !["authentication", "authorization", "subscriptionsAuthorization"].includes(directive.name.value);
+            return ![
+                authenticationDirectiveScaffold.name,
+                authorizationDirectiveScaffold.name,
+                subscriptionsAuthorizationDirectiveScaffold.name,
+            ].includes(directive.name.value);
         });
     };
 
@@ -222,8 +228,6 @@ function runValidationRulesOnFilteredDocument({
         document,
         [
             ...specifiedSDLRules,
-            directiveIsValid(extra, features?.populatedBy?.callbacks),
-            ValidDirectiveAtFieldLocation,
             DirectiveCombinationValid,
             SchemaOrTypeDirectives,
             ValidJwtDirectives,
@@ -245,16 +249,17 @@ function runValidationRulesOnFilteredDocument({
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
             validateAuthorizationDirective,
             validateAuthenticationDirective,
-            validateCypherDirective,
-            validateRelayIdDirective,
-            validatePopulatedByDirective,
-            validateRelationshipDirective,
-            validateIdDirective,
-            validateTimestampDirective,
-            validateLimitDirective,
             validateCoalesceDirective,
+            validateCypherDirective,
             validateDefaultDirective,
             validateFulltextDirective,
+            validateIdDirective,
+            validateLimitDirective,
+            validatePopulatedByDirective,
+            validateRelationshipDirective,
+            validateRelayIdDirective,
+            validateTimestampDirective,
+            validateSubscriptionAuthorizationDirective,
             // nodeMissingValidation,
         ],
         schema,

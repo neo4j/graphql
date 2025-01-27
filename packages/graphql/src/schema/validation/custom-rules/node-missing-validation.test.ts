@@ -19,20 +19,28 @@
 
 import { GraphQLSchema } from "graphql";
 import { gql } from "graphql-tag";
-import { authorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authorization";
-import { validateSDL } from "../../validate-sdl";
-import { validateAuthorizationDirective } from "../directives/test-rules/authorization";
-import { validateCypherDirective } from "../directives/test-rules/cypher";
+import {
+    fulltextDirective,
+    mutationDirective,
+    queryDirective,
+    subscriptionDirective,
+    vectorDirective,
+} from "../../../graphql/directives";
+import { authorizationDirectiveScaffold } from "../../../graphql/directives/type-dependant-directives/authorization";
+import { subscriptionsAuthorizationDirectiveScaffold } from "../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
+import { validateSDL } from "../validate-sdl";
+import { validateAuthorizationDirective } from "./directives/authorization";
+import { validateCypherDirective } from "./directives/cypher";
 
 describe.skip("node missing validation", () => {
     test.each([
         authorizationDirectiveScaffold.name,
-        // subscriptionsAuthorizationDirectiveScaffold.name,
-        // queryDirective.name,
-        // mutationDirective.name,
-        // subscriptionDirective.name,
-        // fulltextDirective.name,
-        // vectorDirective.name,
+        subscriptionsAuthorizationDirectiveScaffold.name,
+        queryDirective.name,
+        mutationDirective.name,
+        subscriptionDirective.name,
+        fulltextDirective.name,
+        vectorDirective.name,
     ])("when the %s directive is used on a type annotated with @node no error should be raised", (name) => {
         const userDocument = gql`
             type User @${name} @node {
@@ -51,12 +59,12 @@ describe.skip("node missing validation", () => {
 
     test.each([
         authorizationDirectiveScaffold.name,
-        // subscriptionsAuthorizationDirectiveScaffold.name,
-        // queryDirective.name,
-        // mutationDirective.name,
-        // subscriptionDirective.name,
-        // fulltextDirective.name,
-        // vectorDirective.name,
+        subscriptionsAuthorizationDirectiveScaffold.name,
+        queryDirective.name,
+        mutationDirective.name,
+        subscriptionDirective.name,
+        fulltextDirective.name,
+        vectorDirective.name,
     ])("when the %s directive is used on a type non annotated with @node an error should be raised", (name) => {
         const userDocument = gql`
             type User @${name} {

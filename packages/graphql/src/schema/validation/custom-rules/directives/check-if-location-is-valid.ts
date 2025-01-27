@@ -18,11 +18,11 @@
  */
 
 import { Kind, type ASTNode, type ObjectTypeDefinitionNode } from "graphql";
-import { nodeDirective, relationshipPropertiesDirective } from "../../../../../graphql/directives";
-import { isRootType } from "../../../../../utils/is-root-type";
-import { asArray } from "../../../../../utils/utils";
-import type { ObjectExtensionsTypeMap } from "../../../Neo4jValidationContext";
-import { getPathToNode } from "../../utils/path-parser";
+import { nodeDirective, relationshipPropertiesDirective } from "../../../../graphql/directives";
+import { isRootType } from "../../../../utils/is-root-type";
+import { asArray } from "../../../../utils/utils";
+import type { ObjectExtensionsTypeMap } from "../../Neo4jValidationContext";
+import { getPathToNode } from "../utils/path-parser";
 
 export function typeIsANodeType({
     objectTypeDefinitionNode,

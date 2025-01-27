@@ -18,43 +18,43 @@
  */
 
 import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
-import { authorizationDirectiveScaffold } from "../../../../../graphql/directives/type-dependant-directives/authorization";
-import { asArray } from "../../../../../utils/utils";
-import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
-import { getPathToNode } from "../../utils/path-parser";
-import { fieldIsInNodeType, typeIsANodeType } from "./check-if-location-is-valid";
+import { authenticationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authentication";
+import { isRootType } from "../../../../utils/is-root-type";
+import { asArray } from "../../../../utils/utils";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import {
+    fieldIsInNodeType,
+    fieldIsInRootType,
+    fieldIsInSubscriptionType,
+    typeIsANodeType,
+} from "./check-if-location-is-valid";
 
-export function validateAuthorizationDirective(context: Neo4jValidationContext): ASTVisitor {
+export function validateAuthenticationDirective(context: Neo4jValidationContext): ASTVisitor {
     const extensionsTypeMap = context.extensionsTypeMap;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
-            const authorizationDirective = fieldDefinitionNode.directives?.find(
-                (directive) => directive.name.value === authorizationDirectiveScaffold.name
-            );
-
-            if (!authorizationDirective) {
+            if (
+                !fieldDefinitionNode.directives?.find(
+                    (directive) => directive.name.value === authenticationDirectiveScaffold.name
+                )
+            ) {
                 return;
             }
 
-            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation =
+                (fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
+                    fieldIsInRootType({ path, ancestors, extensionsTypeMap })) &&
+                !fieldIsInSubscriptionType({ path, ancestors, extensionsTypeMap });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
-                    // TODO:
-                    // this was: Invalid directive usage: Directive @authorization is not supported on fields of the Query type. Did you mean to use @authentication?
-                    // when the field was on a Query type, perahps a more specific error message would be better
                     throw new DocumentValidationError(
-                        `Directive "${authorizationDirectiveScaffold.name}" requires to be used within the "@node" directive`,
-                        []
-                    );
-                }
-                if (authorizationDirective.arguments?.length === 0) {
-                    throw new DocumentValidationError(
-                        `@${authorizationDirectiveScaffold.name} requires at least one of ${[...authorizationDirectiveScaffold.args.map((arg) => arg.name)].join(", ")} arguments`,
+                        `Directive "${authenticationDirectiveScaffold.name}" requires to be used within the "@node" directive or in root types: Query, and Mutation`,
                         []
                     );
                 }
@@ -65,7 +65,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${authorizationDirectiveScaffold.name}`],
+                        path: [...pathToHere[0], `@${authenticationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );
@@ -78,23 +78,17 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                 return extensionNode.directives ?? [];
             });
             const allDirectives = [...(directives ?? []), ...extensionsDirectives];
-            const authorizationDirective = allDirectives.find(
-                (directive) => directive.name.value === authorizationDirectiveScaffold.name
-            );
-            if (!authorizationDirective) {
+            if (!allDirectives.find((directive) => directive.name.value === authenticationDirectiveScaffold.name)) {
                 return;
             }
-            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap });
+            const isValidLocation =
+                (typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap }) ||
+                    isRootType(objectTypeDefinitionNode)) &&
+                objectTypeDefinitionNode.name.value !== "Subscription";
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authorizationDirectiveScaffold.name}" requires to be used within the "@node" directive`,
-                        []
-                    );
-                }
-                if (authorizationDirective.arguments?.length === 0) {
-                    throw new DocumentValidationError(
-                        `@${authorizationDirectiveScaffold.name} requires at least one of ${authorizationDirectiveScaffold.args.join(", ")} arguments`,
+                        `Directive "${authenticationDirectiveScaffold.name}" requires to be used within the "@node" directive or in root types: Query, and Mutation`,
                         []
                     );
                 }
@@ -104,7 +98,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                 context.reportError(
                     createGraphQLError({
                         nodes: [objectTypeDefinitionNode],
-                        path: [...pathToHere[0], `@${authorizationDirectiveScaffold.name}`],
+                        path: [...pathToHere[0], `@${authenticationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );

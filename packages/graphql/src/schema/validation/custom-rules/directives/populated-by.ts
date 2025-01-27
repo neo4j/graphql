@@ -26,7 +26,7 @@ import {
     type ASTVisitor,
     type FieldDefinitionNode,
 } from "graphql";
-import { populatedByDirective } from "../../../../../graphql/directives";
+import { populatedByDirective } from "../../../../graphql/directives";
 import {
     GraphQLBigInt,
     GraphQLDate,
@@ -35,12 +35,12 @@ import {
     GraphQLLocalDateTime,
     GraphQLLocalTime,
     GraphQLTime,
-} from "../../../../../graphql/scalars";
-import { parseValueNode } from "../../../../../schema-model/parser/parse-value-node";
-import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
-import { getPathToNode } from "../../utils/path-parser";
-import { getInnerTypeName } from "../../utils/utils";
+} from "../../../../graphql/scalars";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import { getInnerTypeName } from "../utils/utils";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validatePopulatedByDirective(context: Neo4jValidationContext): ASTVisitor {

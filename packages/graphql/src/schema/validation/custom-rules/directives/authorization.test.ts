@@ -19,8 +19,9 @@
 
 import { GraphQLSchema } from "graphql";
 import { gql } from "graphql-tag";
-import { authorizationDirectiveScaffold } from "../../../../../graphql/directives/type-dependant-directives/authorization";
-import { validateSDL } from "../../../validate-sdl";
+
+import { authorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authorization";
+import { validateSDL } from "../../validate-sdl";
 import { validateAuthorizationDirective } from "./authorization";
 
 describe.skip("authorization validation", () => {
@@ -84,9 +85,9 @@ describe.skip("authorization validation", () => {
         expect(errors).toHaveLength(1);
         expect(errors).toEqual([
             expect.objectContaining({
-                message: `@authorization requires at least one of ${authorizationDirectiveScaffold.args.map(arg => arg.name).join(
-                    ", "
-                )} arguments`,
+                message: `@authorization requires at least one of ${authorizationDirectiveScaffold.args
+                    .map((arg) => arg.name)
+                    .join(", ")} arguments`,
             }),
         ]);
     });

@@ -18,32 +18,34 @@
  */
 
 import type { ASTVisitor, FieldDefinitionNode } from "graphql";
-import { relayIdDirective } from "../../../../../graphql/directives";
-import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
-import { getPathToNode } from "../../utils/path-parser";
-import { fieldIsInNodeType } from "./check-if-location-is-valid";
+import { cypherDirective } from "../../../../graphql/directives";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import { fieldIsInNodeType, fieldIsInRootType, fieldIsInSubscriptionType } from "./check-if-location-is-valid";
 
-export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVisitor {
+export function validateCypherDirective(context: Neo4jValidationContext): ASTVisitor {
     const extensionsTypeMap = context.extensionsTypeMap;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
-
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
             if (
                 !fieldDefinitionNode.directives?.length ||
-                !fieldDefinitionNode.directives.find((directive) => directive.name.value === relayIdDirective.name)
+                !fieldDefinitionNode.directives.find((directive) => directive.name.value === cypherDirective.name)
             ) {
                 return;
             }
-            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation =
+                (fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
+                    fieldIsInRootType({ path, ancestors, extensionsTypeMap })) &&
+                !fieldIsInSubscriptionType({ path, ancestors, extensionsTypeMap });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${relayIdDirective.name}" requires to be used within the "@node" directive`,
+                        `Directive "${cypherDirective.name}" requires to be used within the "@node" directive or on root types: Query, and Mutation`,
                         []
                     );
                 }
@@ -54,7 +56,7 @@ export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVi
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${relayIdDirective.name}`],
+                        path: [...pathToHere[0], `@${cypherDirective.name}`],
                         errorMsg,
                     })
                 );

@@ -16,181 +16,134 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type {
-    DirectiveNode,
-    EnumTypeDefinitionNode,
-    FieldDefinitionNode,
-    InterfaceTypeDefinitionNode,
-    InterfaceTypeExtensionNode,
-    ObjectTypeDefinitionNode,
-    UnionTypeDefinitionNode,
-} from "graphql";
-import { Kind } from "graphql";
-import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import { DocumentValidationError } from "../utils/document-validation-error";
+
+import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, ObjectTypeExtensionNode } from "graphql";
 import {
-    getInheritedTypeNames,
-    hydrateInterfaceWithImplementedTypesMap,
-} from "../utils/interface-to-implementing-types";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
-import { getPrettyName } from "../utils/utils";
+    declareRelationshipDirective,
+    relationshipDirective,
+    relationshipPropertiesDirective,
+} from "../../../../graphql/directives";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import { getInnerTypeName } from "../utils/utils";
+import { fieldIsInInterfaceType, fieldIsInNodeType } from "./check-if-location-is-valid";
 
-export function verifyRelationshipArgumentValue(
-    objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
-    interfaceToImplementationsMap: Map<string, Set<string>>,
-    extra?: {
-        enums: EnumTypeDefinitionNode[];
-        interfaces: (InterfaceTypeDefinitionNode | InterfaceTypeExtensionNode)[];
-        unions: UnionTypeDefinitionNode[];
-        objects: ObjectTypeDefinitionNode[];
+export function validateRelationshipDirective(context: Neo4jValidationContext): ASTVisitor {
+    const extensionsTypeMap = context.extensionsTypeMap;
+    if (!extensionsTypeMap) {
+        throw new Error("No extensionsTypeMap found in the context");
     }
-) {
-    return function ({
-        directiveNode,
-        traversedDef,
-        parentDef,
-    }: {
-        directiveNode: DirectiveNode;
-        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-        parentDef?: ObjectOrInterfaceWithExtensions;
-    }) {
-        if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-            // delegate
-            return;
-        }
-        if (!parentDef) {
-            console.error("No parent definition");
-            return;
-        }
-        const typeArg = directiveNode.arguments?.find((a) => a.name.value === "type");
-        const directionArg = directiveNode.arguments?.find((a) => a.name.value === "direction");
-        const propertiesArg = directiveNode.arguments?.find((a) => a.name.value === "properties");
-        if (!typeArg && !directionArg) {
-            // delegate to DirectiveArgumentOfCorrectType rule
-            return;
-        }
+    return {
+        // At the object level we need to check that the relationship directive is not applied to multiple fields of the same type
+        ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, _path, _ancestors) {
+            const fieldTypes = new Map<string, string>();
+            const extensionsFields = (
+                (extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions ?? []) as ObjectTypeExtensionNode[]
+            ).flatMap((extension) => extension.fields ?? []);
 
-        if (typeArg && directionArg) {
-            const fieldType = getPrettyName(traversedDef.type);
-            const typeValue = parseValueNode(typeArg.value);
-            const directionValue = parseValueNode(directionArg.value);
-            const currentRelationship: [string, string, string] = [traversedDef.name.value, directionValue, fieldType];
-            verifyRelationshipFields(
-                parentDef,
-                currentRelationship,
-                typeValue,
-                objectTypeToRelationshipsPerRelationshipTypeMap,
-                interfaceToImplementationsMap
+            [...(objectTypeDefinitionNode.fields ?? []), ...extensionsFields].forEach((field) => {
+                const appliedRelationship = field.directives?.find(
+                    (directive) => directive.name.value === relationshipDirective.name
+                );
+                if (!appliedRelationship) {
+                    return;
+                }
+                const fieldType = getInnerTypeName(field.type);
+                const relationshipDirectionArgument = appliedRelationship.arguments?.find(
+                    (a) => a.name.value === "direction"
+                );
+                const relationshipTypeArgument = appliedRelationship.arguments?.find((a) => a.name.value === "type");
+                if (!relationshipDirectionArgument || !relationshipTypeArgument) {
+                    // delegate to DirectiveArgumentOfCorrectType rule
+                    return;
+                }
+                const directionArgAsString = parseValueNode(relationshipDirectionArgument.value);
+                const relationshipTypeArgumentAsString = parseValueNode(relationshipTypeArgument.value);
+                // create a map key of field type + relationship type + relationship direction to check for uniqueness
+                const validUniqueRelationshipKey = `${fieldType}-${relationshipTypeArgumentAsString}-${directionArgAsString}`;
+
+                if (fieldTypes.has(validUniqueRelationshipKey)) {
+                    context.reportError(
+                        createGraphQLError({
+                            nodes: [field],
+                            path: [
+                                objectTypeDefinitionNode.name.value,
+                                field.name.value,
+                                `@${relationshipDirective.name}`,
+                            ],
+                            errorMsg: `@${relationshipDirective.name} invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination.`,
+                        })
+                    );
+                } else {
+                    fieldTypes.set(validUniqueRelationshipKey, field.name.value);
+                }
+            });
+        },
+        FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            const appliedRelationship = fieldDefinitionNode.directives?.find(
+                (directive) => directive.name.value === relationshipDirective.name
             );
-        }
-
-        if (propertiesArg) {
-            const propertiesValue = parseValueNode(propertiesArg.value);
-            if (!extra) {
-                throw new Error("Missing data: Enums, Interfaces, Unions.");
+            if (!appliedRelationship) {
+                return;
+            }
+            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const [pathToHere, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            const typeArg = appliedRelationship.arguments?.find((a) => a.name.value === "type");
+            const directionArg = appliedRelationship.arguments?.find((a) => a.name.value === "direction");
+            const propertiesArg = appliedRelationship.arguments?.find((a) => a.name.value === "properties");
+            if (!typeArg || !directionArg) {
+                // delegate to DirectiveArgumentOfCorrectType rule
+                return;
             }
 
-            const relationshipPropertiesInterface = extra.interfaces.filter(
-                (i) =>
-                    i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
-                    i.kind === Kind.INTERFACE_TYPE_DEFINITION
-            );
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
+                if (!isValidLocation) {
+                    if (fieldIsInInterfaceType({ path, ancestors, extensionsTypeMap })) {
+                        // throw more specific error for interface types as in the past it was possible to have relationships on interfaces
+                        throw new DocumentValidationError(
+                            `Invalid directive usage: Directive @${relationshipDirective.name} is not supported on fields of interface types (${parentOfTraversedDef?.name.value}). Since version 5.0.0, interface fields can only have @${declareRelationshipDirective.name}. Please add the @relationship directive to the fields in all types which implement it.`,
+                            []
+                        );
+                    }
+                    throw new DocumentValidationError(
+                        `Directive "${relationshipDirective.name}" requires to be used within the "@node" directive`,
+                        []
+                    );
+                }
+                if (propertiesArg) {
+                    // find the relationshipProperties type, if type does not exist, throw error
+                    const propertiesArgAsString = parseValueNode(propertiesArg.value);
+                    const propertiesType = extensionsTypeMap[propertiesArgAsString]?.definition;
+                    if (!propertiesType) {
+                        throw new DocumentValidationError(
+                            `@${relationshipDirective.name}.properties invalid. Cannot find type to represent the relationship properties: ${propertiesArgAsString}.`,
+                            ["properties"]
+                        );
+                    }
+                    if (
+                        !propertiesType.directives?.find(
+                            (directive) => directive.name.value === relationshipPropertiesDirective.name
+                        )
+                    ) {
+                        throw new DocumentValidationError(
+                            `@${relationshipDirective.name}.properties invalid. Properties type ${propertiesArgAsString} must use directive \`@${relationshipPropertiesDirective.name}\`.`,
+                            ["properties"]
+                        );
+                    }
+                }
+            });
 
-            if (relationshipPropertiesInterface.length > 0) {
-                throw new DocumentValidationError(
-                    `@relationship.properties invalid. The @relationshipProperties directive must be applied to a type and not an interface, a breaking change introduced in version 5.0.0.`,
-                    ["properties"]
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [fieldDefinitionNode],
+                        path: [...pathToHere, `@${relationshipDirective.name}`, ...errorPath],
+                        errorMsg,
+                    })
                 );
             }
-
-            const relationshipPropertiesType = extra.objects.filter(
-                (i) =>
-                    i.name.value.toLowerCase() === propertiesValue.toLowerCase() &&
-                    i.kind === Kind.OBJECT_TYPE_DEFINITION
-            );
-
-            if (relationshipPropertiesType.length > 1) {
-                throw new DocumentValidationError(
-                    `@relationship.properties invalid. Cannot have more than 1 type represent the relationship properties.`,
-                    ["properties"]
-                );
-            }
-            if (!relationshipPropertiesType.length) {
-                throw new DocumentValidationError(
-                    `@relationship.properties invalid. Cannot find type to represent the relationship properties: ${propertiesValue}.`,
-                    ["properties"]
-                );
-            }
-            const isRelationshipPropertiesTypeAnnotated = relationshipPropertiesType[0]?.directives?.some(
-                (d) => d.name.value === "relationshipProperties"
-            );
-
-            if (!isRelationshipPropertiesTypeAnnotated) {
-                throw new DocumentValidationError(
-                    `@relationship.properties invalid. Properties type ${propertiesValue} must use directive \`@relationshipProperties\`.`,
-                    ["properties"]
-                );
-            }
-        }
+        },
     };
-}
-
-function getUpdatedRelationshipFieldsForCurrentType(
-    relationshipFieldsForCurrentType: Map<string, [string, string, string][]> | undefined,
-    currentRelationship: [string, string, string],
-    typeValue: any
-) {
-    const updatedRelationshipFieldsForCurrentType =
-        relationshipFieldsForCurrentType || new Map<string, [string, string, string][]>();
-    const updatedRelationshipsWithSameRelationshipType = (
-        relationshipFieldsForCurrentType?.get(typeValue) || []
-    ).concat([currentRelationship]);
-    updatedRelationshipFieldsForCurrentType.set(typeValue, updatedRelationshipsWithSameRelationshipType);
-    return updatedRelationshipFieldsForCurrentType;
-}
-
-function checkRelationshipFieldsForDuplicates(
-    relationshipFieldsForDependentType: Map<string, [string, string, string][]> | undefined,
-    currentRelationship: [string, string, string],
-    typeValue: any
-) {
-    if (!relationshipFieldsForDependentType) {
-        return;
-    }
-    const relationshipsWithSameRelationshipType = relationshipFieldsForDependentType.get(typeValue);
-    relationshipsWithSameRelationshipType?.forEach(([fieldName, existingDirection, existingFieldType]) => {
-        if (
-            fieldName !== currentRelationship[0] &&
-            existingDirection === currentRelationship[1] &&
-            existingFieldType === currentRelationship[2]
-        ) {
-            throw new DocumentValidationError(
-                `@relationship invalid. Multiple fields of the same type cannot have a relationship with the same direction and type combination.`,
-                []
-            );
-        }
-    });
-}
-
-function verifyRelationshipFields(
-    parentDef: ObjectOrInterfaceWithExtensions,
-    currentRelationship: [string, string, string],
-    typeValue: any,
-    objectTypeToRelationshipsPerRelationshipTypeMap: Map<string, Map<string, [string, string, string][]>>,
-    interfaceToImplementationsMap: Map<string, Set<string>>
-) {
-    const relationshipFieldsForCurrentType = objectTypeToRelationshipsPerRelationshipTypeMap.get(parentDef.name.value);
-    checkRelationshipFieldsForDuplicates(relationshipFieldsForCurrentType, currentRelationship, typeValue);
-    objectTypeToRelationshipsPerRelationshipTypeMap.set(
-        parentDef.name.value,
-        getUpdatedRelationshipFieldsForCurrentType(relationshipFieldsForCurrentType, currentRelationship, typeValue)
-    );
-
-    const inheritedTypeNames = getInheritedTypeNames(parentDef, interfaceToImplementationsMap);
-    inheritedTypeNames.forEach((typeName) => {
-        const inheritedRelationshipFields = objectTypeToRelationshipsPerRelationshipTypeMap.get(typeName);
-        checkRelationshipFieldsForDuplicates(inheritedRelationshipFields, currentRelationship, typeValue);
-    });
-
-    hydrateInterfaceWithImplementedTypesMap(parentDef, interfaceToImplementationsMap);
 }

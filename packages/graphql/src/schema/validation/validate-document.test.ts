@@ -3001,12 +3001,10 @@ describe("validation 2.0", () => {
             });
 
             test("@relationship relationshipProperties type not annotated with @relationshipProperties", () => {
-                const relationshipProperties = gql`
+                const doc = gql`
                     type Poster @node {
                         createdAt: String
                     }
-                `;
-                const doc = gql`
                     type User @node {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
@@ -3019,11 +3017,10 @@ describe("validation 2.0", () => {
                 const enums = [] as EnumTypeDefinitionNode[];
                 const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions: { enums, interfaces, unions, objects: [] },
                         features: {},
                     });
                 const errors = getError(executeValidate);
@@ -3037,12 +3034,10 @@ describe("validation 2.0", () => {
             });
 
             test("@relationship correct usage", () => {
-                const relationshipProps = gql`
+                const doc = gql`
                     type Poster @relationshipProperties {
                         createdAt: String
                     }
-                `;
-                const doc = gql`
                     type User @node {
                         name: String
                         posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "Poster")
@@ -3058,11 +3053,10 @@ describe("validation 2.0", () => {
                 const enums = [] as EnumTypeDefinitionNode[];
                 const interfaces = [] as InterfaceTypeDefinitionNode[];
                 const unions = [] as UnionTypeDefinitionNode[];
-                const objects = relationshipProps.definitions as ObjectTypeDefinitionNode[];
                 const executeValidate = () =>
                     validateDocument({
                         document: doc,
-                        additionalDefinitions: { enums, interfaces, unions, objects },
+                        additionalDefinitions: { enums, interfaces, unions, objects: [] },
                         features: {},
                     });
                 expect(executeValidate).not.toThrow();
@@ -3790,7 +3784,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Directive "authorization" requires to be used within the "@node" directive'
+                "Directive @authorization is not supported on fields of the Query type. Did you mean to use @authentication?"
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authorization"]);
         });
@@ -3822,7 +3816,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Directive "authorization" requires to be used within the "@node" directive'
+                "Directive @authorization is not supported on fields of the Query type. Did you mean to use @authentication?"
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authorization"]);
         });
@@ -3858,7 +3852,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Directive "authorization" requires to be used within the "@node" directive'
+                "Directive @authorization is not supported on fields of the Query type. Did you mean to use @authentication?"
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@authorization"]);
         });
@@ -5199,9 +5193,9 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        "Invalid @relationshipProperties field: Cannot use the @subscriptionsAuthorization directive on relationship properties."
+                        'Directive "@subscriptionsAuthorization" requires to be used within the "@node" directive'
                     );
-                    expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime"]);
+                    expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@subscriptionsAuthorization"]);
                 });
 
                 test("should throw error if @relationship is used on relationship property", () => {

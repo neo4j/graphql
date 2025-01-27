@@ -18,44 +18,34 @@
  */
 
 import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
-import { authenticationDirectiveScaffold } from "../../../../../graphql/directives/type-dependant-directives/authentication";
-import { isRootType } from "../../../../../utils/is-root-type";
-import { asArray } from "../../../../../utils/utils";
-import type { Neo4jValidationContext } from "../../../Neo4jValidationContext";
-import { assertValid, createGraphQLError, DocumentValidationError } from "../../utils/document-validation-error";
-import { getPathToNode } from "../../utils/path-parser";
-import {
-    fieldIsInNodeType,
-    fieldIsInRootType,
-    fieldIsInSubscriptionType,
-    typeIsANodeType,
-} from "./check-if-location-is-valid";
+import { subscriptionsAuthorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
+import { asArray } from "../../../../utils/utils";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { getPathToNode } from "../utils/path-parser";
+import { fieldIsInNodeType, typeIsANodeType } from "./check-if-location-is-valid";
 
-export function validateAuthenticationDirective(context: Neo4jValidationContext): ASTVisitor {
+export function validateSubscriptionAuthorizationDirective(context: Neo4jValidationContext): ASTVisitor {
     const extensionsTypeMap = context.extensionsTypeMap;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
-            if (
-                !fieldDefinitionNode.directives?.length ||
-                !fieldDefinitionNode.directives.find(
-                    (directive) => directive.name.value === authenticationDirectiveScaffold.name
-                )
-            ) {
+            const appliedSubscriptionDirective = fieldDefinitionNode.directives?.find(
+                (directive) => directive.name.value === subscriptionsAuthorizationDirectiveScaffold.name
+            );
+
+            if (!appliedSubscriptionDirective) {
                 return;
             }
 
-            const isValidLocation =
-                (fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
-                    fieldIsInRootType({ path, ancestors, extensionsTypeMap })) &&
-                !fieldIsInSubscriptionType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authenticationDirectiveScaffold.name}" requires to be used within the "@node" directive or in root types: Query, and Mutation`,
+                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires to be used within the "@node" directive`,
                         []
                     );
                 }
@@ -66,7 +56,7 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${authenticationDirectiveScaffold.name}`],
+                        path: [...pathToHere[0], `@${subscriptionsAuthorizationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );
@@ -79,17 +69,17 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
                 return extensionNode.directives ?? [];
             });
             const allDirectives = [...(directives ?? []), ...extensionsDirectives];
-            if (!allDirectives.find((directive) => directive.name.value === authenticationDirectiveScaffold.name)) {
+            const appliedSubscriptionDirective = allDirectives.find(
+                (directive) => directive.name.value === subscriptionsAuthorizationDirectiveScaffold.name
+            );
+            if (!appliedSubscriptionDirective) {
                 return;
             }
-            const isValidLocation =
-                (typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap }) ||
-                    isRootType(objectTypeDefinitionNode)) &&
-                objectTypeDefinitionNode.name.value !== "Subscription";
+            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap });
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authenticationDirectiveScaffold.name}" requires to be used within the "@node" directive or in root types: Query, and Mutation`,
+                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires to be used within the "@node" directive`,
                         []
                     );
                 }
@@ -99,7 +89,7 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
                 context.reportError(
                     createGraphQLError({
                         nodes: [objectTypeDefinitionNode],
-                        path: [...pathToHere[0], `@${authenticationDirectiveScaffold.name}`],
+                        path: [...pathToHere[0], `@${subscriptionsAuthorizationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );
