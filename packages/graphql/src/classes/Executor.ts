@@ -172,32 +172,33 @@ export class Executor {
         return error;
     }
 
-    private generateQuery(query: string): string {
-        if (this.cypherQueryOptions) {
-            let cypherVersion = "";
-            // Cypher version should be rendered as a separate statement
-            if (this.cypherQueryOptions.version) {
-                cypherVersion = `CYPHER ${this.cypherQueryOptions.version}\n`;
-            }
+    private addCypherOptionsToQuery(query: string): string {
+        const cypherVersion = this.getCypherVersionStatement();
 
-            let cypherQueryOptions = "";
-            const cypherQueryOptionsToAddToStatement = Object.entries(this.cypherQueryOptions).filter(
-                ([key, _value]) => {
-                    return key !== "version";
-                }
-            );
-            if (cypherQueryOptionsToAddToStatement.length) {
-                cypherQueryOptions = `CYPHER ${cypherQueryOptionsToAddToStatement
-                    .map(([key, value]) => {
-                        return `${key}=${value}`;
-                    })
-                    .join(" ")}\n`;
-            }
+        const cypherQueryOptions = this.getCypherQueryOptionsStatement();
 
-            return `${cypherVersion}${cypherQueryOptions}${query}`;
+        return `${cypherVersion}${cypherQueryOptions}${query}`;
+    }
+
+    private getCypherVersionStatement(): string {
+        if (this.cypherQueryOptions?.version) {
+            return `CYPHER ${this.cypherQueryOptions.version}\n`;
         }
+        return "";
+    }
 
-        return query;
+    private getCypherQueryOptionsStatement(): string {
+        const cypherQueryOptions = Object.entries(this.cypherQueryOptions ?? []).filter(([key, _value]) => {
+            return key !== "version";
+        });
+        if (cypherQueryOptions.length) {
+            return `CYPHER ${cypherQueryOptions
+                .map(([key, value]) => {
+                    return `${key}=${value}`;
+                })
+                .join(" ")}\n`;
+        }
+        return "";
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
@@ -291,7 +292,7 @@ export class Executor {
         parameters: Record<string, any>,
         transaction: Transaction | ManagedTransaction
     ): Result {
-        const queryToRun = this.generateQuery(query);
+        const queryToRun = this.addCypherOptionsToQuery(query);
 
         debugCypherAndParams(debug, queryToRun, parameters);
 
