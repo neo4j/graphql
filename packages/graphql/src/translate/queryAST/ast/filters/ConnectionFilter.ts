@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
@@ -29,6 +30,7 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { RelationshipWhereOperator } from "./Filter";
 import { Filter } from "./Filter";
+import type { AuthorizationFilters } from "./authorization-filters/AuthorizationFilters";
 
 export class ConnectionFilter extends Filter {
     protected innerFilters: Filter[] = [];
@@ -38,6 +40,8 @@ export class ConnectionFilter extends Filter {
     // Predicate generation for subqueries cannot be done separately from subqueries, so we need to create the predicates at the same time
     // as subqueries and store them
     protected subqueryPredicate: Cypher.Predicate | undefined;
+
+    private authFilters: Record<string, AuthorizationFilters[]> = {};
 
     constructor({
         relationship,
@@ -56,6 +60,10 @@ export class ConnectionFilter extends Filter {
 
     public addFilters(filters: Filter[]): void {
         this.innerFilters.push(...filters);
+    }
+
+    public addAuthFilters(name: string, ...filter: AuthorizationFilters[]) {
+        this.authFilters[name] = filter;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -132,15 +140,20 @@ export class ConnectionFilter extends Filter {
      * }
      * RETURN this { .name } AS this
      **/
-    protected getLabelPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
+    protected getLabelAndAuthorizationPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
         if (!hasTarget(context)) {
             throw new Error("No parent node found!");
         }
         if (isConcreteEntity(this.target)) {
+            const authFilterPredicate = this.getAuthFilterPredicate(this.target.name, context);
+            if (authFilterPredicate.length) {
+                return Cypher.and(...authFilterPredicate);
+            }
             return;
         }
         const labelPredicate = this.target.concreteEntities.map((e) => {
-            return context.target.hasLabels(...e.labels);
+            const authFilterPredicate = this.getAuthFilterPredicate(e.name, context);
+            return Cypher.and(context.target.hasLabels(...e.getLabels()), ...authFilterPredicate);
         });
         return Cypher.or(...labelPredicate);
     }
@@ -150,7 +163,7 @@ export class ConnectionFilter extends Filter {
         queryASTContext: QueryASTContext
     ): Cypher.Predicate | undefined {
         const connectionFilter = this.innerFilters.map((c) => c.getPredicate(queryASTContext));
-        const labelPredicate = this.getLabelPredicate(queryASTContext);
+        const labelPredicate = this.getLabelAndAuthorizationPredicate(queryASTContext);
         const innerPredicate = Cypher.and(...connectionFilter, labelPredicate);
 
         if (!innerPredicate) {
@@ -290,5 +303,12 @@ export class ConnectionFilter extends Filter {
         this.subqueryPredicate = Cypher.and(...falsyPredicates, ...truthyPredicates);
 
         return [Cypher.utils.concat(match, ...subqueries), Cypher.utils.concat(match2, ...subqueries2)];
+    }
+
+    private getAuthFilterPredicate(name: string, context: QueryASTContext): Cypher.Predicate[] {
+        const authFilters = this.authFilters[name];
+        if (!authFilters) return [];
+
+        return filterTruthy(authFilters.map((f) => f.getPredicate(context)));
     }
 }

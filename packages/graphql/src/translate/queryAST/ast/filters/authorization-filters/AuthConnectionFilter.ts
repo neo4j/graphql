@@ -27,7 +27,7 @@ export class AuthConnectionFilter extends ConnectionFilter {
         queryASTContext: QueryASTContext
     ): Cypher.Predicate | undefined {
         const connectionFilter = this.innerFilters.map((c) => c.getPredicate(queryASTContext));
-        const labelPredicate = this.getLabelPredicate(queryASTContext);
+        const labelPredicate = this.getLabelAndAuthorizationPredicate(queryASTContext);
         const innerPredicate = Cypher.and(...connectionFilter, labelPredicate);
         const useExist = queryASTContext.neo4jGraphQLContext.neo4jDatabaseInfo?.gte("5.0");
 

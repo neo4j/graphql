@@ -684,14 +684,16 @@ describe("Cypher Advanced Filtering", () => {
                 "MATCH (this:Movie)
                 WHERE EXISTS {
                     MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                    WHERE this1.name = $param0
+                    WHERE (this1.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this1.name = $param2)))
                 }
                 RETURN this { .actorCount } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"param0\\": \\"some genre\\"
+                    \\"param0\\": \\"some genre\\",
+                    \\"isAuthenticated\\": false,
+                    \\"param2\\": \\"some genre\\"
                 }"
             `);
         });
@@ -711,14 +713,16 @@ describe("Cypher Advanced Filtering", () => {
                 "MATCH (this:Movie)
                 WHERE NOT (EXISTS {
                     MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                    WHERE this1.name = $param0
+                    WHERE (this1.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this1.name = $param2)))
                 })
                 RETURN this { .actorCount } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"param0\\": \\"some genre\\"
+                    \\"param0\\": \\"some genre\\",
+                    \\"isAuthenticated\\": false,
+                    \\"param2\\": \\"some genre\\"
                 }"
             `);
         });
@@ -743,16 +747,18 @@ describe("Cypher Advanced Filtering", () => {
                     "MATCH (this:Movie)
                     WHERE (EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE this1.name = $param0
+                        WHERE (this1.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this1.name = $param2)))
                     } AND NOT (EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE NOT (this1.name = $param0)
+                        WHERE NOT (this1.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this1.name = $param2)))
                     }))
                     RETURN this { .actorCount } AS this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"param0\\": \\"some genre\\"
+                        \\"param0\\": \\"some genre\\",
+                        \\"isAuthenticated\\": false,
+                        \\"param2\\": \\"some genre\\"
                     }"
                 `);
             });
@@ -765,13 +771,15 @@ describe("Cypher Advanced Filtering", () => {
                     "MATCH (this:Movie)
                     WHERE NOT (EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE this1.name = $param0
+                        WHERE (this1.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this1.name = $param2)))
                     })
                     RETURN this { .actorCount } AS this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"param0\\": \\"some genre\\"
+                        \\"param0\\": \\"some genre\\",
+                        \\"isAuthenticated\\": false,
+                        \\"param2\\": \\"some genre\\"
                     }"
                 `);
             });
@@ -782,12 +790,14 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE single(this0 IN [(this)-[this1:IN_GENRE]->(this0:Genre) WHERE this0.name = $param0 | 1] WHERE true)
+                    WHERE single(this0 IN [(this)-[this1:IN_GENRE]->(this0:Genre) WHERE (this0.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this0.name = $param2))) | 1] WHERE true)
                     RETURN this { .actorCount } AS this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"param0\\": \\"some genre\\"
+                        \\"param0\\": \\"some genre\\",
+                        \\"isAuthenticated\\": false,
+                        \\"param2\\": \\"some genre\\"
                     }"
                 `);
             });
@@ -800,13 +810,15 @@ describe("Cypher Advanced Filtering", () => {
                     "MATCH (this:Movie)
                     WHERE EXISTS {
                         MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE this1.name = $param0
+                        WHERE (this1.name = $param0 AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this1.name = $param2)))
                     }
                     RETURN this { .actorCount } AS this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"param0\\": \\"some genre\\"
+                        \\"param0\\": \\"some genre\\",
+                        \\"isAuthenticated\\": false,
+                        \\"param2\\": \\"some genre\\"
                     }"
                 `);
             });

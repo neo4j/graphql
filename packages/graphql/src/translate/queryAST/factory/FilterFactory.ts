@@ -93,6 +93,7 @@ export class FilterFactory {
                 relationship: relationship,
                 target: relationship.target,
                 operator,
+                context,
             });
             const filters = this.createConnectionPredicates({
                 rel: relationship,
@@ -116,6 +117,7 @@ export class FilterFactory {
                 relationship: relationship,
                 target: concreteEntity,
                 operator,
+                context,
             });
 
             const filters = this.createConnectionPredicates({
@@ -458,8 +460,19 @@ export class FilterFactory {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operator: RelationshipWhereOperator;
+        context: Neo4jGraphQLTranslationContext;
     }): ConnectionFilter {
-        return new ConnectionFilter(options);
+        const connectionFilter = new ConnectionFilter(options);
+        const filteredEntities = getConcreteEntities(options.relationship.target);
+        for (const concreteEntity of filteredEntities) {
+            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                entity: concreteEntity,
+                operations: ["READ"],
+                context: options.context,
+            });
+            connectionFilter.addAuthFilters(concreteEntity.name, ...authFilters);
+        }
+        return connectionFilter;
     }
 
     public createInterfaceNodeFilters({
