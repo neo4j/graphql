@@ -20,14 +20,15 @@
 import { GraphQLID, Kind, type ASTVisitor, type FieldDefinitionNode, type TypeNode } from "graphql";
 import { idDirective, relationshipPropertiesDirective } from "../../../../graphql/directives";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../location-helpers/is-in-relationship-properties-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
 
     return {
@@ -36,8 +37,8 @@ export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor
                 return;
             }
             const isValidLocation =
-                fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
-                fieldIsInRelationshipPropertiesType({ path, ancestors, extensionsTypeMap });
+                fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                fieldIsInRelationshipPropertiesType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {

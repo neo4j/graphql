@@ -22,17 +22,18 @@ import { Kind } from "graphql";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../../../../constants";
 import { coalesceDirective } from "../../../../graphql/directives";
 import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../location-helpers/is-in-relationship-properties-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
-import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validateCoalesceDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
-    const enumsTypes: EnumTypeDefinitionNode[] = Object.values(extensionsTypeMap)
+    const enumsTypes: EnumTypeDefinitionNode[] = Object.values(typeMapWithExtensions)
         .map((type) => type.definition)
         .filter((definition): definition is EnumTypeDefinitionNode => definition.kind === Kind.ENUM_TYPE_DEFINITION);
 
@@ -49,8 +50,8 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
                 return;
             }
             const isValidLocation =
-                fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
-                fieldIsInRelationshipPropertiesType({ path, ancestors, extensionsTypeMap });
+                fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                fieldIsInRelationshipPropertiesType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
@@ -59,7 +60,7 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
                         []
                     );
                 }
-                assertTypeIsSupportedByCoalesce(fieldDefinitionNode.type, extensionsTypeMap);
+                assertTypeIsSupportedByCoalesce(fieldDefinitionNode.type, typeMapWithExtensions);
                 // for compatibility with previous helper we generate the enumTypes here, but it can be passed the typeMap instead.
                 assertArgumentHasSameTypeAsField({
                     directiveName: coalesceDirective.name,
@@ -83,12 +84,12 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
     };
 }
 
-function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: TypeMapWithExtensions): void {
+function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, typeMapWithExtensions: TypeMapWithExtensions): void {
     if (typeNode.kind === Kind.LIST_TYPE) {
-        assertTypeIsSupportedByCoalesce(typeNode.type, extensionsTypeMap);
+        assertTypeIsSupportedByCoalesce(typeNode.type, typeMapWithExtensions);
     }
     if (typeNode.kind === Kind.NON_NULL_TYPE) {
-        assertTypeIsSupportedByCoalesce(typeNode.type, extensionsTypeMap);
+        assertTypeIsSupportedByCoalesce(typeNode.type, typeMapWithExtensions);
     }
 
     if (typeNode.kind === Kind.NAMED_TYPE) {
@@ -104,7 +105,7 @@ function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: 
             throw new DocumentValidationError(`@${coalesceDirective.name} is not supported by Temporal types.`, []);
         }
         // check if the type is an enum
-        const typeFromMap = extensionsTypeMap[typeNode.name.value];
+        const typeFromMap = typeMapWithExtensions[typeNode.name.value];
         if (typeFromMap?.definition.kind === Kind.ENUM_TYPE_DEFINITION) {
             return;
         }

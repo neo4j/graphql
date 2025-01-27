@@ -22,14 +22,16 @@ import { authenticationDirectiveScaffold } from "../../../../graphql/directives/
 import { authorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authorization";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { fieldIsInRootType } from "../location-helpers/is-in-root-type";
+import { typeIsANodeType } from "../location-helpers/is-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { fieldIsInNodeType, fieldIsInRootType, typeIsANodeType } from "./check-if-location-is-valid";
 
 export function validateAuthorizationDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
@@ -41,12 +43,12 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                 return;
             }
 
-            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation = fieldIsInNodeType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     // add specific error message for Root types usage
-                    if (fieldIsInRootType({ path, ancestors, extensionsTypeMap })) {
+                    if (fieldIsInRootType({ path, ancestors, typeMapWithExtensions })) {
                         throw new DocumentValidationError(
                             `Directive @${authorizationDirectiveScaffold.name} is not supported on fields of the Query type. Did you mean to use @${authenticationDirectiveScaffold.name}?`,
                             []
@@ -79,7 +81,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
         },
         ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, path, ancestors) {
             const { directives } = objectTypeDefinitionNode;
-            const objectTypeExtensionNodes = extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
             const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
                 return extensionNode.directives ?? [];
             });
@@ -90,7 +92,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
             if (!authorizationDirective) {
                 return;
             }
-            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap });
+            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(

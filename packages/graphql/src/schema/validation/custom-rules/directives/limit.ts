@@ -21,15 +21,15 @@ import type { ASTVisitor, DirectiveNode, InterfaceTypeDefinitionNode, ObjectType
 import { limitDirective } from "../../../../graphql/directives";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { typeIsANodeType } from "../location-helpers/is-node-type";
 import type { AssertionResponse } from "../utils/document-validation-error";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { parseArgumentToInt } from "../utils/utils";
-import { typeIsANodeType } from "./check-if-location-is-valid";
 
 export function validateLimitDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     return {
         InterfaceTypeDefinition(
@@ -40,7 +40,7 @@ export function validateLimitDirective(context: Neo4jValidationContext): ASTVisi
             _ancestors
         ) {
             const { directives } = interfaceTypeDefinitionNode;
-            const objectTypeExtensionNodes = extensionsTypeMap[interfaceTypeDefinitionNode.name.value]?.extensions;
+            const objectTypeExtensionNodes = typeMapWithExtensions[interfaceTypeDefinitionNode.name.value]?.extensions;
             const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
                 return extensionNode.directives ?? [];
             });
@@ -67,7 +67,7 @@ export function validateLimitDirective(context: Neo4jValidationContext): ASTVisi
         },
         ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, _path, _ancestors) {
             const { directives } = objectTypeDefinitionNode;
-            const objectTypeExtensionNodes = extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
             const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
                 return extensionNode.directives ?? [];
             });
@@ -79,7 +79,7 @@ export function validateLimitDirective(context: Neo4jValidationContext): ASTVisi
                 return;
             }
             const { isValid, errorMsg, errorPath } = assertValid(() => {
-                const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap });
+                const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
                         `Directive "${limitDirective.name}" requires to be used within the "@node" directive or in an interface type`,

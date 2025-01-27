@@ -22,19 +22,17 @@ import { authenticationDirectiveScaffold } from "../../../../graphql/directives/
 import { isRootType } from "../../../../utils/is-root-type";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { fieldIsInRootType } from "../location-helpers/is-in-root-type";
+import { fieldIsInSubscriptionType } from "../location-helpers/is-in-subscription-type";
+import { typeIsANodeType } from "../location-helpers/is-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import {
-    fieldIsInNodeType,
-    fieldIsInRootType,
-    fieldIsInSubscriptionType,
-    typeIsANodeType,
-} from "./check-if-location-is-valid";
 
 export function validateAuthenticationDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
@@ -47,9 +45,9 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
             }
 
             const isValidLocation =
-                (fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
-                    fieldIsInRootType({ path, ancestors, extensionsTypeMap })) &&
-                !fieldIsInSubscriptionType({ path, ancestors, extensionsTypeMap });
+                (fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                    fieldIsInRootType({ path, ancestors, typeMapWithExtensions })) &&
+                !fieldIsInSubscriptionType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
@@ -73,7 +71,7 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
         },
         ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, path, ancestors) {
             const { directives } = objectTypeDefinitionNode;
-            const objectTypeExtensionNodes = extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
             const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
                 return extensionNode.directives ?? [];
             });
@@ -82,7 +80,7 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
                 return;
             }
             const isValidLocation =
-                (typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap }) ||
+                (typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions }) ||
                     isRootType(objectTypeDefinitionNode)) &&
                 objectTypeDefinitionNode.name.value !== "Subscription";
             const { isValid, errorMsg } = assertValid(() => {

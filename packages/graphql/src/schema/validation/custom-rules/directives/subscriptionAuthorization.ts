@@ -21,14 +21,15 @@ import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "
 import { subscriptionsAuthorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { typeIsANodeType } from "../location-helpers/is-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { fieldIsInNodeType, typeIsANodeType } from "./check-if-location-is-valid";
 
 export function validateSubscriptionAuthorizationDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
@@ -40,7 +41,7 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
                 return;
             }
 
-            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation = fieldIsInNodeType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
@@ -64,7 +65,7 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
         },
         ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, path, ancestors) {
             const { directives } = objectTypeDefinitionNode;
-            const objectTypeExtensionNodes = extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
             const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
                 return extensionNode.directives ?? [];
             });
@@ -75,7 +76,7 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
             if (!appliedSubscriptionDirective) {
                 return;
             }
-            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, extensionsTypeMap });
+            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(

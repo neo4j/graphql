@@ -38,15 +38,16 @@ import {
 } from "../../../../graphql/scalars";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../location-helpers/is-in-relationship-properties-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
-import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validatePopulatedByDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     const callbacks = context.callbacks;
     return {
@@ -63,8 +64,8 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
                 return;
             }
             const isValidLocation =
-                fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
-                fieldIsInRelationshipPropertiesType({ path, ancestors, extensionsTypeMap });
+                fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                fieldIsInRelationshipPropertiesType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {

@@ -25,22 +25,24 @@ import {
 } from "../../../../graphql/directives";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInInterfaceType } from "../location-helpers/is-in-interface-type";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
-import { fieldIsInInterfaceType, fieldIsInNodeType } from "./check-if-location-is-valid";
 
 export function validateRelationshipDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     return {
         // At the object level we need to check that the relationship directive is not applied to multiple fields of the same type
         ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, _path, _ancestors) {
             const fieldTypes = new Map<string, string>();
             const extensionsFields = (
-                (extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions ?? []) as ObjectTypeExtensionNode[]
+                (typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions ??
+                    []) as ObjectTypeExtensionNode[]
             ).flatMap((extension) => extension.fields ?? []);
 
             [...(objectTypeDefinitionNode.fields ?? []), ...extensionsFields].forEach((field) => {
@@ -88,7 +90,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
             if (!appliedRelationship) {
                 return;
             }
-            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation = fieldIsInNodeType({ path, ancestors, typeMapWithExtensions });
             const [pathToHere, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             const typeArg = appliedRelationship.arguments?.find((a) => a.name.value === "type");
             const directionArg = appliedRelationship.arguments?.find((a) => a.name.value === "direction");
@@ -100,7 +102,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
 
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
-                    if (fieldIsInInterfaceType({ path, ancestors, extensionsTypeMap })) {
+                    if (fieldIsInInterfaceType({ path, ancestors, typeMapWithExtensions })) {
                         // throw more specific error for interface types as in the past it was possible to have relationships on interfaces
                         throw new DocumentValidationError(
                             `Invalid directive usage: Directive @${relationshipDirective.name} is not supported on fields of interface types (${parentOfTraversedDef?.name.value}). Since version 5.0.0, interface fields can only have @${declareRelationshipDirective.name}. Please add the @relationship directive to the fields in all types which implement it.`,
@@ -115,7 +117,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
                 if (propertiesArg) {
                     // find the relationshipProperties type, if type does not exist, throw error
                     const propertiesArgAsString = parseValueNode(propertiesArg.value);
-                    const propertiesType = extensionsTypeMap[propertiesArgAsString]?.definition;
+                    const propertiesType = typeMapWithExtensions[propertiesArgAsString]?.definition;
                     if (!propertiesType) {
                         throw new DocumentValidationError(
                             `@${relationshipDirective.name}.properties invalid. Cannot find type to represent the relationship properties: ${propertiesArgAsString}.`,

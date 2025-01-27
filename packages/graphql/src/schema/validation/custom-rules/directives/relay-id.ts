@@ -20,14 +20,14 @@
 import type { ASTVisitor, FieldDefinitionNode } from "graphql";
 import { relayIdDirective } from "../../../../graphql/directives";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { fieldIsInNodeType } from "./check-if-location-is-valid";
 
 export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
 
     return {
@@ -35,7 +35,7 @@ export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVi
             if (!fieldDefinitionNode.directives?.find((directive) => directive.name.value === relayIdDirective.name)) {
                 return;
             }
-            const isValidLocation = fieldIsInNodeType({ path, ancestors, extensionsTypeMap });
+            const isValidLocation = fieldIsInNodeType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {

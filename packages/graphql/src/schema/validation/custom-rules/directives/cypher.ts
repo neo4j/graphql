@@ -20,14 +20,16 @@
 import type { ASTVisitor, FieldDefinitionNode } from "graphql";
 import { cypherDirective } from "../../../../graphql/directives";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
+import { fieldIsInRootType } from "../location-helpers/is-in-root-type";
+import { fieldIsInSubscriptionType } from "../location-helpers/is-in-subscription-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
-import { fieldIsInNodeType, fieldIsInRootType, fieldIsInSubscriptionType } from "./check-if-location-is-valid";
 
 export function validateCypherDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.typeMapWithExtensions;
-    if (!extensionsTypeMap) {
-        throw new Error("No extensionsTypeMap found in the context");
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
     return {
         FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
@@ -38,9 +40,9 @@ export function validateCypherDirective(context: Neo4jValidationContext): ASTVis
                 return;
             }
             const isValidLocation =
-                (fieldIsInNodeType({ path, ancestors, extensionsTypeMap }) ||
-                    fieldIsInRootType({ path, ancestors, extensionsTypeMap })) &&
-                !fieldIsInSubscriptionType({ path, ancestors, extensionsTypeMap });
+                (fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                    fieldIsInRootType({ path, ancestors, typeMapWithExtensions })) &&
+                !fieldIsInSubscriptionType({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
