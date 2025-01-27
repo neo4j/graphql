@@ -107,7 +107,6 @@ export class Executor {
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
-        this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
         this.cypherParams = cypherParams;
         this.transactionMetadata = transactionMetadata;
@@ -174,12 +173,28 @@ export class Executor {
     }
 
     private generateQuery(query: string): string {
-        if (this.cypherQueryOptions && Object.keys(this.cypherQueryOptions).length) {
-            const cypherQueryOptions = `CYPHER ${Object.entries(this.cypherQueryOptions)
-                .map(([key, value]) => `${key}=${value}`)
-                .join(" ")}`;
+        if (this.cypherQueryOptions) {
+            let cypherVersion = "";
+            // Cypher version should be rendered as a separate statement
+            if (this.cypherQueryOptions.version) {
+                cypherVersion = `CYPHER ${this.cypherQueryOptions.version}\n`;
+            }
 
-            return `${cypherQueryOptions}\n${query}`;
+            let cypherQueryOptions = "";
+            const cypherQueryOptionsToAddToStatement = Object.entries(this.cypherQueryOptions).filter(
+                ([key, _value]) => {
+                    return key !== "version";
+                }
+            );
+            if (cypherQueryOptionsToAddToStatement.length) {
+                cypherQueryOptions = `CYPHER ${cypherQueryOptionsToAddToStatement
+                    .map(([key, value]) => {
+                        return `${key}=${value}`;
+                    })
+                    .join(" ")}\n`;
+            }
+
+            return `${cypherVersion}${cypherQueryOptions}${query}`;
         }
 
         return query;

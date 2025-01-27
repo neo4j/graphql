@@ -2,15 +2,14 @@
 "@neo4j/graphql": patch
 ---
 
-Add feature flag "addCypherVersion":
+Add `version` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
 
 ```js
-neoSchema = new Neo4jGraphQL({
-    typeDefs,
-    features: {
-        addCypherVersion: true,
+{
+    cypherQueryOptions: {
+        version: "5",
     },
-});
+}
 ```
 
 This prepends all Cypher queries with a `CYPHER [version]` statement:

@@ -24,7 +24,6 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypherIfExists } from "../utils/compile-cypher";
-import { getCypherVersion } from "../utils/get-cypher-version";
 import { asArray, filterTruthy } from "../utils/utils";
 import createCreateAndParams from "./create-create-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
@@ -153,7 +152,7 @@ export default async function translateCreate({
         ];
     });
 
-    const createQueryCypher = createQuery.build({ prefix: "create_", cypherVersion: getCypherVersion(context) });
+    const createQueryCypher = createQuery.build({ prefix: "create_" });
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });

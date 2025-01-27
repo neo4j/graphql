@@ -87,4 +87,36 @@ describe("query options", () => {
 
         expect(result?.data?.[Movie.plural]).toEqual([{ id }, { id }, { id }]);
     });
+
+    test("queries should work with version set to Cypher version", async () => {
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            query($id: ID){
+                ${Movie.plural}(where: {id_EQ: $id}){
+                    id
+                }
+            }
+        `;
+
+        await neoSchema.checkNeo4jCompat();
+
+        await testHelper.executeCypher(
+            `
+              CREATE (:${Movie} {id: $id}), (:${Movie} {id: $id}), (:${Movie} {id: $id})
+            `,
+            { id }
+        );
+
+        const result = await testHelper.executeGraphQL(query, {
+            variableValues: { id },
+            contextValue: { cypherQueryOptions: { runtime: "interpreted", version: "5" } },
+        });
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result?.data?.[Movie.plural]).toEqual([{ id }, { id }, { id }]);
+    });
 });
