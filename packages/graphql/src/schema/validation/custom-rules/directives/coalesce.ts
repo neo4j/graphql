@@ -21,14 +21,14 @@ import type { ASTVisitor, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode 
 import { Kind } from "graphql";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../../../../constants";
 import { coalesceDirective } from "../../../../graphql/directives";
-import type { Neo4jValidationContext, ObjectExtensionsTypeMap } from "../../Neo4jValidationContext";
+import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { getPathToNode } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validateCoalesceDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.extensionsTypeMap;
+    const extensionsTypeMap = context.typeMapWithExtensions;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
@@ -83,7 +83,7 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
     };
 }
 
-function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: ObjectExtensionsTypeMap): void {
+function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, extensionsTypeMap: TypeMapWithExtensions): void {
     if (typeNode.kind === Kind.LIST_TYPE) {
         assertTypeIsSupportedByCoalesce(typeNode.type, extensionsTypeMap);
     }

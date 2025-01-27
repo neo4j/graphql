@@ -21,7 +21,7 @@ import { Kind, type ASTNode, type ObjectTypeDefinitionNode } from "graphql";
 import { nodeDirective, relationshipPropertiesDirective } from "../../../../graphql/directives";
 import { isRootType } from "../../../../utils/is-root-type";
 import { asArray } from "../../../../utils/utils";
-import type { ObjectExtensionsTypeMap } from "../../Neo4jValidationContext";
+import type { TypeMapWithExtensions } from "../../Neo4jValidationContext";
 import { getPathToNode } from "../utils/path-parser";
 
 export function typeIsANodeType({
@@ -29,7 +29,7 @@ export function typeIsANodeType({
     extensionsTypeMap,
 }: {
     objectTypeDefinitionNode: ObjectTypeDefinitionNode;
-    extensionsTypeMap: ObjectExtensionsTypeMap;
+    extensionsTypeMap: TypeMapWithExtensions;
 }): boolean {
     const { directives } = objectTypeDefinitionNode;
     const objectTypeExtensionNodes = extensionsTypeMap[objectTypeDefinitionNode.name.value]?.extensions;
@@ -53,7 +53,7 @@ export function fieldIsInNodeType({
 }: {
     path: readonly (string | number)[];
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
-    extensionsTypeMap: ObjectExtensionsTypeMap;
+    extensionsTypeMap: TypeMapWithExtensions;
 }): boolean {
     const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
     if (!parentOfTraversedDef) {
@@ -86,7 +86,7 @@ export function fieldIsInRelationshipPropertiesType({
 }: {
     path: readonly (string | number)[];
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
-    extensionsTypeMap: ObjectExtensionsTypeMap;
+    extensionsTypeMap: TypeMapWithExtensions;
 }): boolean {
     const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
     if (!parentOfTraversedDef) {
@@ -121,7 +121,7 @@ export function fieldIsInInterfaceType({
 }: {
     path: readonly (string | number)[];
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
-    extensionsTypeMap: ObjectExtensionsTypeMap;
+    extensionsTypeMap: TypeMapWithExtensions;
 }): boolean {
     const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
     if (!parentOfTraversedDef) {
@@ -148,7 +148,7 @@ export function fieldIsInRootType({
 }: {
     path: readonly (string | number)[];
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
-    extensionsTypeMap: ObjectExtensionsTypeMap;
+    extensionsTypeMap: TypeMapWithExtensions;
 }): boolean {
     const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
     if (!parentOfTraversedDef) {
@@ -178,7 +178,7 @@ export function fieldIsInSubscriptionType({
 }: {
     path: readonly (string | number)[];
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
-    extensionsTypeMap: ObjectExtensionsTypeMap;
+    extensionsTypeMap: TypeMapWithExtensions;
 }): boolean {
     const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
     if (!parentOfTraversedDef) {

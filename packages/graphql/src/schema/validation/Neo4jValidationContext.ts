@@ -33,7 +33,7 @@ import type {
 import { Kind } from "graphql";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
 
-export type ObjectExtensionsTypeMap = Record<
+export type TypeMapWithExtensions = Record<
     string,
     {
         extensions: (ObjectTypeExtensionNode | InterfaceTypeExtensionNode | UnionTypeExtensionNode)[];
@@ -45,7 +45,7 @@ export type ObjectExtensionsTypeMap = Record<
     }
 >;
 export class Neo4jValidationContext extends SDLValidationContext {
-    public readonly extensionsTypeMap?: ObjectExtensionsTypeMap;
+    public readonly typeMapWithExtensions?: TypeMapWithExtensions;
     public readonly callbacks?: any;
     constructor(
         ast: DocumentNode,
@@ -55,7 +55,7 @@ export class Neo4jValidationContext extends SDLValidationContext {
     ) {
         super(ast, schema, onError);
         this.callbacks = callbacks;
-        this.extensionsTypeMap = ast.definitions.reduce((acc, def): ObjectExtensionsTypeMap => {
+        this.typeMapWithExtensions = ast.definitions.reduce((acc, def): TypeMapWithExtensions => {
             if (
                 def.kind === Kind.OBJECT_TYPE_DEFINITION ||
                 def.kind === Kind.INTERFACE_TYPE_DEFINITION ||

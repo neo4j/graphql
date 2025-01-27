@@ -44,7 +44,7 @@ import { getInnerTypeName } from "../utils/utils";
 import { fieldIsInNodeType, fieldIsInRelationshipPropertiesType } from "./check-if-location-is-valid";
 
 export function validatePopulatedByDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.extensionsTypeMap;
+    const extensionsTypeMap = context.typeMapWithExtensions;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }

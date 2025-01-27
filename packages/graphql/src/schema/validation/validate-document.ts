@@ -209,18 +209,11 @@ function filterDocument(document: DocumentNode, filterDirectives: boolean = fals
 function runValidationRulesOnFilteredDocument({
     schema,
     document,
-    extra,
     userCustomResolvers,
     features,
 }: {
     schema: GraphQLSchema;
     document: DocumentNode;
-    extra: {
-        enums?: EnumTypeDefinitionNode[];
-        interfaces?: InterfaceTypeDefinitionNode[];
-        unions?: UnionTypeDefinitionNode[];
-        objects?: ObjectTypeDefinitionNode[];
-    };
     userCustomResolvers?: IResolvers | Array<IResolvers>;
     features: Neo4jFeaturesSettings | undefined;
 }) {
@@ -247,6 +240,7 @@ function runValidationRulesOnFilteredDocument({
             }),
             ValidListInNodeType,
             WarnIfSubscriptionsAuthorizationMissing(Boolean(features?.subscriptions)),
+            // directives validations
             validateAuthorizationDirective,
             validateAuthenticationDirective,
             validateCoalesceDirective,
@@ -260,7 +254,6 @@ function runValidationRulesOnFilteredDocument({
             validateRelayIdDirective,
             validateTimestampDirective,
             validateSubscriptionAuthorizationDirective,
-            // nodeMissingValidation,
         ],
         schema,
         features?.populatedBy?.callbacks
@@ -290,7 +283,7 @@ function validateDocument({
     userCustomResolvers?: IResolvers | Array<IResolvers>;
 }): void {
     const filteredDocument = filterDocument(document);
-    const { additionalDirectives, additionalTypes, ...extra } = additionalDefinitions;
+    const { additionalDirectives, additionalTypes } = additionalDefinitions;
     const schemaToExtend = new GraphQLSchema({
         directives: [
             ...Object.values(directives),
@@ -314,7 +307,6 @@ function validateDocument({
     runValidationRulesOnFilteredDocument({
         schema: schemaToExtend,
         document: filteredDocument,
-        extra,
         userCustomResolvers,
         features,
     });

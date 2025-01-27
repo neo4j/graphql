@@ -25,7 +25,7 @@ import { getPathToNode } from "../utils/path-parser";
 import { fieldIsInNodeType } from "./check-if-location-is-valid";
 
 export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVisitor {
-    const extensionsTypeMap = context.extensionsTypeMap;
+    const extensionsTypeMap = context.typeMapWithExtensions;
     if (!extensionsTypeMap) {
         throw new Error("No extensionsTypeMap found in the context");
     }
