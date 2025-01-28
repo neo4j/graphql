@@ -2,7 +2,7 @@
 "@neo4j/graphql": patch
 ---
 
-Add `version` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
+Add `addVersionPrefix` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
 
 ```js
 {
