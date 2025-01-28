@@ -7,7 +7,7 @@ Add `version` to `cypherQueryOptions` in context to add a Cypher version with `C
 ```js
 {
     cypherQueryOptions: {
-        version: "5",
+        addCypherVersionPrefix: true,
     },
 }
 ```

@@ -276,7 +276,7 @@ export interface CypherQueryOptions {
     operatorEngine?: "default" | "interpreted" | "compiled";
     interpretedPipesFallback?: "default" | "disabled" | "whitelisted_plans_only" | "all";
     replan?: "default" | "force" | "skip";
-    version?: "5";
+    addCypherVersionPrefix?: boolean;
 }
 
 /** Input field for graphql-compose */

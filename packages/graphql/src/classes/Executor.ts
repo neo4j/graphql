@@ -40,6 +40,7 @@ import {
 } from "../constants";
 import { debugCypherAndParams } from "../debug/debug-cypher-and-params";
 import type { CypherQueryOptions } from "../types";
+import { isInArray } from "../utils/is-in-array";
 import {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstraintValidationError,
@@ -48,6 +49,8 @@ import {
 } from "./Error";
 
 const debug = Debug(DEBUG_EXECUTE);
+
+const SUPPORTED_CYPHER_VERSION = "5";
 
 interface DriverLike {
     session(config);
@@ -181,15 +184,16 @@ export class Executor {
     }
 
     private getCypherVersionStatement(): string {
-        if (this.cypherQueryOptions?.version) {
-            return `CYPHER ${this.cypherQueryOptions.version}\n`;
+        if (this.cypherQueryOptions?.addCypherVersionPrefix) {
+            return `CYPHER ${SUPPORTED_CYPHER_VERSION}\n`;
         }
         return "";
     }
 
     private getCypherQueryOptionsStatement(): string {
+        const ignoredCypherQueryOptions: Array<keyof CypherQueryOptions> = ["addCypherVersionPrefix"];
         const cypherQueryOptions = Object.entries(this.cypherQueryOptions ?? []).filter(([key, _value]) => {
-            return key !== "version";
+            return !isInArray(ignoredCypherQueryOptions, key);
         });
         if (cypherQueryOptions.length) {
             return `CYPHER ${cypherQueryOptions
