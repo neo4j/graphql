@@ -112,7 +112,7 @@ describe("query options", () => {
 
         const result = await testHelper.executeGraphQL(query, {
             variableValues: { id },
-            contextValue: { cypherQueryOptions: { runtime: "interpreted", addCypherVersionPrefix: true } },
+            contextValue: { cypherQueryOptions: { runtime: "interpreted", addVersionPrefix: true } },
         });
 
         expect(result.errors).toBeFalsy();

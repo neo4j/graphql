@@ -184,14 +184,14 @@ export class Executor {
     }
 
     private getCypherVersionStatement(): string {
-        if (this.cypherQueryOptions?.addCypherVersionPrefix) {
+        if (this.cypherQueryOptions?.addVersionPrefix) {
             return `CYPHER ${SUPPORTED_CYPHER_VERSION}\n`;
         }
         return "";
     }
 
     private getCypherQueryOptionsStatement(): string {
-        const ignoredCypherQueryOptions: Array<keyof CypherQueryOptions> = ["addCypherVersionPrefix"];
+        const ignoredCypherQueryOptions: Array<keyof CypherQueryOptions> = ["addVersionPrefix"];
         const cypherQueryOptions = Object.entries(this.cypherQueryOptions ?? []).filter(([key, _value]) => {
             return !isInArray(ignoredCypherQueryOptions, key);
         });
