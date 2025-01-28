@@ -61,6 +61,15 @@ describe("Unions", () => {
               publicationsConnection(after: String, first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
+            type AuthorAggregate {
+              node: AuthorAggregateNode!
+            }
+
+            type AuthorAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type AuthorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -320,6 +329,7 @@ describe("Unions", () => {
             }
 
             type AuthorsConnection {
+              aggregate: AuthorAggregate!
               edges: [AuthorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -330,6 +340,15 @@ describe("Unions", () => {
               authorAggregate(where: AuthorWhere): BookAuthorAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
+            }
+
+            type BookAggregate {
+              node: BookAggregateNode!
+            }
+
+            type BookAggregateNode {
+              count: Int!
+              title: StringAggregateSelection!
             }
 
             type BookAggregateSelection {
@@ -550,6 +569,7 @@ describe("Unions", () => {
             }
 
             type BooksConnection {
+              aggregate: BookAggregate!
               edges: [BookEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -633,6 +653,15 @@ describe("Unions", () => {
               authorAggregate(where: AuthorWhere): JournalAuthorAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
+            }
+
+            type JournalAggregate {
+              node: JournalAggregateNode!
+            }
+
+            type JournalAggregateNode {
+              count: Int!
+              subject: StringAggregateSelection!
             }
 
             type JournalAggregateSelection {
@@ -853,6 +882,7 @@ describe("Unions", () => {
             }
 
             type JournalsConnection {
+              aggregate: JournalAggregate!
               edges: [JournalEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -898,13 +928,13 @@ describe("Unions", () => {
 
             type Query {
               authors(limit: Int, offset: Int, sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
+              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorsConnection\\\\\\"\\")
               authorsConnection(after: String, first: Int, sort: [AuthorSort!], where: AuthorWhere): AuthorsConnection!
               books(limit: Int, offset: Int, sort: [BookSort!], where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksAggregate(where: BookWhere): BookAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"booksConnection\\\\\\"\\")
               booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
               journals(limit: Int, offset: Int, sort: [JournalSort!], where: JournalWhere): [Journal!]!
-              journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              journalsAggregate(where: JournalWhere): JournalAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"journalsConnection\\\\\\"\\")
               journalsConnection(after: String, first: Int, sort: [JournalSort!], where: JournalWhere): JournalsConnection!
               publications(limit: Int, offset: Int, where: PublicationWhere): [Publication!]!
             }

@@ -42,6 +42,7 @@ describe("200", () => {
             }
 
             type CategoriesConnection {
+              aggregate: CategoryAggregate!
               edges: [CategoryEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -52,6 +53,16 @@ describe("200", () => {
               description: String!
               exampleImageLocations: [String!]
               name: String!
+            }
+
+            type CategoryAggregate {
+              node: CategoryAggregateNode!
+            }
+
+            type CategoryAggregateNode {
+              count: Int!
+              description: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type CategoryAggregateSelection {
@@ -171,7 +182,7 @@ describe("200", () => {
 
             type Query {
               categories(limit: Int, offset: Int, sort: [CategorySort!], where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
+              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"categoriesConnection\\\\\\"\\")
               categoriesConnection(after: String, first: Int, sort: [CategorySort!], where: CategoryWhere): CategoriesConnection!
             }
 

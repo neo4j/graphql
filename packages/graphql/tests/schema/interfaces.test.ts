@@ -108,6 +108,14 @@ describe("Interfaces", () => {
               nodes: [MovieNode!]
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -205,6 +213,14 @@ describe("Interfaces", () => {
               id: ID
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+            }
+
+            type MovieNodeAggregate {
+              node: MovieNodeAggregateNode!
+            }
+
+            type MovieNodeAggregateNode {
+              count: Int!
             }
 
             type MovieNodeAggregateSelection {
@@ -331,6 +347,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodesConnection {
+              aggregate: MovieNodeAggregate!
               edges: [MovieNodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -405,6 +422,7 @@ describe("Interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -426,10 +444,10 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(limit: Int, offset: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
-              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"movieNodesConnection\\\\\\"\\")
               movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -546,6 +564,14 @@ describe("Interfaces", () => {
               nodes: [MovieNode!]
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -643,6 +669,14 @@ describe("Interfaces", () => {
               id: ID
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+            }
+
+            type MovieNodeAggregate {
+              node: MovieNodeAggregateNode!
+            }
+
+            type MovieNodeAggregateNode {
+              count: Int!
             }
 
             type MovieNodeAggregateSelection {
@@ -769,6 +803,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodesConnection {
+              aggregate: MovieNodeAggregate!
               edges: [MovieNodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -843,6 +878,7 @@ describe("Interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -864,10 +900,10 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(limit: Int, offset: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
-              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
+              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"movieNodesConnection\\\\\\"\\")
               movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

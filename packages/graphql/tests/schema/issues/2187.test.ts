@@ -115,6 +115,15 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               name: String
             }
 
+            type GenreAggregate {
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type GenreAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -376,6 +385,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -420,6 +430,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               imdbRating: Float
               title: String @deprecated(reason: \\"Do not use title\\")
               year: Int
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              imdbRating: FloatAggregateSelection!
+              title: StringAggregateSelection!
+              year: IntAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -669,6 +690,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -693,10 +715,10 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
+              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\"\\")
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

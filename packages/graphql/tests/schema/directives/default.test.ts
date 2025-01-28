@@ -208,10 +208,10 @@ describe("@default directive", () => {
 
             type Query {
               userInterfaces(limit: Int, offset: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
-              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
+              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"userInterfacesConnection\\\\\\"\\")
               userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): UserInterfacesConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -269,6 +269,20 @@ describe("@default directive", () => {
               verifiedDate: DateTime!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              fromInterface: StringAggregateSelection!
+              name: StringAggregateSelection!
+              numberOfFriends: IntAggregateSelection!
+              rating: FloatAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
+              verifiedDate: DateTimeAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               fromInterface: StringAggregateSelection!
@@ -299,6 +313,16 @@ describe("@default directive", () => {
             interface UserInterface {
               fromInterface: String!
               toBeOverridden: String!
+            }
+
+            type UserInterfaceAggregate {
+              node: UserInterfaceAggregateNode!
+            }
+
+            type UserInterfaceAggregateNode {
+              count: Int!
+              fromInterface: StringAggregateSelection!
+              toBeOverridden: StringAggregateSelection!
             }
 
             type UserInterfaceAggregateSelection {
@@ -344,6 +368,7 @@ describe("@default directive", () => {
             }
 
             type UserInterfacesConnection {
+              aggregate: UserInterfaceAggregate!
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -448,6 +473,7 @@ describe("@default directive", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

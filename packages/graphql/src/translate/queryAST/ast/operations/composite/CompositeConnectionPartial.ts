@@ -25,6 +25,11 @@ import { ConnectionReadOperation } from "../ConnectionReadOperation";
 import type { OperationTranspileResult } from "../operations";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
+    /** Prints the name of the Node */
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         // eslint-disable-next-line prefer-const
         let { selection: clause, nestedContext } = this.selection.apply(context);

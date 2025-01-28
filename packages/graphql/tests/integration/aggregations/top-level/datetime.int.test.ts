@@ -64,9 +64,13 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        createdAt {
-                            min
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                createdAt {
+                                    min
+                                }
+                            }
                         }
                     }
                 }
@@ -76,9 +80,15 @@ describe("aggregations-top_level-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            createdAt: {
-                min: minDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        createdAt: {
+                            min: minDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });
@@ -108,10 +118,14 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        createdAt {
-                            max
-                        }
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                createdAt {
+                                    max
+                                }
+                            }
+                        }    
                     }
                 }
             `;
@@ -120,9 +134,15 @@ describe("aggregations-top_level-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            createdAt: {
-                max: maxDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        createdAt: {
+                            max: maxDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });
@@ -152,12 +172,16 @@ describe("aggregations-top_level-datetime", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        createdAt {
-                            min
-                            max
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                createdAt {
+                                    min
+                                    max
+                                }
+                            }
                         }
-                    }
+                    }    
                 }
             `;
 
@@ -165,10 +189,16 @@ describe("aggregations-top_level-datetime", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            createdAt: {
-                min: minDate.toISOString(),
-                max: maxDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        createdAt: {
+                            min: minDate.toISOString(),
+                            max: maxDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });

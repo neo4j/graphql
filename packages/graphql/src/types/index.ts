@@ -452,6 +452,7 @@ export type Neo4jFeaturesSettings = {
         aggregationFilters?: boolean;
         relationshipFilters?: boolean;
         attributeFilters?: boolean;
+        deprecatedAggregateOperations?: boolean;
     };
     vector?: Neo4jVectorSettings;
     limitRequired?: boolean;

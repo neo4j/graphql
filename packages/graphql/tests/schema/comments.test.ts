@@ -209,6 +209,16 @@ describe("Comments", () => {
               isActive: Boolean
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              actorCount: IntAggregateSelection!
+              averageRating: FloatAggregateSelection!
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
@@ -297,6 +307,7 @@ describe("Comments", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -318,7 +329,7 @@ describe("Comments", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -371,6 +382,15 @@ describe("Comments", () => {
 
                 type Actor {
                   name: String
+                }
+
+                type ActorAggregate {
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
+                  count: Int!
+                  name: StringAggregateSelection!
                 }
 
                 type ActorAggregateSelection {
@@ -427,6 +447,7 @@ describe("Comments", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -619,6 +640,14 @@ describe("Comments", () => {
                   where: MovieActorsConnectionWhere
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                 }
@@ -690,6 +719,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -714,10 +744,10 @@ describe("Comments", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1000,6 +1030,15 @@ describe("Comments", () => {
                   where: ActorActedInConnectionWhere
                 }
 
+                type ActorAggregate {
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
+                  count: Int!
+                  name: StringAggregateSelection!
+                }
+
                 type ActorAggregateSelection {
                   count: Int!
                   name: StringAggregateSelection!
@@ -1086,6 +1125,7 @@ describe("Comments", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1169,6 +1209,16 @@ describe("Comments", () => {
                   title: String!
                 }
 
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
+                  runtime: IntAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 type MovieAggregateSelection {
                   count: Int!
                   runtime: IntAggregateSelection!
@@ -1222,6 +1272,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1249,6 +1300,15 @@ describe("Comments", () => {
 
                 interface Production {
                   title: String!
+                }
+
+                type ProductionAggregate {
+                  node: ProductionAggregateNode!
+                }
+
+                type ProductionAggregateNode {
+                  count: Int!
+                  title: StringAggregateSelection!
                 }
 
                 type ProductionAggregateSelection {
@@ -1312,6 +1372,7 @@ describe("Comments", () => {
                 }
 
                 type ProductionsConnection {
+                  aggregate: ProductionAggregate!
                   edges: [ProductionEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1319,22 +1380,32 @@ describe("Comments", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
+                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
+                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
                 type Series implements Production {
                   episodes: Int!
                   title: String!
+                }
+
+                type SeriesAggregate {
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
+                  count: Int!
+                  episodes: IntAggregateSelection!
+                  title: StringAggregateSelection!
                 }
 
                 type SeriesAggregateSelection {
@@ -1344,6 +1415,7 @@ describe("Comments", () => {
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1509,6 +1581,14 @@ describe("Comments", () => {
                   id: ID
                 }
 
+                type GenreAggregate {
+                  node: GenreAggregateNode!
+                }
+
+                type GenreAggregateNode {
+                  count: Int!
+                }
+
                 type GenreAggregateSelection {
                   count: Int!
                 }
@@ -1551,6 +1631,7 @@ describe("Comments", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1575,6 +1656,14 @@ describe("Comments", () => {
                   search(limit: Int, offset: Int, where: SearchWhere): [Search!]!
                   searchConnection(after: String, first: Int, where: MovieSearchConnectionWhere): MovieSearchConnection!
                   searchNoDirective: Search
+                }
+
+                type MovieAggregate {
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
+                  count: Int!
                 }
 
                 type MovieAggregateSelection {
@@ -1804,6 +1893,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1828,10 +1918,10 @@ describe("Comments", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
+                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\"\\")
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   searches(limit: Int, offset: Int, where: SearchWhere): [Search!]!
                 }

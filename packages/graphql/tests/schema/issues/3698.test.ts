@@ -122,6 +122,15 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               productConnection(after: String, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
+            type GenreAggregate {
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type GenreAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -405,6 +414,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -415,6 +425,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type IProductAggregate {
+              node: IProductAggregateNode!
+            }
+
+            type IProductAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              info: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type IProductAggregateSelection {
@@ -496,6 +517,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type IProductsConnection {
+              aggregate: IProductAggregate!
               edges: [IProductEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -518,6 +540,16 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               id: String!
               info: String!
               name: String!
+            }
+
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+              id: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -767,6 +799,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -791,13 +824,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
+              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\"\\")
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               iProducts(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
-              iProductsAggregate(where: IProductWhere): IProductAggregateSelection!
+              iProductsAggregate(where: IProductWhere): IProductAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"iProductsConnection\\\\\\"\\")
               iProductsConnection(after: String, first: Int, sort: [IProductSort!], where: IProductWhere): IProductsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

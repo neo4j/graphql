@@ -33,6 +33,8 @@ export type RootTypeFieldNames = {
 type AggregateTypeNames = {
     selection: string;
     input: string;
+    connection: string;
+    node: string;
 };
 
 type MutationResponseTypeNames = {
@@ -148,6 +150,8 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return {
             selection: `${this.entityAdapter.name}AggregateSelection`,
             input: `${this.entityAdapter.name}AggregateSelectionInput`,
+            connection: `${this.entityAdapter.name}Aggregate`,
+            node: `${this.entityAdapter.name}AggregateNode`,
         };
     }
 

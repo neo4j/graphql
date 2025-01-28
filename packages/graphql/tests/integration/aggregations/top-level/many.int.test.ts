@@ -67,21 +67,25 @@ describe("aggregations-top_level-many", () => {
 
         const query = `
                 {
-                    ${typeMovie.operations.aggregate}(where: { testId_EQ: "${testId}" }) {
-                        title {
-                            shortest
-                            longest
-                        }
-                        imdbRating {
-                            min
-                            max
-                            average
-                        }
-                        createdAt {
-                            min
-                            max
-                        }
-                    }
+                    ${typeMovie.operations.connection}(where: { testId_EQ: "${testId}" }) {
+                        aggregate {
+                            node {
+                                    title {
+                                        shortest
+                                        longest
+                                    }
+                                    imdbRating {
+                                        min
+                                        max
+                                        average
+                                    }
+                                    createdAt {
+                                        min
+                                        max
+                                    }
+                                }
+                            }
+                    }  
                 }
             `;
 
@@ -93,19 +97,25 @@ describe("aggregations-top_level-many", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
-            title: {
-                shortest: "1",
-                longest: "4444",
-            },
-            imdbRating: {
-                min: 1,
-                max: 4,
-                average: 2.5,
-            },
-            createdAt: {
-                min: minDate.toISOString(),
-                max: maxDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [typeMovie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        title: {
+                            shortest: "1",
+                            longest: "4444",
+                        },
+                        imdbRating: {
+                            min: 1,
+                            max: 4,
+                            average: 2.5,
+                        },
+                        createdAt: {
+                            min: minDate.toISOString(),
+                            max: maxDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });

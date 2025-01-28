@@ -94,6 +94,16 @@ describe("Bigint", () => {
               size: BigInt!
             }
 
+            type FileAggregate {
+              node: FileAggregateNode!
+            }
+
+            type FileAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+              size: BigIntAggregateSelection!
+            }
+
             type FileAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -147,6 +157,7 @@ describe("Bigint", () => {
             }
 
             type FilesConnection {
+              aggregate: FileAggregate!
               edges: [FileEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -168,7 +179,7 @@ describe("Bigint", () => {
 
             type Query {
               files(limit: Int, offset: Int, sort: [FileSort!], where: FileWhere): [File!]!
-              filesAggregate(where: FileWhere): FileAggregateSelection!
+              filesAggregate(where: FileWhere): FileAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"filesConnection\\\\\\"\\")
               filesConnection(after: String, first: Int, sort: [FileSort!], where: FileWhere): FilesConnection!
             }
 

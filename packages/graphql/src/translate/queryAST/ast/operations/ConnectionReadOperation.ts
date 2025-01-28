@@ -24,6 +24,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { ConnectionAggregationField } from "../fields/ConnectionAggregationField";
 import type { Field } from "../fields/Field";
 import { OperationField } from "../fields/OperationField";
 import type { Filter } from "../filters/Filter";
@@ -42,7 +43,10 @@ export class ConnectionReadOperation extends Operation {
 
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
-    protected filters: Filter[] = [];
+
+    private aggregationField: ConnectionAggregationField | undefined;
+
+    public filters: Filter[] = [];
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
@@ -88,6 +92,12 @@ export class ConnectionReadOperation extends Operation {
         this.pagination = pagination;
     }
 
+    /** Sets the aggregation field and adds the needed filters */
+    public setAggregationField(aggregationField: ConnectionAggregationField): void {
+        this.aggregationField = aggregationField;
+        this.aggregationField.operation.addFilters(...this.filters);
+    }
+
     public getChildren(): QueryASTNode[] {
         const sortFields = this.sortFields.flatMap((s) => {
             return [...s.edge, ...s.node];
@@ -97,6 +107,7 @@ export class ConnectionReadOperation extends Operation {
             this.selection,
             ...this.nodeFields,
             ...this.edgeFields,
+            this.aggregationField,
             ...this.filters,
             ...this.authFilters,
             this.pagination,
@@ -107,7 +118,8 @@ export class ConnectionReadOperation extends Operation {
     protected getWithCollectEdgesAndTotalCount(
         nestedContext: QueryASTContext<Cypher.Node>,
         edgesVar: Cypher.Variable,
-        totalCount: Cypher.Variable
+        totalCount: Cypher.Variable,
+        extraColumns: Array<[Cypher.Expr, Cypher.Variable]> = []
     ): Cypher.With {
         const nodeAndRelationshipMap = new Cypher.Map({
             node: nestedContext.target,
@@ -117,10 +129,13 @@ export class ConnectionReadOperation extends Operation {
             nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
-            Cypher.size(edgesVar),
-            totalCount,
-        ]);
+        const extraColumnsVariables = extraColumns.map((c) => c[1]);
+
+        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...extraColumns).with(
+            edgesVar,
+            [Cypher.size(edgesVar), totalCount],
+            ...extraColumnsVariables
+        );
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -148,6 +163,12 @@ export class ConnectionReadOperation extends Operation {
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
 
+        const {
+            projectionMap: aggregationProjection,
+            fields: aggregationFields,
+            subqueries: aggregationSubqueries,
+        } = this.transpileAggregation(nestedContext);
+
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();
@@ -169,13 +190,15 @@ export class ConnectionReadOperation extends Operation {
         const withCollectEdgesAndTotalCount = this.getWithCollectEdgesAndTotalCount(
             nestedContext,
             edgesVar,
-            totalCount
+            totalCount,
+            aggregationFields
         );
 
         const returnClause = new Cypher.Return([
             new Cypher.Map({
                 edges: edgesProjectionVar,
                 totalCount: totalCount,
+                ...aggregationProjection,
             }),
             context.returnVariable,
         ]);
@@ -187,6 +210,7 @@ export class ConnectionReadOperation extends Operation {
                     selectionClause,
                     ...filtersSubqueries,
                     withWhere,
+                    ...aggregationSubqueries,
                     withCollectEdgesAndTotalCount,
                     unwindAndProjectionSubquery,
                     returnClause
@@ -302,6 +326,39 @@ export class ConnectionReadOperation extends Operation {
             });
 
         return projectionMap;
+    }
+
+    private transpileAggregation(context: QueryASTContext): {
+        subqueries: Cypher.Clause[];
+        fields: Array<[Cypher.Expr, Cypher.Variable]>;
+        projectionMap: Record<string, Cypher.Variable>;
+    } {
+        if (!this.aggregationField) {
+            return {
+                fields: [],
+                subqueries: [],
+                projectionMap: {},
+            };
+        }
+        const projectionMap: Record<string, Cypher.Variable> = {};
+
+        const subqueries = this.aggregationField.getSubqueries(context);
+
+        const aggregationProjectionField = this.aggregationField.getProjectionField();
+
+        const fields: Array<[Cypher.Expr, Cypher.Variable]> = Object.entries(aggregationProjectionField).map(
+            ([key, value]) => {
+                const variable = new Cypher.Variable();
+                projectionMap[key] = variable;
+                return [value, variable];
+            }
+        );
+
+        return {
+            fields,
+            subqueries,
+            projectionMap,
+        };
     }
 
     private generateSortAndPaginationClause(context: QueryASTContext<Cypher.Node>): Cypher.With | undefined {

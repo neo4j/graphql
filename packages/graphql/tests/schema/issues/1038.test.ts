@@ -49,6 +49,16 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code: String
             }
 
+            type AWSAccountAggregate {
+              node: AWSAccountAggregateNode!
+            }
+
+            type AWSAccountAggregateNode {
+              accountName: StringAggregateSelection!
+              code: StringAggregateSelection!
+              count: Int!
+            }
+
             type AWSAccountAggregateSelection {
               accountName: StringAggregateSelection!
               code: StringAggregateSelection!
@@ -99,6 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type AwsAccountsConnection {
+              aggregate: AWSAccountAggregate!
               edges: [AWSAccountEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -125,6 +136,16 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             type DNSZone {
               awsId: String
               zoneType: String
+            }
+
+            type DNSZoneAggregate {
+              node: DNSZoneAggregateNode!
+            }
+
+            type DNSZoneAggregateNode {
+              awsId: StringAggregateSelection!
+              count: Int!
+              zoneType: StringAggregateSelection!
             }
 
             type DNSZoneAggregateSelection {
@@ -185,6 +206,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type DnsZonesConnection {
+              aggregate: DNSZoneAggregate!
               edges: [DNSZoneEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -209,10 +231,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             type Query {
               awsAccounts(limit: Int, offset: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): [AWSAccount!]!
-              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
+              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"awsAccountsConnection\\\\\\"\\")
               awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): AwsAccountsConnection!
               dnsZones(limit: Int, offset: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): [DNSZone!]!
-              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
+              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"dnsZonesConnection\\\\\\"\\")
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): DnsZonesConnection!
             }
 

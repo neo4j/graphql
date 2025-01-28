@@ -139,6 +139,15 @@ describe("Apollo Federation", () => {
               content: String!
             }
 
+            type PostAggregate {
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
+              content: StringAggregateSelection!
+              count: Int!
+            }
+
             type PostAggregateSelection {
               content: StringAggregateSelection!
               count: Int!
@@ -356,6 +365,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -364,10 +374,10 @@ describe("Apollo Federation", () => {
             type Query {
               _service: _Service!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\"\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]! @shareable
-              usersAggregate(where: UserWhere): UserAggregateSelection! @shareable
+              usersAggregate(where: UserWhere): UserAggregateSelection! @shareable @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection! @shareable
             }
 
@@ -430,6 +440,15 @@ describe("Apollo Federation", () => {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): UserPostPostsAggregationSelection
               postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
+            }
+
+            type UserAggregate @shareable {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode @shareable {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type UserAggregateSelection @shareable {
@@ -649,6 +668,7 @@ describe("Apollo Federation", () => {
             }
 
             type UsersConnection @shareable {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -790,6 +810,15 @@ describe("Apollo Federation", () => {
               authorAggregate(where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
+            }
+
+            type PostAggregate {
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
+              content: StringAggregateSelection!
+              count: Int!
             }
 
             type PostAggregateSelection {
@@ -983,6 +1012,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -992,10 +1022,10 @@ describe("Apollo Federation", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\"\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -1057,6 +1087,15 @@ describe("Apollo Federation", () => {
               name: String!
             }
 
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type UserAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -1111,6 +1150,7 @@ describe("Apollo Federation", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

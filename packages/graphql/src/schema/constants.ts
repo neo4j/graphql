@@ -18,6 +18,8 @@
  */
 
 import { DEPRECATED } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 
 // TODO: Add constant deprecations here
 
@@ -58,6 +60,15 @@ export function DEPRECATE_AGGREGATION_FILTERS(name: string, aggregationOperation
         name: DEPRECATED,
         args: {
             reason: `Please use the relevant generic filter '${name}: { ${aggregationOperation}: { ${newOperator}: ... } } }' instead.`,
+        },
+    };
+}
+
+export function DEPRECATE_AGGREGATION(entity: ConcreteEntityAdapter | InterfaceEntityAdapter) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the explicit the field "aggregate" inside "${entity.operations.rootTypeFieldNames.connection}"`,
         },
     };
 }

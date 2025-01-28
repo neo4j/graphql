@@ -64,6 +64,14 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               point: Point
             }
 
+            type FooAggregate {
+              node: FooAggregateNode!
+            }
+
+            type FooAggregateNode {
+              count: Int!
+            }
+
             type FooAggregateSelection {
               count: Int!
             }
@@ -116,6 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             type FoosConnection {
+              aggregate: FooAggregate!
               edges: [FooEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -184,7 +193,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
 
             type Query {
               foos(limit: Int, offset: Int, sort: [FooSort!], where: FooWhere): [Foo!]!
-              foosAggregate(where: FooWhere): FooAggregateSelection!
+              foosAggregate(where: FooWhere): FooAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"foosConnection\\\\\\"\\")
               foosConnection(after: String, first: Int, sort: [FooSort!], where: FooWhere): FoosConnection!
             }
 

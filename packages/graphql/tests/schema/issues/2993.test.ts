@@ -200,6 +200,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: String!
             }
 
+            type ProfileAggregate {
+              node: ProfileAggregateNode!
+            }
+
+            type ProfileAggregateNode {
+              count: Int!
+              userName: StringAggregateSelection!
+            }
+
             type ProfileAggregateSelection {
               count: Int!
               userName: StringAggregateSelection!
@@ -268,6 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type ProfilesConnection {
+              aggregate: ProfileAggregate!
               edges: [ProfileEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -275,10 +285,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type Query {
               profiles(limit: Int, offset: Int, sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
-              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
+              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"profilesConnection\\\\\\"\\")
               profilesConnection(after: String, first: Int, sort: [ProfileSort!], where: ProfileWhere): ProfilesConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -337,6 +347,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               followingConnection(after: String, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
+            }
+
+            type UserAggregate {
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              count: Int!
+              userName: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -547,6 +566,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -295,6 +295,7 @@ describe("Exclude attribute suffix based filtering", () => {
             }
 
             type InterfaceCSConnection {
+              aggregate: interfaceCAggregate!
               edges: [interfaceCEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -434,13 +435,13 @@ describe("Exclude attribute suffix based filtering", () => {
             type Query {
               ds(limit: Int, offset: Int, where: dWhere): [d!]!
               interfaceCS(limit: Int, offset: Int, sort: [interfaceCSort!], where: interfaceCWhere): [interfaceC!]!
-              interfaceCSAggregate(where: interfaceCWhere): interfaceCAggregateSelection!
+              interfaceCSAggregate(where: interfaceCWhere): interfaceCAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interfaceCSConnection\\\\\\"\\")
               interfaceCSConnection(after: String, first: Int, sort: [interfaceCSort!], where: interfaceCWhere): InterfaceCSConnection!
               typeAS(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              typeASAggregate(where: typeAWhere): typeAAggregateSelection!
+              typeASAggregate(where: typeAWhere): typeAAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeASConnection\\\\\\"\\")
               typeASConnection(after: String, first: Int, sort: [typeASort!], where: typeAWhere): TypeASConnection!
               typeBS(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              typeBSAggregate(where: typeBWhere): typeBAggregateSelection!
+              typeBSAggregate(where: typeBWhere): typeBAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeBSConnection\\\\\\"\\")
               typeBSConnection(after: String, first: Int, sort: [typeBSort!], where: typeBWhere): TypeBSConnection!
             }
 
@@ -514,12 +515,14 @@ describe("Exclude attribute suffix based filtering", () => {
             }
 
             type TypeASConnection {
+              aggregate: typeAAggregate!
               edges: [typeAEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
             type TypeBSConnection {
+              aggregate: typeBAggregate!
               edges: [typeBEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -563,6 +566,20 @@ describe("Exclude attribute suffix based filtering", () => {
               localTime: LocalTime
               point: Point
               time: Time
+            }
+
+            type interfaceCAggregate {
+              node: interfaceCAggregateNode!
+            }
+
+            type interfaceCAggregateNode {
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              duration: DurationAggregateSelection!
+              localDateTime: LocalDateTimeAggregateSelection!
+              localTime: LocalTimeAggregateSelection!
+              time: TimeAggregateSelection!
             }
 
             type interfaceCAggregateSelection {
@@ -984,6 +1001,15 @@ describe("Exclude attribute suffix based filtering", () => {
               where: typeAActedInConnectionWhere
             }
 
+            type typeAAggregate {
+              node: typeAAggregateNode!
+            }
+
+            type typeAAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
+            }
+
             type typeAAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -1113,6 +1139,20 @@ describe("Exclude attribute suffix based filtering", () => {
               relsAggregate(where: typeAWhere): typeBtypeARelsAggregationSelection
               relsConnection(after: String, first: Int, sort: [typeBRelsConnectionSort!], where: typeBRelsConnectionWhere): typeBRelsConnection!
               time: Time
+            }
+
+            type typeBAggregate {
+              node: typeBAggregateNode!
+            }
+
+            type typeBAggregateNode {
+              averageRating: FloatAggregateSelection!
+              count: Int!
+              createdAt: DateTimeAggregateSelection!
+              duration: DurationAggregateSelection!
+              localDateTime: LocalDateTimeAggregateSelection!
+              localTime: LocalTimeAggregateSelection!
+              time: TimeAggregateSelection!
             }
 
             type typeBAggregateSelection {

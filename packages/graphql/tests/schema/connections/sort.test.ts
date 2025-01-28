@@ -105,6 +105,15 @@ describe("Sort", () => {
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
+            type Node1Aggregate {
+              node: Node1AggregateNode!
+            }
+
+            type Node1AggregateNode {
+              count: Int!
+              property: StringAggregateSelection!
+            }
+
             type Node1AggregateSelection {
               count: Int!
               property: StringAggregateSelection!
@@ -290,6 +299,7 @@ describe("Sort", () => {
             }
 
             type Node1sConnection {
+              aggregate: Node1Aggregate!
               edges: [Node1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -299,6 +309,14 @@ describe("Sort", () => {
               relatedTo(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
               relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
+            }
+
+            type Node2Aggregate {
+              node: Node2AggregateNode!
+            }
+
+            type Node2AggregateNode {
+              count: Int!
             }
 
             type Node2AggregateSelection {
@@ -501,6 +519,7 @@ describe("Sort", () => {
             }
 
             type Node2sConnection {
+              aggregate: Node2Aggregate!
               edges: [Node2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -516,10 +535,10 @@ describe("Sort", () => {
 
             type Query {
               node1s(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              node1sAggregate(where: Node1Where): Node1AggregateSelection!
+              node1sAggregate(where: Node1Where): Node1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"node1sConnection\\\\\\"\\")
               node1sConnection(after: String, first: Int, sort: [Node1Sort!], where: Node1Where): Node1sConnection!
               node2s(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              node2sAggregate(where: Node2Where): Node2AggregateSelection!
+              node2sAggregate(where: Node2Where): Node2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"node2sConnection\\\\\\"\\")
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 

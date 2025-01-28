@@ -187,6 +187,14 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -261,6 +269,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -284,6 +293,7 @@ describe("Relationship nested operations", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -292,6 +302,15 @@ describe("Relationship nested operations", () => {
             type Person {
               id: ID!
               name: String
+            }
+
+            type PersonAggregate {
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type PersonAggregateSelection {
@@ -352,10 +371,10 @@ describe("Relationship nested operations", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 
@@ -541,6 +560,14 @@ describe("Relationship nested operations", () => {
               node: Person!
             }
 
+            type MovieAggregate {
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              count: Int!
+            }
+
             type MovieAggregateSelection {
               count: Int!
             }
@@ -605,6 +632,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -634,6 +662,15 @@ describe("Relationship nested operations", () => {
 
             type PersonOne {
               name: String
+            }
+
+            type PersonOneAggregate {
+              node: PersonOneAggregateNode!
+            }
+
+            type PersonOneAggregateNode {
+              count: Int!
+              name: StringAggregateSelection!
             }
 
             type PersonOneAggregateSelection {
@@ -675,6 +712,7 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonOnesConnection {
+              aggregate: PersonOneAggregate!
               edges: [PersonOneEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -693,6 +731,15 @@ describe("Relationship nested operations", () => {
 
             type PersonTwo {
               nameTwo: String
+            }
+
+            type PersonTwoAggregate {
+              node: PersonTwoAggregateNode!
+            }
+
+            type PersonTwoAggregateNode {
+              count: Int!
+              nameTwo: StringAggregateSelection!
             }
 
             type PersonTwoAggregateSelection {
@@ -734,6 +781,7 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonTwosConnection {
+              aggregate: PersonTwoAggregate!
               edges: [PersonTwoEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -746,14 +794,14 @@ describe("Relationship nested operations", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
               personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-              personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
+              personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\"\\")
               personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
               personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-              personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
+              personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\"\\")
               personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
             }
 

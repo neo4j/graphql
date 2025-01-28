@@ -46,8 +46,12 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                ${randomType.operations.aggregate} {
-                    count
+                ${randomType.operations.connection} {
+                    aggregate {
+                        node {
+                            count
+                        }
+                    }
                 }
             }
         `;
@@ -73,18 +77,21 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should append auth where to predicate and return post count for this user", async () => {
+        const Post = testHelper.createUniqueType("Post");
+        const User = testHelper.createUniqueType("User");
+
         const typeDefs = /* GraphQL */ `
-            type User @node {
+            type ${User} @node {
                 id: ID
-                posts: [Post!]! @relationship(type: "POSTED", direction: OUT)
+                posts: [${Post}!]! @relationship(type: "POSTED", direction: OUT)
             }
 
-            type Post @node {
+            type ${Post} @node {
                 content: String
-                creator: [User!]! @relationship(type: "POSTED", direction: IN)
+                creator: [${User}!]! @relationship(type: "POSTED", direction: IN)
             }
 
-            extend type Post
+            extend type ${Post}
                 @authorization(
                     filter: [{ operations: [AGGREGATE], where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                 )
@@ -96,8 +103,12 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                postsAggregate {
-                    count
+                ${Post.operations.connection} {
+                    aggregate {
+                        node {
+                            count
+                        }
+                    }
                 }
             }
         `;
@@ -112,7 +123,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:User {id: "${userId}"})-[:POSTED]->(:Post {content: randomUUID()})
+                CREATE (:${User} {id: "${userId}"})-[:POSTED]->(:${Post} {content: randomUUID()})
             `);
 
         const token = createBearerToken(secret, { sub: userId });
@@ -122,24 +133,30 @@ describe("aggregations-top_level authorization", () => {
         expect(gqlResult.errors).toBeUndefined();
 
         expect(gqlResult.data).toEqual({
-            postsAggregate: {
-                count: 1,
+            [Post.operations.connection]: {
+                aggregate: {
+                    node: {
+                        count: 1,
+                    },
+                },
             },
         });
     });
 
     test("should throw when invalid allow when aggregating a Int field", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Person = testHelper.createUniqueType("Person");
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type ${Movie} @node {
                 id: ID
-                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingInt: Int
                     @authorization(
                         validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                     )
             }
 
-            type Person @node {
+            type ${Person} @node {
                 id: ID
             }
         `;
@@ -154,10 +171,14 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id_EQ: "${movieId}"}) {
-                    imdbRatingInt {
-                        min
-                        max
+                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                    aggregate {
+                        node {
+                            imdbRatingInt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -173,7 +194,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingInt: rand()})
+                CREATE (: ${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie} {id: "${movieId}", imdbRatingInt: rand()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -183,19 +204,20 @@ describe("aggregations-top_level authorization", () => {
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
     });
 
-
     test("should throw when invalid allow when aggregating a String field", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Person = testHelper.createUniqueType("Person");
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type ${Movie} @node {
                 id: ID
-                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 someString: String
                     @authorization(
                         validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                     )
             }
 
-            type Person @node {
+            type ${Person} @node {
                 id: ID
             }
         `;
@@ -210,11 +232,15 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id_EQ: "${movieId}"}) {
-                    someString {
-                        shortest
-                        longest
-                    }
+                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                    aggregate {
+                        node {
+                            someString {
+                                shortest
+                                longest
+                            }
+                        }
+                    }    
                 }
             }
         `;
@@ -229,7 +255,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", someString: "some-random-string"})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", someString: "some-random-string"})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -240,17 +266,19 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a Float field", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Person = testHelper.createUniqueType("Person");
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type ${Movie} @node {
                 id: ID
-                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingFloat: Float
                     @authorization(
                         validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                     )
             }
 
-            type Person @node {
+            type ${Person} @node {
                 id: ID
             }
         `;
@@ -265,10 +293,14 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id_EQ: "${movieId}"}) {
-                    imdbRatingFloat {
-                        min
-                        max
+                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                    aggregate {
+                        node {
+                            imdbRatingFloat {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -284,7 +316,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingFloat: rand()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", imdbRatingFloat: rand()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -295,17 +327,19 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a BigInt field", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Person = testHelper.createUniqueType("Person");
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type ${Movie} @node {
                 id: ID
-                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingBigInt: BigInt
                     @authorization(
                         validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                     )
             }
 
-            type Person @node {
+            type ${Person} @node {
                 id: ID
             }
         `;
@@ -320,10 +354,14 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id_EQ: "${movieId}"}) {
-                    imdbRatingBigInt {
-                        min
-                        max
+                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                    aggregate {
+                        node {
+                            imdbRatingBigInt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -339,7 +377,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", imdbRatingBigInt: rand()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", imdbRatingBigInt: rand()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -350,17 +388,19 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a DateTime field", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Person = testHelper.createUniqueType("Person");
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type ${Movie} @node {
                 id: ID
-                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 createdAt: DateTime
                     @authorization(
                         validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                     )
             }
 
-            type Person @node {
+            type ${Person} @node {
                 id: ID
             }
         `;
@@ -375,10 +415,14 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id_EQ: "${movieId}"}) {
-                    createdAt {
-                        min
-                        max
+                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                    aggregate {
+                        node {
+                            createdAt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -394,7 +438,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", createdAt: datetime()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -405,17 +449,19 @@ describe("aggregations-top_level authorization", () => {
     });
 
     test("should throw when invalid allow when aggregating a Duration field", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Person = testHelper.createUniqueType("Person");
         const typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type ${Movie} @node {
                 id: ID
-                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+                director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 screenTime: Duration
                     @authorization(
                         validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
                     )
             }
 
-            type Person @node {
+            type ${Person} @node {
                 id: ID
             }
         `;
@@ -430,10 +476,14 @@ describe("aggregations-top_level authorization", () => {
 
         const query = `
             {
-                moviesAggregate(where: {id_EQ: "${movieId}"}) {
-                    screenTime {
-                        min
-                        max
+                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                    aggregate {
+                        node {
+                            screenTime {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -449,7 +499,7 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:Person {id: "${userId}"})-[:DIRECTED]->(:Movie {id: "${movieId}", createdAt: datetime()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", createdAt: datetime()})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });

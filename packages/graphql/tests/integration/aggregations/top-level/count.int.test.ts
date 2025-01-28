@@ -49,8 +49,12 @@ describe("Aggregate -> count", () => {
 
         const query = `
                 {
-                    ${randomType.operations.aggregate}{
-                      count
+                    ${randomType.operations.connection}{
+                        aggregate {
+                            node {
+                                count
+                            }
+                        }
                     }
                 }
             `;
@@ -58,7 +62,15 @@ describe("Aggregate -> count", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
+        expect(gqlResult.data).toEqual({
+            [randomType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        count: 2,
+                    },
+                },
+            },
+        });
     });
 
     test("should count nodes with where and or predicate", async () => {
@@ -80,18 +92,27 @@ describe("Aggregate -> count", () => {
             charset: "alphabetic",
         });
 
+        const id3 = generate({
+            charset: "alphabetic",
+        });
+
         await testHelper.executeCypher(
             `
                 CREATE (:${randomType.name} {id: $id1})
                 CREATE (:${randomType.name} {id: $id2})
+                CREATE (:${randomType.name} {id: $id3})
             `,
-            { id1, id2 }
+            { id1, id2, id3 }
         );
 
         const query = `
                 {
-                  ${randomType.operations.aggregate}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
-                    count
+                  ${randomType.operations.connection}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
+                    aggregate {
+                        node {
+                            count
+                        }
+                    }
                   }
                 }
             `;
@@ -100,6 +121,14 @@ describe("Aggregate -> count", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
+        expect(gqlResult.data).toEqual({
+            [randomType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        count: 2,
+                    },
+                },
+            },
+        });
     });
 });

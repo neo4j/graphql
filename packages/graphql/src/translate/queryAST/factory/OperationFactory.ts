@@ -159,7 +159,7 @@ export class OperationsFactory {
                 if (!entity || isUnionEntity(entity)) {
                     throw new Error("Aggregate operations are not supported for Union types");
                 }
-                return this.aggregateFactory.createAggregationOperation(entity, resolveTree, context);
+                return this.aggregateFactory.createAggregationOperation({ entityOrRel: entity, resolveTree, context });
             }
             case "CREATE": {
                 assertIsConcreteEntity(entity);
@@ -219,7 +219,7 @@ export class OperationsFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): AggregationOperation | CompositeAggregationOperation {
-        return this.aggregateFactory.createAggregationOperation(entityOrRel, resolveTree, context);
+        return this.aggregateFactory.createAggregationOperation({ entityOrRel, resolveTree, context });
     }
 
     public splitConnectionFields(rawFields: Record<string, ResolveTree>): {

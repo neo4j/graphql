@@ -47,6 +47,7 @@ describe("cursor-pagination", () => {
                 selectionSet: undefined,
             });
             expect(result).toStrictEqual({
+                aggregate: {},
                 edges: arraySlice.map((edge, index) => ({ ...edge, cursor: offsetToCursor(index) })),
                 pageInfo: {
                     hasNextPage: false,
@@ -68,6 +69,7 @@ describe("cursor-pagination", () => {
                 selectionSet: undefined,
             });
             expect(result).toStrictEqual({
+                aggregate: {},
                 edges: arraySlice.map((edge, index) => ({ ...edge, cursor: offsetToCursor(index) })),
                 pageInfo: {
                     hasNextPage: false,
@@ -88,6 +90,7 @@ describe("cursor-pagination", () => {
                 selectionSet: undefined,
             });
             expect(result).toStrictEqual({
+                aggregate: {},
                 edges: arraySlice.map((edge, index) => ({ ...edge, cursor: offsetToCursor(index + 11) })),
                 pageInfo: {
                     hasNextPage: false,
