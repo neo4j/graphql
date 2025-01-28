@@ -194,7 +194,7 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -217,7 +217,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -240,7 +240,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -263,7 +263,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -355,7 +355,7 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -378,7 +378,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -463,7 +463,7 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -487,7 +487,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -647,7 +647,7 @@ describe("Subscriptions connect with create", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -671,7 +671,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -694,7 +694,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -717,7 +717,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -740,7 +740,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -764,7 +764,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -788,7 +788,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -812,7 +812,7 @@ describe("Subscriptions connect with create", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),

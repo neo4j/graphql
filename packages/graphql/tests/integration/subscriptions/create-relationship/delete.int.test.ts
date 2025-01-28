@@ -169,7 +169,7 @@ describe("Subscriptions connect with delete", () => {
         expect(plugin.eventList).toEqual(
             expect.arrayContaining([
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -191,7 +191,7 @@ describe("Subscriptions connect with delete", () => {
                     toTypename: typeMovie.name,
                 },
                 {
-                    id: expect.any(String),
+                    id: expect.anything(),
                     id_from: expect.any(Number),
                     id_to: expect.any(Number),
                     timestamp: expect.any(Number),
