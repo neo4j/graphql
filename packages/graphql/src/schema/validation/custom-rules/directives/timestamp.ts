@@ -22,9 +22,9 @@ import { Kind } from "graphql";
 import { timestampDirective } from "../../../../graphql/directives";
 import { GraphQLDateTime, GraphQLTime } from "../../../../graphql/scalars";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
-import { fieldIsInRelationshipPropertiesType } from "../location-helpers/is-in-relationship-properties-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
 import { getPathToNode } from "../utils/path-parser";
 
 export function validateTimestampDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -46,19 +46,19 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${timestampDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
+                        `Directive "${timestampDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }
                 assertTypeIsSupportedByTimestamp(fieldDefinitionNode.type);
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${timestampDirective.name}`],
+                        path: [...pathToNode[0], `@${timestampDirective.name}`],
                         errorMsg,
                     })
                 );

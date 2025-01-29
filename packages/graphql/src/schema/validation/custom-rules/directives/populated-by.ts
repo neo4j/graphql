@@ -38,9 +38,9 @@ import {
 } from "../../../../graphql/scalars";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
-import { fieldIsInRelationshipPropertiesType } from "../location-helpers/is-in-relationship-properties-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
@@ -70,7 +70,7 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${populatedByDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
+                        `Directive "${populatedByDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }
@@ -109,13 +109,13 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
                     );
                 }
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${populatedByDirective.name}`, ...errorPath],
+                        path: [...pathToNode[0], `@${populatedByDirective.name}`, ...errorPath],
                         errorMsg,
                     })
                 );

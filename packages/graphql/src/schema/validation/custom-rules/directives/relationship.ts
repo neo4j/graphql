@@ -25,9 +25,9 @@ import {
 } from "../../../../graphql/directives";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { fieldIsInInterfaceType } from "../location-helpers/is-in-interface-type";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInInterfaceType } from "../utils/location-helpers/is-in-interface-type";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
@@ -91,7 +91,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
                 return;
             }
             const isValidLocation = fieldIsInNodeType({ path, ancestors, typeMapWithExtensions });
-            const [pathToHere, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
+            const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             const typeArg = appliedRelationship.arguments?.find((a) => a.name.value === "type");
             const directionArg = appliedRelationship.arguments?.find((a) => a.name.value === "direction");
             const propertiesArg = appliedRelationship.arguments?.find((a) => a.name.value === "properties");
@@ -110,7 +110,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
                         );
                     }
                     throw new DocumentValidationError(
-                        `Directive "${relationshipDirective.name}" requires to be used within the "@node" directive`,
+                        `Directive "${relationshipDirective.name}" requires in a type with "@node"`,
                         []
                     );
                 }
@@ -141,7 +141,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere, `@${relationshipDirective.name}`, ...errorPath],
+                        path: [...pathToNode, `@${relationshipDirective.name}`, ...errorPath],
                         errorMsg,
                     })
                 );

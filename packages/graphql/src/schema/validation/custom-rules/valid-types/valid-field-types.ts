@@ -61,10 +61,6 @@ function verifyRelationshipFieldType({
 
 function getValidationFunction(directiveName: string): ValidationFunction | undefined {
     switch (directiveName) {
-        //case "id":
-        //return verifyId;
-        // case "timestamp":
-        //     return verifyTimestamp;
         case "relationship":
             return verifyRelationshipFieldType;
         case "declareRelationship":

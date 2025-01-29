@@ -18,9 +18,9 @@
  */
 
 import { type ObjectTypeDefinitionNode } from "graphql";
-import { nodeDirective } from "../../../../graphql/directives";
-import { asArray } from "../../../../utils/utils";
-import type { TypeMapWithExtensions } from "../../Neo4jValidationContext";
+import { nodeDirective } from "../../../../../graphql/directives";
+import { asArray } from "../../../../../utils/utils";
+import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
 
 export function typeIsANodeType({
     objectTypeDefinitionNode,

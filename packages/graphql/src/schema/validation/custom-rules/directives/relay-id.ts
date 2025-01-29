@@ -20,8 +20,8 @@
 import type { ASTVisitor, FieldDefinitionNode } from "graphql";
 import { relayIdDirective } from "../../../../graphql/directives";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
 import { getPathToNode } from "../utils/path-parser";
 
 export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -40,18 +40,18 @@ export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVi
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${relayIdDirective.name}" requires to be used within the "@node" directive`,
+                        `Directive "${relayIdDirective.name}" requires in a type with "@node"`,
                         []
                     );
                 }
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${relayIdDirective.name}`],
+                        path: [...pathToNode[0], `@${relayIdDirective.name}`],
                         errorMsg,
                     })
                 );

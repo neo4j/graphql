@@ -22,11 +22,11 @@ import { authenticationDirectiveScaffold } from "../../../../graphql/directives/
 import { isRootType } from "../../../../utils/is-root-type";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
-import { fieldIsInRootType } from "../location-helpers/is-in-root-type";
-import { fieldIsInSubscriptionType } from "../location-helpers/is-in-subscription-type";
-import { typeIsANodeType } from "../location-helpers/is-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRootType } from "../utils/location-helpers/is-in-root-type";
+import { fieldIsInSubscriptionType } from "../utils/location-helpers/is-in-subscription-type";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { getPathToNode } from "../utils/path-parser";
 
 export function validateAuthenticationDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -52,18 +52,18 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authenticationDirectiveScaffold.name}" requires to be used within the "@node" directive or in root types: Query, and Mutation`,
+                        `Directive "${authenticationDirectiveScaffold.name}" requires in a type with "@node" or in root types: Query, and Mutation`,
                         []
                     );
                 }
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${authenticationDirectiveScaffold.name}`],
+                        path: [...pathToNode[0], `@${authenticationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );
@@ -86,17 +86,17 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authenticationDirectiveScaffold.name}" requires to be used within the "@node" directive or in root types: Query, and Mutation`,
+                        `Directive "${authenticationDirectiveScaffold.name}" requires in a type with "@node" or in root types: Query, and Mutation`,
                         []
                     );
                 }
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [objectTypeDefinitionNode],
-                        path: [...pathToHere[0], `@${authenticationDirectiveScaffold.name}`],
+                        path: [...pathToNode[0], `@${authenticationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );

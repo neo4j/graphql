@@ -18,9 +18,9 @@
  */
 
 import { Kind, type ASTNode } from "graphql";
-import { isRootType } from "../../../../utils/is-root-type";
-import type { TypeMapWithExtensions } from "../../Neo4jValidationContext";
-import { getPathToNode } from "../utils/path-parser";
+import { isRootType } from "../../../../../utils/is-root-type";
+import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
+import { getParentType } from "./get-parent-type";
 
 export function fieldIsInRootType({
     path,
@@ -31,18 +31,7 @@ export function fieldIsInRootType({
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
     typeMapWithExtensions: TypeMapWithExtensions;
 }): boolean {
-    const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-    if (!parentOfTraversedDef) {
-        throw new Error(
-            `Internal validation error: field with path: ${pathToNode.join(", ")} is in a type that does not exist in the typeMapWithExtensions`
-        );
-    }
-    const parentTypeAndExtensions = typeMapWithExtensions[parentOfTraversedDef.name.value];
-    if (!parentTypeAndExtensions) {
-        throw new Error(
-            `Internal validation error: field with path: ${pathToNode.join(", ")} is in a type that does not exist in the typeMapWithExtensions`
-        );
-    }
+    const parentTypeAndExtensions = getParentType({ path, ancestors, typeMapWithExtensions });
     return (
         parentTypeAndExtensions.definition.kind === Kind.OBJECT_TYPE_DEFINITION &&
         isRootType(parentTypeAndExtensions.definition)

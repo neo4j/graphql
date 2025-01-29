@@ -24,9 +24,9 @@ import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
 import { defaultDirective } from "../../../../graphql/directives";
 import { GraphQLDateTime, GraphQLLocalDateTime, GraphQLLocalTime, GraphQLTime } from "../../../../graphql/scalars";
 import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
-import { fieldIsInRelationshipPropertiesType } from "../location-helpers/is-in-relationship-properties-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
 import { getPathToNode } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
 
@@ -59,7 +59,7 @@ export function validateDefaultDirective(context: Neo4jValidationContext): ASTVi
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${defaultDirective.name}" requires to be used within the "@node" directive or within the "@relationshipProperties" directive`,
+                        `Directive "${defaultDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }
@@ -72,13 +72,13 @@ export function validateDefaultDirective(context: Neo4jValidationContext): ASTVi
                     enums: enumsTypes,
                 });
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${defaultDirective.name}`, ...errorPath],
+                        path: [...pathToNode[0], `@${defaultDirective.name}`, ...errorPath],
                         errorMsg,
                     })
                 );

@@ -77,17 +77,17 @@ export function assertArgumentHasSameTypeAsField({
 
 function doTypesMatch(expectedType: string, argumentValueType: ValueNode, enums: EnumTypeDefinitionNode[]): boolean {
     if (expectedType === GraphQLID.name) {
-        return !!(fromValueKind(argumentValueType, enums, expectedType) === GraphQLString.name.toLowerCase());
+        return Boolean(fromValueKind(argumentValueType, enums, expectedType) === GraphQLString.name.toLowerCase());
     }
 
     if (expectedType === GraphQLBigInt.name) {
         const kind = fromValueKind(argumentValueType, enums, expectedType);
-        return !!(kind == GraphQLInt.name.toLowerCase() || kind == GraphQLString.name.toLowerCase());
+        return Boolean(kind == GraphQLInt.name.toLowerCase() || kind == GraphQLString.name.toLowerCase());
     }
 
     if (expectedType === GraphQLFloat.name) {
         const kind = fromValueKind(argumentValueType, enums, expectedType)?.toLowerCase();
-        return !!(kind == GraphQLInt.name.toLowerCase() || kind == GraphQLFloat.name.toLowerCase());
+        return Boolean(kind == GraphQLInt.name.toLowerCase() || kind == GraphQLFloat.name.toLowerCase());
     }
 
     if ([GraphQLDateTime.name, GraphQLLocalDateTime.name, GraphQLDate.name].includes(expectedType)) {

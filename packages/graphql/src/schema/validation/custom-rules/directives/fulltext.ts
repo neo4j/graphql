@@ -24,8 +24,8 @@ import type { FulltextField } from "../../../../schema-model/annotation/Fulltext
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { typeIsANodeType } from "../location-helpers/is-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 
 export function validateFulltextDirective(context: Neo4jValidationContext): ASTVisitor {
     const typeMapWithExtensions = context.typeMapWithExtensions;
@@ -57,7 +57,7 @@ export function validateFulltextDirective(context: Neo4jValidationContext): ASTV
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${fulltextDirective.name}" requires to be used within the "@node" directive`,
+                        `Directive "${fulltextDirective.name}" requires in a type with "@node"`,
                         []
                     );
                 }

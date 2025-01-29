@@ -21,9 +21,9 @@ import type { ASTVisitor, DirectiveNode, InterfaceTypeDefinitionNode, ObjectType
 import { limitDirective } from "../../../../graphql/directives";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { typeIsANodeType } from "../location-helpers/is-node-type";
 import type { AssertionResponse } from "../utils/document-validation-error";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { parseArgumentToInt } from "../utils/utils";
 
 export function validateLimitDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -82,7 +82,7 @@ export function validateLimitDirective(context: Neo4jValidationContext): ASTVisi
                 const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${limitDirective.name}" requires to be used within the "@node" directive or in an interface type`,
+                        `Directive "${limitDirective.name}" requires in a type with "@node" or in an interface type`,
                         []
                     );
                 }

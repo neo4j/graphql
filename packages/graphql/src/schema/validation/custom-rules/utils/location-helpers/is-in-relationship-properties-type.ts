@@ -18,11 +18,11 @@
  */
 
 import { type ASTNode } from "graphql";
-import { nodeDirective } from "../../../../graphql/directives";
-import type { TypeMapWithExtensions } from "../../Neo4jValidationContext";
-import { getPathToNode } from "../utils/path-parser";
+import { relationshipPropertiesDirective } from "../../../../../graphql/directives";
+import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
+import { getParentType } from "./get-parent-type";
 
-export function fieldIsInNodeType({
+export function fieldIsInRelationshipPropertiesType({
     path,
     ancestors,
     typeMapWithExtensions,
@@ -31,21 +31,10 @@ export function fieldIsInNodeType({
     ancestors: readonly (ASTNode | readonly ASTNode[])[];
     typeMapWithExtensions: TypeMapWithExtensions;
 }): boolean {
-    const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
-    if (!parentOfTraversedDef) {
-        throw new Error(
-            `Internal validation error: field with path: ${pathToNode.join(", ")} is in a type that does not exist in the typeMapWithExtensions`
-        );
-    }
-    const parentTypeAndExtensions = typeMapWithExtensions[parentOfTraversedDef.name.value];
-    if (!parentTypeAndExtensions) {
-        throw new Error(
-            `Internal validation error: field with path: ${pathToNode.join(", ")} is in a type that does not exist in the typeMapWithExtensions`
-        );
-    }
+    const parentTypeAndExtensions = getParentType({ path, ancestors, typeMapWithExtensions });
     const allDirectives = [
         ...(parentTypeAndExtensions.definition.directives ?? []),
         ...parentTypeAndExtensions.extensions.flatMap((ext) => ext.directives ?? []),
     ];
-    return !!allDirectives?.find((directive) => directive.name.value === nodeDirective.name);
+    return !!allDirectives?.find((directive) => directive.name.value === relationshipPropertiesDirective.name);
 }

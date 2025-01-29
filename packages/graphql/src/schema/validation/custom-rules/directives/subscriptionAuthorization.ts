@@ -21,9 +21,9 @@ import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "
 import { subscriptionsAuthorizationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/subscriptions-authorization";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
-import { fieldIsInNodeType } from "../location-helpers/is-in-node-type";
-import { typeIsANodeType } from "../location-helpers/is-node-type";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { getPathToNode } from "../utils/path-parser";
 
 export function validateSubscriptionAuthorizationDirective(context: Neo4jValidationContext): ASTVisitor {
@@ -46,18 +46,18 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires to be used within the "@node" directive`,
+                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires in a type with "@node"`,
                         []
                     );
                 }
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
 
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [fieldDefinitionNode],
-                        path: [...pathToHere[0], `@${subscriptionsAuthorizationDirectiveScaffold.name}`],
+                        path: [...pathToNode[0], `@${subscriptionsAuthorizationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );
@@ -80,17 +80,17 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires to be used within the "@node" directive`,
+                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires in a type with "@node"`,
                         []
                     );
                 }
             });
-            const pathToHere = getPathToNode(path, ancestors);
+            const pathToNode = getPathToNode(path, ancestors);
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
                         nodes: [objectTypeDefinitionNode],
-                        path: [...pathToHere[0], `@${subscriptionsAuthorizationDirectiveScaffold.name}`],
+                        path: [...pathToNode[0], `@${subscriptionsAuthorizationDirectiveScaffold.name}`],
                         errorMsg,
                     })
                 );

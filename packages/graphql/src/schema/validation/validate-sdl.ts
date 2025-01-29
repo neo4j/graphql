@@ -26,6 +26,7 @@ import { Neo4jValidationContext } from "./Neo4jValidationContext";
 import { mapError } from "./utils/map-error";
 
 type Neo4jValidationRule = <T extends SDLValidationContext>(context: T) => ASTVisitor;
+
 export function validateSDL(
     documentAST: DocumentNode,
     rules: ReadonlyArray<Neo4jValidationRule>,

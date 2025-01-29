@@ -3720,10 +3720,7 @@ describe("validation 2.0", () => {
 
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                'Directive "relationship" requires to be used within the "@node" directive'
-            );
+            expect(errors[0]).toHaveProperty("message", 'Directive "relationship" requires in a type with "@node"');
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@relationship"]);
         });
 
@@ -3753,10 +3750,7 @@ describe("validation 2.0", () => {
 
             expect(errors).toHaveLength(1);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                'Directive "relationship" requires to be used within the "@node" directive'
-            );
+            expect(errors[0]).toHaveProperty("message", 'Directive "relationship" requires in a type with "@node"');
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@relationship"]);
         });
 
@@ -3887,7 +3881,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Directive "populatedBy" requires to be used within the "@node" directive or within the "@relationshipProperties" directive'
+                'Directive "populatedBy" requires in a type with "@node" or within the "@relationshipProperties" directive'
             );
             expect(errors[0]).toHaveProperty("path", ["Query", "someActors", "@populatedBy"]);
         });
@@ -3998,7 +3992,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Directive "cypher" requires to be used within the "@node" directive or on root types: Query, and Mutation'
+                'Directive "cypher" requires in a type with "@node" or on root types: Query, and Mutation'
             );
             expect(errors[0]).toHaveProperty("path", ["Subscription", "someActors", "@cypher"]);
         });
@@ -4035,7 +4029,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                'Directive "cypher" requires to be used within the "@node" directive or on root types: Query, and Mutation'
+                'Directive "cypher" requires in a type with "@node" or on root types: Query, and Mutation'
             );
             expect(errors[0]).toHaveProperty("path", ["Person", "name", "@cypher"]);
         });
@@ -4494,7 +4488,7 @@ describe("validation 2.0", () => {
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    'Directive "cypher" requires to be used within the "@node" directive or on root types: Query, and Mutation'
+                    'Directive "cypher" requires in a type with "@node" or on root types: Query, and Mutation'
                 );
                 expect(errors[0]).toHaveProperty("path", ["JWTPayload", "id", "@cypher"]);
             });
@@ -4790,10 +4784,7 @@ describe("validation 2.0", () => {
 
             expect(errors).toHaveLength(2);
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-            expect(errors[0]).toHaveProperty(
-                "message",
-                'Directive "relayId" requires to be used within the "@node" directive'
-            );
+            expect(errors[0]).toHaveProperty("message", 'Directive "relayId" requires in a type with "@node"');
             expect(errors[0]).toHaveProperty("path", ["MovieInterface", "imdbid", "@relayId"]);
             expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[1]).toHaveProperty(
@@ -5075,7 +5066,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "authorization" requires to be used within the "@node" directive'
+                        'Directive "authorization" requires in a type with "@node"'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@authorization"]);
                 });
@@ -5117,7 +5108,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "authorization" requires to be used within the "@node" directive'
+                        'Directive "authorization" requires in a type with "@node"'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@authorization"]);
                 });
@@ -5155,7 +5146,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "authentication" requires to be used within the "@node" directive or in root types: Query, and Mutation'
+                        'Directive "authentication" requires in a type with "@node" or in root types: Query, and Mutation'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@authentication"]);
                 });
@@ -5193,7 +5184,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "@subscriptionsAuthorization" requires to be used within the "@node" directive'
+                        'Directive "@subscriptionsAuthorization" requires in a type with "@node"'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@subscriptionsAuthorization"]);
                 });
@@ -5232,7 +5223,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "relationship" requires to be used within the "@node" directive'
+                        'Directive "relationship" requires in a type with "@node"'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "actors", "@relationship"]);
                 });
@@ -5272,7 +5263,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "cypher" requires to be used within the "@node" directive or on root types: Query, and Mutation'
+                        'Directive "cypher" requires in a type with "@node" or on root types: Query, and Mutation'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "id", "@cypher"]);
                 });
@@ -5356,7 +5347,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "cypher" requires to be used within the "@node" directive or on root types: Query, and Mutation'
+                        'Directive "cypher" requires in a type with "@node" or on root types: Query, and Mutation'
                     );
                     expect(errors[0]).toHaveProperty("path", ["HasPost", "review", "@cypher"]);
                 });
