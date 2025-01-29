@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.24.4
+
+### Patch Changes
+
+-   [#5966](https://github.com/neo4j/graphql/pull/5966) [`a369ffb60`](https://github.com/neo4j/graphql/commit/a369ffb6008ced4d9e81dba7b7092ccd79ca0499) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for CalVer editions of neo4j
+
 ## 3.24.3
 
 ### Patch Changes
