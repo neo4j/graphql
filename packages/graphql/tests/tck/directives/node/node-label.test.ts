@@ -55,7 +55,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             RETURN this { .title } AS this"
         `);
 
@@ -77,7 +78,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
@@ -110,7 +112,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
@@ -144,7 +147,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Film)
@@ -185,7 +189,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Film)
@@ -252,7 +257,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -291,7 +297,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -353,7 +360,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -402,7 +410,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -462,7 +471,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -489,7 +499,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -527,7 +538,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[:ACTED_IN]-(this0:Person)
                 WHERE this0.name = $param0

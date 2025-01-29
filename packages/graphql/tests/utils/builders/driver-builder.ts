@@ -88,9 +88,9 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         const calls: Array<any> = [];
         function mockFunc(...params) {
             // this is needed as the first query could be the DB version check query
-            if (params?.[0] === DBMS_COMPONENTS_QUERY) {
+            if (params?.[0].includes(DBMS_COMPONENTS_QUERY)) {
                 return {
-                    records: [new Record(["version", "edition"], ["4.0.0", "enterprise"])],
+                    records: [new Record(["version", "edition"], ["5.0.0", "enterprise"])],
                     summary: {
                         counters: {
                             updates() {

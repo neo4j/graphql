@@ -139,7 +139,8 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tenant)
+            "CYPHER 5
+            MATCH (this:Tenant)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:ADMIN_IN]-(this0:User)
