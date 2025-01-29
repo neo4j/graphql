@@ -56,7 +56,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
                     }
 
                     throw new DocumentValidationError(
-                        `Directive "${authorizationDirectiveScaffold.name}" requires in a type with "@node"`,
+                        `Directive "@${authorizationDirectiveScaffold.name}" requires in a type with "@node"`,
                         []
                     );
                 }
@@ -96,7 +96,7 @@ export function validateAuthorizationDirective(context: Neo4jValidationContext):
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authorizationDirectiveScaffold.name}" requires in a type with "@node"`,
+                        `Directive "@${authorizationDirectiveScaffold.name}" requires in a type with "@node"`,
                         []
                     );
                 }

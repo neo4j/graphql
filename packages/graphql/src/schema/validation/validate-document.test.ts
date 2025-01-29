@@ -5066,7 +5066,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "authorization" requires in a type with "@node"'
+                        'Directive "@authorization" requires in a type with "@node"'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@authorization"]);
                 });
@@ -5108,7 +5108,7 @@ describe("validation 2.0", () => {
                     expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
                     expect(errors[0]).toHaveProperty(
                         "message",
-                        'Directive "authorization" requires in a type with "@node"'
+                        'Directive "@authorization" requires in a type with "@node"'
                     );
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "screenTime", "@authorization"]);
                 });
