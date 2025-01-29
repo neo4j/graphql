@@ -17,10 +17,19 @@
  * limitations under the License.
  */
 
-import type { TypeDefinitionNode } from "graphql";
+import { type ASTNode } from "graphql";
+import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
+import { getParentType } from "./get-parent-type";
 
-const rootTypes = ["Query", "Mutation", "Subscription"];
-
-export function isRootType(definition: TypeDefinitionNode): boolean {
-    return rootTypes.includes(definition.name.value);
+export function fieldIsInSubscriptionType({
+    path,
+    ancestors,
+    typeMapWithExtensions,
+}: {
+    path: readonly (string | number)[];
+    ancestors: readonly (ASTNode | readonly ASTNode[])[];
+    typeMapWithExtensions: TypeMapWithExtensions;
+}): boolean {
+    const parentTypeAndExtensions = getParentType({ path, ancestors, typeMapWithExtensions });
+    return parentTypeAndExtensions.definition.name.value === "Subscription";
 }
