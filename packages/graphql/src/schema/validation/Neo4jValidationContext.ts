@@ -19,6 +19,7 @@
 
 import type { Maybe } from "@graphql-tools/utils";
 import type {
+    DefinitionNode,
     DocumentNode,
     EnumTypeDefinitionNode,
     GraphQLError,
@@ -55,35 +56,40 @@ export class Neo4jValidationContext extends SDLValidationContext {
     ) {
         super(ast, schema, onError);
         this.callbacks = callbacks;
-        this.typeMapWithExtensions = ast.definitions.reduce((acc, def): TypeMapWithExtensions => {
+        this.typeMapWithExtensions = buildTypeMapWithExtensions(ast.definitions);
+    }
+}
+
+// build a type map to access specific types and their extensions
+function buildTypeMapWithExtensions(definitions: Readonly<DefinitionNode[]>): TypeMapWithExtensions {
+    return definitions.reduce((acc, def): TypeMapWithExtensions => {
+        if (
+            def.kind === Kind.OBJECT_TYPE_DEFINITION ||
+            def.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+            def.kind === Kind.UNION_TYPE_DEFINITION ||
+            def.kind === Kind.ENUM_TYPE_DEFINITION ||
+            def.kind === Kind.OBJECT_TYPE_EXTENSION ||
+            def.kind === Kind.INTERFACE_TYPE_EXTENSION ||
+            def.kind === Kind.UNION_TYPE_EXTENSION
+        ) {
+            const typeName = def.name.value;
+            if (!acc[typeName]) {
+                acc[typeName] = { extensions: [], definition: undefined };
+            }
             if (
-                def.kind === Kind.OBJECT_TYPE_DEFINITION ||
-                def.kind === Kind.INTERFACE_TYPE_DEFINITION ||
-                def.kind === Kind.UNION_TYPE_DEFINITION ||
-                def.kind === Kind.ENUM_TYPE_DEFINITION ||
                 def.kind === Kind.OBJECT_TYPE_EXTENSION ||
                 def.kind === Kind.INTERFACE_TYPE_EXTENSION ||
                 def.kind === Kind.UNION_TYPE_EXTENSION
             ) {
-                const typeName = def.name.value;
-                if (!acc[typeName]) {
-                    acc[typeName] = { extensions: [], definition: undefined };
-                }
-                if (
-                    def.kind === Kind.OBJECT_TYPE_EXTENSION ||
-                    def.kind === Kind.INTERFACE_TYPE_EXTENSION ||
-                    def.kind === Kind.UNION_TYPE_EXTENSION
-                ) {
-                    if (acc[typeName].extensions) {
-                        acc[typeName].extensions.push(def);
-                    } else {
-                        acc[typeName].extensions = [def];
-                    }
+                if (acc[typeName].extensions) {
+                    acc[typeName].extensions.push(def);
                 } else {
-                    acc[typeName].definition = def;
+                    acc[typeName].extensions = [def];
                 }
+            } else {
+                acc[typeName].definition = def;
             }
-            return acc;
-        }, {});
-    }
+        }
+        return acc;
+    }, {});
 }
