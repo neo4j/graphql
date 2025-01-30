@@ -132,6 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor2MoviesConnection {
+              aggregate: Actor2MovieMoviesAggregationSelection!
               edges: [Actor2MoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -351,6 +352,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

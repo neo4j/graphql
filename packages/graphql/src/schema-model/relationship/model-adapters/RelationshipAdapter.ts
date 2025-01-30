@@ -202,6 +202,9 @@ export class RelationshipAdapter {
     }
 
     public isAggregable(): boolean {
+        if (!this.aggregate) {
+            return false;
+        }
         return this.annotations.selectable?.onAggregate !== false;
     }
 

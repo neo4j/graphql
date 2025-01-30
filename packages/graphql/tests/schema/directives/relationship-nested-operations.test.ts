@@ -102,6 +102,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -441,6 +442,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -803,6 +805,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1157,6 +1160,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1506,6 +1510,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1859,6 +1864,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2209,6 +2215,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2559,6 +2566,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2955,6 +2963,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3096,6 +3105,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregationSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3438,6 +3448,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3558,6 +3569,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregationSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8530,6 +8542,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9038,6 +9051,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9570,6 +9584,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10093,6 +10108,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10616,6 +10632,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11138,6 +11155,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11664,6 +11682,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11805,6 +11824,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregationSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -12327,6 +12347,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -12456,6 +12477,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregationSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

@@ -459,6 +459,7 @@ describe("Comments", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MovieActorActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -813,6 +814,7 @@ describe("Comments", () => {
                 }
 
                 type ActorActedInConnection {
+                  aggregate: ActorProductionActedInAggregationSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

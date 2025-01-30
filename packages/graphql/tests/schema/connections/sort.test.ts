@@ -160,6 +160,7 @@ describe("Sort", () => {
             }
 
             type Node1RelatedToConnection {
+              aggregate: Node1Node2RelatedToAggregationSelection!
               edges: [Node1RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -346,6 +347,7 @@ describe("Sort", () => {
             }
 
             type Node2RelatedToConnection {
+              aggregate: Node2Node1RelatedToAggregationSelection!
               edges: [Node2RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

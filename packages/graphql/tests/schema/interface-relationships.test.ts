@@ -146,6 +146,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -824,6 +825,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1138,6 +1140,7 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesConnection {
+              aggregate: EpisodeSeriesSeriesAggregationSelection!
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1973,6 +1976,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodesConnection {
+              aggregate: SeriesEpisodeEpisodesAggregationSelection!
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2332,6 +2336,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2646,6 +2651,7 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesConnection {
+              aggregate: EpisodeSeriesSeriesAggregationSelection!
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3501,6 +3507,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodesConnection {
+              aggregate: SeriesEpisodeEpisodesAggregationSelection!
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4298,6 +4305,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
+              aggregate: Type1Interface1Interface1AggregationSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5616,6 +5624,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
+              aggregate: Type1Interface1Interface1AggregationSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6915,6 +6924,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
+              aggregate: Type1Interface1Interface1AggregationSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7936,6 +7946,7 @@ describe("Interface Relationships", () => {
             }
 
             type CommentPostConnection {
+              aggregate: CommentPostPostAggregationSelection!
               edges: [CommentPostRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -8415,6 +8426,7 @@ describe("Interface Relationships", () => {
             }
 
             type PostCommentsConnection {
+              aggregate: PostCommentCommentsAggregationSelection!
               edges: [PostCommentsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -8798,6 +8810,7 @@ describe("Interface Relationships", () => {
             }
 
             type UserContentConnection {
+              aggregate: UserContentContentAggregationSelection!
               edges: [UserContentRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -9126,6 +9139,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorShowActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

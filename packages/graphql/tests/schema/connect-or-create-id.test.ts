@@ -120,6 +120,7 @@ describe("connect or create with id", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -614,6 +615,7 @@ describe("connect or create with id", () => {
             }
 
             type PostCreatorConnection {
+              aggregate: PostUserCreatorAggregationSelection!
               edges: [PostCreatorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -949,6 +951,7 @@ describe("connect or create with id", () => {
             }
 
             type UserPostsConnection {
+              aggregate: UserPostPostsAggregationSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

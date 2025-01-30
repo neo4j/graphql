@@ -992,6 +992,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1219,6 +1220,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1647,6 +1649,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1895,6 +1898,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2323,6 +2327,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2571,6 +2576,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2984,6 +2990,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3219,6 +3226,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3612,6 +3620,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3860,6 +3869,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4290,6 +4300,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4538,6 +4549,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4944,6 +4956,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5179,6 +5192,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5565,6 +5579,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5785,6 +5800,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6258,6 +6274,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6491,6 +6508,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6986,6 +7004,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7206,6 +7225,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7695,6 +7715,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7969,6 +7990,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregationSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8694,6 +8716,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8968,6 +8991,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregationSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9693,6 +9717,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9967,6 +9992,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregationSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!

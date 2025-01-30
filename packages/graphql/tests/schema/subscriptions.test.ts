@@ -253,6 +253,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -699,6 +700,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -949,6 +951,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1811,6 +1814,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnection {
+              aggregate: PersonMovieMoviesAggregationSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2079,6 +2083,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnection {
+              aggregate: StarMovieMoviesAggregationSelection!
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2463,6 +2468,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2720,6 +2726,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3269,6 +3276,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3654,6 +3662,7 @@ describe("Subscriptions", () => {
             }
 
             type AgreementOwnerConnection {
+              aggregate: AgreementUserOwnerAggregationSelection!
               edges: [AgreementOwnerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4553,6 +4562,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnection {
+              aggregate: PersonMovieMoviesAggregationSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4811,6 +4821,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnection {
+              aggregate: StarMovieMoviesAggregationSelection!
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

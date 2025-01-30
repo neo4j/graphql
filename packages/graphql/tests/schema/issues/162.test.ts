@@ -258,6 +258,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1Connection {
+              aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection!
               edges: [TigerJawLevel2Part1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -370,6 +371,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigerConnection {
+              aggregate: TigerJawLevel2Part1TigerTigerAggregationSelection!
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

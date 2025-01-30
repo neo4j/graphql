@@ -778,6 +778,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MovieActorActorsAggregationSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1669,6 +1670,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!

@@ -321,6 +321,7 @@ describe("Directive-preserve", () => {
             }
 
             type GenreMoviesConnection {
+              aggregate: GenreMovieMoviesAggregationSelection!
               edges: [GenreMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -595,6 +596,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieGenresConnection {
+              aggregate: MovieGenreGenresAggregationSelection!
               edges: [MovieGenresRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -954,6 +956,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2063,6 +2066,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2345,6 +2349,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2695,6 +2700,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorsConnection {
+              aggregate: SeriesActorActorsAggregationSelection!
               edges: [SeriesActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3043,6 +3049,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3325,6 +3332,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3675,6 +3683,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorsConnection {
+              aggregate: SeriesActorActorsAggregationSelection!
               edges: [SeriesActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4020,6 +4029,7 @@ describe("Directive-preserve", () => {
             }
 
             type BlogPostsConnection {
+              aggregate: BlogPostPostsAggregationSelection!
               edges: [BlogPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -667,6 +667,7 @@ describe("Algebraic", () => {
             }
 
             type DirectorDirectsConnection {
+              aggregate: DirectorMovieDirectsAggregationSelection!
               edges: [DirectorDirectsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -918,6 +919,7 @@ describe("Algebraic", () => {
             }
 
             type MovieDirectedByConnection {
+              aggregate: MovieDirectorDirectedByAggregationSelection!
               edges: [MovieDirectedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1332,6 +1334,7 @@ describe("Algebraic", () => {
             }
 
             type MovieWorkersConnection {
+              aggregate: MoviePersonWorkersAggregationSelection!
               edges: [MovieWorkersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1570,6 +1573,7 @@ describe("Algebraic", () => {
             }
 
             type PersonWorksInProductionConnection {
+              aggregate: PersonProductionWorksInProductionAggregationSelection!
               edges: [PersonWorksInProductionRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1940,6 +1944,7 @@ describe("Algebraic", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MoviePersonActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2195,6 +2200,7 @@ describe("Algebraic", () => {
             }
 
             type PersonActedInMoviesConnection {
+              aggregate: PersonMovieActedInMoviesAggregationSelection!
               edges: [PersonActedInMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -372,6 +372,7 @@ describe("Unions", () => {
             }
 
             type BookAuthorConnection {
+              aggregate: BookAuthorAuthorAggregationSelection!
               edges: [BookAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -641,6 +642,7 @@ describe("Unions", () => {
             }
 
             type JournalAuthorConnection {
+              aggregate: JournalAuthorAuthorAggregationSelection!
               edges: [JournalAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

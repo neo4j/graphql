@@ -194,6 +194,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_ENBookConnection {
+              aggregate: BookTitle_ENBookBookAggregationSelection!
               edges: [BookTitle_ENBookRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -400,6 +401,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_SVBookConnection {
+              aggregate: BookTitle_SVBookBookAggregationSelection!
               edges: [BookTitle_SVBookRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

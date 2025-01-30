@@ -229,6 +229,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceContainedByConnection {
+              aggregate: ResourceResourceContainedByAggregationSelection!
               edges: [ResourceContainedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

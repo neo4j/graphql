@@ -96,6 +96,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MoviePersonActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

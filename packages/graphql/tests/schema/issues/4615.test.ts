@@ -155,6 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorShowActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

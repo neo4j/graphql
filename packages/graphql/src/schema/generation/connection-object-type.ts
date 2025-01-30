@@ -45,6 +45,7 @@ export function withConnectionObjectType({
 
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
+
     if (relationshipAdapter.isAggregable() && !isTargetUnion && !isSourceInterface) {
         fields["aggregate"] = `${relationshipAdapter.operations.getAggregationFieldTypename()}!`;
     }
