@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import { upperFirst } from "../../../utils/upper-first";
 import { isUnionEntity } from "../../../translate/queryAST/utils/is-union-entity";
-import type { RelationshipDeclarationAdapter } from "./RelationshipDeclarationAdapter";
+import { upperFirst } from "../../../utils/upper-first";
+import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "./RelationshipDeclarationAdapter";
 
 export abstract class RelationshipBaseOperations<T extends RelationshipAdapter | RelationshipDeclarationAdapter> {
     protected constructor(protected readonly relationship: T) {}

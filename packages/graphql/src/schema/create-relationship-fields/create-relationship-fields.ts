@@ -254,7 +254,6 @@ export function createRelationshipFields({
             return;
         }
 
-        // TODO: new way
         if (composeNode instanceof ObjectTypeComposer) {
             // make a new fn augmentObjectTypeWithAggregationField
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
@@ -271,6 +270,8 @@ export function createRelationshipFields({
             const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, relationshipAdapter, features);
 
             if (relationshipAdapter.aggregate) {
+                // OLD AGGREGATIONS
+                // TODO: deprecate
                 composeNode.addFields({
                     [relationshipAdapter.operations.aggregateTypeName]: {
                         type: aggregationTypeObject,

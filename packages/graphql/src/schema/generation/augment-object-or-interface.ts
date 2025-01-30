@@ -30,11 +30,8 @@ import { DEPRECATE_OPTIONS_ARGUMENT } from "../constants";
 import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
-import {
-    makeConnectionWhereInputType,
-    withConnectionObjectType,
-    withConnectionSortInputType,
-} from "./connection-where-input";
+import { withConnectionObjectType } from "./connection-object-type";
+import { makeConnectionWhereInputType, withConnectionSortInputType } from "./connection-where-input";
 import { makeSortInput } from "./sort-and-options-input";
 import { shouldAddDeprecatedFields } from "./utils";
 
