@@ -159,6 +159,11 @@ function getRelationshipConnectionFilters(
 ): FieldConfig[] {
     return [
         {
+            name: "aggregate",
+            typeName: relationshipAdapter.operations.aggregateInputTypeName,
+            description: `Filter ${pluralize(relationshipAdapter.source.name)} by aggregating results on related ${pluralize(relationshipAdapter.operations.connectionFieldTypename)}`,
+        },
+        {
             name: "all",
             typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
             description: `Return ${pluralize(relationshipAdapter.source.name)} where all of the related ${pluralize(
