@@ -272,6 +272,8 @@ describe("Aggregate operations", () => {
             }
 
             input PostLikesConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
+              aggregate: PostLikesAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"

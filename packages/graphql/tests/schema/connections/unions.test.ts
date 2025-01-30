@@ -397,6 +397,8 @@ describe("Unions", () => {
             }
 
             input BookAuthorConnectionFilters {
+              \\"\\"\\"Filter Books by aggregating results on related BookAuthorConnections\\"\\"\\"
+              aggregate: BookAuthorAggregateInput
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
               \\"\\"\\"
@@ -710,6 +712,10 @@ describe("Unions", () => {
             }
 
             input JournalAuthorConnectionFilters {
+              \\"\\"\\"
+              Filter Journals by aggregating results on related JournalAuthorConnections
+              \\"\\"\\"
+              aggregate: JournalAuthorAggregateInput
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter
               \\"\\"\\"

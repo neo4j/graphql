@@ -125,6 +125,10 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesConnectionFilters {
               \\"\\"\\"
+              Filter Actor2s by aggregating results on related Actor2MoviesConnections
+              \\"\\"\\"
+              aggregate: Actor2MoviesAggregateInput
+              \\"\\"\\"
               Return Actor2s where all of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
               all: Actor2MoviesConnectionWhere
@@ -330,6 +334,8 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"

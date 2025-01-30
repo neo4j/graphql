@@ -1096,6 +1096,8 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             input PostLikesConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
+              aggregate: PostLikesAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
@@ -2191,6 +2193,8 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             input PostLikesConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
+              aggregate: PostLikesAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"

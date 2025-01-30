@@ -20,7 +20,7 @@
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Cypher Aggregations where with count", () => {
+describe("Cypher Aggregations where with count, deprecated", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
@@ -44,7 +44,7 @@ describe("Cypher Aggregations where with count", () => {
     test("Equality Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { eq: 10 } } } }) {
+                posts(where: { likesAggregate: { count: { eq: 10 } } }) {
                     content
                 }
             }
@@ -77,7 +77,7 @@ describe("Cypher Aggregations where with count", () => {
     test("LT Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { lt: 10 } } } }) {
+                posts(where: { likesAggregate: { count: { lt: 10 } } }) {
                     content
                 }
             }
@@ -110,7 +110,7 @@ describe("Cypher Aggregations where with count", () => {
     test("LTE Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { lte: 10 } } } }) {
+                posts(where: { likesAggregate: { count: { lte: 10 } } }) {
                     content
                 }
             }
@@ -143,7 +143,7 @@ describe("Cypher Aggregations where with count", () => {
     test("GT Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { gt: 10 } } } }) {
+                posts(where: { likesAggregate: { count: { gt: 10 } } }) {
                     content
                 }
             }
@@ -176,7 +176,7 @@ describe("Cypher Aggregations where with count", () => {
     test("GTE Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { gte: 10 } } } }) {
+                posts(where: { likesAggregate: { count: { gte: 10 } } }) {
                     content
                 }
             }

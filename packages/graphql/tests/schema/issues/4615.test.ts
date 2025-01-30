@@ -163,6 +163,10 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -519,6 +523,8 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -776,6 +782,8 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"Filter Series by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -975,6 +983,8 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             input ShowActorsConnectionFilters {
+              \\"\\"\\"Filter Shows by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: ShowActorsAggregateInput
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"

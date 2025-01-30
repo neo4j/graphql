@@ -717,6 +717,10 @@ describe("Algebraic", () => {
 
             input DirectorDirectsConnectionFilters {
               \\"\\"\\"
+              Filter Directors by aggregating results on related DirectorDirectsConnections
+              \\"\\"\\"
+              aggregate: DirectorDirectsAggregateInput
+              \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
               \\"\\"\\"
               all: DirectorDirectsConnectionWhere
@@ -1018,6 +1022,10 @@ describe("Algebraic", () => {
             }
 
             input MovieDirectedByConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieDirectedByConnections
+              \\"\\"\\"
+              aggregate: MovieDirectedByAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieDirectedByConnections match this filter
               \\"\\"\\"
@@ -1531,6 +1539,10 @@ describe("Algebraic", () => {
 
             input MovieWorkersConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related MovieWorkersConnections
+              \\"\\"\\"
+              aggregate: MovieWorkersAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
               \\"\\"\\"
               all: MovieWorkersConnectionWhere
@@ -1792,6 +1804,10 @@ describe("Algebraic", () => {
             }
 
             input PersonWorksInProductionConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonWorksInProductionConnections
+              \\"\\"\\"
+              aggregate: PersonWorksInProductionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
               \\"\\"\\"
@@ -2245,6 +2261,8 @@ describe("Algebraic", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2520,6 +2538,10 @@ describe("Algebraic", () => {
             }
 
             input PersonActedInMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonActedInMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonActedInMoviesAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter
               \\"\\"\\"

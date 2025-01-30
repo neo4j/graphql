@@ -309,6 +309,10 @@ describe("Pluralize consistency", () => {
 
             input super_userMy_friendConnectionFilters {
               \\"\\"\\"
+              Filter super_users by aggregating results on related super_userMy_friendConnections
+              \\"\\"\\"
+              aggregate: super_userMy_friendAggregateInput
+              \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
               all: super_userMy_friendConnectionWhere

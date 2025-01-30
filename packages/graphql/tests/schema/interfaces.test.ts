@@ -169,6 +169,10 @@ describe("Interfaces", () => {
 
             input MovieMoviesConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieMoviesAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
               all: MovieNodeMoviesConnectionWhere
@@ -255,6 +259,10 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieNodeMoviesAggregateInput
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -625,6 +633,10 @@ describe("Interfaces", () => {
 
             input MovieMoviesConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieMoviesAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
               all: MovieNodeMoviesConnectionWhere
@@ -711,6 +723,10 @@ describe("Interfaces", () => {
             }
 
             input MovieNodeMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieNodeMoviesAggregateInput
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"

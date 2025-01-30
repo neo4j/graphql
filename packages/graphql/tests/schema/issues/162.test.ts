@@ -291,6 +291,10 @@ describe("162", () => {
 
             input TigerJawLevel2Part1ConnectionFilters {
               \\"\\"\\"
+              Filter TigerJawLevel2s by aggregating results on related TigerJawLevel2Part1Connections
+              \\"\\"\\"
+              aggregate: TigerJawLevel2Part1AggregateInput
+              \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
               all: TigerJawLevel2Part1ConnectionWhere
@@ -411,6 +415,10 @@ describe("162", () => {
             }
 
             input TigerJawLevel2Part1TigerConnectionFilters {
+              \\"\\"\\"
+              Filter TigerJawLevel2Part1s by aggregating results on related TigerJawLevel2Part1TigerConnections
+              \\"\\"\\"
+              aggregate: TigerJawLevel2Part1TigerAggregateInput
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"

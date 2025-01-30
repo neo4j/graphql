@@ -253,6 +253,10 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
 
             input PersonFriendsConnectionFilters {
               \\"\\"\\"
+              Filter People by aggregating results on related PersonFriendsConnections
+              \\"\\"\\"
+              aggregate: PersonFriendsAggregateInput
+              \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               all: PersonFriendsConnectionWhere

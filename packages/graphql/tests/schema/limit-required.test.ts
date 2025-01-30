@@ -162,6 +162,10 @@ describe("limitRequired constructor option", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related PersonActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related PersonActedInConnections match this filter
               \\"\\"\\"
               all: PersonActedInConnectionWhere
@@ -314,6 +318,10 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -657,6 +665,8 @@ describe("limitRequired constructor option", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -943,6 +953,10 @@ describe("limitRequired constructor option", () => {
 
             input PersonActedInConnectionFilters {
               \\"\\"\\"
+              Filter People by aggregating results on related PersonActedInConnections
+              \\"\\"\\"
+              aggregate: PersonActedInAggregateInput
+              \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
               \\"\\"\\"
               all: PersonActedInConnectionWhere
@@ -1071,6 +1085,10 @@ describe("limitRequired constructor option", () => {
             }
 
             input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -1671,6 +1689,10 @@ describe("limitRequired constructor option", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -1994,6 +2016,8 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -2483,6 +2507,8 @@ describe("limitRequired constructor option", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3239,6 +3265,8 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -3872,6 +3900,8 @@ describe("limitRequired constructor option", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"

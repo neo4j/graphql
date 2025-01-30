@@ -117,6 +117,10 @@ describe("Arrays Methods", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -474,6 +478,8 @@ describe("Arrays Methods", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"

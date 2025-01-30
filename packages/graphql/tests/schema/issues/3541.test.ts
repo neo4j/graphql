@@ -181,6 +181,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -600,6 +602,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"

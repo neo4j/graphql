@@ -154,6 +154,10 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -885,6 +889,10 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -1221,6 +1229,10 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesConnectionFilters {
               \\"\\"\\"
+              Filter Episodes by aggregating results on related EpisodeSeriesConnections
+              \\"\\"\\"
+              aggregate: EpisodeSeriesAggregateInput
+              \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
               all: EpisodeSeriesConnectionWhere
@@ -1487,6 +1499,10 @@ describe("Interface Relationships", () => {
 
             input MovieActorsConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: MovieActorsAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               all: ProductionActorsConnectionWhere
@@ -1708,6 +1724,10 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: ProductionActorsAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2024,6 +2044,10 @@ describe("Interface Relationships", () => {
 
             input SeriesActorsConnectionFilters {
               \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
+              \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               all: ProductionActorsConnectionWhere
@@ -2175,6 +2199,10 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesEpisodesConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesEpisodesConnections
+              \\"\\"\\"
+              aggregate: SeriesEpisodesAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
@@ -2583,6 +2611,10 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -2919,6 +2951,10 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesConnectionFilters {
               \\"\\"\\"
+              Filter Episodes by aggregating results on related EpisodeSeriesConnections
+              \\"\\"\\"
+              aggregate: EpisodeSeriesAggregateInput
+              \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
               all: EpisodeSeriesConnectionWhere
@@ -3185,6 +3221,10 @@ describe("Interface Relationships", () => {
 
             input MovieActorsConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: MovieActorsAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               all: ProductionActorsConnectionWhere
@@ -3406,6 +3446,10 @@ describe("Interface Relationships", () => {
             }
 
             input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: ProductionActorsAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3742,6 +3786,10 @@ describe("Interface Relationships", () => {
 
             input SeriesActorsConnectionFilters {
               \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
+              \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               all: ProductionActorsConnectionWhere
@@ -3893,6 +3941,10 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesEpisodesConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesEpisodesConnections
+              \\"\\"\\"
+              aggregate: SeriesEpisodesAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
@@ -4399,6 +4451,10 @@ describe("Interface Relationships", () => {
 
             input Interface1Interface2ConnectionFilters {
               \\"\\"\\"
+              Filter Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Interface1Interface2AggregateInput
+              \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               all: Interface1Interface2ConnectionWhere
@@ -4804,6 +4860,10 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1ConnectionFilters {
               \\"\\"\\"
+              Filter Type1s by aggregating results on related Type1Interface1Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1AggregateInput
+              \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               all: Type1Interface1ConnectionWhere
@@ -4892,6 +4952,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -5248,6 +5312,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type2Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -5702,6 +5770,10 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -6224,6 +6296,10 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1ConnectionFilters {
               \\"\\"\\"
+              Filter Type1s by aggregating results on related Type1Interface1Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1AggregateInput
+              \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               all: Type1Interface1ConnectionWhere
@@ -6314,6 +6390,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -6679,6 +6759,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type2Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7146,6 +7230,10 @@ describe("Interface Relationships", () => {
             }
 
             input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7624,6 +7712,10 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1ConnectionFilters {
               \\"\\"\\"
+              Filter Type1s by aggregating results on related Type1Interface1Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1AggregateInput
+              \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
               all: Type1Interface1ConnectionWhere
@@ -7714,6 +7806,10 @@ describe("Interface Relationships", () => {
             }
 
             input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1Interface2AggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -8143,6 +8239,10 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2ConnectionFilters {
               \\"\\"\\"
+              Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type2Interface1Interface2AggregateInput
+              \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
               all: Interface1Interface2ConnectionWhere
@@ -8557,6 +8657,10 @@ describe("Interface Relationships", () => {
 
             input CommentCreatorConnectionFilters {
               \\"\\"\\"
+              Filter Comments by aggregating results on related ContentCreatorConnections
+              \\"\\"\\"
+              aggregate: CommentCreatorAggregateInput
+              \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
               all: ContentCreatorConnectionWhere
@@ -8658,6 +8762,10 @@ describe("Interface Relationships", () => {
             }
 
             input CommentPostConnectionFilters {
+              \\"\\"\\"
+              Filter Comments by aggregating results on related CommentPostConnections
+              \\"\\"\\"
+              aggregate: CommentPostAggregateInput
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
               \\"\\"\\"
@@ -8930,6 +9038,10 @@ describe("Interface Relationships", () => {
             }
 
             input ContentCreatorConnectionFilters {
+              \\"\\"\\"
+              Filter Contents by aggregating results on related ContentCreatorConnections
+              \\"\\"\\"
+              aggregate: ContentCreatorAggregateInput
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -9255,6 +9367,8 @@ describe("Interface Relationships", () => {
             }
 
             input PostCommentsConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostCommentsConnections\\"\\"\\"
+              aggregate: PostCommentsAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
               \\"\\"\\"
@@ -9378,6 +9492,10 @@ describe("Interface Relationships", () => {
             }
 
             input PostCreatorConnectionFilters {
+              \\"\\"\\"
+              Filter Posts by aggregating results on related ContentCreatorConnections
+              \\"\\"\\"
+              aggregate: PostCreatorAggregateInput
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -9700,6 +9818,8 @@ describe("Interface Relationships", () => {
             }
 
             input UserContentConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserContentConnections\\"\\"\\"
+              aggregate: UserContentAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"
@@ -10043,6 +10163,10 @@ describe("Interface Relationships", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -10375,6 +10499,8 @@ describe("Interface Relationships", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -10678,6 +10804,8 @@ describe("Interface Relationships", () => {
             }
 
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"Filter Series by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -10877,6 +11005,8 @@ describe("Interface Relationships", () => {
             }
 
             input ShowActorsConnectionFilters {
+              \\"\\"\\"Filter Shows by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: ShowActorsAggregateInput
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"

@@ -158,6 +158,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input CreatureMoviesConnectionFilters {
               \\"\\"\\"
+              Filter Creatures by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: CreatureMoviesAggregateInput
+              \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
               all: CreatureMoviesConnectionWhere
@@ -391,6 +395,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input MovieDirectorConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: MovieDirectorAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               all: ProductionDirectorConnectionWhere
@@ -600,6 +608,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
+              Filter People by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesAggregateInput
+              \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
               all: CreatureMoviesConnectionWhere
@@ -754,6 +766,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input ProductionDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: ProductionDirectorAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -999,6 +1015,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             input SeriesDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: SeriesDirectorAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"

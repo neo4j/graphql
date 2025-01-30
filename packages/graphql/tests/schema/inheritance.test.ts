@@ -115,6 +115,10 @@ describe("inheritance", () => {
 
             input ActorFriendsConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related PersonFriendsConnections
+              \\"\\"\\"
+              aggregate: ActorFriendsAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
               all: PersonFriendsConnectionWhere
@@ -480,6 +484,10 @@ describe("inheritance", () => {
             }
 
             input PersonFriendsConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonFriendsConnections
+              \\"\\"\\"
+              aggregate: PersonFriendsAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
