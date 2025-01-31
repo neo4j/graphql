@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationOperation } from "../operations/AggregationOperation";
-import type { CompositeAggregationOperation } from "../operations/composite/CompositeAggregationOperation";
+import { CompositeAggregationOperation } from "../operations/composite/CompositeAggregationOperation";
 import { Field } from "./Field";
 
 /** An aggregate field inside connection */
@@ -43,6 +43,7 @@ export class ConnectionAggregationField extends Field {
     }) {
         super(alias);
         this.operation = operation;
+        this.operation.isInConnectionField = true;
         this.nodeAlias = nodeAlias;
     }
 
@@ -54,7 +55,11 @@ export class ConnectionAggregationField extends Field {
         if (!this.projectionExpr) {
             throw new Error("Projection expression of operation not available (has transpile been called)?");
         }
-        return { [this.alias]: new Cypher.Map({ [this.nodeAlias]: this.projectionExpr }) };
+
+        if (this.operation instanceof CompositeAggregationOperation) {
+            return { [this.alias]: new Cypher.Map({ [this.nodeAlias]: this.projectionExpr }) };
+        }
+        return { [this.alias]: this.projectionExpr };
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {

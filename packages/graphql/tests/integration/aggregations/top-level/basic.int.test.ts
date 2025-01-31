@@ -22,8 +22,6 @@ import { TestHelper } from "../../../utils/tests-helper";
 describe("aggregations-top_level-basic", () => {
     const testHelper = new TestHelper();
 
-    beforeAll(() => {});
-
     afterAll(async () => {
         await testHelper.close();
     });

@@ -167,7 +167,8 @@ export class ConnectionReadOperation extends Operation {
             projectionMap: aggregationProjection,
             fields: aggregationFields,
             subqueries: aggregationSubqueries,
-        } = this.transpileAggregation(nestedContext);
+            // } = this.transpileAggregation(nestedContext);
+        } = this.transpileAggregation(context);
 
         const edgesVar = new Cypher.NamedVariable("edges");
         const totalCount = new Cypher.NamedVariable("totalCount");
@@ -343,7 +344,6 @@ export class ConnectionReadOperation extends Operation {
         const projectionMap: Record<string, Cypher.Variable> = {};
 
         const subqueries = this.aggregationField.getSubqueries(context);
-
         const aggregationProjectionField = this.aggregationField.getProjectionField();
 
         const fields: Array<[Cypher.Expr, Cypher.Variable]> = Object.entries(aggregationProjectionField).map(

@@ -249,23 +249,58 @@ export class ConnectionFactory {
         context: Neo4jGraphQLTranslationContext;
         operation: ConnectionReadOperation | CompositeConnectionReadOperation;
     }) {
-        const resolveTreeAggregateFields =
-            resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
-        if (resolveTreeAggregate && resolveTreeAggregateFields) {
-            const nodeField = getResolveTreeByFieldName({ fieldName: "node", selection: resolveTreeAggregateFields });
-            if (nodeField) {
-                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                    entityOrRel: relationship ?? target,
-                    resolveTree: nodeField,
-                    context,
+        if (relationship) {
+            const resolveTreeAggregateFields =
+                resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()];
+
+            if (resolveTreeAggregate && resolveTreeAggregateFields) {
+                const nodeField = getResolveTreeByFieldName({
+                    fieldName: "node",
+                    selection: resolveTreeAggregateFields,
                 });
-                const aggregationField = new ConnectionAggregationField({
-                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                    nodeAlias: nodeField.alias,
-                    operation: aggregationOperation,
+                const edgeField = getResolveTreeByFieldName({
+                    fieldName: "edge",
+                    selection: resolveTreeAggregateFields,
                 });
 
-                operation.setAggregationField(aggregationField);
+                if (nodeField || edgeField) {
+                    const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                        entityOrRel: relationship ?? target,
+                        resolveTree: resolveTreeAggregate,
+                        context,
+                    });
+                    const aggregationField = new ConnectionAggregationField({
+                        alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                        nodeAlias: nodeField?.alias ?? "node",
+                        operation: aggregationOperation,
+                    });
+
+                    operation.setAggregationField(aggregationField);
+                }
+            }
+        } else {
+            const resolveTreeAggregateFields =
+                resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
+
+            if (resolveTreeAggregate && resolveTreeAggregateFields) {
+                const nodeField = getResolveTreeByFieldName({
+                    fieldName: "node",
+                    selection: resolveTreeAggregateFields,
+                });
+                if (nodeField) {
+                    const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                        entityOrRel: relationship ?? target,
+                        resolveTree: nodeField,
+                        context,
+                    });
+                    const aggregationField = new ConnectionAggregationField({
+                        alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                        nodeAlias: nodeField.alias,
+                        operation: aggregationOperation,
+                    });
+
+                    operation.setAggregationField(aggregationField);
+                }
             }
         }
     }

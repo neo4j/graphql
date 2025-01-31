@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { createBearerToken } from "../../../../utils/create-bearer-token";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import { createBearerToken } from "../../../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
 describe(`Field Level Authorization Where Requests`, () => {
     let token: string;
@@ -39,26 +39,26 @@ describe(`Field Level Authorization Where Requests`, () => {
             name: String
             year: Int
             createdAt: DateTime
-            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
     
-        type ${typeActor} @node {
+        type ${typeActor.name} @node {
             name: String
             year: Int
             createdAt: DateTime
             testStr: String
-            movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }`;
 
         await testHelper.executeCypher(`
-            CREATE (m:${typeMovie}
+            CREATE (m:${typeMovie.name}
                 {name: "Terminator",year:1990,createdAt: datetime()})
                 <-[:ACTED_IN]-
-                (:${typeActor} { name: "Arnold", year: 1970, createdAt: datetime(), testStr: "1234"})
-                CREATE (m)<-[:ACTED_IN]-(:${typeActor} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
+                (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime(), testStr: "1234"})
+                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
 
         const extendedTypeDefs = `${typeDefs}
-        extend type ${typeActor} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr_EQ: "$jwt.sub" } } }])`;
+        extend type ${typeActor.name} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr_EQ: "$jwt.sub" } } }])`;
 
         await testHelper.initNeo4jGraphQL({
             typeDefs: extendedTypeDefs,
@@ -80,46 +80,36 @@ describe(`Field Level Authorization Where Requests`, () => {
     });
 
     test("authenticated query", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${typeMovie.plural} {
-                    actorsConnection(where: { node: { year_GT: 10 } }) {
-                        aggregate {
-                            node {
-                                year {
-                                    max
-                                }
-                                name {
-                                    longest
-                                    shortest
-                                }
-                            }
+        const query = `query {
+            ${typeMovie.plural} {
+                ${typeActor.plural}Aggregate(where: {year_GT: 10}) {
+                    count
+                    node {
+                        year {
+                            max
+                        },
+                        name {
+                            longest,
+                            shortest
                         }
+                    },
                     }
                 }
-            }
-        `;
+            }`;
 
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data).toEqual({
-            [typeMovie.plural]: [
-                {
-                    actorsConnection: {
-                        aggregate: {
-                            node: {
-                                year: {
-                                    max: 1970,
-                                },
-                                name: {
-                                    longest: "Arnold",
-                                    shortest: "Arnold",
-                                },
-                            },
-                        },
-                    },
+        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
+            count: 1,
+            node: {
+                year: {
+                    max: 1970,
                 },
-            ],
+                name: {
+                    longest: "Arnold",
+                    shortest: "Arnold",
+                },
+            },
         });
     });
 });

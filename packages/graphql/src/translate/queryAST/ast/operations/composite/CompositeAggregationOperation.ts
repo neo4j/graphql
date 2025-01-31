@@ -47,6 +47,8 @@ export class CompositeAggregationOperation extends Operation {
     private nodeMap = new Cypher.Map();
     private edgeMap = new Cypher.Map();
 
+    public isInConnectionField = false; // Used for compatibility with deprecated aggregations, this will always be true in 7.x
+
     constructor({
         compositeEntity,
         children,
