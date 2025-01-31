@@ -62,7 +62,14 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: {eq: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { eq: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -102,7 +109,14 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { lt: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { lt: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -142,7 +156,14 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { lte: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { lte: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -187,7 +208,14 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { gt: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { gt: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -227,7 +255,14 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { gte: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { gte: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -305,7 +340,14 @@ describe("aggregations-where-count  interface relationships of concrete types", 
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: {eq: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { eq: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -345,7 +387,14 @@ describe("aggregations-where-count  interface relationships of concrete types", 
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { lt: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { lt: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -385,7 +434,14 @@ describe("aggregations-where-count  interface relationships of concrete types", 
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { lte: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { lte: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -430,7 +486,14 @@ describe("aggregations-where-count  interface relationships of concrete types", 
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { gt: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { gt: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString
@@ -470,7 +533,14 @@ describe("aggregations-where-count  interface relationships of concrete types", 
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesConnection: { aggregate: { count: { gte: 1 } } } }) {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" }, 
+                        likesConnection: { 
+                            aggregate: { 
+                                count: { gte: 1 } 
+                            } 
+                        } 
+                    }) {
                         testString
                         likes {
                             testString

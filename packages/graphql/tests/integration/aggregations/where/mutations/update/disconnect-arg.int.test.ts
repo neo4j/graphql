@@ -73,7 +73,7 @@ describe("Disconnect using aggregate where", () => {
     });
 
     test("should disconnect by using an aggregation count", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${userType.operations.update}(
                     where: { name_EQ: "${userName}" }
@@ -82,8 +82,10 @@ describe("Disconnect using aggregate where", () => {
                             disconnect: { 
                                 where: { 
                                     node: {
-                                        likesAggregate: {
-                                            count_EQ: 2
+                                        likesConnection: {
+                                            aggregate: {
+                                                count: { eq: 2 }
+                                            }
                                         }
                                     } 
                                 } 
@@ -117,7 +119,7 @@ describe("Disconnect using aggregate where", () => {
     });
 
     test("should disconnect by using a nested aggregation", async () => {
-        const query = `
+        const query = /* GraphQL */ `
              mutation {
                  ${userType.operations.update}(
                      where: { name_EQ: "${userName}" }
@@ -126,18 +128,19 @@ describe("Disconnect using aggregate where", () => {
                              disconnect: { 
                                  where: { 
                                      node: {
-                                         likesAggregate: {
-                                            OR: [
-                                            {
-                                                count_EQ: 2
-                                                
-                                            },
-                                            {
-                                                node: {
-                                                    name_SHORTEST_LENGTH_LT: 10 
+                                         likesConnection: {
+                                            aggregate: {
+                                                OR: [
+                                                {
+                                                    count: { eq: 2 }
+                                                },
+                                                {
+                                                    node: {
+                                                        name: { shortestLength: { lt: 10 } }
+                                                    }
                                                 }
-                                             }
-                                            ]
+                                                ]
+                                            }
                                          }
                                      } 
                                  } 
@@ -171,7 +174,7 @@ describe("Disconnect using aggregate where", () => {
     });
 
     test("should disconnect when filtering using aggregate count, edge and node", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${userType.operations.update}(
                     where: { name_EQ: "${userName}" }
@@ -180,20 +183,22 @@ describe("Disconnect using aggregate where", () => {
                             disconnect: {
                                 where: { 
                                     node: {
-                                        likesAggregate: {
-                                            AND: [
-                                                {   
-                                                    edge: {
-                                                        likedAt_MIN_LTE: "${date2.toISOString()}" 
+                                        likesConnection: {
+                                            aggregate: {
+                                                AND: [
+                                                    {   
+                                                        edge: {
+                                                            likedAt: { min: { lte: "${date2.toISOString()}" } }
+                                                        }
+                                                    },
+                                                    {
+                                                        node: {
+                                                            name: { shortestLength: { gt: 2 } }
+                                                        }
+                                                        count: { eq: 2 }
                                                     }
-                                                },
-                                                {
-                                                    node: {
-                                                        name_SHORTEST_LENGTH_GT: 2 
-                                                    }
-                                                    count_EQ: 2
-                                                }
-                                            ]
+                                                ]
+                                            }
                                         }
                                     }
                                 } 
@@ -286,11 +291,11 @@ describe("Disconnect UNIONs using aggregate where", () => {
             CREATE (u3:${userType.name} {name: "${userName3}"})
             CREATE (u4:${specialUserType.name} {specialName: "${userName4}"})
             CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${
-            postType.name
-        } {id: "${postId1}", content: "${content}" })
+                postType.name
+            } {id: "${postId1}", content: "${content}" })
             CREATE (u2)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2:${
-            postType.name
-        } {id: "${postId2}", content: "${content2}" })
+                postType.name
+            } {id: "${postId2}", content: "${content2}" })
             CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
             CREATE (p3:${postType.name} {id: "${postId3}", content: "${content3}" })
             CREATE (u)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
@@ -307,7 +312,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
     });
 
     test("should disconnect by using an aggregation count", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
@@ -317,8 +322,10 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                     disconnect: {
                                     where: {
                                         node: {
-                                            likedPostsAggregate: {
-                                                count_EQ: 2
+                                            likedPostsConnection: {
+                                                aggregate: {
+                                                    count: { eq: 2 }
+                                                }
                                             }
                                         }
                                     }
@@ -365,7 +372,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
     });
 
     test("should disconnect by using a nested aggregation count", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
@@ -377,14 +384,18 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                         node: {
                                             AND: [
                                                 {
-                                                    likedPostsAggregate: {
-                                                        count_EQ: 2
+                                                    likedPostsConnection: {
+                                                        aggregate: {
+                                                            count: { eq: 2 }
+                                                        }
                                                     }
                                                 },
                                                 {
-                                                    likedPostsAggregate: {
-                                                        edge: {
-                                                            likedAt_MAX_GT: "${date2.toISOString()}"
+                                                    likedPostsConnection: {
+                                                        aggregate: {
+                                                            edge: {
+                                                                likedAt: { max: { gt: "${date2.toISOString()}" } }
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -437,7 +448,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
     });
 
     test("should disconnect by using a nested aggregation count, with NOT operator", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
@@ -449,14 +460,18 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                         node: {
                                             AND: [
                                                 {
-                                                    likedPostsAggregate: {
-                                                        count_EQ: 2
+                                                    likedPostsConnection: {
+                                                        aggregate: {
+                                                            count: { eq: 2 }
+                                                        }
                                                     }
                                                 },
                                                 {
-                                                    likedPostsAggregate: {
-                                                        edge: {
-                                                            NOT: { likedAt_MAX_LTE: "${date2.toISOString()}" }
+                                                    likedPostsConnection: {
+                                                        aggregate: {
+                                                            edge: {
+                                                                NOT: { likedAt: { max: { lte: "${date2.toISOString()}" } } }
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -509,7 +524,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
     });
 
     test("should disconnect when filtering using aggregate count, edge and node", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
                     where: { id_EQ: "${postId2}" }
@@ -523,23 +538,29 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                                 {
                                                     AND: [
                                                         {
-                                                            likedPostsAggregate: {
-                                                                count_EQ: 2
+                                                            likedPostsConnection: {
+                                                                aggregate: {
+                                                                    count: { eq: 2 }
+                                                                }
                                                             }
                                                         },
                                                         {
-                                                            likedPostsAggregate: {
-                                                                edge: {
-                                                                    likedAt_MAX_GT: "${date2.toISOString()}"
+                                                            likedPostsConnection: {
+                                                                aggregate: {
+                                                                    edge: {
+                                                                        likedAt: { max: { gt: "${date2.toISOString()}" } }
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    likedPostsAggregate: {
-                                                        node: {
-                                                            content_AVERAGE_LENGTH_LTE: 4
+                                                    likedPostsConnection: {
+                                                        aggregate: {
+                                                            node: {
+                                                                content: { averageLength: { lte: 4 } }
+                                                            }
                                                         }
                                                     }
                                                 }

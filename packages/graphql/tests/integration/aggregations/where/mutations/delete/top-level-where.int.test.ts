@@ -75,13 +75,13 @@ describe("Delete using top level aggregate where", () => {
     });
 
     test("Implicit AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.delete}(where: { 
                     likesAggregate: {
-                        count_EQ: 3
+                        count: { eq: 3 }
                         node: {
-                            testString_SHORTEST_LENGTH_EQUAL: 3
+                            testString: { shortestLength: { eq: 3 } }
                         }
                     }
                 }) {
@@ -101,15 +101,15 @@ describe("Delete using top level aggregate where", () => {
     });
 
     test("Top-level OR", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.delete}(where: { 
                     likesAggregate: {
                         OR: [
-                            { count_EQ: 3 }
+                            { count: { eq: 3 } }
                             {
                                 node: {
-                                    testString_SHORTEST_LENGTH_EQUAL: 3
+                                    testString: { shortestLength: { eq: 3 } }
                                 }
                             }
                         ]
@@ -131,15 +131,15 @@ describe("Delete using top level aggregate where", () => {
     });
 
     test("Top-level AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.delete}(where: { 
                     likesAggregate: {
                         AND: [
-                            { count_EQ: 3 }
+                            { count: { eq: 3 } }
                             {
                                 node: {
-                                    testString_SHORTEST_LENGTH_EQUAL: 3
+                                    testString: { shortestLength: { eq: 3 } }
                                 }
                             }
                         ]
