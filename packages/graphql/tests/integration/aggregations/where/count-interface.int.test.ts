@@ -20,24 +20,35 @@
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("aggregations-where-count", () => {
-    const testHelper = new TestHelper();
+describe("aggregations-where-count interface relationships of concrete types", () => {
+    let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
+    let Person: UniqueType;
 
     beforeEach(async () => {
+        testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
+        Person = testHelper.createUniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
-            type ${User} @node {
-                name: String!
-            }
+        interface Human {
+            name: String!
+        }
 
-            type ${Post} @node {
-              title: String!
-              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
-            }
+        type ${User} implements Human @node {
+            name: String!
+        }
+
+        type ${Person} implements Human @node {
+            name: String!
+        }
+
+        type ${Post} @node {
+            title: String!
+            likes: [Human!]! @relationship(type: "LIKES", direction: IN)
+        }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
@@ -53,18 +64,18 @@ describe("aggregations-where-count", () => {
         const post4Title = "Post 4";
         const name1 = "User 1";
         const name2 = "User 2";
-        const name3 = "User 3";
+        const name3 = "Person 1";
 
         await testHelper.executeCypher(
             `
                 CREATE (u1:${User} {name: "${name1}"})
                 CREATE (u2:${User} {name: "${name2}"})
-                CREATE (u3:${User} {name: "${name3}"})
+                CREATE (p1:${Person} {name: "${name3}"})
                 CREATE (:${Post} {title: "${post1Title}"})<-[:LIKES]-(u1)
                 CREATE (p:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
-                CREATE (p)<-[:LIKES]-(u2)
+                CREATE (p)<-[:LIKES]-(p1)
                 CREATE (:${Post} {title: "${post3Title}"})
-                CREATE (:${Post} {title: "${post4Title}"})<-[:LIKES]-(u3)
+                CREATE (:${Post} {title: "${post4Title}"})<-[:LIKES]-(u2)
             `
         );
 
@@ -97,7 +108,7 @@ describe("aggregations-where-count", () => {
             },
             {
                 title: post4Title,
-                likes: [{ name: name3 }],
+                likes: [{ name: name2 }],
             },
         ]);
     });
@@ -109,16 +120,18 @@ describe("aggregations-where-count", () => {
         const post4Title = "Post 4";
         const name1 = "User 1";
         const name2 = "User 2";
+        const name3 = "Person 1";
 
         await testHelper.executeCypher(
             `
                 CREATE (u1:${User} {name: "${name1}"})
                 CREATE (u2:${User} {name: "${name2}"})
+                CREATE (p1:${Person} {name: "${name3}"})
                 CREATE (:${Post} {title: "${post1Title}"})
                 CREATE (:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
                 CREATE (:${Post} {title: "${post3Title}"})
-                CREATE (p:${Post} {title: "${post4Title}"})<-[:LIKES]-(u1)
-                CREATE (p)<-[:LIKES]-(u2)
+                CREATE (p:${Post} {title: "${post4Title}"})<-[:LIKES]-(u2)
+                CREATE (p)<-[:LIKES]-(p1)
             `
         );
 
@@ -163,15 +176,17 @@ describe("aggregations-where-count", () => {
         const post4Title = "Post 4";
         const name1 = "User 1";
         const name2 = "User 2";
+        const name3 = "Person 1";
 
         await testHelper.executeCypher(
             `
                 CREATE (u1:${User} {name: "${name1}"})
                 CREATE (u2:${User} {name: "${name2}"})
+                CREATE (p1:${Person} {name: "${name3}"})
                 CREATE (:${Post} {title: "${post1Title}"})
                 CREATE (:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
                 CREATE (p:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
-                CREATE (p)<-[:LIKES]-(u2)
+                CREATE (p)<-[:LIKES]-(p1)
                 CREATE (:${Post} {title: "${post4Title}"})<-[:LIKES]-(u2)
             `
         );
@@ -214,25 +229,27 @@ describe("aggregations-where-count", () => {
         ]);
     });
 
-    test("should return posts where the count of likes GT one, regardless of number of likes over 1", async () => {
+    test("should return posts where the count of likes GT one", async () => {
         const post1Title = "Post 1";
         const post2Title = "Post 2";
         const post3Title = "Post 3";
         const post4Title = "Post 4";
         const name1 = "User 1";
         const name2 = "User 2";
-        const name3 = "User 3";
+        const name3 = "Person 1";
+        const name4 = "Person 2";
 
         await testHelper.executeCypher(
             `
                 CREATE (u1:${User} {name: "${name1}"})
                 CREATE (u2:${User} {name: "${name2}"})
-                CREATE (u3:${User} {name: "${name3}"})
-                CREATE (p1:${Post} {title: "${post1Title}"})<-[:LIKES]-(u1)
-                CREATE (p1)<-[:LIKES]-(u2)
-                CREATE (p2:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
-                CREATE (p2)<-[:LIKES]-(u2)
-                CREATE (p2)<-[:LIKES]-(u3)
+                CREATE (p1:${Person} {name: "${name3}"})
+                CREATE (p2:${Person} {name: "${name4}"})
+                CREATE (p1post:${Post} {title: "${post1Title}"})<-[:LIKES]-(u1)
+                CREATE (p1post)<-[:LIKES]-(p1)
+                CREATE (p2post:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
+                CREATE (p2post)<-[:LIKES]-(u2)
+                CREATE (p2post)<-[:LIKES]-(p2)
                 CREATE (:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
                 CREATE (:${Post} {title: "${post4Title}"})
             `
@@ -263,36 +280,38 @@ describe("aggregations-where-count", () => {
         expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 title: post1Title,
-                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }]),
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name3 }]),
             },
             {
                 title: post2Title,
-                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }, { name: name3 }]),
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }, { name: name4 }]),
             },
         ]);
     });
 
-    test("should return posts where the count of likes GT one", async () => {
+    test("should return posts where the count of likes GTE one", async () => {
         const post1Title = "Post 1";
         const post2Title = "Post 2";
         const post3Title = "Post 3";
         const post4Title = "Post 4";
         const name1 = "User 1";
         const name2 = "User 2";
-        const name3 = "User 3";
+        const name3 = "Person 1";
+        const name4 = "Person 2";
 
         await testHelper.executeCypher(
             `
                 CREATE (u1:${User} {name: "${name1}"})
                 CREATE (u2:${User} {name: "${name2}"})
-                CREATE (u3:${User} {name: "${name3}"})
+                CREATE (p1:${Person} {name: "${name3}"})
+                CREATE (p2:${Person} {name: "${name4}"})
                 CREATE (:${Post} {title: "${post1Title}"})
                 CREATE (:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
-                CREATE (p1:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
-                CREATE (p1)<-[:LIKES]-(u2)
-                CREATE (p2:${Post} {title: "${post4Title}"})<-[:LIKES]-(u1)
-                CREATE (p2)<-[:LIKES]-(u2)
-                CREATE (p2)<-[:LIKES]-(u3)
+                CREATE (p1post:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
+                CREATE (p1post)<-[:LIKES]-(p1)
+                CREATE (p2post:${Post} {title: "${post4Title}"})<-[:LIKES]-(u2)
+                CREATE (p2post)<-[:LIKES]-(p1)
+                CREATE (p2post)<-[:LIKES]-(p2)
             `
         );
 
@@ -301,7 +320,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gt: 1 } 
+                            count: { gte: 1 } 
                         } 
                     } 
                 }) {
@@ -317,15 +336,19 @@ describe("aggregations-where-count", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toHaveLength(2);
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(3);
         expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
+                title: post2Title,
+                likes: [{ name: name1 }],
+            },
+            {
                 title: post3Title,
-                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }]),
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name3 }]),
             },
             {
                 title: post4Title,
-                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }, { name: name3 }]),
+                likes: expect.toIncludeSameMembers([{ name: name2 }, { name: name3 }, { name: name4 }]),
             },
         ]);
     });
