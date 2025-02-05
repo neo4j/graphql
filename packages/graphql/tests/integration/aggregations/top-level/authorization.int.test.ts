@@ -37,14 +37,14 @@ describe("aggregations-top_level authorization", () => {
                 id: ID
             }
 
-            extend type ${randomType.name} @authorization(validate: [ { operations: [AGGREGATE], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            extend type ${randomType.name} @authorization(validate: [ { operations: [AGGREGATE], when: BEFORE, where: { node: { id: { eq: "$jwt.sub" } } } } ])
         `;
 
         const userId = generate({
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 ${randomType.operations.connection} {
                     aggregate {
@@ -67,6 +67,7 @@ describe("aggregations-top_level authorization", () => {
 
         await testHelper.executeCypher(`
                 CREATE (:${randomType.name} {id: "${userId}"})
+                CREATE (:${randomType.name} {id: "other-user"})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -93,7 +94,7 @@ describe("aggregations-top_level authorization", () => {
 
             extend type ${Post}
                 @authorization(
-                    filter: [{ operations: [AGGREGATE], where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                    filter: [{ operations: [AGGREGATE], where: { node: { creator: { single: { id: { eq: "$jwt.sub" } } } } } }]
                 )
         `;
 
@@ -101,7 +102,7 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
                 ${Post.operations.connection} {
                     aggregate {
@@ -123,7 +124,9 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:${User} {id: "${userId}"})-[:POSTED]->(:${Post} {content: randomUUID()})
+                CREATE (:${User} {id: "${userId}"})-[:POSTED]->(:${Post} {content: "authorized post 1"})
+                CREATE (:${User} {id: "${userId}"})-[:POSTED]->(:${Post} {content: "authorized post 2"})
+                CREATE (:${User} {id: "other-user"})-[:POSTED]->(:${Post} {content: "unauthorized post"})
             `);
 
         const token = createBearerToken(secret, { sub: userId });
@@ -136,7 +139,7 @@ describe("aggregations-top_level authorization", () => {
             [Post.operations.connection]: {
                 aggregate: {
                     node: {
-                        count: 1,
+                        count: 2, // Now expecting 2 posts for authorized user
                     },
                 },
             },
@@ -152,7 +155,7 @@ describe("aggregations-top_level authorization", () => {
                 director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingInt: Int
                     @authorization(
-                        validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                        validate: [{ when: BEFORE, where: { node: { director: { single: { id: { eq: "$jwt.sub" } } } } } }]
                     )
             }
 
@@ -169,9 +172,9 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                ${Movie.operations.connection}(where: { id: { eq: "${movieId}" } }) {
                     aggregate {
                         node {
                             imdbRatingInt {
@@ -194,7 +197,8 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (: ${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie} {id: "${movieId}", imdbRatingInt: rand()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie} {id: "${movieId}", imdbRatingInt: 8})
+                CREATE (:${Person.name} {id: "other-user"})-[:DIRECTED]->(:${Movie} {id: "other-movie", imdbRatingInt: 5})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -213,7 +217,7 @@ describe("aggregations-top_level authorization", () => {
                 director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 someString: String
                     @authorization(
-                        validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                        validate: [{ when: BEFORE, where: { node: { director: { single: { id: { eq: "$jwt.sub" } } } } } }]
                     )
             }
 
@@ -230,9 +234,9 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                ${Movie.operations.connection}(where: { id: { eq: "${movieId}" } }) {
                     aggregate {
                         node {
                             someString {
@@ -255,7 +259,8 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", someString: "some-random-string"})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", someString: "authorized movie"})
+                CREATE (:${Person.name} {id: "other-user"})-[:DIRECTED]->(:${Movie.name} {id: "other-movie", someString: "unauthorized movie"})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -274,7 +279,7 @@ describe("aggregations-top_level authorization", () => {
                 director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingFloat: Float
                     @authorization(
-                        validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                        validate: [{ when: BEFORE, where: { node: { director: { single: { id: { eq: "$jwt.sub" } } } } } }]
                     )
             }
 
@@ -291,9 +296,9 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                ${Movie.operations.connection}(where: { id: { eq: "${movieId}" } }) {
                     aggregate {
                         node {
                             imdbRatingFloat {
@@ -316,7 +321,8 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", imdbRatingFloat: rand()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", imdbRatingFloat: 8.5})
+                CREATE (:${Person.name} {id: "other-user"})-[:DIRECTED]->(:${Movie.name} {id: "other-movie", imdbRatingFloat: 5.5})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -335,7 +341,7 @@ describe("aggregations-top_level authorization", () => {
                 director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingBigInt: BigInt
                     @authorization(
-                        validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                        validate: [{ when: BEFORE, where: { node: { director: { single: { id: { eq: "$jwt.sub" } } } } } }]
                     )
             }
 
@@ -352,9 +358,9 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                ${Movie.operations.connection}(where: { id: { eq: "${movieId}" } }) {
                     aggregate {
                         node {
                             imdbRatingBigInt {
@@ -377,7 +383,8 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", imdbRatingBigInt: rand()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", imdbRatingBigInt: 1000000000})
+                CREATE (:${Person.name} {id: "other-user"})-[:DIRECTED]->(:${Movie.name} {id: "other-movie", imdbRatingBigInt: 500000000})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -396,7 +403,7 @@ describe("aggregations-top_level authorization", () => {
                 director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 createdAt: DateTime
                     @authorization(
-                        validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                        validate: [{ when: BEFORE, where: { node: { director: { single: { id: { eq: "$jwt.sub" } } } } } }]
                     )
             }
 
@@ -413,9 +420,9 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                ${Movie.operations.connection}(where: { id: { eq: "${movieId}" } }) {
                     aggregate {
                         node {
                             createdAt {
@@ -437,8 +444,12 @@ describe("aggregations-top_level authorization", () => {
             },
         });
 
+        const now = new Date().toISOString();
+        const yesterday = new Date(Date.now() - 86400000).toISOString();
+
         await testHelper.executeCypher(`
-                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", createdAt: datetime()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", createdAt: datetime("${now}")})
+                CREATE (:${Person.name} {id: "other-user"})-[:DIRECTED]->(:${Movie.name} {id: "other-movie", createdAt: datetime("${yesterday}")})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
@@ -457,7 +468,7 @@ describe("aggregations-top_level authorization", () => {
                 director: [${Person}!]! @relationship(type: "DIRECTED", direction: IN)
                 screenTime: Duration
                     @authorization(
-                        validate: [{ when: BEFORE, where: { node: { director_SINGLE: { id_EQ: "$jwt.sub" } } } }]
+                        validate: [{ when: BEFORE, where: { node: { director: { single: { id: { eq: "$jwt.sub" } } } } } }]
                     )
             }
 
@@ -474,9 +485,9 @@ describe("aggregations-top_level authorization", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             {
-                ${Movie.operations.connection}(where: {id_EQ: "${movieId}"}) {
+                ${Movie.operations.connection}(where: { id: { eq: "${movieId}" } }) {
                     aggregate {
                         node {
                             screenTime {
@@ -499,7 +510,8 @@ describe("aggregations-top_level authorization", () => {
         });
 
         await testHelper.executeCypher(`
-                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", createdAt: datetime()})
+                CREATE (:${Person.name} {id: "${userId}"})-[:DIRECTED]->(:${Movie.name} {id: "${movieId}", screenTime: duration("PT2H30M")})
+                CREATE (:${Person.name} {id: "other-user"})-[:DIRECTED]->(:${Movie.name} {id: "other-movie", screenTime: duration("PT1H45M")})
             `);
 
         const token = createBearerToken(secret, { sub: "invalid" });
