@@ -27,13 +27,12 @@ describe("aggregations-top_level-int", () => {
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
-        const typeDefs = `
-        type ${Movie} @node {
-            testString: String
-            imdbRating: Int
-        }
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                testString: String
+                imdbRating: Int
+            }
         `;
-
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
@@ -53,25 +52,26 @@ describe("aggregations-top_level-int", () => {
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4})
+                    CREATE (:${Movie} {testString: "different-string", imdbRating: 5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRating {
-                                        min
-                                    }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                min
                             }
-                        }   
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -106,25 +106,26 @@ describe("aggregations-top_level-int", () => {
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4})
+                    CREATE (:${Movie} {testString: "different-string", imdbRating: 5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRating {
-                                        max
-                                    }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                max
                             }
-                        }   
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -159,25 +160,26 @@ describe("aggregations-top_level-int", () => {
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4})
+                    CREATE (:${Movie} {testString: "different-string", imdbRating: 5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRating {
-                                        average
-                                    }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                average
                             }
-                        }   
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -212,25 +214,26 @@ describe("aggregations-top_level-int", () => {
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4})
+                    CREATE (:${Movie} {testString: "different-string", imdbRating: 5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRating {
-                                        sum
-                                    }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                sum
                             }
-                        }   
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -265,28 +268,29 @@ describe("aggregations-top_level-int", () => {
                     CREATE (:${Movie} {testString: $testString, imdbRating: 2})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 3})
                     CREATE (:${Movie} {testString: $testString, imdbRating: 4})
+                    CREATE (:${Movie} {testString: "different-string", imdbRating: 5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                imdbRating {
-                                        min
-                                        max
-                                        average
-                                        sum
-                                }
-                            }   
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                min
+                                max
+                                average
+                                sum
+                            }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 

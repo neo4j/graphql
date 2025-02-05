@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Aggregate -> count", () => {
@@ -32,7 +31,7 @@ describe("Aggregate -> count", () => {
     test("should count nodes", async () => {
         const randomType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${randomType.name} @node {
                 id: ID
             }
@@ -47,17 +46,17 @@ describe("Aggregate -> count", () => {
                 `
         );
 
-        const query = `
-                {
-                    ${randomType.operations.connection}{
-                        aggregate {
-                            node {
-                                count
-                            }
+        const query = /* GraphQL */ `
+            {
+                ${randomType.operations.connection} {
+                    aggregate {
+                        node {
+                            count
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -76,7 +75,7 @@ describe("Aggregate -> count", () => {
     test("should count nodes with where and or predicate", async () => {
         const randomType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${randomType.name} @node {
                 id: ID
             }
@@ -84,17 +83,11 @@ describe("Aggregate -> count", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const id1 = generate({
-            charset: "alphabetic",
-        });
+        const id1 = "id1";
 
-        const id2 = generate({
-            charset: "alphabetic",
-        });
+        const id2 = "id2";
 
-        const id3 = generate({
-            charset: "alphabetic",
-        });
+        const id3 = "id3";
 
         await testHelper.executeCypher(
             `
@@ -105,17 +98,24 @@ describe("Aggregate -> count", () => {
             { id1, id2, id3 }
         );
 
-        const query = `
-                {
-                  ${randomType.operations.connection}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
+        const query = /* GraphQL */ `
+            {
+                ${randomType.operations.connection}(
+                    where: { 
+                        OR: [
+                            { id: { eq: "${id1}" } },
+                            { id: { eq: "${id2}" } }
+                        ]
+                    }
+                ) {
                     aggregate {
                         node {
                             count
                         }
                     }
-                  }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
