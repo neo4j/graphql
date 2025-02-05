@@ -48,14 +48,14 @@ describe("Field Level Aggregations Auth", () => {
             year: Int
             createdAt: DateTime
             testId: String
-            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+            actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
     
         type ${typeActor.name} @node {
             name: String
             year: Int
             createdAt: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
         
         extend type ${typeMovie.name} @authentication(operations: [AGGREGATE])
@@ -88,7 +88,7 @@ describe("Field Level Aggregations Auth", () => {
         test("accepts authenticated requests to movie -> actorAggregate", async () => {
             const query = `query {
                 ${typeMovie.plural} {
-                    ${typeActor.plural}Aggregate {
+                    actorsAggregate {
                         count
                         }
                     }
@@ -101,7 +101,7 @@ describe("Field Level Aggregations Auth", () => {
         test("accepts authenticated requests to actor -> movieAggregate", async () => {
             const query = `query {
                 ${typeActor.plural} {
-                    ${typeMovie.plural}Aggregate {
+                    moviesAggregate {
                         ${selection}
                         }
                     }
@@ -114,7 +114,7 @@ describe("Field Level Aggregations Auth", () => {
         test("accepts unauthenticated requests to movie -> actorAggregate (only movie aggregations require authentication)", async () => {
             const query = `query {
                 ${typeMovie.plural} {
-                    ${typeActor.plural}Aggregate {
+                    actorsAggregate {
                         ${selection}
                         }
                     }
@@ -127,7 +127,7 @@ describe("Field Level Aggregations Auth", () => {
         test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
             const query = `query {
                 ${typeActor.plural} {
-                    ${typeMovie.plural}Aggregate {
+                    moviesAggregate {
                         ${selection}
                         }
                     }
@@ -155,14 +155,14 @@ describe("Field Level Aggregations Auth", () => {
                     year: Int
                     createdAt: DateTime
                     testId: String
-                    ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             
                 type ${typeActor.name} @node {
                     name: String
                     year: Int
                     createdAt: DateTime
-                    ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                    movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
                 
                 extend type ${typeMovie.name} 
@@ -194,7 +194,7 @@ describe("Field Level Aggregations Auth", () => {
         test("authenticated query", async () => {
             const query = `query {
                     ${typeActor.plural} {
-                        ${typeMovie.plural}Aggregate {
+                        moviesAggregate {
                             ${selection}
                             }
                         }
@@ -208,7 +208,7 @@ describe("Field Level Aggregations Auth", () => {
         test("unauthenticated query", async () => {
             const query = `query {
                     ${typeActor.plural} {
-                        ${typeMovie.plural}Aggregate {
+                        moviesAggregate {
                             ${selection}
                             }
                         }
@@ -221,7 +221,7 @@ describe("Field Level Aggregations Auth", () => {
         test("authenticated query with wrong credentials", async () => {
             const query = `query {
                     ${typeActor.plural} {
-                        ${typeMovie.plural}Aggregate {
+                        moviesAggregate {
                             ${selection}
                             }
                         }
