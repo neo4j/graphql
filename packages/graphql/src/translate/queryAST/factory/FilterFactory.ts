@@ -96,6 +96,7 @@ export class FilterFactory {
                 target: relationship.target,
                 operator,
                 context,
+                where,
             });
             const filters = this.createConnectionPredicates({
                 rel: relationship,
@@ -120,6 +121,7 @@ export class FilterFactory {
                 target: concreteEntity,
                 operator,
                 context,
+                where,
             });
 
             const filters = this.createConnectionPredicates({
@@ -351,7 +353,11 @@ export class FilterFactory {
                 operator: operator ?? "SOME",
             });
 
-            const authFilters = this.getAuthFilters(concreteEntity, context);
+            const attributes = filterTruthy(
+                Object.keys(where[concreteEntity.name] ?? where).map((key) => concreteEntity.findAttribute(key))
+            );
+
+            const authFilters = this.getAuthFilters(concreteEntity, attributes, context);
 
             relationshipFilter.addAuthFilters(...authFilters);
 
@@ -458,11 +464,16 @@ export class FilterFactory {
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         operator: RelationshipWhereOperator;
         context: Neo4jGraphQLTranslationContext;
+        where: ConnectionWhereArg;
     }): ConnectionFilter {
         const connectionFilter = new ConnectionFilter(options);
         const filteredEntities = getConcreteEntities(options.relationship.target);
         for (const concreteEntity of filteredEntities) {
-            const authFilters = this.getAuthFilters(concreteEntity, options.context);
+            const attributes = filterTruthy(
+                Object.keys(options.where.node || {}).map((key) => concreteEntity.findAttribute(key))
+            );
+
+            const authFilters = this.getAuthFilters(concreteEntity, attributes, options.context);
             connectionFilter.addAuthFilters(concreteEntity.name, ...authFilters);
         }
         return connectionFilter;
@@ -749,12 +760,14 @@ export class FilterFactory {
 
     protected getAuthFilters(
         entity: ConcreteEntityAdapter,
+        attributes: AttributeAdapter[] | undefined,
         context: Neo4jGraphQLTranslationContext
     ): AuthorizationFilters[] {
         return this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
             operations: ["READ"],
             context,
+            attributes,
         });
     }
 
@@ -966,7 +979,11 @@ export class FilterFactory {
         const aggregationFilter = new AggregationFilter(relationship);
         const filteredEntities = getConcreteEntities(relationship.target, where);
         for (const concreteEntity of filteredEntities) {
-            const authFilters = this.getAuthFilters(concreteEntity, context);
+            const attributes = filterTruthy(
+                Object.keys(where.node || {}).map((key) => concreteEntity.findAttribute(key))
+            );
+
+            const authFilters = this.getAuthFilters(concreteEntity, attributes, context);
             aggregationFilter.addAuthFilters(concreteEntity.name, ...authFilters);
         }
 

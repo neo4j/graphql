@@ -286,6 +286,7 @@ export class AuthFilterFactory extends FilterFactory {
 
     protected getAuthFilters(
         _entity: ConcreteEntityAdapter,
+        _attributes: AttributeAdapter[],
         _context: Neo4jGraphQLTranslationContext
     ): AuthorizationFilters[] {
         return [];
