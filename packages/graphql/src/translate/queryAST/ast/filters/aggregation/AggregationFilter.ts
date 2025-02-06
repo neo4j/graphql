@@ -118,10 +118,6 @@ export class AggregationFilter extends Filter {
         return Cypher.eq(this.subqueryReturnVariable, Cypher.true);
     }
 
-    // private getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
-    //     return this.authFilters.flatMap((f) => f.getSubqueries(context));
-    // }
-
     private getAuthFilterPredicate(name: string, context: QueryASTContext): Cypher.Predicate[] {
         const authFilters = this.authFilters[name];
         if (!authFilters) return [];
