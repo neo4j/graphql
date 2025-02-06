@@ -36,6 +36,7 @@ import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
 import { AuthRelationshipFilter } from "../ast/filters/authorization-filters/AuthRelationshipFilter";
+import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { JWTFilter } from "../ast/filters/authorization-filters/JWTFilter";
 import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
 import { ParamPropertyFilter } from "../ast/filters/property-filters/ParamPropertyFilter";
@@ -281,5 +282,12 @@ export class AuthFilterFactory extends FilterFactory {
         operator: RelationshipWhereOperator;
     }): ConnectionFilter {
         return new AuthConnectionFilter(options);
+    }
+
+    protected getAuthFilters(
+        _entity: ConcreteEntityAdapter,
+        _context: Neo4jGraphQLTranslationContext
+    ): AuthorizationFilters[] {
+        return [];
     }
 }

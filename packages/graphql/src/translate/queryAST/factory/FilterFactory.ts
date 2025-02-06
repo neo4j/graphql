@@ -42,6 +42,7 @@ import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter"
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import { AggregationTimeFilter } from "../ast/filters/aggregation/AggregationTimePropertyFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
+import type { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
 import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
 import { DateTimeFilter } from "../ast/filters/property-filters/DateTimeFilter";
 import { DurationFilter } from "../ast/filters/property-filters/DurationFilter";
@@ -74,7 +75,8 @@ type AggregateWhereInput = {
 };
 
 export class FilterFactory {
-    private queryASTFactory: QueryASTFactory;
+    protected queryASTFactory: QueryASTFactory;
+
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
     }
@@ -349,12 +351,7 @@ export class FilterFactory {
                 operator: operator ?? "SOME",
             });
 
-            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-                entity: concreteEntity,
-                operations: ["READ"],
-                // attributes: this.getSelectedAttributes(entity, projectionFields),
-                context,
-            });
+            const authFilters = this.getAuthFilters(concreteEntity, context);
 
             relationshipFilter.addAuthFilters(...authFilters);
 
@@ -465,11 +462,7 @@ export class FilterFactory {
         const connectionFilter = new ConnectionFilter(options);
         const filteredEntities = getConcreteEntities(options.relationship.target);
         for (const concreteEntity of filteredEntities) {
-            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-                entity: concreteEntity,
-                operations: ["READ"],
-                context: options.context,
-            });
+            const authFilters = this.getAuthFilters(concreteEntity, options.context);
             connectionFilter.addAuthFilters(concreteEntity.name, ...authFilters);
         }
         return connectionFilter;
@@ -754,6 +747,17 @@ export class FilterFactory {
         throw new Error(`Invalid operator ${operator}`);
     }
 
+    protected getAuthFilters(
+        entity: ConcreteEntityAdapter,
+        context: Neo4jGraphQLTranslationContext
+    ): AuthorizationFilters[] {
+        return this.queryASTFactory.authorizationFactory.getAuthFilters({
+            entity,
+            operations: ["READ"],
+            context,
+        });
+    }
+
     private createRelatedNodeFilters({
         relationship,
         value,
@@ -962,11 +966,7 @@ export class FilterFactory {
         const aggregationFilter = new AggregationFilter(relationship);
         const filteredEntities = getConcreteEntities(relationship.target, where);
         for (const concreteEntity of filteredEntities) {
-            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-                entity: concreteEntity,
-                operations: ["READ"],
-                context,
-            });
+            const authFilters = this.getAuthFilters(concreteEntity, context);
             aggregationFilter.addAuthFilters(concreteEntity.name, ...authFilters);
         }
 
