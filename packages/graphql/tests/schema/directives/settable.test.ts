@@ -643,6 +643,10 @@ describe("@settable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -1103,6 +1107,10 @@ describe("@settable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -1551,6 +1559,10 @@ describe("@settable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -1848,6 +1860,8 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2194,6 +2208,10 @@ describe("@settable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -2499,6 +2517,8 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -4163,6 +4183,8 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -4914,6 +4936,8 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -5365,6 +5389,10 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -6003,6 +6031,10 @@ describe("@settable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -6623,6 +6655,10 @@ describe("@settable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -6920,6 +6956,10 @@ describe("@settable", () => {
 
                 input MovieActorsConnectionFilters {
                   \\"\\"\\"
+                  Filter Movies by aggregating results on related ProductionActorsConnections
+                  \\"\\"\\"
+                  aggregate: MovieActorsAggregateInput
+                  \\"\\"\\"
                   Return Movies where all of the related ProductionActorsConnections match this filter
                   \\"\\"\\"
                   all: ProductionActorsConnectionWhere
@@ -7132,6 +7172,10 @@ describe("@settable", () => {
                 }
 
                 input ProductionActorsConnectionFilters {
+                  \\"\\"\\"
+                  Filter Productions by aggregating results on related ProductionActorsConnections
+                  \\"\\"\\"
+                  aggregate: ProductionActorsAggregateInput
                   \\"\\"\\"
                   Return Productions where all of the related ProductionActorsConnections match this filter
                   \\"\\"\\"
@@ -7368,6 +7412,10 @@ describe("@settable", () => {
                 }
 
                 input SeriesActorsConnectionFilters {
+                  \\"\\"\\"
+                  Filter Series by aggregating results on related ProductionActorsConnections
+                  \\"\\"\\"
+                  aggregate: SeriesActorsAggregateInput
                   \\"\\"\\"
                   Return Series where all of the related ProductionActorsConnections match this filter
                   \\"\\"\\"
@@ -7655,6 +7703,10 @@ describe("@settable", () => {
                 }
 
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -7961,6 +8013,10 @@ describe("@settable", () => {
 
                 input MovieActorsConnectionFilters {
                   \\"\\"\\"
+                  Filter Movies by aggregating results on related ProductionActorsConnections
+                  \\"\\"\\"
+                  aggregate: MovieActorsAggregateInput
+                  \\"\\"\\"
                   Return Movies where all of the related ProductionActorsConnections match this filter
                   \\"\\"\\"
                   all: ProductionActorsConnectionWhere
@@ -8173,6 +8229,10 @@ describe("@settable", () => {
                 }
 
                 input ProductionActorsConnectionFilters {
+                  \\"\\"\\"
+                  Filter Productions by aggregating results on related ProductionActorsConnections
+                  \\"\\"\\"
+                  aggregate: ProductionActorsAggregateInput
                   \\"\\"\\"
                   Return Productions where all of the related ProductionActorsConnections match this filter
                   \\"\\"\\"
@@ -8434,6 +8494,10 @@ describe("@settable", () => {
                 }
 
                 input SeriesActorsConnectionFilters {
+                  \\"\\"\\"
+                  Filter Series by aggregating results on related ProductionActorsConnections
+                  \\"\\"\\"
+                  aggregate: SeriesActorsAggregateInput
                   \\"\\"\\"
                   Return Series where all of the related ProductionActorsConnections match this filter
                   \\"\\"\\"

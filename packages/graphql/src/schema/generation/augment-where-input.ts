@@ -25,6 +25,7 @@ import type {
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { DEPRECATED } from "../../constants";
+import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
@@ -157,7 +158,7 @@ function getRelationshipFiltersUsingOptions({
 function getRelationshipConnectionFilters(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
 ): FieldConfig[] {
-    return [
+    const quantifierFilters = [
         {
             name: "all",
             typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
@@ -186,6 +187,17 @@ function getRelationshipConnectionFilters(
                 relationshipAdapter.operations.connectionFieldTypename
             )} match this filter`,
         },
+    ];
+    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
+        return quantifierFilters;
+    }
+    return [
+        {
+            name: "aggregate",
+            typeName: relationshipAdapter.operations.aggregateInputTypeName,
+            description: `Filter ${pluralize(relationshipAdapter.source.name)} by aggregating results on related ${pluralize(relationshipAdapter.operations.connectionFieldTypename)}`,
+        },
+        ...quantifierFilters,
     ];
 }
 

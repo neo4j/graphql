@@ -293,6 +293,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByConnectionFilters {
               \\"\\"\\"
+              Filter Resources by aggregating results on related ResourceContainedByConnections
+              \\"\\"\\"
+              aggregate: ResourceContainedByAggregateInput
+              \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
               all: ResourceContainedByConnectionWhere

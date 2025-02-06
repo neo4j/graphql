@@ -174,6 +174,10 @@ describe("Sort", () => {
 
             input Node1RelatedToConnectionFilters {
               \\"\\"\\"
+              Filter Node1s by aggregating results on related Node1RelatedToConnections
+              \\"\\"\\"
+              aggregate: Node1RelatedToAggregateInput
+              \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
               all: Node1RelatedToConnectionWhere
@@ -382,6 +386,10 @@ describe("Sort", () => {
             }
 
             input Node2RelatedToConnectionFilters {
+              \\"\\"\\"
+              Filter Node2s by aggregating results on related Node2RelatedToConnections
+              \\"\\"\\"
+              aggregate: Node2RelatedToAggregateInput
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"

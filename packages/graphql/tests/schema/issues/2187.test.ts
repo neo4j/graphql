@@ -191,6 +191,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input GenreMoviesConnectionFilters {
+              \\"\\"\\"Filter Genres by aggregating results on related GenreMoviesConnections\\"\\"\\"
+              aggregate: GenreMoviesAggregateInput
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -512,6 +514,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             input MovieGenresConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+              aggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"

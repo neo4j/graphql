@@ -62,33 +62,34 @@ describe("aggregations-top_level-alias", () => {
                     CREATE (:${typeMovie} {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
                     CREATE (:${typeMovie} {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
                     CREATE (:${typeMovie} {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "different-string", id: "5555", title: "5555", imdbRating: 5, createdAt: datetime()})
                 `
         );
 
         const query = /* GraphQL */ `
-                {
-                    ${typeMovie.operations.connection}(where: { testString_EQ: "${testString}" }) {
-                        aggr: aggregate {
-                            n: node {
-                                _count: count
-                                _title: title {
-                                    _shortest: shortest
-                                    _longest: longest
-                                }
-                                _imdbRating: imdbRating {
-                                    _min: min
-                                    _max: max
-                                    _average: average
-                                }
-                                _createdAt: createdAt {
-                                    _min: min
-                                    _max: max
-                                }
+            {
+                ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggr: aggregate {
+                        n: node {
+                            _count: count
+                            _title: title {
+                                _shortest: shortest
+                                _longest: longest
+                            }
+                            _imdbRating: imdbRating {
+                                _min: min
+                                _max: max
+                                _average: average
+                            }
+                            _createdAt: createdAt {
+                                _min: min
+                                _max: max
                             }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -145,37 +146,38 @@ describe("aggregations-top_level-alias", () => {
                     CREATE (:${typeMovie} {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
                     CREATE (:${typeMovie} {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
                     CREATE (:${typeMovie} {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "different-string", id: "5555", title: "5555", imdbRating: 5, createdAt: datetime()})
                 `
         );
 
         const query = /* GraphQL */ `
-                {
-                    ${typeMovie.operations.connection}(where: { testString_EQ: "${testString}" }) {
-                        aggr1: aggregate {
-                            node {
-                                count
-                                title {
-                                    shortest: shortest
-                                    longest: longest
-                                }
-                                imdbRating: imdbRating {
-                                    min: min
-                                    max: max
-                                    average: average
-                                }        
+            {
+                ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggr1: aggregate {
+                        node {
+                            count
+                            title {
+                                shortest: shortest
+                                longest: longest
                             }
+                            imdbRating: imdbRating {
+                                min: min
+                                max: max
+                                average: average
+                            }        
                         }
-                        aggr2: aggregate {
-                            node {
-                                _title: title {
-                                    shortest: shortest
-                                    longest: longest
-                                }    
-                            }
+                    }
+                    aggr2: aggregate {
+                        node {
+                            _title: title {
+                                shortest: shortest
+                                longest: longest
+                            }    
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 

@@ -157,6 +157,10 @@ describe("Connection with interfaces", () => {
 
             input CreatureMoviesConnectionFilters {
               \\"\\"\\"
+              Filter Creatures by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: CreatureMoviesAggregateInput
+              \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
               all: CreatureMoviesConnectionWhere
@@ -397,6 +401,10 @@ describe("Connection with interfaces", () => {
 
             input MovieDirectorConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: MovieDirectorAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
               all: ProductionDirectorConnectionWhere
@@ -598,6 +606,10 @@ describe("Connection with interfaces", () => {
 
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
+              Filter People by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesAggregateInput
+              \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
               all: CreatureMoviesConnectionWhere
@@ -762,6 +774,10 @@ describe("Connection with interfaces", () => {
             }
 
             input ProductionDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: ProductionDirectorAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -999,6 +1015,10 @@ describe("Connection with interfaces", () => {
             }
 
             input SeriesDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: SeriesDirectorAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"

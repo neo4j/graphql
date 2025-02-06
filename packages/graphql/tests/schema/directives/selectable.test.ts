@@ -804,6 +804,10 @@ describe("@selectable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -1259,6 +1263,10 @@ describe("@selectable", () => {
                 }
 
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -2796,6 +2804,10 @@ describe("@selectable", () => {
 
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
+                  \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   all: ActorActedInConnectionWhere
@@ -3428,6 +3440,10 @@ describe("@selectable", () => {
                 }
 
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"

@@ -321,6 +321,8 @@ describe("lower case type names", () => {
             }
 
             input actorMoviesConnectionFilters {
+              \\"\\"\\"Filter actors by aggregating results on related actorMoviesConnections\\"\\"\\"
+              aggregate: actorMoviesAggregateInput
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
               \\"\\"\\"
@@ -589,6 +591,8 @@ describe("lower case type names", () => {
             }
 
             input movieActorsConnectionFilters {
+              \\"\\"\\"Filter movies by aggregating results on related movieActorsConnections\\"\\"\\"
+              aggregate: movieActorsAggregateInput
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter
               \\"\\"\\"

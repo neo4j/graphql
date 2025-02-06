@@ -82,19 +82,21 @@ describe("Update using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${userType.operations.update}(
-                    where: { name_EQ: "${userName}" }
+                    where: { name: { eq: "${userName}" } }
                     update: { 
                         likedPosts: {
                             where: { 
                                 node: {
-                                    likesAggregate: {
-                                        count_EQ: 2
+                                    likesConnection: {
+                                        aggregate: {
+                                            count: { eq: 2 }
+                                        }
                                     }
                                 } 
                             } 
                             update: {
                                 node: {
-                                    content_SET: "${expectedContent}"
+                                    content: { set: "${expectedContent}" }
                                 } 
                             } 
                         } 
@@ -153,31 +155,30 @@ describe("Update using aggregate where", () => {
         const query = /* GraphQL */ `
              mutation {
                  ${userType.operations.update}(
-                     where: { name_EQ: "${userName}" }
+                     where: { name: { eq: "${userName}" } }
                      update: { 
                          likedPosts: {
                             where: { 
                                 node: {
-                                    likesAggregate: {
-                                       OR: [
-                                       {
-                                           count_EQ: 2
-                                           
-                                       },
-                                       {
-                                           node: {
-                                               name_SHORTEST_LENGTH_LT: 10 
-                                           }
+                                    likesConnection: {
+                                        aggregate: {
+                                            OR: [
+                                                { count: { eq: 2 } },
+                                                {
+                                                    node: {
+                                                        name: { shortestLength: { lt: 10 } }
+                                                    }
+                                                }
+                                            ]
                                         }
-                                       ]
                                     }
                                 } 
                             } 
-                             update: {
+                            update: {
                                 node: {
-                                    content_SET: "${expectedContent}"
+                                    content: { set: "${expectedContent}" }
                                 }
-                             } 
+                            } 
                          } 
                  }) {
                      ${userType.plural} {

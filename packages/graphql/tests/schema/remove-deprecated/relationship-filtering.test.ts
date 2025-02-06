@@ -973,6 +973,10 @@ describe("Exclude suffix based filtering", () => {
 
             input typeAActedInConnectionFilters {
               \\"\\"\\"
+              Filter typeAS by aggregating results on related typeAActedInConnections
+              \\"\\"\\"
+              aggregate: typeAActedInAggregateInput
+              \\"\\"\\"
               Return typeAS where all of the related typeAActedInConnections match this filter
               \\"\\"\\"
               all: typeAActedInConnectionWhere
@@ -1350,6 +1354,8 @@ describe("Exclude suffix based filtering", () => {
             }
 
             input typeBRelsConnectionFilters {
+              \\"\\"\\"Filter typeBS by aggregating results on related typeBRelsConnections\\"\\"\\"
+              aggregate: typeBRelsAggregateInput
               \\"\\"\\"
               Return typeBS where all of the related typeBRelsConnections match this filter
               \\"\\"\\"

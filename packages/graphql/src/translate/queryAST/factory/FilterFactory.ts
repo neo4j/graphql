@@ -700,8 +700,12 @@ export class FilterFactory {
             return this.createAggregationFilter(relationship, value as AggregateWhereInput);
         }
         if (!operator) {
-            const genericFilters = Object.entries(value).flatMap(([quantifier, predicate]) => {
-                const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(quantifier);
+            const genericFilters = Object.entries(value).flatMap(([genericOperator, predicate]) => {
+                if (genericOperator === "aggregate") {
+                    return this.createAggregationFilter(relationship, predicate as AggregateWhereInput);
+                }
+                const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(genericOperator);
+
                 return this.createRelatedNodeFilters({
                     relationship,
                     value: predicate,

@@ -237,6 +237,8 @@ describe("Union Interface Relationships", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -710,6 +712,8 @@ describe("Union Interface Relationships", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1089,6 +1093,10 @@ describe("Union Interface Relationships", () => {
 
             input MovieReviewersConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related MovieReviewersConnections
+              \\"\\"\\"
+              aggregate: MovieReviewersAggregateInput
+              \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
               \\"\\"\\"
               all: MovieReviewersConnectionWhere
@@ -1462,6 +1470,10 @@ describe("Union Interface Relationships", () => {
             }
 
             input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"

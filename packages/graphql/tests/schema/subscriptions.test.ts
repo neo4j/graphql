@@ -312,6 +312,8 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -785,6 +787,8 @@ describe("Subscriptions", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -1121,6 +1125,8 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2103,6 +2109,10 @@ describe("Subscriptions", () => {
 
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesAggregateInput
+              \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
               all: PersonMoviesConnectionWhere
@@ -2367,6 +2377,8 @@ describe("Subscriptions", () => {
             }
 
             input StarMoviesConnectionFilters {
+              \\"\\"\\"Filter Stars by aggregating results on related StarMoviesConnections\\"\\"\\"
+              aggregate: StarMoviesAggregateInput
               \\"\\"\\"
               Return Stars where all of the related StarMoviesConnections match this filter
               \\"\\"\\"
@@ -2755,6 +2767,8 @@ describe("Subscriptions", () => {
             }
 
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -3098,6 +3112,8 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3721,6 +3737,8 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -4673,6 +4691,10 @@ describe("Subscriptions", () => {
 
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesAggregateInput
+              \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
               all: PersonMoviesConnectionWhere
@@ -4927,6 +4949,8 @@ describe("Subscriptions", () => {
             }
 
             input StarMoviesConnectionFilters {
+              \\"\\"\\"Filter Stars by aggregating results on related StarMoviesConnections\\"\\"\\"
+              aggregate: StarMoviesAggregateInput
               \\"\\"\\"
               Return Stars where all of the related StarMoviesConnections match this filter
               \\"\\"\\"

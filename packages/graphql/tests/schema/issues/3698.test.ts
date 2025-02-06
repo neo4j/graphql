@@ -214,6 +214,10 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreProductConnectionFilters {
               \\"\\"\\"
+              Filter Genres by aggregating results on related GenreProductConnections
+              \\"\\"\\"
+              aggregate: GenreProductAggregateInput
+              \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"
               all: GenreProductConnectionWhere
@@ -615,6 +619,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             input MovieGenreConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieGenreConnections\\"\\"\\"
+              aggregate: MovieGenreAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieGenreConnections match this filter
               \\"\\"\\"

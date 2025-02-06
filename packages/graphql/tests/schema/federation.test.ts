@@ -178,6 +178,8 @@ describe("Apollo Federation", () => {
             }
 
             input PostAuthorConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
+              aggregate: PostAuthorAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"
@@ -516,6 +518,8 @@ describe("Apollo Federation", () => {
             }
 
             input UserPostsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserPostsConnections\\"\\"\\"
+              aggregate: UserPostsAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"
@@ -850,6 +854,8 @@ describe("Apollo Federation", () => {
             }
 
             input PostAuthorConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
+              aggregate: PostAuthorAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"

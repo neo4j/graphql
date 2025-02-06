@@ -962,6 +962,8 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieGenresConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+                  aggregate: MovieGenresAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1552,6 +1554,8 @@ describe("@populatedBy tests", () => {
                 }
 
                 input MovieGenresConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+                  aggregate: MovieGenresAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"

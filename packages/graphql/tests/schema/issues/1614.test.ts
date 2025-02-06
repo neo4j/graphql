@@ -137,6 +137,10 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             input CrewMemberMoviesConnectionFilters {
               \\"\\"\\"
+              Filter CrewMembers by aggregating results on related CrewMemberMoviesConnections
+              \\"\\"\\"
+              aggregate: CrewMemberMoviesAggregateInput
+              \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
               all: CrewMemberMoviesConnectionWhere

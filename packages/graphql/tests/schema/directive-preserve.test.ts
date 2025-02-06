@@ -348,6 +348,8 @@ describe("Directive-preserve", () => {
             }
 
             input GenreMoviesConnectionFilters {
+              \\"\\"\\"Filter Genres by aggregating results on related GenreMoviesConnections\\"\\"\\"
+              aggregate: GenreMoviesAggregateInput
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -669,6 +671,8 @@ describe("Directive-preserve", () => {
             }
 
             input MovieGenresConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+              aggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -1075,6 +1079,10 @@ describe("Directive-preserve", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -1400,6 +1408,10 @@ describe("Directive-preserve", () => {
 
             input MovieActorsConnectionFilters {
               \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
+              \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
               all: ProductionActorsConnectionWhere @deprecated(reason: \\"Do not use\\")
@@ -1618,6 +1630,10 @@ describe("Directive-preserve", () => {
             }
 
             input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: ProductionActorsAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1927,6 +1943,10 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2294,6 +2314,10 @@ describe("Directive-preserve", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -2622,6 +2646,8 @@ describe("Directive-preserve", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2982,6 +3008,10 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -3366,6 +3396,10 @@ describe("Directive-preserve", () => {
 
             input ActorActedInConnectionFilters {
               \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInAggregateInput
+              \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
               all: ActorActedInConnectionWhere
@@ -3694,6 +3728,8 @@ describe("Directive-preserve", () => {
             }
 
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -4054,6 +4090,10 @@ describe("Directive-preserve", () => {
             }
 
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -4420,6 +4460,8 @@ describe("Directive-preserve", () => {
             }
 
             input BlogPostsConnectionFilters {
+              \\"\\"\\"Filter Blogs by aggregating results on related BlogPostsConnections\\"\\"\\"
+              aggregate: BlogPostsAggregateInput
               \\"\\"\\"
               Return Blogs where all of the related BlogPostsConnections match this filter
               \\"\\"\\"

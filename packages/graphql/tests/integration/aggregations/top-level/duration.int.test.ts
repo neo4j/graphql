@@ -29,7 +29,7 @@ describe("aggregations-top_level-duration", () => {
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 testString: String
                 runningTime: Duration
@@ -53,32 +53,35 @@ describe("aggregations-top_level-duration", () => {
         const days = 1;
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
+        const otherDuration = new neo4jDriver.types.Duration(months + 2, days, 0, 0);
 
         await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
                     CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
+                    CREATE (:${Movie} {testString: "different-string", runningTime: $otherDuration})
                 `,
             {
                 testString,
                 minDuration,
                 maxDuration,
+                otherDuration,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                runningTime {
-                                    min
-                                }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            runningTime {
+                                min
                             }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -107,32 +110,35 @@ describe("aggregations-top_level-duration", () => {
         const days = 1;
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
+        const otherDuration = new neo4jDriver.types.Duration(months + 2, days, 0, 0);
 
         await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
                     CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
+                    CREATE (:${Movie} {testString: "different-string", runningTime: $otherDuration})
                 `,
             {
                 testString,
                 minDuration,
                 maxDuration,
+                otherDuration,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                runningTime {
-                                    max
-                                }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            runningTime {
+                                max
                             }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -161,33 +167,36 @@ describe("aggregations-top_level-duration", () => {
         const days = 1;
         const minDuration = new neo4jDriver.types.Duration(months, days, 0, 0);
         const maxDuration = new neo4jDriver.types.Duration(months + 1, days, 0, 0);
+        const otherDuration = new neo4jDriver.types.Duration(months + 2, days, 0, 0);
 
         await testHelper.executeCypher(
             `
                     CREATE (:${Movie} {testString: $testString, runningTime: $minDuration})
                     CREATE (:${Movie} {testString: $testString, runningTime: $maxDuration})
+                    CREATE (:${Movie} {testString: "different-string", runningTime: $otherDuration})
                 `,
             {
                 testString,
                 minDuration,
                 maxDuration,
+                otherDuration,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
-                        aggregate {
-                            node {
-                                runningTime {
-                                    min
-                                    max
-                                }
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            runningTime {
+                                min
+                                max
                             }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 

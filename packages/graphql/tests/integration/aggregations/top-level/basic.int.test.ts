@@ -44,7 +44,7 @@ describe("aggregations-top_level-basic", () => {
             CREATE (:${randomType.name} {str: "asd3"})
         `);
 
-        const query = `
+        const query = /* GraphQL */ `
                 {
                     ${randomType.operations.connection} {
                         aggregate {

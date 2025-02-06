@@ -403,6 +403,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input UserFollowingConnectionFilters {
               \\"\\"\\"
+              Filter Users by aggregating results on related UserFollowingConnections
+              \\"\\"\\"
+              aggregate: UserFollowingAggregateInput
+              \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"
               all: UserFollowingConnectionWhere

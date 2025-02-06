@@ -221,6 +221,8 @@ describe("Query Direction", () => {
             }
 
             input UserFriendsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserFriendsConnections\\"\\"\\"
+              aggregate: UserFriendsAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -588,6 +590,8 @@ describe("Query Direction", () => {
             }
 
             input UserFriendsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserFriendsConnections\\"\\"\\"
+              aggregate: UserFriendsAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
