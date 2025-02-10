@@ -148,7 +148,14 @@ export class CompositeAggregationOperation extends Operation {
     private transpileAggregationOperation(context: QueryASTContext, addWith = true): OperationTranspileResult {
         this.addWith = addWith;
 
-        const fieldSubqueries = this.createSubqueries(this.fields, context, this.aggregationProjectionMap);
+        let fieldSubqueries: Cypher.CompositeClause[];
+        if (this.isInConnectionField) {
+            fieldSubqueries = this.createSubqueries(this.fields, context, this.nodeMap);
+        } else {
+            // NOTE: this is to support deprecated aggregations
+            fieldSubqueries = this.createSubqueries(this.fields, context, this.aggregationProjectionMap);
+        }
+
         const nodeFieldSubqueries = this.createSubqueries(this.nodeFields, context, this.nodeMap);
         const edgeFieldSubqueries = this.createSubqueries(
             this.edgeFields,

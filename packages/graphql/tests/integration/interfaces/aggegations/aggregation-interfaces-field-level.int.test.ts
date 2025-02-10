@@ -92,7 +92,7 @@ describe("Interface Field Level Aggregations", () => {
         await testHelper.close();
     });
 
-    test("Count", async () => {
+    test("Count - deprecated", async () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
@@ -174,12 +174,14 @@ describe("Interface Field Level Aggregations", () => {
 
     test("Max", async () => {
         const query = /* GraphQL */ `
-            {
+          {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                max
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    max
+                                }
                             }
                         }
                     }
@@ -191,36 +193,44 @@ describe("Interface Field Level Aggregations", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
-            {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            max: 20000000,
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            node: {
+                                cost: {
+                                    max: 20000000,
+                                },
+                            },
                         },
                     },
                 },
-            },
-            {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            max: 20000000,
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            node: {
+                                cost: {
+                                    max: 20000000,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        ]);
+            ]),
+        });
     });
 
     test("Sum", async () => {
         const query = /* GraphQL */ `
-            {
+          {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    sum
+                                }
                             }
                         }
                     }
@@ -232,40 +242,47 @@ describe("Interface Field Level Aggregations", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
-            {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            sum: 52000000,
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            node: {
+                                cost: {
+                                    sum: 52000000,
+                                },
+                            },
                         },
                     },
                 },
-            },
-            {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            sum: 72000000,
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            node: {
+                                cost: {
+                                    sum: 72000000,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        ]);
+            ]),
+        });
     });
 
     test("Multiple aggregations", async () => {
         const query = /* GraphQL */ `
-            {
+          {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
-                        node {
-                            cost {
-                                min
-                                max
-                                average
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -276,39 +293,44 @@ describe("Interface Field Level Aggregations", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
-            {
-                actedInAggregate: {
-                    count: 4,
-                    node: {
-                        cost: {
-                            average: 13000000,
-                            max: 20000000,
-                            min: 10000000,
-                            sum: 52000000,
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            // count: 4, // TODO: Add count
+                            node: {
+                                cost: {
+                                    average: 13000000,
+                                    max: 20000000,
+                                    min: 10000000,
+                                    sum: 52000000,
+                                },
+                            },
                         },
                     },
                 },
-            },
-            {
-                actedInAggregate: {
-                    count: 4,
-                    node: {
-                        cost: {
-                            average: 18000000,
-                            max: 20000000,
-                            min: 12000000,
-                            sum: 72000000,
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            // count: 4, // TODO: Add count
+                            node: {
+                                cost: {
+                                    average: 18000000,
+                                    max: 20000000,
+                                    min: 12000000,
+                                    sum: 72000000,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        ]);
+            ]),
+        });
     });
 
     // Edge aggregation
-    test("Edge Count", async () => {
+    test("Edge Count - deprecated", async () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
@@ -337,14 +359,18 @@ describe("Interface Field Level Aggregations", () => {
         ]);
     });
 
-    test("Edge screenTime", async () => {
+    test("Edge sum", async () => {
         const query = /* GraphQL */ `
+        
             {
+                
                 ${Actor.plural} {
-                    actedInAggregate {
-                        edge {
-                            screenTime {
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            edge {
+                                screenTime {
+                                    sum
+                                }
                             }
                         }
                     }
@@ -356,25 +382,31 @@ describe("Interface Field Level Aggregations", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
-            {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            sum: 224,
+        expect(gqlResult.data).toEqual({
+            [Actor.plural]: expect.toIncludeSameMembers([
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            edge: {
+                                screenTime: {
+                                    sum: 224,
+                                },
+                            },
                         },
                     },
                 },
-            },
-            {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            sum: 1784,
+                {
+                    actedInConnection: {
+                        aggregate: {
+                            edge: {
+                                screenTime: {
+                                    sum: 1784,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        ]);
+            ]),
+        });
     });
 });
