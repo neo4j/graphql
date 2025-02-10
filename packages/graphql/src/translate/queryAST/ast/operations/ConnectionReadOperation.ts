@@ -209,7 +209,7 @@ export class ConnectionReadOperation extends Operation {
         );
 
         if (aggregationSubqueries.length > 0) {
-            connectionClauses = new Cypher.Call( // NOTE: this call is only needed if aggregatio subqueries
+            connectionClauses = new Cypher.Call( // NOTE: this call is only needed when aggregate is used
                 Cypher.utils.concat(connectionClauses, new Cypher.Return(edgesProjectionVar, totalCount))
             ).importWith("*");
         }

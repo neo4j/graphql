@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestHelper } from "../../../utils/tests-helper";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Interface Field Level Aggregations", () => {
     const testHelper = new TestHelper();
@@ -39,6 +39,7 @@ describe("Interface Field Level Aggregations", () => {
                 title: String!
                 cost: Float!
                 runtime: Int!
+                ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type ${Series} implements ${Production} @node {
@@ -128,12 +129,10 @@ describe("Interface Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInConnection {
-                        aggregate {
-                            node {
-                                cost {
-                                    min
-                                }
+                    actedInAggregate {
+                        node {
+                            cost {
+                                min
                             }
                         }
                     }
@@ -144,32 +143,27 @@ describe("Interface Field Level Aggregations", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([
-                {
-                    actedInConnection: {
-                        aggregate: {
-                            node: {
-                                cost: {
-                                    min: 10000000,
-                                },
-                            },
+
+        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
+            {
+                actedInAggregate: {
+                    node: {
+                        cost: {
+                            min: 10000000,
                         },
                     },
                 },
-                {
-                    actedInConnection: {
-                        aggregate: {
-                            node: {
-                                cost: {
-                                    min: 12000000,
-                                },
-                            },
+            },
+            {
+                actedInAggregate: {
+                    node: {
+                        cost: {
+                            min: 12000000,
                         },
                     },
                 },
-            ]),
-        });
+            },
+        ]);
     });
 
     test("Max", async () => {

@@ -79,7 +79,12 @@ export class CompositeAggregationOperation extends Operation {
         const parentNode = context.target;
 
         if (parentNode) {
-            return this.transpileAggregationOperation(context);
+            const result = this.transpileAggregationOperation(context);
+
+            return {
+                clauses: result.clauses,
+                projectionExpr: result.projectionExpr,
+            };
         } else {
             const newContext = new QueryASTContext({
                 target: new Cypher.Node(),
@@ -87,9 +92,15 @@ export class CompositeAggregationOperation extends Operation {
             });
             const result = this.transpileAggregationOperation(newContext, false);
 
-            const subqueriesAggr = result.clauses.map((clause) => {
-                return new Cypher.Call(clause);
-            });
+            let subqueriesAggr: Cypher.Clause[];
+            if (!this.isInConnectionField) {
+                // NOTE: This is for compatibility with deprecated aggregations
+                subqueriesAggr = result.clauses.map((clause) => {
+                    return new Cypher.Call(clause);
+                });
+            } else {
+                subqueriesAggr = result.clauses;
+            }
 
             return {
                 clauses: subqueriesAggr,

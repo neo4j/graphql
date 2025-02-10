@@ -139,10 +139,15 @@ export class ConnectionFactory {
         });
 
         if (isInterfaceEntity(target)) {
-            const fields = resolveTree.fieldsByTypeName[target.operations.connectionFieldTypename];
+            let fields: Record<string, ResolveTree> | undefined;
+            if (relationship) {
+                fields = resolveTree.fieldsByTypeName[relationship.operations.connectionFieldTypename];
+            } else {
+                fields = resolveTree.fieldsByTypeName[target.operations.connectionFieldTypename];
+            }
+
             if (fields) {
                 const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(fields, "aggregate")[0];
-
                 this.hydrateConnectionOperationWithAggregation({
                     target,
                     resolveTreeAggregate,
