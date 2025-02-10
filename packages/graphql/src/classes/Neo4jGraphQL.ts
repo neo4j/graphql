@@ -128,7 +128,7 @@ class Neo4jGraphQL {
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
-
+            await this.subgraphSchema; // Avoids race condition with engine init
             await this.subscriptionMechanismSetup();
         }
 
