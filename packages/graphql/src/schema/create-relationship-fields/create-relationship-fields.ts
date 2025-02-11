@@ -279,7 +279,7 @@ export function createRelationshipFields({
 
             if (relationshipAdapter.aggregate) {
                 composeNode.addFields({
-                    [relationshipAdapter.operations.aggregateTypeName]: {
+                    [relationshipAdapter.operations.aggregateFieldName]: {
                         type: aggregationTypeObject,
                         args: aggregationFieldsBaseArgs,
                         directives: deprecatedDirectives,

@@ -118,9 +118,16 @@ describe("Relationship", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -257,6 +264,19 @@ describe("Relationship", () => {
               totalCount: Int!
             }
 
+            input AggregationCountFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              lt: Int
+              lte: Int
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: AggregationCountFilters
+              nodes: AggregationCountFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -357,9 +377,17 @@ describe("Relationship", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"

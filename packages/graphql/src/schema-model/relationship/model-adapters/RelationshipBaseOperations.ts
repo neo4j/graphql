@@ -115,12 +115,16 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
     public getUpdateConnectionInputTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
         return `${this.prefixForTypename}${ifUnionRelationshipTargetEntity?.name || ""}UpdateConnectionInput`;
     }
-
+    // Legacy typename superseded by getUpdateConnectionInputTypename, which is slightly different type - contains nodes for edges/nodes
     public get aggregateInputTypeName(): string {
         return `${this.prefixForTypename}AggregateInput`;
     }
+    
+    public get connectionAggregateInputTypeName(): string {
+        return `${this.prefixForTypename}ConnectionAggregateInput`;
+    }
 
-    public get aggregateTypeName(): string {
+    public get aggregateFieldName(): string {
         return `${this.relationship.name}Aggregate`;
     }
 

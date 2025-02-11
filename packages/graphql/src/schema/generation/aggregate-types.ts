@@ -26,6 +26,7 @@ import type {
     SchemaComposer,
 } from "graphql-compose";
 import { AGGREGATION_COMPARISON_OPERATORS } from "../../constants";
+import { ConnectionAggregationCountFilterInput } from "../../graphql/input-objects/generic-aggregation-filters/CountScalarAggregationFilters";
 import { IntScalarFilters } from "../../graphql/input-objects/generic-operators/IntScalarFilters";
 import type { AttributeAdapter } from "../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -132,6 +133,63 @@ function makeAggregableFields({
     return aggregableFields;
 }
 
+export function withConnectionAggregateInputType({
+    relationshipAdapter,
+    entityAdapter,
+    composer,
+    userDefinedDirectivesOnTargetFields,
+    features,
+}: {
+    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    composer: SchemaComposer;
+    userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
+    features: Neo4jFeaturesSettings | undefined;
+}): InputTypeComposer {
+    const aggregateInputTypeName = relationshipAdapter.operations.connectionAggregateInputTypeName;
+    if (composer.has(aggregateInputTypeName)) {
+        return composer.getITC(aggregateInputTypeName);
+    }
+
+    const aggregateWhereInput = composer.createInputTC({
+        name: aggregateInputTypeName,
+        fields: {
+            count: ConnectionAggregationCountFilterInput,
+        },
+    });
+
+    aggregateWhereInput.addFields({
+        AND: aggregateWhereInput.NonNull.List,
+        OR: aggregateWhereInput.NonNull.List,
+        NOT: aggregateWhereInput,
+    });
+
+    const nodeWhereInputType = withAggregationWhereInputType({
+        relationshipAdapter,
+        entityAdapter,
+        composer,
+        userDefinedDirectivesOnTargetFields,
+        features,
+    });
+    if (nodeWhereInputType) {
+        aggregateWhereInput.addFields({ node: nodeWhereInputType });
+    }
+    const edgeWhereInputType = withAggregationWhereInputType({
+        relationshipAdapter,
+        entityAdapter: relationshipAdapter,
+        composer,
+        userDefinedDirectivesOnTargetFields,
+        features,
+    });
+    if (edgeWhereInputType) {
+        aggregateWhereInput.addFields({ edge: edgeWhereInputType });
+    }
+    return aggregateWhereInput;
+}
+
+/**
+ * Deprecated Aggregation filters, for the Aggregation inside Connection input see withConnectionAggregateInputType
+ **/
 export function withAggregateInputType({
     relationshipAdapter,
     entityAdapter, // TODO: this is relationshipAdapter.target but from the context above it is known to be ConcreteEntity and we don't know this yet!!!
@@ -262,7 +320,7 @@ function makeAggregationFields(
 function addDeprecatedAggregationFieldsByType(
     attribute: AttributeAdapter,
     directivesOnField: DirectiveNode[] | undefined,
-    fields: InputTypeComposerFieldConfigMapDefinition,
+    fields: InputTypeComposerFieldConfigMapDefinition
 ): InputTypeComposerFieldConfigMapDefinition {
     if (attribute.typeHelper.isString()) {
         for (const operator of AGGREGATION_COMPARISON_OPERATORS) {

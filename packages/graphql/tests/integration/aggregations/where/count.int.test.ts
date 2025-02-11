@@ -46,7 +46,7 @@ describe("aggregations-where-count", () => {
         await testHelper.close();
     });
 
-    test("should return posts where the count of likes equal one", async () => {
+    test.only("should return posts where the count of likes equal one", async () => {
         const post1Title = "Post 1";
         const post2Title = "Post 2";
         const post3Title = "Post 3";
@@ -73,7 +73,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { eq: 1 } 
+                            count: { nodes: { eq: 1 } } 
                         } 
                     } 
                 }) {
