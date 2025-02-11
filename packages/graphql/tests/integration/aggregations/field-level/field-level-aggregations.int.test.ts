@@ -63,6 +63,7 @@ describe("Field Level Aggregations", () => {
         await testHelper.close();
     });
 
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip("count nodes", async () => {
         const query = `
             query {
