@@ -1,5 +1,30 @@
 # @neo4j/graphql
 
+## 5.11.5
+
+### Patch Changes
+
+-   [#5996](https://github.com/neo4j/graphql/pull/5996) [`a5962ea`](https://github.com/neo4j/graphql/commit/a5962ead0249c3231bc36365a14130b84f44dd03) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix error "SchemaModel not available on subscription mechanism" with some subscriptions engines when used with Federation
+
+-   [#5969](https://github.com/neo4j/graphql/pull/5969) [`80fb066`](https://github.com/neo4j/graphql/commit/80fb0662b92891382dbf0d064c7f2fc5922d0af5) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `addVersionPrefix` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    This prepends all Cypher queries with a `CYPHER [version]` statement:
+
+    ```cypher
+    CYPHER 5
+    MATCH (this:Movie)
+    WHERE this.title = $param0
+    RETURN this { .title } AS this
+    ```
+
 ## 5.11.4
 
 ### Patch Changes
