@@ -139,7 +139,8 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
+            "CYPHER 5
+            MATCH (this:Series)
             WHERE (this.current = $param0 AND ((EXISTS {
                 MATCH (this)-[this0:MANUFACTURER]->(this1:Manufacturer)
                 WHERE (this1.name = $param1 AND this0.current = $param2)

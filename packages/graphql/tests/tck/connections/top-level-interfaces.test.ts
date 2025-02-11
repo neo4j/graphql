@@ -78,7 +78,8 @@ describe("Top level interface connections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Movie)
                 WHERE this0.title = $param0
                 WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
@@ -120,7 +121,8 @@ describe("Top level interface connections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Movie)
                 WHERE this0.title = $param0
                 WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge

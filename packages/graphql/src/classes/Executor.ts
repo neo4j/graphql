@@ -184,7 +184,8 @@ export class Executor {
     }
 
     private getCypherVersionStatement(): string {
-        if (this.cypherQueryOptions?.addVersionPrefix) {
+        const addVersionPrefixDefault=true
+        if (this.cypherQueryOptions?.addVersionPrefix ?? addVersionPrefixDefault) {
             return `CYPHER ${SUPPORTED_CYPHER_VERSION}\n`;
         }
         return "";

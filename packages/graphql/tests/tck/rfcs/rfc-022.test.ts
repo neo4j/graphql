@@ -66,7 +66,8 @@ describe("tck/rfs/022 subquery projection", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
@@ -109,7 +110,8 @@ describe("tck/rfs/022 subquery projection", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this
@@ -200,7 +202,8 @@ describe("tck/rfs/022 subquery projection", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WHERE this.released = $param0
                 CALL {
                     WITH this

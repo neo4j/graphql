@@ -57,7 +57,8 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -96,7 +97,8 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND this0.released > $param2)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -138,7 +140,8 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND var1 >= $param2)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -177,7 +180,8 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -217,7 +221,8 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -257,7 +262,8 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
