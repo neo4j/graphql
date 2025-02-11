@@ -63,7 +63,7 @@ import {
 } from "./parsers/parse-where-field";
 
 type AggregateWhereInput = {
-    count: number;
+    count: number | Record<string, any>;
     count_LT: number;
     count_LTE: number;
     count_GT: number;
@@ -809,6 +809,19 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
     }
 
+    private parseConnectionAggregationCountFilter(value: Record<string, any>): CountFilter[] {
+        const nodesCount = value["nodes"];
+        
+        
+        return Object.entries(nodesCount).map(([key, value]) => {
+            const operator = this.parseGenericOperator(key);
+            return new CountFilter({
+                operator: operator,
+                comparisonValue: value,
+            });
+        });
+    }
+
     private getAggregationNestedFilters(
         where: AggregateWhereInput,
         relationship: RelationshipAdapter
@@ -830,14 +843,14 @@ export class FilterFactory {
 
                 if (fieldName === "count") {
                     if (!operator) {
-                        return Object.entries(value).map(([key, value]) => {
-                            const operator = this.parseGenericOperator(key);
-
-                            return new CountFilter({
-                                operator: operator,
-                                comparisonValue: value,
-                            });
-                        });
+                        return this.parseConnectionAggregationCountFilter(value as Record<string, any> );
+                        // return Object.entries(value).map(([key, value]) => {
+                        //     const operator = this.parseGenericOperator(key);
+                        //     return new CountFilter({
+                        //         operator: operator,
+                        //         comparisonValue: value,
+                        //     });
+                        // });
                     }
 
                     const countFilter = new CountFilter({

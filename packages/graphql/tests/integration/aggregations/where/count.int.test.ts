@@ -46,7 +46,7 @@ describe("aggregations-where-count", () => {
         await testHelper.close();
     });
 
-    test.only("should return posts where the count of likes equal one", async () => {
+    test("should return posts where the count of likes equal one", async () => {
         const post1Title = "Post 1";
         const post2Title = "Post 2";
         const post3Title = "Post 3";
@@ -127,7 +127,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { lt: 1 } 
+                            count: { nodes: { lt: 1 } } 
                         } 
                     } 
                 }) {
@@ -181,7 +181,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { lte: 1 } 
+                            count: { nodes: { lte: 1 } } 
                         } 
                     } 
                 }) {
@@ -243,7 +243,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gt: 1 } 
+                            count: { nodes: { gt: 1 } } 
                         } 
                     } 
                 }) {
@@ -301,7 +301,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gt: 1 } 
+                            count: { nodes: { gt: 1 } } 
                         } 
                     } 
                 }) {

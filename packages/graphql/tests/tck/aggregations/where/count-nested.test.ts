@@ -28,6 +28,7 @@ describe("Cypher Aggregations where with count", () => {
         typeDefs = /* GraphQL */ `
             type User @node {
                 name: String!
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
             }
 
             type Post @node {
@@ -44,7 +45,10 @@ describe("Cypher Aggregations where with count", () => {
     test("Equality Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { nodes: { eq: 10 } } } } }) {
+                posts {
+                    likes(where: { postsConnection: { aggregate: { count: { nodes: { eq: 2 } } } } }) {
+                        name
+                    }
                     content
                 }
             }
@@ -57,17 +61,24 @@ describe("Cypher Aggregations where with count", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) = $param0 AS var2
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                    RETURN count(this3) = $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .content, likes: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 10,
+                    \\"low\\": 2,
                     \\"high\\": 0
                 }
             }"
@@ -77,7 +88,10 @@ describe("Cypher Aggregations where with count", () => {
     test("LT Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { nodes: { lt: 10 } } } } }) {
+                posts {
+                    likes(where: { postsConnection: { aggregate: { count: { nodes: { lt: 10 } } } } }) {
+                        name
+                    }
                     content
                 }
             }
@@ -90,11 +104,18 @@ describe("Cypher Aggregations where with count", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) < $param0 AS var2
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                    RETURN count(this3) < $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .content, likes: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -110,7 +131,10 @@ describe("Cypher Aggregations where with count", () => {
     test("LTE Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { nodes: { lte: 10 } } } } }) {
+                posts {
+                    likes(where: { postsConnection: { aggregate: { count: { nodes: { lte: 10 } } } } }) {
+                        name
+                    }
                     content
                 }
             }
@@ -123,11 +147,18 @@ describe("Cypher Aggregations where with count", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) <= $param0 AS var2
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                    RETURN count(this3) <= $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .content, likes: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -143,7 +174,10 @@ describe("Cypher Aggregations where with count", () => {
     test("GT Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { nodes: { gt: 10 } } } } }) {
+                posts {
+                    likes(where: { postsConnection: { aggregate: { count: { nodes: { gt: 10 } } } } }) {
+                        name
+                    }
                     content
                 }
             }
@@ -156,11 +190,18 @@ describe("Cypher Aggregations where with count", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) > $param0 AS var2
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                    RETURN count(this3) > $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .content, likes: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -176,7 +217,10 @@ describe("Cypher Aggregations where with count", () => {
     test("GTE Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { nodes: { gte: 10 } } } } }) {
+                posts {
+                    likes(where: { postsConnection: { aggregate: { count: { nodes: { gte: 10 } } } } }) {
+                        name
+                    }
                     content
                 }
             }
@@ -189,11 +233,18 @@ describe("Cypher Aggregations where with count", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) >= $param0 AS var2
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                    RETURN count(this3) >= $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .content, likes: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -209,7 +260,10 @@ describe("Cypher Aggregations where with count", () => {
     test("IN Count", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { count: { nodes: { in: [10, 12] } } } } }) {
+                posts {
+                    likes(where: { postsConnection: { aggregate: { count: { nodes: { in: [10, 20] } } } } }) {
+                        name
+                    }
                     content
                 }
             }
@@ -222,11 +276,18 @@ describe("Cypher Aggregations where with count", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) IN $param0 AS var2
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                    RETURN count(this3) IN $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .name } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .content, likes: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -237,7 +298,7 @@ describe("Cypher Aggregations where with count", () => {
                         \\"high\\": 0
                     },
                     {
-                        \\"low\\": 12,
+                        \\"low\\": 20,
                         \\"high\\": 0
                     }
                 ]

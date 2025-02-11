@@ -17,23 +17,13 @@
  * limitations under the License.
  */
 
-import { GraphQLInputObjectType, GraphQLInt } from "graphql";
-
-export const AggregationCountFilters = new GraphQLInputObjectType({
-    name: "AggregationCountFilters",
-    fields: {
-        eq: { type: GraphQLInt },
-        gt: { type: GraphQLInt },
-        gte: { type: GraphQLInt },
-        lt: { type: GraphQLInt },
-        lte: { type: GraphQLInt },
-    },
-});
+import { GraphQLInputObjectType } from "graphql";
+import { IntScalarFilters } from "../generic-operators/IntScalarFilters";
 
 export const ConnectionAggregationCountFilterInput = new GraphQLInputObjectType({
     name: "ConnectionAggregationCountFilterInput",
     fields: {
-        nodes: { type: AggregationCountFilters },
-        edges: { type: AggregationCountFilters },
+        nodes: { type: IntScalarFilters },
+        edges: { type: IntScalarFilters },
     },
 });
