@@ -43,7 +43,6 @@ export class ConnectionAggregationField extends Field {
     }) {
         super(alias);
         this.operation = operation;
-        this.operation.isInConnectionField = true;
         this.nodeAlias = nodeAlias;
     }
 

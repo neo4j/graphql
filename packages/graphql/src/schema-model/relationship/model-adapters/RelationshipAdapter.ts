@@ -205,6 +205,11 @@ export class RelationshipAdapter {
         if (!this.aggregate) {
             return false;
         }
+
+        if (this.target instanceof UnionEntityAdapter || this.source instanceof InterfaceEntityAdapter) {
+            return false;
+        }
+
         return this.annotations.selectable?.onAggregate !== false;
     }
 

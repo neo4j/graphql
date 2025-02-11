@@ -37,23 +37,23 @@ export function withConnectionObjectType({
         return composer.getOTC(typeName);
     }
 
-    const fields = {
-        edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
-        totalCount: new GraphQLNonNull(GraphQLInt),
-        pageInfo: new GraphQLNonNull(PageInfo),
-    };
+    const connectionObjectType = composer.createObjectTC({
+        name: typeName,
+        fields: {
+            edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
+            totalCount: new GraphQLNonNull(GraphQLInt),
+            pageInfo: new GraphQLNonNull(PageInfo),
+        },
+    });
 
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
 
     if (relationshipAdapter.isAggregable() && !isTargetUnion && !isSourceInterface) {
-        fields["aggregate"] = `${relationshipAdapter.operations.getAggregationFieldTypename()}!`;
+        connectionObjectType.addFields({
+            aggregate: composer.getOTC(relationshipAdapter.operations.getAggregationFieldTypename()).NonNull,
+        });
     }
-
-    const connectionObjectType = composer.createObjectTC({
-        name: typeName,
-        fields: fields,
-    });
 
     return connectionObjectType;
 }

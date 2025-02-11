@@ -274,6 +274,8 @@ export class ConnectionFactory {
                         resolveTree: resolveTreeAggregate,
                         context,
                     });
+                    // NOTE: This will always be true on 7.x and this attribute should be removed
+                    aggregationOperation.isInConnectionField = true;
                     const aggregationField = new ConnectionAggregationField({
                         alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
                         nodeAlias: nodeField?.alias ?? "node",
@@ -298,6 +300,8 @@ export class ConnectionFactory {
                         resolveTree: nodeField,
                         context,
                     });
+                    // NOTE: This will always be true on 7.x and this attribute should be removed
+                    aggregationOperation.isInConnectionField = true;
                     const aggregationField = new ConnectionAggregationField({
                         alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
                         nodeAlias: nodeField.alias,
@@ -311,7 +315,7 @@ export class ConnectionFactory {
     }
 
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | CompositeConnectionReadOperation,
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation
     >({
         entityOrRel,
         resolveTree,
