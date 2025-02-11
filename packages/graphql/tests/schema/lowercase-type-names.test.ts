@@ -242,6 +242,7 @@ describe("lower case type names", () => {
             }
 
             type actorMoviesConnection {
+              aggregate: actormovieMoviesAggregationSelection!
               edges: [actorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -487,6 +488,7 @@ describe("lower case type names", () => {
             }
 
             type movieActorsConnection {
+              aggregate: movieactorActorsAggregationSelection!
               edges: [movieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

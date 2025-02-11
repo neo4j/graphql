@@ -327,6 +327,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserFollowingConnection {
+              aggregate: UserProfileFollowingAggregationSelection!
               edges: [UserFollowingRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

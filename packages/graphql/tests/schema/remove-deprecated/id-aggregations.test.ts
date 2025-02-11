@@ -221,6 +221,7 @@ describe("Aggregations id", () => {
             }
 
             type PostLikesConnection {
+              aggregate: PostUserLikesAggregationSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

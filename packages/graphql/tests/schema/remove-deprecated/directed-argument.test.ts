@@ -246,6 +246,7 @@ describe("Deprecated directed argument", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -550,6 +551,7 @@ describe("Deprecated directed argument", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

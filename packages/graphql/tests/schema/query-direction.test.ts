@@ -178,6 +178,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregationSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -484,6 +485,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregationSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -194,6 +194,7 @@ describe("Implicit SET field", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -410,6 +411,7 @@ describe("Implicit SET field", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

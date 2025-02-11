@@ -246,6 +246,7 @@ describe("3817", () => {
             }
 
             type PersonFriendsConnection {
+              aggregate: PersonPersonFriendsAggregationSelection!
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

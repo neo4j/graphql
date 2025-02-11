@@ -114,6 +114,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorMovieActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -404,6 +405,7 @@ describe("Arrays Methods", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

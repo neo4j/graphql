@@ -123,6 +123,7 @@ describe("nested aggregation on interface", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorMovieActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

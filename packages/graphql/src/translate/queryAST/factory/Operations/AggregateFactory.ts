@@ -78,7 +78,6 @@ export class AggregateFactory {
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
                 });
-
                 return this.hydrateAggregationOperation({
                     relationship: entityOrRel,
                     operation,
@@ -235,6 +234,9 @@ export class AggregateFactory {
         let nodeFields: Record<string, ResolveTree> = {};
         if (adapter instanceof ConcreteEntityAdapter) {
             nodeFields = resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.node] ?? {};
+        }
+        if (adapter instanceof RelationshipAdapter) {
+            nodeFields = resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename("node")] ?? {};
         }
 
         const rawProjectionFields = {

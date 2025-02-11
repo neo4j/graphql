@@ -220,6 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreProductConnection {
+              aggregate: GenreIProductProductAggregationSelection!
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -633,6 +634,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type MovieGenreConnection {
+              aggregate: MovieGenreGenreAggregationSelection!
               edges: [MovieGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -929,6 +931,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type SeriesGenreConnection {
+              aggregate: SeriesGenreGenreAggregationSelection!
               edges: [SeriesGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1328,6 +1331,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreProductConnection {
+              aggregate: GenreIProductProductAggregationSelection!
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1676,6 +1680,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type MovieGenreConnection {
+              aggregate: MovieGenreGenreAggregationSelection!
               edges: [MovieGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1969,6 +1974,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type SeriesGenreConnection {
+              aggregate: SeriesGenreGenreAggregationSelection!
               edges: [SeriesGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2377,6 +2383,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreProductConnection {
+              aggregate: GenreIProductProductAggregationSelection!
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3721,6 +3728,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type GenreProductConnection {
+              aggregate: GenreIProductProductAggregationSelection!
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4633,6 +4641,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             }
 
             type RatingProductConnection {
+              aggregate: RatingIProductProductAggregationSelection!
               edges: [RatingProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

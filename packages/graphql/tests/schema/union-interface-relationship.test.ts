@@ -248,6 +248,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -685,6 +686,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1056,6 +1058,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieReviewersConnection {
+              aggregate: MovieReviewerReviewersAggregationSelection!
               edges: [MovieReviewersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1426,6 +1429,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonMoviesConnection {
+              aggregate: PersonMovieMoviesAggregationSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

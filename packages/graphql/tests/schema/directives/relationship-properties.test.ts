@@ -218,6 +218,7 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -445,6 +446,7 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -906,6 +908,7 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1145,6 +1148,7 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1563,6 +1567,7 @@ describe("Relationship-properties", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1791,6 +1796,7 @@ describe("Relationship-properties", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

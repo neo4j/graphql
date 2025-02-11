@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { createBearerToken } from "../../../../utils/create-bearer-token";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import { createBearerToken } from "../../../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
 describe("Field Level Aggregations Field Authorization", () => {
     const secret = "the-secret";
@@ -70,13 +70,9 @@ describe("Field Level Aggregations Field Authorization", () => {
     test("fail title validation", async () => {
         const query = `
             query {
-                ${Series.operations.connection} {
-                    aggregate {
-                        node{
-                            title {
-                                longest
-                            }
-                        }
+                ${Series.operations.aggregate} {
+                    title {
+                        longest
                     }
                 }
             }

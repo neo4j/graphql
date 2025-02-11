@@ -642,6 +642,7 @@ describe("String Comparators", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorMovieActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -917,6 +918,7 @@ describe("String Comparators", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

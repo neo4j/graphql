@@ -913,6 +913,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
+                  aggregate: MovieGenreGenresAggregationSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1462,6 +1463,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
+                  aggregate: MovieGenreGenresAggregationSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

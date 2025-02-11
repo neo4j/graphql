@@ -47,6 +47,8 @@ export class AggregationOperation extends Operation {
 
     protected filters: Filter[] = [];
 
+    public isInConnectionField = false; // Used for compatibility with deprecated aggregations, this will always be true in 7.x
+
     constructor({
         entity,
         directed = true,
@@ -100,7 +102,7 @@ export class AggregationOperation extends Operation {
         const clauses = this.transpileAggregation(context);
 
         const isTopLevel = !(this.entity instanceof RelationshipAdapter);
-        if (isTopLevel) {
+        if (isTopLevel || this.isInConnectionField) {
             const clausesSubqueries = clauses.flatMap((sq) => new Cypher.Call(sq));
 
             return {
@@ -138,7 +140,7 @@ export class AggregationOperation extends Operation {
         }
         if (context.relationship) {
             if (!context.direction || !context.source) {
-                throw new Error("No valid relationship");
+                throw new Error("No valid relationship in aggregation pattern");
             }
             return new Cypher.Pattern(context.source)
                 .related(context.relationship, { direction: context.direction })
@@ -167,13 +169,18 @@ export class AggregationOperation extends Operation {
         const operationContext = this.createContext(context);
         const pattern = this.getPattern(operationContext);
 
+        const nodeMap = new Cypher.Map();
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
-            this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
+            if (this.isInConnectionField) {
+                // Default fields are in node in connection translation
+                nodeMap.set(f.getProjectionField(returnVariable));
+            } else {
+                this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
+            }
             return this.createSubquery(f, pattern, returnVariable, context);
         });
 
-        const nodeMap = new Cypher.Map();
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));

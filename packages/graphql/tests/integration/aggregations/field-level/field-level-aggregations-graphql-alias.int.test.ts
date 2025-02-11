@@ -32,16 +32,16 @@ describe("Field Level Aggregations Graphql alias", () => {
         typeActor = testHelper.createUniqueType("Actor");
 
         typeDefs = `
-        type ${typeMovie.name} @node {
+        type ${typeMovie} @node {
             title: String
-            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
+            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN, properties:"ActedIn")
         }
 
-        type ${typeActor.name} @node {
+        type ${typeActor} @node {
             name: String
             age: Int
             born: DateTime
-            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
+            movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties:"ActedIn")
         }
 
         type ActedIn @relationshipProperties {
@@ -52,8 +52,8 @@ describe("Field Level Aggregations Graphql alias", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.executeCypher(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
-        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
+        await testHelper.executeCypher(`CREATE (m:${typeMovie} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+        CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
     });
 
     afterAll(async () => {
@@ -61,70 +61,88 @@ describe("Field Level Aggregations Graphql alias", () => {
     });
 
     test("Field Node Aggregation alias", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
-              films: ${typeMovie.plural} {
-                aggregation: ${typeActor.plural}Aggregate {
-                  total: count
-                  item: node {
-                      firstName: name {
-                          long: longest
-                      }
-                      yearsOld: age {
-                          oldest: max
-                      }
-                      born {
-                          youngest: max
-                      }
-                  }
+                films: ${typeMovie.plural} {
+                    actors: actorsConnection {
+                        aggr: aggregate {
+                            item: node {
+                                firstName: name {
+                                    long: longest
+                                }
+                                yearsOld: age {
+                                    oldest: max
+                                }
+                                born {
+                                    youngest: max
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-            `;
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data.films[0].aggregation).toEqual({
-            total: 2,
-            item: {
-                firstName: {
-                    long: "Arnold",
+        expect(gqlResult.data).toEqual({
+            films: [
+                {
+                    actors: {
+                        aggr: {
+                            item: {
+                                firstName: {
+                                    long: "Arnold",
+                                },
+                                yearsOld: {
+                                    oldest: 54,
+                                },
+                                born: {
+                                    youngest: "2000-02-02T00:00:00.000Z",
+                                },
+                            },
+                        },
+                    },
                 },
-                yearsOld: {
-                    oldest: 54,
-                },
-                born: {
-                    youngest: "2000-02-02T00:00:00.000Z",
-                },
-            },
+            ],
         });
     });
 
     test("Field Edge Aggregation alias", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
-              films: ${typeMovie.plural} {
-                aggregation: ${typeActor.plural}Aggregate {
-                  relation: edge {
-                      time: screentime {
-                          longest: max
-                      }
-                  }
+                films: ${typeMovie.plural} {
+                    actors: actorsConnection {
+                        aggr: aggregate {
+                            relation: edge {
+                                time: screentime {
+                                    longest: max
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-            `;
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data.films[0].aggregation).toEqual({
-            relation: {
-                time: {
-                    longest: 120,
+        expect(gqlResult.data).toEqual({
+            films: [
+                {
+                    actors: {
+                        aggr: {
+                            relation: {
+                                time: {
+                                    longest: 120,
+                                },
+                            },
+                        },
+                    },
                 },
-            },
+            ],
         });
     });
 });

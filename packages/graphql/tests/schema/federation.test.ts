@@ -156,6 +156,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAuthorConnection {
+              aggregate: PostUserAuthorAggregationSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -440,6 +441,7 @@ describe("Apollo Federation", () => {
             }
 
             type UserPostsConnection {
+              aggregate: UserPostPostsAggregationSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -725,6 +727,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAuthorConnection {
+              aggregate: PostUserAuthorAggregationSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

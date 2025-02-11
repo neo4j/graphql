@@ -114,6 +114,7 @@ describe("Connect Or Create", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

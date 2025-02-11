@@ -263,6 +263,7 @@ describe("Pluralize consistency", () => {
             }
 
             type super_userMy_friendConnection {
+              aggregate: super_usersuper_friendMy_friendAggregationSelection!
               edges: [super_userMy_friendRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -1184,6 +1184,7 @@ describe("@selectable", () => {
                 }
 
                 type ActorActedInConnection {
+                  aggregate: ActorMovieActedInAggregationSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

@@ -121,7 +121,15 @@ export class CompositeConnectionReadOperation extends Operation {
 
         return {
             clauses: [
-                Cypher.utils.concat(nestedSubquery, ...aggregateSubqueries, subqueryWith, orderSubquery, returnClause),
+                Cypher.utils.concat(
+                    nestedSubquery,
+                    ...aggregateSubqueries.map((clause) =>
+                        new Cypher.Call(clause).importWith(...filterTruthy([context.target]))
+                    ),
+                    subqueryWith,
+                    orderSubquery,
+                    returnClause
+                ),
             ],
             projectionExpr: context.returnVariable,
         };

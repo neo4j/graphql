@@ -134,6 +134,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMemberMoviesConnection {
+              aggregate: CrewMemberMovieMoviesAggregationSelection!
               edges: [CrewMemberMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
