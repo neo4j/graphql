@@ -1419,9 +1419,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^10.2.10":
-  version: 10.2.10
-  resolution: "@graphql-tools/delegate@npm:10.2.10"
+"@graphql-tools/delegate@npm:^10.2.11":
+  version: 10.2.11
+  resolution: "@graphql-tools/delegate@npm:10.2.11"
   dependencies:
     "@graphql-tools/batch-execute": "npm:^9.0.11"
     "@graphql-tools/executor": "npm:^1.3.10"
@@ -1433,7 +1433,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/3f90d12126f1976538422e1e8563981f0c5648da2fd6e039da3ad661e2e4bddcbf1b43f221a8aacf45da3f0ace34dd8fda500b2f6e026cbcb5b185f379e49c06
+  checksum: 10c0/d70c2c3e0f25c838425e60b075d92ec0f638f782ff9206626b69d5be0719d03284cb462dd7eb818936bc343ebaffb581e559924d9b2fe5ef9519634af1887e0d
   languageName: node
   linkType: hard
 
@@ -1628,16 +1628,16 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/wrap@npm:^10.0.0":
-  version: 10.0.28
-  resolution: "@graphql-tools/wrap@npm:10.0.28"
+  version: 10.0.29
+  resolution: "@graphql-tools/wrap@npm:10.0.29"
   dependencies:
-    "@graphql-tools/delegate": "npm:^10.2.10"
+    "@graphql-tools/delegate": "npm:^10.2.11"
     "@graphql-tools/schema": "npm:^10.0.11"
     "@graphql-tools/utils": "npm:^10.7.0"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/7e1d036da603e0802d5b7f295dfdafbd1677a84f1cb6f093d0722895f6ab7cf004064463a223bc480cd267c6027b12a7a1264bbf4dc798fa222933ffe7e8b8fd
+  checksum: 10c0/f90bcb3082180092cb0871dce8d3792962ad94d30221e9bff6423025f80a4181e6a28599acff7c8e45267c1a4cb11f7f7e5086856a813dccf9890aad6291b030
   languageName: node
   linkType: hard
 
@@ -14822,11 +14822,11 @@ __metadata:
   linkType: hard
 
 "semver@npm:^7.0.0, semver@npm:^7.2, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.6.3":
-  version: 7.6.3
-  resolution: "semver@npm:7.6.3"
+  version: 7.7.1
+  resolution: "semver@npm:7.7.1"
   bin:
     semver: bin/semver.js
-  checksum: 10c0/88f33e148b210c153873cb08cfe1e281d518aaa9a666d4d148add6560db5cd3c582f3a08ccb91f38d5f379ead256da9931234ed122057f40bb5766e65e58adaf
+  checksum: 10c0/fd603a6fb9c399c6054015433051bdbe7b99a940a8fb44b85c2b524c4004b023d7928d47cb22154f8d054ea7ee8597f586605e05b52047f048278e4ac56ae958
   languageName: node
   linkType: hard
 
