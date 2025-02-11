@@ -87,4 +87,5 @@ describe("query options", () => {
 
         expect(result?.data?.[Movie.plural]).toEqual([{ id }, { id }, { id }]);
     });
+
 });

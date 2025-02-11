@@ -40,6 +40,7 @@ import {
 import { debugCypherAndParams } from "../debug/debug-cypher-and-params";
 import environment from "../environment";
 import type { CypherQueryOptions } from "../types";
+import { isInArray } from "../utils/is-in-array";
 import {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstraintValidationError,
@@ -48,6 +49,8 @@ import {
 } from "./Error";
 
 const debug = Debug(DEBUG_EXECUTE);
+
+const SUPPORTED_CYPHER_VERSION = "5";
 
 interface DriverLike {
     session(config);
@@ -179,16 +182,34 @@ export class Executor {
         return error;
     }
 
-    private generateQuery(query: string): string {
-        if (this.cypherQueryOptions && Object.keys(this.cypherQueryOptions).length) {
-            const cypherQueryOptions = `CYPHER ${Object.entries(this.cypherQueryOptions)
-                .map(([key, value]) => `${key}=${value}`)
-                .join(" ")}`;
+    private addCypherOptionsToQuery(query: string): string {
+        const cypherVersion = this.getCypherVersionStatement();
 
-            return `${cypherQueryOptions}\n${query}`;
+        const cypherQueryOptions = this.getCypherQueryOptionsStatement();
+
+        return `${cypherVersion}${cypherQueryOptions}${query}`;
+    }
+
+    private getCypherVersionStatement(): string {
+        if (this.cypherQueryOptions?.addVersionPrefix) {
+            return `CYPHER ${SUPPORTED_CYPHER_VERSION}\n`;
         }
+        return "";
+    }
 
-        return query;
+    private getCypherQueryOptionsStatement(): string {
+        const ignoredCypherQueryOptions: Array<keyof CypherQueryOptions> = ["addVersionPrefix"];
+        const cypherQueryOptions = Object.entries(this.cypherQueryOptions ?? []).filter(([key, _value]) => {
+            return !isInArray(ignoredCypherQueryOptions, key);
+        });
+        if (cypherQueryOptions.length) {
+            return `CYPHER ${cypherQueryOptions
+                .map(([key, value]) => {
+                    return `${key}=${value}`;
+                })
+                .join(" ")}\n`;
+        }
+        return "";
     }
 
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
@@ -290,7 +311,7 @@ export class Executor {
         parameters: Record<string, any>,
         transaction: Transaction | ManagedTransaction
     ): Result {
-        const queryToRun = this.generateQuery(query);
+        const queryToRun = this.addCypherOptionsToQuery(query);
 
         debugCypherAndParams(debug, queryToRun, parameters);
 
