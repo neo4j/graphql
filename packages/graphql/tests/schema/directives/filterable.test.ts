@@ -895,7 +895,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -988,6 +988,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1222,7 +1223,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -1256,6 +1257,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1532,10 +1534,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -1634,7 +1636,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -1728,6 +1730,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1984,7 +1987,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -2018,6 +2021,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2294,10 +2298,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -2396,7 +2400,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -2490,6 +2494,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2746,7 +2751,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -2780,6 +2785,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3038,10 +3044,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -3143,7 +3149,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -3237,6 +3243,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3493,7 +3500,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -3527,6 +3534,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3802,10 +3810,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -3906,7 +3914,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -4000,6 +4008,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4256,7 +4265,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -4290,6 +4299,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4566,10 +4576,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -4670,7 +4680,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -4764,6 +4774,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5009,7 +5020,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -5043,6 +5054,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5272,10 +5284,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -5376,7 +5388,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -5470,6 +5482,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5726,7 +5739,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -5760,6 +5773,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6035,10 +6049,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -6144,7 +6158,7 @@ describe("@filterable directive", () => {
 
                     type Actor implements Person {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -6226,6 +6240,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6471,7 +6486,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -6494,6 +6509,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6838,13 +6854,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -6950,7 +6966,7 @@ describe("@filterable directive", () => {
 
                     type Actor implements Person {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -7032,6 +7048,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7277,7 +7294,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -7300,6 +7317,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7645,13 +7663,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -7757,7 +7775,7 @@ describe("@filterable directive", () => {
 
                     type Actor implements Person {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -7839,6 +7857,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8084,7 +8103,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -8107,6 +8126,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregationSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8451,13 +8471,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -8567,7 +8587,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -8661,6 +8681,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8852,7 +8873,7 @@ describe("@filterable directive", () => {
 
                     type Appearance {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): AppearanceMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): AppearanceMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
@@ -8946,6 +8967,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregationSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9534,13 +9556,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       appearances(limit: Int, offset: Int, sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
-                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\"\\")
+                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\" instead\\")
                       appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                     }
@@ -9659,7 +9681,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -9753,6 +9775,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9944,7 +9967,7 @@ describe("@filterable directive", () => {
 
                     type Appearance {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): AppearanceMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): AppearanceMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
@@ -10038,6 +10061,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregationSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -10626,13 +10650,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       appearances(limit: Int, offset: Int, sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
-                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\"\\")
+                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\" instead\\")
                       appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                     }
@@ -10751,7 +10775,7 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
@@ -10845,6 +10869,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregationSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -11036,7 +11061,7 @@ describe("@filterable directive", () => {
 
                     type Appearance {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): AppearanceMovieMoviesAggregationSelection
+                      moviesAggregate(where: MovieWhere): AppearanceMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
@@ -11130,6 +11155,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregationSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -11718,13 +11744,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       appearances(limit: Int, offset: Int, sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
-                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\"\\")
+                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\" instead\\")
                       appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                     }

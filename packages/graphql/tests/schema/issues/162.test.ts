@@ -157,13 +157,13 @@ describe("162", () => {
 
             type Query {
               tigerJawLevel2Part1s(limit: Int, offset: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerJawLevel2Part1sConnection\\\\\\"\\")
+              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerJawLevel2Part1sConnection\\\\\\" instead\\")
               tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
               tigerJawLevel2s(limit: Int, offset: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): [TigerJawLevel2!]!
-              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerJawLevel2sConnection\\\\\\"\\")
+              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerJawLevel2sConnection\\\\\\" instead\\")
               tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
               tigers(limit: Int, offset: Int, sort: [TigerSort!], where: TigerWhere): [Tiger!]!
-              tigersAggregate(where: TigerWhere): TigerAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigersConnection\\\\\\"\\")
+              tigersAggregate(where: TigerWhere): TigerAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigersConnection\\\\\\" instead\\")
               tigersConnection(after: String, first: Int, sort: [TigerSort!], where: TigerWhere): TigersConnection!
             }
 
@@ -209,7 +209,7 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(limit: Int, offset: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
+              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"part1Connection\\\\\\" instead\\")
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
@@ -242,7 +242,7 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(limit: Int, offset: Int, sort: [TigerSort!], where: TigerWhere): [Tiger!]!
-              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
+              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerConnection\\\\\\" instead\\")
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
             }
 
@@ -284,6 +284,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1Connection {
+              aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection!
               edges: [TigerJawLevel2Part1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -409,6 +410,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigerConnection {
+              aggregate: TigerJawLevel2Part1TigerTigerAggregationSelection!
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

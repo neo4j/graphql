@@ -182,7 +182,7 @@ describe("200", () => {
 
             type Query {
               categories(limit: Int, offset: Int, sort: [CategorySort!], where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"categoriesConnection\\\\\\"\\")
+              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"categoriesConnection\\\\\\" instead\\")
               categoriesConnection(after: String, first: Int, sort: [CategorySort!], where: CategoryWhere): CategoriesConnection!
             }
 

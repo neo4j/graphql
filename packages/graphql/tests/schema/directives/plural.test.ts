@@ -80,7 +80,7 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, sort: [TechSort!], where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\"\\")
+              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\" instead\\")
               techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
@@ -255,7 +255,7 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, sort: [TechSort!], where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\"\\")
+              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\" instead\\")
               techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
@@ -430,7 +430,7 @@ describe("Plural option", () => {
 
             type Query {
               technologies(limit: Int, offset: Int, sort: [TechSort!], where: TechWhere): [Tech!]!
-              technologiesAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"technologiesConnection\\\\\\"\\")
+              technologiesAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"technologiesConnection\\\\\\" instead\\")
               technologiesConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechnologiesConnection!
             }
 

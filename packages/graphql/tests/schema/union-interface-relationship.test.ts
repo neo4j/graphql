@@ -147,7 +147,7 @@ describe("Union Interface Relationships", () => {
             type Actor {
               id: Int
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -231,6 +231,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -659,13 +660,13 @@ describe("Union Interface Relationships", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               directors(limit: Int, offset: Int, where: DirectorWhere): [Director!]!
               directorsConnection(after: String, first: Int, sort: [MovieDirectorsConnectionSort!], where: MovieDirectorsConnectionWhere): MovieDirectorsConnection!
               imdbId: Int
               reviewers(limit: Int, offset: Int, sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): MovieReviewerReviewersAggregationSelection
+              reviewersAggregate(where: ReviewerWhere): MovieReviewerReviewersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"reviewersConnection\\\\\\" instead\\")
               reviewersConnection(after: String, first: Int, sort: [MovieReviewersConnectionSort!], where: MovieReviewersConnectionWhere): MovieReviewersConnection!
               title: String!
             }
@@ -706,6 +707,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1086,6 +1088,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieReviewersConnection {
+              aggregate: MovieReviewerReviewersAggregationSelection!
               edges: [MovieReviewersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1372,7 +1375,7 @@ describe("Union Interface Relationships", () => {
             type Person implements Reviewer {
               id: Int
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): PersonMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): PersonMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
               name: String!
               reputation: Int!
@@ -1464,6 +1467,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonMoviesConnection {
+              aggregate: PersonMovieMoviesAggregationSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1678,20 +1682,20 @@ describe("Union Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               directors(limit: Int, offset: Int, where: DirectorWhere): [Director!]!
               influencers(limit: Int, offset: Int, sort: [InfluencerSort!], where: InfluencerWhere): [Influencer!]!
-              influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"influencersConnection\\\\\\"\\")
+              influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"influencersConnection\\\\\\" instead\\")
               influencersConnection(after: String, first: Int, sort: [InfluencerSort!], where: InfluencerWhere): InfluencersConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               reviewers(limit: Int, offset: Int, sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"reviewersConnection\\\\\\"\\")
+              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"reviewersConnection\\\\\\" instead\\")
               reviewersConnection(after: String, first: Int, sort: [ReviewerSort!], where: ReviewerWhere): ReviewersConnection!
             }
 

@@ -180,10 +180,10 @@ describe("lower case type names", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): actorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+              actorsAggregate(where: actorWhere): actorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [actorSort!], where: actorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): movieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: movieWhere): movieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [movieSort!], where: movieWhere): MoviesConnection!
             }
 
@@ -244,7 +244,7 @@ describe("lower case type names", () => {
             type actor {
               createdAt: DateTime
               movies(limit: Int, offset: Int, sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): actormovieMoviesAggregationSelection
+              moviesAggregate(where: movieWhere): actormovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
               year: Int
@@ -315,6 +315,7 @@ describe("lower case type names", () => {
             }
 
             type actorMoviesConnection {
+              aggregate: actormovieMoviesAggregationSelection!
               edges: [actorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -558,7 +559,7 @@ describe("lower case type names", () => {
 
             type movie {
               actors(limit: Int, offset: Int, sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): movieactorActorsAggregationSelection
+              actorsAggregate(where: actorWhere): movieactorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [movieActorsConnectionSort!], where: movieActorsConnectionWhere): movieActorsConnection!
               createdAt: DateTime
               name: String
@@ -585,6 +586,7 @@ describe("lower case type names", () => {
             }
 
             type movieActorsConnection {
+              aggregate: movieactorActorsAggregationSelection!
               edges: [movieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -19,14 +19,13 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { validateSchema } from "graphql";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("https://github.com/neo4j/graphql/issues/3698", () => {
     test("Relationship not declared in interface", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             interface IProduct {
                 id: String!
 
@@ -62,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
         const errors = validateSchema(schema);
         expect(errors).toHaveLength(0);
 
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(schema));
 
         expect(printedSchema).toMatchInlineSnapshot(`
             "schema {
@@ -118,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type Genre {
               name: String!
               product(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
-              productAggregate(where: IProductWhere): GenreIProductProductAggregationSelection
+              productAggregate(where: IProductWhere): GenreIProductProductAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"productConnection\\\\\\" instead\\")
               productConnection(after: String, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
@@ -207,6 +206,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenreProductConnection {
+              aggregate: GenreIProductProductAggregationSelection!
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -539,7 +539,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Movie implements IProduct {
               genre(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genreAggregate(where: GenreWhere): MovieGenreGenreAggregationSelection
+              genreAggregate(where: GenreWhere): MovieGenreGenreAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"genreConnection\\\\\\" instead\\")
               genreConnection(after: String, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               id: String!
               info: String!
@@ -613,6 +613,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MovieGenreConnection {
+              aggregate: MovieGenreGenreAggregationSelection!
               edges: [MovieGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -830,13 +831,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\"\\")
+              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               iProducts(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
-              iProductsAggregate(where: IProductWhere): IProductAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"iProductsConnection\\\\\\"\\")
+              iProductsAggregate(where: IProductWhere): IProductAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"iProductsConnection\\\\\\" instead\\")
               iProductsConnection(after: String, first: Int, sort: [IProductSort!], where: IProductWhere): IProductsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
