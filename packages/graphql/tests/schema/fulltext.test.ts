@@ -217,7 +217,7 @@ describe("@fulltext schema", () => {
                 \\"\\"\\"
                 fulltext: MovieFulltext
                 where: MovieWhere
-              ): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              ): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(
                 after: String
                 first: Int
