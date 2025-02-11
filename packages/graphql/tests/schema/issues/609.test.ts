@@ -133,7 +133,7 @@ describe("609", () => {
 
             type Query {
               deprecateds(limit: Int, offset: Int, sort: [DeprecatedSort!], where: DeprecatedWhere): [Deprecated!]!
-              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"deprecatedsConnection\\\\\\"\\")
+              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"deprecatedsConnection\\\\\\" instead\\")
               deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort!], where: DeprecatedWhere): DeprecatedsConnection!
             }
 

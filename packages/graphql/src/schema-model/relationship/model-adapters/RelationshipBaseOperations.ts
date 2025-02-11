@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { isUnionEntity } from "../../../translate/queryAST/utils/is-union-entity";
 import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./RelationshipAdapter";

@@ -448,13 +448,13 @@ describe("Exclude suffix based filtering", () => {
             type Query {
               ds(limit: Int, offset: Int, where: dWhere): [d!]!
               interfaceCS(limit: Int, offset: Int, sort: [interfaceCSort!], where: interfaceCWhere): [interfaceC!]!
-              interfaceCSAggregate(where: interfaceCWhere): interfaceCAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"interfaceCSConnection\\\\\\"\\")
+              interfaceCSAggregate(where: interfaceCWhere): interfaceCAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interfaceCSConnection\\\\\\" instead\\")
               interfaceCSConnection(after: String, first: Int, sort: [interfaceCSort!], where: interfaceCWhere): InterfaceCSConnection!
               typeAS(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              typeASAggregate(where: typeAWhere): typeAAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeASConnection\\\\\\"\\")
+              typeASAggregate(where: typeAWhere): typeAAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeASConnection\\\\\\" instead\\")
               typeASConnection(after: String, first: Int, sort: [typeASort!], where: typeAWhere): TypeASConnection!
               typeBS(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              typeBSAggregate(where: typeBWhere): typeBAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeBSConnection\\\\\\"\\")
+              typeBSAggregate(where: typeBWhere): typeBAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeBSConnection\\\\\\" instead\\")
               typeBSConnection(after: String, first: Int, sort: [typeBSort!], where: typeBWhere): TypeBSConnection!
             }
 
@@ -940,7 +940,7 @@ describe("Exclude suffix based filtering", () => {
 
             type typeA {
               actedIn(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              actedInAggregate(where: typeBWhere): typeAtypeBActedInAggregationSelection
+              actedInAggregate(where: typeBWhere): typeAtypeBActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [typeAActedInConnectionSort!], where: typeAActedInConnectionWhere): typeAActedInConnection!
               name: String
             }
@@ -966,6 +966,7 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeAActedInConnection {
+              aggregate: typeAtypeBActedInAggregationSelection!
               edges: [typeAActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1250,7 +1251,7 @@ describe("Exclude suffix based filtering", () => {
               point: Point
               ratings: [Float!]!
               rels(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              relsAggregate(where: typeAWhere): typeBtypeARelsAggregationSelection
+              relsAggregate(where: typeAWhere): typeBtypeARelsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"relsConnection\\\\\\" instead\\")
               relsConnection(after: String, first: Int, sort: [typeBRelsConnectionSort!], where: typeBRelsConnectionWhere): typeBRelsConnection!
               time: Time
             }
@@ -1348,6 +1349,7 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeBRelsConnection {
+              aggregate: typeBtypeARelsAggregationSelection!
               edges: [typeBRelsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

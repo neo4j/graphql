@@ -193,7 +193,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
 
             type Query {
               foos(limit: Int, offset: Int, sort: [FooSort!], where: FooWhere): [Foo!]!
-              foosAggregate(where: FooWhere): FooAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"foosConnection\\\\\\"\\")
+              foosAggregate(where: FooWhere): FooAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"foosConnection\\\\\\" instead\\")
               foosConnection(after: String, first: Int, sort: [FooSort!], where: FooWhere): FoosConnection!
             }
 

@@ -126,7 +126,7 @@ describe("Authorization", () => {
 
             type Post {
               author(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              authorAggregate(where: UserWhere): PostUserAuthorAggregationSelection
+              authorAggregate(where: UserWhere): PostUserAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               id: ID!
               name: String!
@@ -165,6 +165,7 @@ describe("Authorization", () => {
             }
 
             type PostAuthorConnection {
+              aggregate: PostUserAuthorAggregationSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -355,10 +356,10 @@ describe("Authorization", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\"\\")
+              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -420,7 +421,7 @@ describe("Authorization", () => {
               id: ID!
               name: String!
               posts(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              postsAggregate(where: UserWhere): UserUserPostsAggregationSelection
+              postsAggregate(where: UserWhere): UserUserPostsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
@@ -484,6 +485,7 @@ describe("Authorization", () => {
             }
 
             type UserPostsConnection {
+              aggregate: UserUserPostsAggregationSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

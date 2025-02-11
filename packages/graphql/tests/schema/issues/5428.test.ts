@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
 
             type Query {
               test(limit: Int, offset: Int, sort: [TestSort!], where: TestWhere): [Test!]!
-              testAggregate(where: TestWhere): TestAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"testConnection\\\\\\"\\")
+              testAggregate(where: TestWhere): TestAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"testConnection\\\\\\" instead\\")
               testConnection(after: String, first: Int, sort: [TestSort!], where: TestWhere): TestConnection!
             }
 
