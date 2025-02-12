@@ -84,7 +84,7 @@ describe("Disconnect using aggregate where", () => {
                                     node: {
                                         likesConnection: {
                                             aggregate: {
-                                                count: { eq: 2 }
+                                                count: { nodes: { eq: 2 } }
                                             }
                                         }
                                     } 
@@ -132,7 +132,7 @@ describe("Disconnect using aggregate where", () => {
                                             aggregate: {
                                                 OR: [
                                                 {
-                                                    count: { eq: 2 }
+                                                    count: { nodes: { eq: 2 } }
                                                 },
                                                 {
                                                     node: {
@@ -195,7 +195,7 @@ describe("Disconnect using aggregate where", () => {
                                                         node: {
                                                             name: { shortestLength: { gt: 2 } }
                                                         }
-                                                        count: { eq: 2 }
+                                                        count: { nodes: { eq: 2 } }
                                                     }
                                                 ]
                                             }
@@ -324,7 +324,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                         node: {
                                             likedPostsConnection: {
                                                 aggregate: {
-                                                    count: { eq: 2 }
+                                                    count: { nodes: { eq: 2 } }
                                                 }
                                             }
                                         }
@@ -386,7 +386,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                                 {
                                                     likedPostsConnection: {
                                                         aggregate: {
-                                                            count: { eq: 2 }
+                                                            count: { nodes: { eq: 2 } }
                                                         }
                                                     }
                                                 },
@@ -462,7 +462,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                                 {
                                                     likedPostsConnection: {
                                                         aggregate: {
-                                                            count: { eq: 2 }
+                                                            count: { nodes: { eq: 2 } }
                                                         }
                                                     }
                                                 },
@@ -540,7 +540,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
                                                         {
                                                             likedPostsConnection: {
                                                                 aggregate: {
-                                                                    count: { eq: 2 }
+                                                                    count: { nodes: { eq: 2 } }
                                                                 }
                                                             }
                                                         },

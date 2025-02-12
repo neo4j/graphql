@@ -84,7 +84,7 @@ describe("aggregations-where-count interface relationships of concrete types", (
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { eq: 1 } 
+                            count: { nodes: { eq: 1 } } 
                         } 
                     } 
                 }) {
@@ -140,7 +140,7 @@ describe("aggregations-where-count interface relationships of concrete types", (
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { lt: 1 } 
+                            count: { nodes: { lt: 1 } } 
                         } 
                     } 
                 }) {
@@ -196,7 +196,7 @@ describe("aggregations-where-count interface relationships of concrete types", (
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { lte: 1 } 
+                            count: { nodes: { lte: 1 } } 
                         } 
                     } 
                 }) {
@@ -260,7 +260,7 @@ describe("aggregations-where-count interface relationships of concrete types", (
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gt: 1 } 
+                            count: { nodes: { gt: 1 } } 
                         } 
                     } 
                 }) {
@@ -320,7 +320,7 @@ describe("aggregations-where-count interface relationships of concrete types", (
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gte: 1 } 
+                            count: { nodes: { gte: 1 } } 
                         } 
                     } 
                 }) {

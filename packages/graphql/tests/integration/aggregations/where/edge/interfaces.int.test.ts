@@ -138,7 +138,7 @@ describe("aggregations-where-edge-string interface relationships of interface ty
                         productionsConnection: { 
                             aggregate: { 
                                 edge: { ActedIn: { role_AVERAGE_LENGTH_LT: 5 } }, 
-                                count: { lt: 3 } 
+                                count: { nodes: { lt: 3 } } 
                             }
                         } 
                     }

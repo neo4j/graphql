@@ -78,7 +78,7 @@ describe("aggregations filters nested", () => {
                             node: {
                                 likedPostsConnection: { 
                                     aggregate: { 
-                                        count: { eq: 2 }
+                                        count: { nodes: { eq: 2 } }
                                     }
                                 }
                             }                            

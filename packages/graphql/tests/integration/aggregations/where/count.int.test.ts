@@ -70,13 +70,7 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
             {
-                ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { eq: 1 } } 
-                        } 
-                    } 
-                }) {
+                ${Post.plural}(where: { likesConnection: { aggregate: { count: { nodes: { eq: 1 } } } } }) {
                     title
                     likes {
                         name
@@ -124,13 +118,7 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
             {
-                ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { lt: 1 } } 
-                        } 
-                    } 
-                }) {
+                ${Post.plural}(where: { likesConnection: { aggregate: { count: { nodes: { lt: 1 } } } } }) {
                     title
                     likes {
                         name

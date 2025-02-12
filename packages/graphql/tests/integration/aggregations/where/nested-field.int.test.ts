@@ -93,7 +93,7 @@ describe("aggregations nested field", () => {
                     engagedUsers(where: {
                         citizenshipConnection: { 
                             aggregate: { 
-                                count: { eq: 2 } 
+                                count: { nodes: { eq: 2 } } 
                             } 
                         }
                     } ) {

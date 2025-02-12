@@ -78,10 +78,12 @@ describe("Delete using top level aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.delete}(where: { 
-                    likesAggregate: {
-                        count: { eq: 3 }
-                        node: {
-                            testString: { shortestLength: { eq: 3 } }
+                    likesConnection: {
+                        aggregate: {
+                            count: { nodes: { eq: 3 } }
+                            node: {
+                                testString: { shortestLength: { eq: 3 } }
+                            }
                         }
                     }
                 }) {
@@ -104,15 +106,17 @@ describe("Delete using top level aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.delete}(where: { 
-                    likesAggregate: {
-                        OR: [
-                            { count: { eq: 3 } }
-                            {
-                                node: {
-                                    testString: { shortestLength: { eq: 3 } }
+                    likesConnection: {
+                        aggregate: {
+                            OR: [
+                                { count: { nodes: { eq: 3 } } }
+                                {
+                                    node: {
+                                        testString: { shortestLength: { eq: 3 } }
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }) {
                     nodesDeleted
@@ -134,15 +138,17 @@ describe("Delete using top level aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.delete}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { count: { eq: 3 } }
-                            {
-                                node: {
-                                    testString: { shortestLength: { eq: 3 } }
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { count: { nodes: { eq: 3 } } }
+                                {
+                                    node: {
+                                        testString: { shortestLength: { eq: 3 } }
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }) {
                     nodesDeleted

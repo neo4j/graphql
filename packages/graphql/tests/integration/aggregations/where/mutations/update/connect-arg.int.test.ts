@@ -90,7 +90,7 @@ describe("Connect using aggregate where", () => {
                                     node: {
                                         likesConnection: {
                                             aggregate: {
-                                                count: { eq: 2 }
+                                                count: { nodes: { eq: 2 } }
                                             }
                                         }
                                     } 
@@ -140,10 +140,10 @@ describe("Connect using aggregate where", () => {
                                             aggregate: {
                                                 OR: [
                                                     {
-                                                        count: { eq: 2 }
+                                                        count: { nodes: { eq: 2 } }
                                                     },
                                                     {
-                                                        count: { eq: 0 }
+                                                        count: { nodes: { eq: 0 } }
                                                     }
                                                 ]
                                             }
@@ -206,7 +206,7 @@ describe("Connect using aggregate where", () => {
                                                         node: {
                                                             name: { shortestLength: { lt: 2 } }
                                                         },
-                                                        count: { eq: 2 }
+                                                        count: { nodes: { eq: 2 } }
                                                     }
                                                 ]
                                             }
@@ -270,7 +270,7 @@ describe("Connect using aggregate where", () => {
                                                         node: {
                                                             NOT: { name: { shortestLength: { gte: 2 } } }
                                                         },
-                                                        count: { eq: 2 }
+                                                        count: { nodes: { eq: 2 } }
                                                     }
                                                 ]
                                             }
@@ -404,7 +404,7 @@ describe("Connect UNIONs using aggregate where", () => {
                                         node: {
                                             likedPostsConnection: {
                                                 aggregate: {
-                                                    count: { eq: 2 }
+                                                    count: { nodes: { eq: 2 } }
                                                 }
                                             }
                                         }
@@ -464,7 +464,7 @@ describe("Connect UNIONs using aggregate where", () => {
                                                 {
                                                     likedPostsConnection: {
                                                         aggregate: {
-                                                            count: { lt: 2 }
+                                                            count: { nodes: { lt: 2 } }
                                                         }
                                                     }
                                                 },
@@ -544,7 +544,7 @@ describe("Connect UNIONs using aggregate where", () => {
                                                 {
                                                     likedPostsConnection: {
                                                         aggregate: {
-                                                            count: { lt: 1 }
+                                                            count: { nodes: { lt: 1 } }
                                                         }
                                                     }
                                                 },

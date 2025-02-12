@@ -58,7 +58,7 @@ describe("authorization-with-aggregation-filter", () => {
                                 node: {
                                     likesConnection: {
                                         aggregate: {
-                                            count: { gt: 1 }
+                                            count: { nodes: { gt: 1 } }
                                         }
                                     }
                                 }
@@ -147,7 +147,7 @@ describe("authorization-with-aggregation-filter", () => {
                                 node: {
                                     likesConnection: {
                                         aggregate: {
-                                            count: { gte: 1 }
+                                            count: { nodes: { gte: 1 } }
                                         }
                                     }
                                 }
@@ -220,7 +220,7 @@ describe("authorization-with-aggregation-filter", () => {
                                 node: {
                                     likesConnection: {
                                         aggregate: {
-                                            count: { eq: 2 }
+                                            count: { nodes: { eq: 2 } }
                                         }
                                     }
                                 }
@@ -301,7 +301,7 @@ describe("authorization-with-aggregation-filter", () => {
                                 node: {
                                     likesConnection: {
                                         aggregate: {
-                                            count: { eq: 2 }
+                                            count: { nodes: { eq: 2 } }
                                         }
                                     }
                                 }
