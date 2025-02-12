@@ -41,6 +41,11 @@ describe("Simple", () => {
               mutation: Mutation
             }
 
+            type Count {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -89,6 +94,7 @@ describe("Simple", () => {
             }
 
             type MovieAggregate {
+              count: Count
               node: MovieAggregateNode!
             }
 

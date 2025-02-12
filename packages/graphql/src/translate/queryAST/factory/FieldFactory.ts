@@ -34,7 +34,7 @@ import type { Field } from "../ast/fields/Field";
 import { OperationField } from "../ast/fields/OperationField";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
-import { CountField } from "../ast/fields/aggregation-fields/CountField";
+import { DeprecatedCountField } from "../ast/fields/aggregation-fields/DeprecatedCountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
@@ -137,7 +137,7 @@ export class FieldFactory {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
                 if (field.name === "count") {
-                    return new CountField({
+                    return new DeprecatedCountField({
                         alias: field.alias,
                         entity: entity as any,
                     });

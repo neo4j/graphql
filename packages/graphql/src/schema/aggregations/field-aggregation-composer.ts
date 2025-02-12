@@ -27,6 +27,7 @@ import { RelationshipAdapter } from "../../schema-model/relationship/model-adapt
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { DEPRECATE_ID_AGGREGATION } from "../constants";
+import { getCountConnectionType } from "../generation/aggregate-types";
 import { shouldAddDeprecatedFields } from "../generation/utils";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
@@ -80,6 +81,15 @@ export class FieldAggregationComposer {
                 aggregateSelectionEdgeFields
             );
         }
+
+        this.composer.createObjectTC({
+            name: relationshipAdapter.operations.getAggregateFieldTypename(),
+            fields: {
+                count: getCountConnectionType(this.composer),
+                ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
+                ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
+            },
+        });
 
         return this.composer.createObjectTC({
             name: relationshipAdapter.operations.getAggregationFieldTypename(),

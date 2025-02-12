@@ -256,8 +256,8 @@ export class ConnectionFactory {
     }) {
         if (relationship) {
             const resolveTreeAggregateFields =
-                resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()];
-
+                resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregateFieldTypename()];
+            console.log("resolveTreeAggregateFields", resolveTreeAggregateFields);
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
                 const nodeField = getResolveTreeByFieldName({
                     fieldName: "node",
@@ -315,7 +315,7 @@ export class ConnectionFactory {
     }
 
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | CompositeConnectionReadOperation
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation,
     >({
         entityOrRel,
         resolveTree,

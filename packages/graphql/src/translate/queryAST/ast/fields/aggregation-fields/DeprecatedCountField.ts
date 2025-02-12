@@ -22,7 +22,7 @@ import type { Entity } from "../../../../../schema-model/entity/Entity";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { AggregationField } from "./AggregationField";
 
-export class CountField extends AggregationField {
+export class DeprecatedCountField extends AggregationField {
     private entity: Entity;
 
     constructor({ alias, entity }: { alias: string; entity: Entity }) {

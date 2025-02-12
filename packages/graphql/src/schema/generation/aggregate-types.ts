@@ -74,6 +74,27 @@ export function withAggregateSelectionType({
     return aggregateSelection;
 }
 
+/** Top level count */
+export function getCountType(composer: SchemaComposer): ObjectTypeComposer {
+    const CountFieldName = "Count";
+    return composer.getOrCreateOTC(CountFieldName, (countField) => {
+        countField.addFields({
+            nodes: new GraphQLNonNull(GraphQLInt),
+        });
+    });
+}
+
+/** Nested count */
+export function getCountConnectionType(composer: SchemaComposer): ObjectTypeComposer {
+    const CountFieldName = "CountConnection";
+    return composer.getOrCreateOTC(CountFieldName, (countField) => {
+        countField.addFields({
+            nodes: new GraphQLNonNull(GraphQLInt),
+            edges: new GraphQLNonNull(GraphQLInt),
+        });
+    });
+}
+
 /** Create aggregate field inside connections */
 function createConnectionAggregate({
     entityAdapter,
@@ -88,26 +109,33 @@ function createConnectionAggregate({
     composer: SchemaComposer;
     features: Neo4jFeaturesSettings | undefined;
 }): ObjectTypeComposer {
-    const aggregateNode = composer.createObjectTC({
-        name: entityAdapter.operations.aggregateTypeNames.node,
-        fields: {
-            count: {
-                type: new GraphQLNonNull(GraphQLInt),
-                resolve: numericalResolver,
-                args: {},
-            },
-        },
-        directives: graphqlDirectivesToCompose(propagatedDirectives),
-    });
-    aggregateNode.addFields(makeAggregableFields({ entityAdapter, aggregationTypesMapper, features }));
+    const aggregableFields = makeAggregableFields({ entityAdapter, aggregationTypesMapper, features });
+    let aggregateNode: ObjectTypeComposer | undefined;
+    const hasNodeAggregateFields = Object.keys(aggregableFields).length > 0;
+    if (hasNodeAggregateFields) {
+        aggregateNode = composer.createObjectTC({
+            name: entityAdapter.operations.aggregateTypeNames.node,
+            fields: {},
+            directives: graphqlDirectivesToCompose(propagatedDirectives),
+        });
+        aggregateNode.addFields(aggregableFields);
+    }
 
-    return composer.createObjectTC({
+    const connectionAggregate = composer.createObjectTC({
         name: entityAdapter.operations.aggregateTypeNames.connection,
         fields: {
-            node: aggregateNode.NonNull,
+            count: getCountType(composer),
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
+
+    if (aggregateNode) {
+        connectionAggregate.addFields({
+            node: aggregateNode.NonNull,
+        });
+    }
+
+    return connectionAggregate;
 }
 
 function makeAggregableFields({

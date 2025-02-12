@@ -242,6 +242,7 @@ export class AggregateFactory {
         const rawProjectionFields = {
             // Handle deprecated aggregations
             ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregateFieldTypename()],
             ...nodeFields,
         };
 
