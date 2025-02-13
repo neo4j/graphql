@@ -26,7 +26,7 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
-import { asArray, filterTruthy } from "../../../utils/utils";
+import { asArray, filterTruthy, isRecord } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { CypherOneToOneRelationshipFilter } from "../ast/filters/CypherOneToOneRelationshipFilter";
@@ -809,16 +809,18 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
     }
 
+    private createCountFilter(operatorKey: string, value: unknown): CountFilter {
+        const operator = this.parseGenericOperator(operatorKey);
+        return new CountFilter({
+            operator: operator,
+            comparisonValue: value,
+        });
+    }
+
     private parseConnectionAggregationCountFilter(value: Record<string, any>): CountFilter[] {
         const nodesCount = value["nodes"];
-        
-        
         return Object.entries(nodesCount).map(([key, value]) => {
-            const operator = this.parseGenericOperator(key);
-            return new CountFilter({
-                operator: operator,
-                comparisonValue: value,
-            });
+            return this.createCountFilter(key, value);
         });
     }
 
@@ -843,14 +845,18 @@ export class FilterFactory {
 
                 if (fieldName === "count") {
                     if (!operator) {
-                        return this.parseConnectionAggregationCountFilter(value as Record<string, any> );
-                        // return Object.entries(value).map(([key, value]) => {
-                        //     const operator = this.parseGenericOperator(key);
-                        //     return new CountFilter({
-                        //         operator: operator,
-                        //         comparisonValue: value,
-                        //     });
-                        // });
+                        // A little bit hacky, but here we don't longer know if we're in the likesConnection.aggregate or in likesAggregate that have different syntax for count
+                        // so we check if nodes and/or edges fields are present to determine the correct parsing
+                        // In v8 we will no longer have the likesAggregate syntax so we can assume the connection syntax
+                        if (isRecord(value) && value.nodes) {
+                            // TODO: Add value.edges when it's supported
+                            return Object.entries(value.nodes).map(([key, value]) => {
+                                return this.createCountFilter(key, value);
+                            });
+                        }
+                        return Object.entries(value).map(([key, value]) => {
+                            return this.createCountFilter(key, value);
+                        });
                     }
 
                     const countFilter = new CountFilter({

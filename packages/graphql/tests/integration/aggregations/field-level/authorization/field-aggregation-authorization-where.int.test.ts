@@ -76,7 +76,7 @@ describe(`Field Level Authorization Where Requests`, () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {
-                    count
+                       count
                     }
                 }
             }`;
@@ -93,7 +93,7 @@ describe(`Field Level Authorization Where Requests`, () => {
         const query = `query {
             ${typeMovie.plural} {
                 ${typeActor.plural}Aggregate {
-                    count
+                        count
                     }
                 }
             }`;

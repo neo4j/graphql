@@ -87,6 +87,42 @@ describe("aggregations-where-count", () => {
         ]);
     });
 
+    test("should return posts where the count of likes equal one, with implicit count", async () => {
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
+                    CREATE (:${Post} {testString: "${testString}"})
+                `
+        );
+
+        const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count: { eq: 1 } } }) {
+                        testString
+                        likes {
+                            testString
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toEqual([
+            {
+                testString,
+                likes: [{ testString }],
+            },
+        ]);
+    });
+
     test("should return posts where the count of likes LT one", async () => {
         const testString = generate({
             charset: "alphabetic",
