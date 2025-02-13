@@ -66,7 +66,7 @@ describe("Top-level interface query fields", () => {
         await testHelper.close();
     });
 
-    test.only("top level count and string fields", async () => {
+    test("top level count and string fields", async () => {
         const query = `
             query {
                 productionsConnection {

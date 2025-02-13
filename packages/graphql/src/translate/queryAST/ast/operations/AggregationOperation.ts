@@ -172,12 +172,7 @@ export class AggregationOperation extends Operation {
         const nodeMap = new Cypher.Map();
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
-            if (this.isInConnectionField) {
-                // Default fields are in node in connection translation
-                nodeMap.set(f.getProjectionField(returnVariable));
-            } else {
-                this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            }
+            this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
             return this.createSubquery(f, pattern, returnVariable, context);
         });
 

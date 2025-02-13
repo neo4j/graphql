@@ -230,6 +230,7 @@ export class ConnectionFactory {
             target,
             resolveTree,
         });
+
         this.hydrateConnectionOperationWithAggregation({
             target,
             resolveTreeAggregate: resolveTreeAggregate[0],
@@ -257,7 +258,6 @@ export class ConnectionFactory {
         if (relationship) {
             const resolveTreeAggregateFields =
                 resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregateFieldTypename()];
-            console.log("resolveTreeAggregateFields", resolveTreeAggregateFields);
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
                 const nodeField = getResolveTreeByFieldName({
                     fieldName: "node",
@@ -294,22 +294,20 @@ export class ConnectionFactory {
                     fieldName: "node",
                     selection: resolveTreeAggregateFields,
                 });
-                if (nodeField) {
-                    const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                        entityOrRel: relationship ?? target,
-                        resolveTree: nodeField,
-                        context,
-                    });
-                    // NOTE: This will always be true on 7.x and this attribute should be removed
-                    aggregationOperation.isInConnectionField = true;
-                    const aggregationField = new ConnectionAggregationField({
-                        alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                        nodeAlias: nodeField.alias,
-                        operation: aggregationOperation,
-                    });
+                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                    entityOrRel: relationship ?? target,
+                    resolveTree: resolveTreeAggregate,
+                    context,
+                });
+                // NOTE: This will always be true on 7.x and this attribute should be removed
+                aggregationOperation.isInConnectionField = true;
+                const aggregationField = new ConnectionAggregationField({
+                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                    nodeAlias: nodeField?.alias ?? "node",
+                    operation: aggregationOperation,
+                });
 
-                    operation.setAggregationField(aggregationField);
-                }
+                operation.setAggregationField(aggregationField);
             }
         }
     }
@@ -391,7 +389,6 @@ export class ConnectionFactory {
         let edgeField: ResolveTree | undefined;
 
         const fields: Record<string, ResolveTree> = {};
-
         Object.entries(rawFields).forEach(([key, field]) => {
             if (field.name === "node") {
                 nodeField = field;
@@ -402,11 +399,12 @@ export class ConnectionFactory {
             }
         });
 
-        return {
+        const result = {
             node: nodeField,
             edge: edgeField,
             fields,
         };
+        return result;
     }
 
     private getConnectionOptions(

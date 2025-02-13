@@ -79,7 +79,10 @@ export function getCountType(composer: SchemaComposer): ObjectTypeComposer {
     const CountFieldName = "Count";
     return composer.getOrCreateOTC(CountFieldName, (countField) => {
         countField.addFields({
-            nodes: new GraphQLNonNull(GraphQLInt),
+            nodes: {
+                type: new GraphQLNonNull(GraphQLInt),
+                resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+            },
         });
     });
 }
@@ -89,8 +92,14 @@ export function getCountConnectionType(composer: SchemaComposer): ObjectTypeComp
     const CountFieldName = "CountConnection";
     return composer.getOrCreateOTC(CountFieldName, (countField) => {
         countField.addFields({
-            nodes: new GraphQLNonNull(GraphQLInt),
-            edges: new GraphQLNonNull(GraphQLInt),
+            nodes: {
+                type: new GraphQLNonNull(GraphQLInt),
+                resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+            },
+            edges: {
+                type: new GraphQLNonNull(GraphQLInt),
+                resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+            },
         });
     });
 }
@@ -124,7 +133,7 @@ function createConnectionAggregate({
     const connectionAggregate = composer.createObjectTC({
         name: entityAdapter.operations.aggregateTypeNames.connection,
         fields: {
-            count: getCountType(composer),
+            count: getCountType(composer).NonNull,
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
