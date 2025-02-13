@@ -138,7 +138,7 @@ export class FieldFactory {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
                 if (field.name === "count") {
-                    if (field.fieldsByTypeName["Count"]) {
+                    if (field.fieldsByTypeName["Count"] || field.fieldsByTypeName["CountConnection"]) {
                         // New Count
                         return new CountField({
                             alias: field.alias,

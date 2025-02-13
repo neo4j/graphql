@@ -85,7 +85,7 @@ export class FieldAggregationComposer {
         this.composer.createObjectTC({
             name: relationshipAdapter.operations.getAggregateFieldTypename(),
             fields: {
-                count: getCountConnectionType(this.composer),
+                count: getCountConnectionType(this.composer).NonNull,
                 ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
                 ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
             },

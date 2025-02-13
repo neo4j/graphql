@@ -63,15 +63,14 @@ describe("Field Level Aggregations", () => {
         await testHelper.close();
     });
 
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("count nodes", async () => {
+    test("count nodes", async () => {
         const query = `
             query {
                 ${typeMovie.plural} {
                     actorsConnection {
                         aggregate {
-                            node {
-                                count
+                            count {
+                                nodes
                             }
                         }
                     }
@@ -88,8 +87,8 @@ describe("Field Level Aggregations", () => {
                 {
                     actorsConnection: {
                         aggregate: {
-                            node: {
-                                count: 2,
+                            count: {
+                                nodes: 2,
                             },
                         },
                     },

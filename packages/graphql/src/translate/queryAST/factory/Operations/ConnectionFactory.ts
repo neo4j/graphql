@@ -268,22 +268,20 @@ export class ConnectionFactory {
                     selection: resolveTreeAggregateFields,
                 });
 
-                if (nodeField || edgeField) {
-                    const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                        entityOrRel: relationship ?? target,
-                        resolveTree: resolveTreeAggregate,
-                        context,
-                    });
-                    // NOTE: This will always be true on 7.x and this attribute should be removed
-                    aggregationOperation.isInConnectionField = true;
-                    const aggregationField = new ConnectionAggregationField({
-                        alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                        nodeAlias: nodeField?.alias ?? "node",
-                        operation: aggregationOperation,
-                    });
+                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                    entityOrRel: relationship ?? target,
+                    resolveTree: resolveTreeAggregate,
+                    context,
+                });
+                // NOTE: This will always be true on 7.x and this attribute should be removed
+                aggregationOperation.isInConnectionField = true;
+                const aggregationField = new ConnectionAggregationField({
+                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                    nodeAlias: nodeField?.alias ?? "node",
+                    operation: aggregationOperation,
+                });
 
-                    operation.setAggregationField(aggregationField);
-                }
+                operation.setAggregationField(aggregationField);
             }
         } else {
             const resolveTreeAggregateFields =

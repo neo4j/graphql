@@ -141,7 +141,6 @@ export class AggregateFactory {
         } else {
             if (isConcreteEntity(entity)) {
                 // TOP LEVEL CONCRETE
-                console.log("Top Level Concrete");
                 let selection: EntitySelection;
                 // NOTE: If we introduce vector index aggregation, checking the phrase will cause a problem
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
@@ -182,9 +181,7 @@ export class AggregateFactory {
                     context,
                     whereArgs: resolveTreeWhere,
                 });
-                // return operation;
             } else {
-                console.log("Top Level Interface");
                 // TOP level interface/union
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
