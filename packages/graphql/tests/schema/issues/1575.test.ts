@@ -38,6 +38,10 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateFoosMutationResponse {
               foos: [Foo!]!
               info: CreateInfo!
@@ -65,11 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             type FooAggregate {
-              node: FooAggregateNode!
-            }
-
-            type FooAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type FooAggregateSelection {

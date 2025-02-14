@@ -117,11 +117,11 @@ describe("Implicit Equality filters", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -154,6 +154,12 @@ describe("Implicit Equality filters", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -195,7 +201,7 @@ describe("Implicit Equality filters", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -327,6 +333,15 @@ describe("Implicit Equality filters", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -363,6 +378,12 @@ describe("Implicit Equality filters", () => {
               actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID
+            }
+
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
             }
 
             type MovieActorActorsAggregationSelection {
@@ -404,7 +425,7 @@ describe("Implicit Equality filters", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -485,11 +506,11 @@ describe("Implicit Equality filters", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 

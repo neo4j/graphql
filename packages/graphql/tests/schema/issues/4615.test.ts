@@ -155,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorShowActedInAggregationSelection!
+              aggregate: ActorShowActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -236,11 +236,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -282,6 +282,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorShowActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorShowActedInEdgeAggregateSelection
+              node: ActorShowActedInNodeAggregateSelection
             }
 
             type ActorShowActedInAggregationSelection {
@@ -353,6 +359,15 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -494,11 +509,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               release: DateTimeAggregateSelection!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
@@ -742,11 +757,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1003,11 +1018,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ShowAggregate {
+              count: Count!
               node: ShowAggregateNode!
             }
 
             type ShowAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 

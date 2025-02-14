@@ -54,6 +54,10 @@ describe("@customResolver directive", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -140,11 +144,11 @@ describe("@customResolver directive", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               password: StringAggregateSelection!
               username: StringAggregateSelection!
@@ -173,11 +177,11 @@ describe("@customResolver directive", () => {
             }
 
             type UserInterfaceAggregate {
+              count: Count!
               node: UserInterfaceAggregateNode!
             }
 
             type UserInterfaceAggregateNode {
-              count: Int!
               customResolver: StringAggregateSelection!
             }
 

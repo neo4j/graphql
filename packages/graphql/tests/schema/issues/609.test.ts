@@ -38,6 +38,10 @@ describe("609", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateDeprecatedsMutationResponse {
               deprecateds: [Deprecated!]!
               info: CreateInfo!
@@ -64,11 +68,11 @@ describe("609", () => {
             }
 
             type DeprecatedAggregate {
+              count: Count!
               node: DeprecatedAggregateNode!
             }
 
             type DeprecatedAggregateNode {
-              count: Int!
               deprecatedField: StringAggregateSelection!
             }
 

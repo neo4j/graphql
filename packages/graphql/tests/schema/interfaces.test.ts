@@ -54,6 +54,10 @@ describe("Interfaces", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -90,11 +94,11 @@ describe("Interfaces", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -206,11 +210,11 @@ describe("Interfaces", () => {
             }
 
             type MovieNodeAggregate {
+              count: Count!
               node: MovieNodeAggregateNode!
             }
 
             type MovieNodeAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -504,6 +508,10 @@ describe("Interfaces", () => {
 
             directive @something(something: String) on INTERFACE
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -540,11 +548,11 @@ describe("Interfaces", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -656,11 +664,11 @@ describe("Interfaces", () => {
             }
 
             type MovieNodeAggregate {
+              count: Count!
               node: MovieNodeAggregateNode!
             }
 
             type MovieNodeAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 

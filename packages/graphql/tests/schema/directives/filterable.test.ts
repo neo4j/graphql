@@ -902,11 +902,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -961,6 +961,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -992,7 +997,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1146,6 +1151,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -1187,6 +1201,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -1220,7 +1239,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1311,11 +1330,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -1558,11 +1577,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -1617,6 +1636,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -1649,7 +1673,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1824,6 +1848,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -1865,6 +1898,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -1898,7 +1936,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1989,11 +2027,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -2236,11 +2274,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -2295,6 +2333,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -2327,7 +2370,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2502,6 +2545,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -2543,6 +2595,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -2576,7 +2633,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2667,11 +2724,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -2899,11 +2956,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -2958,6 +3015,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -2990,7 +3052,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3165,6 +3227,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -3206,6 +3277,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -3226,7 +3302,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3281,11 +3357,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -3529,11 +3605,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -3588,6 +3664,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -3620,7 +3701,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3795,6 +3876,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -3836,6 +3926,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -3869,7 +3964,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3960,11 +4055,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -4209,11 +4304,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -4268,6 +4363,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -4300,7 +4400,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4475,6 +4575,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -4516,6 +4625,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -4549,7 +4663,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4640,11 +4754,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -4865,11 +4979,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -4924,6 +5038,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -4956,7 +5075,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5131,6 +5250,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -5172,6 +5300,11 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
+                    }
+
                     type MovieActorActorsAggregationSelection {
                       count: Int!
                       node: MovieActorActorsNodeAggregateSelection
@@ -5192,7 +5325,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MovieActorActorsAggregationSelection!
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5247,11 +5380,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -5500,11 +5633,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -5547,6 +5680,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -5579,7 +5717,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5754,6 +5892,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -5800,7 +5947,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MoviePersonActorsAggregationSelection!
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5853,11 +6000,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -5915,6 +6062,11 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MoviePersonActorsNodeAggregateSelection
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -6030,11 +6182,11 @@ describe("@filterable directive", () => {
                     }
 
                     type PersonAggregate {
+                      count: Count!
                       node: PersonAggregateNode!
                     }
 
                     type PersonAggregateNode {
-                      count: Int!
                       username: StringAggregateSelection!
                     }
 
@@ -6195,11 +6347,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -6242,6 +6394,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -6274,7 +6431,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6449,6 +6606,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -6508,7 +6674,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MoviePersonActorsAggregationSelection!
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6582,11 +6748,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -6644,6 +6810,11 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MoviePersonActorsNodeAggregateSelection
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -6760,11 +6931,11 @@ describe("@filterable directive", () => {
                     }
 
                     type PersonAggregate {
+                      count: Count!
                       node: PersonAggregateNode!
                     }
 
                     type PersonAggregateNode {
-                      count: Int!
                       username: StringAggregateSelection!
                     }
 
@@ -6925,11 +7096,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -6972,6 +7143,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -7004,7 +7180,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7179,6 +7355,15 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -7225,7 +7410,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
-                      aggregate: MoviePersonActorsAggregationSelection!
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7278,11 +7463,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -7340,6 +7525,11 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MoviePersonActorsNodeAggregateSelection
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -7455,11 +7645,11 @@ describe("@filterable directive", () => {
                     }
 
                     type PersonAggregate {
+                      count: Count!
                       node: PersonAggregateNode!
                     }
 
                     type PersonAggregateNode {
-                      count: Int!
                       username: StringAggregateSelection!
                     }
 
@@ -7624,11 +7814,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -7683,6 +7873,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -7715,7 +7910,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7899,11 +8094,11 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceAggregate {
+                      count: Count!
                       node: AppearanceAggregateNode!
                     }
 
                     type AppearanceAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -7958,6 +8153,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type AppearanceMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: AppearanceMovieMoviesNodeAggregateSelection
+                    }
+
                     type AppearanceMovieMoviesAggregationSelection {
                       count: Int!
                       node: AppearanceMovieMoviesNodeAggregateSelection
@@ -7990,7 +8190,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
-                      aggregate: AppearanceMovieMoviesAggregationSelection!
+                      aggregate: AppearanceMovieMoviesAggregateSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8163,6 +8363,15 @@ describe("@filterable directive", () => {
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -8340,11 +8549,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -8625,11 +8834,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -8684,6 +8893,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -8716,7 +8930,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8900,11 +9114,11 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceAggregate {
+                      count: Count!
                       node: AppearanceAggregateNode!
                     }
 
                     type AppearanceAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -8959,6 +9173,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type AppearanceMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: AppearanceMovieMoviesNodeAggregateSelection
+                    }
+
                     type AppearanceMovieMoviesAggregationSelection {
                       count: Int!
                       node: AppearanceMovieMoviesNodeAggregateSelection
@@ -8991,7 +9210,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
-                      aggregate: AppearanceMovieMoviesAggregationSelection!
+                      aggregate: AppearanceMovieMoviesAggregateSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9164,6 +9383,15 @@ describe("@filterable directive", () => {
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -9341,11 +9569,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 
@@ -9626,11 +9854,11 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorAggregate {
+                      count: Count!
                       node: ActorAggregateNode!
                     }
 
                     type ActorAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -9685,6 +9913,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -9717,7 +9950,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
-                      aggregate: ActorMovieMoviesAggregationSelection!
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9901,11 +10134,11 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceAggregate {
+                      count: Count!
                       node: AppearanceAggregateNode!
                     }
 
                     type AppearanceAggregateNode {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -9960,6 +10193,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type AppearanceMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: AppearanceMovieMoviesNodeAggregateSelection
+                    }
+
                     type AppearanceMovieMoviesAggregationSelection {
                       count: Int!
                       node: AppearanceMovieMoviesNodeAggregateSelection
@@ -9992,7 +10230,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
-                      aggregate: AppearanceMovieMoviesAggregationSelection!
+                      aggregate: AppearanceMovieMoviesAggregateSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -10165,6 +10403,15 @@ describe("@filterable directive", () => {
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -10342,11 +10589,11 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieAggregate {
+                      count: Count!
                       node: MovieAggregateNode!
                     }
 
                     type MovieAggregateNode {
-                      count: Int!
                       title: StringAggregateSelection!
                     }
 

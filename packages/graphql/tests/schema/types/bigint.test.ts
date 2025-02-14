@@ -51,6 +51,10 @@ describe("Bigint", () => {
               sum: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -78,11 +82,11 @@ describe("Bigint", () => {
             }
 
             type FileAggregate {
+              count: Count!
               node: FileAggregateNode!
             }
 
             type FileAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               size: BigIntAggregateSelection!
             }

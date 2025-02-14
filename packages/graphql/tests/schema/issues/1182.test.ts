@@ -55,11 +55,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               dob: DateTimeAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
@@ -170,6 +170,15 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -217,6 +226,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -259,7 +273,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -355,11 +369,11 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }

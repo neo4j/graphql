@@ -42,7 +42,6 @@ describe("Simple", () => {
             }
 
             type Count {
-              edges: Int!
               nodes: Int!
             }
 
@@ -94,14 +93,13 @@ describe("Simple", () => {
             }
 
             type MovieAggregate {
-              count: Count
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 

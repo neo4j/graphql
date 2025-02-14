@@ -52,11 +52,11 @@ describe("Connect Or Create", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -77,6 +77,11 @@ describe("Connect Or Create", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -120,7 +125,7 @@ describe("Connect Or Create", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -276,6 +281,15 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -308,11 +322,11 @@ describe("Connect Or Create", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               isan: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -583,11 +597,11 @@ describe("Connect Or Create", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -608,6 +622,12 @@ describe("Connect Or Create", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -660,7 +680,7 @@ describe("Connect Or Create", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -821,6 +841,15 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -860,11 +889,11 @@ describe("Connect Or Create", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               isan: StringAggregateSelection!
               title: StringAggregateSelection!
             }

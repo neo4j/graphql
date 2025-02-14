@@ -47,6 +47,15 @@ describe("Authorization", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -104,11 +113,11 @@ describe("Authorization", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -142,7 +151,7 @@ describe("Authorization", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -267,6 +276,11 @@ describe("Authorization", () => {
               name_SET: String
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -356,11 +370,11 @@ describe("Authorization", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -430,7 +444,7 @@ describe("Authorization", () => {
             }
 
             type UserPostsConnection {
-              aggregate: UserUserPostsAggregationSelection!
+              aggregate: UserUserPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -529,6 +543,11 @@ describe("Authorization", () => {
               name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
               posts: [UserPostsUpdateFieldInput!]
+            }
+
+            type UserUserPostsAggregateSelection {
+              count: CountConnection!
+              node: UserUserPostsNodeAggregateSelection
             }
 
             type UserUserPostsAggregationSelection {

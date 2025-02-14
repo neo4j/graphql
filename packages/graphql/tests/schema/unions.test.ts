@@ -46,6 +46,10 @@ describe("Unions", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -77,11 +81,11 @@ describe("Unions", () => {
             }
 
             type GenreAggregate {
+              count: Count!
               node: GenreAggregateNode!
             }
 
             type GenreAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -156,11 +160,11 @@ describe("Unions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 

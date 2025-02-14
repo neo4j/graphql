@@ -65,6 +65,10 @@ describe("Comments", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -133,13 +137,13 @@ describe("Comments", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -319,11 +323,11 @@ describe("Comments", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -385,6 +389,15 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -424,6 +437,11 @@ describe("Comments", () => {
                   id: ID
                 }
 
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
                 type MovieActorActorsAggregationSelection {
                   count: Int!
                   node: MovieActorActorsNodeAggregateSelection
@@ -455,7 +473,7 @@ describe("Comments", () => {
                 }
 
                 type MovieActorsConnection {
-                  aggregate: MovieActorActorsAggregationSelection!
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -529,11 +547,11 @@ describe("Comments", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
@@ -808,7 +826,7 @@ describe("Comments", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorProductionActedInAggregationSelection!
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -887,11 +905,11 @@ describe("Comments", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -921,6 +939,12 @@ describe("Comments", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  edge: ActorProductionActedInEdgeAggregateSelection
+                  node: ActorProductionActedInNodeAggregateSelection
                 }
 
                 type ActorProductionActedInAggregationSelection {
@@ -994,6 +1018,15 @@ describe("Comments", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -1038,11 +1071,11 @@ describe("Comments", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   runtime: IntAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1140,11 +1173,11 @@ describe("Comments", () => {
                 }
 
                 type ProductionAggregate {
+                  count: Count!
                   node: ProductionAggregateNode!
                 }
 
                 type ProductionAggregateNode {
-                  count: Int!
                   title: StringAggregateSelection!
                 }
 
@@ -1235,11 +1268,11 @@ describe("Comments", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   episodes: IntAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1375,6 +1408,10 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -1406,11 +1443,11 @@ describe("Comments", () => {
                 }
 
                 type GenreAggregate {
+                  count: Count!
                   node: GenreAggregateNode!
                 }
 
                 type GenreAggregateNode {
-                  count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
@@ -1485,11 +1522,11 @@ describe("Comments", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 

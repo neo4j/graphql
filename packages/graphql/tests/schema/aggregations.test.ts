@@ -59,6 +59,10 @@ describe("Aggregations", () => {
               sum: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -148,11 +152,11 @@ describe("Aggregations", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               imdbRating: FloatAggregateSelection!
@@ -457,6 +461,15 @@ describe("Aggregations", () => {
               max: BigInt
               min: BigInt
               sum: BigInt
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -858,11 +871,11 @@ describe("Aggregations", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               someID: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
@@ -912,7 +925,7 @@ describe("Aggregations", () => {
             }
 
             type PostLikesConnection {
-              aggregate: PostUserLikesAggregationSelection!
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1140,6 +1153,12 @@ describe("Aggregations", () => {
               title_SET: String
             }
 
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
+              edge: PostUserLikesEdgeAggregateSelection
+              node: PostUserLikesNodeAggregateSelection
+            }
+
             type PostUserLikesAggregationSelection {
               count: Int!
               edge: PostUserLikesEdgeAggregateSelection
@@ -1286,11 +1305,11 @@ describe("Aggregations", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!

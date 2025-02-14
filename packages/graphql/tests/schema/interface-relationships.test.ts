@@ -146,7 +146,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorProductionActedInAggregationSelection!
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -225,11 +225,11 @@ describe("Interface Relationships", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -259,6 +259,12 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
             }
 
             type ActorProductionActedInAggregationSelection {
@@ -332,6 +338,15 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -376,11 +391,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -478,11 +493,11 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -573,11 +588,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -825,7 +840,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorProductionActedInAggregationSelection!
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -906,11 +921,11 @@ describe("Interface Relationships", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -952,6 +967,12 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
             }
 
             type ActorProductionActedInAggregationSelection {
@@ -1025,6 +1046,15 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -1069,11 +1099,11 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeAggregate {
+              count: Count!
               node: EpisodeAggregateNode!
             }
 
             type EpisodeAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
             }
 
@@ -1140,7 +1170,7 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesConnection {
-              aggregate: EpisodeSeriesSeriesAggregationSelection!
+              aggregate: EpisodeSeriesSeriesAggregateSelection!
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1220,6 +1250,11 @@ describe("Interface Relationships", () => {
             type EpisodeSeriesRelationship {
               cursor: String!
               node: Series!
+            }
+
+            type EpisodeSeriesSeriesAggregateSelection {
+              count: CountConnection!
+              node: EpisodeSeriesSeriesNodeAggregateSelection
             }
 
             type EpisodeSeriesSeriesAggregationSelection {
@@ -1382,11 +1417,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1666,11 +1701,11 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -1891,11 +1926,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1944,6 +1979,11 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
+            type SeriesEpisodeEpisodesAggregateSelection {
+              count: CountConnection!
+              node: SeriesEpisodeEpisodesNodeAggregateSelection
+            }
+
             type SeriesEpisodeEpisodesAggregationSelection {
               count: Int!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
@@ -1976,7 +2016,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodesConnection {
-              aggregate: SeriesEpisodeEpisodesAggregationSelection!
+              aggregate: SeriesEpisodeEpisodesAggregateSelection!
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2336,7 +2376,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorProductionActedInAggregationSelection!
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2417,11 +2457,11 @@ describe("Interface Relationships", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -2463,6 +2503,12 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
             }
 
             type ActorProductionActedInAggregationSelection {
@@ -2536,6 +2582,15 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -2580,11 +2635,11 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeAggregate {
+              count: Count!
               node: EpisodeAggregateNode!
             }
 
             type EpisodeAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
             }
 
@@ -2651,7 +2706,7 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesConnection {
-              aggregate: EpisodeSeriesSeriesAggregationSelection!
+              aggregate: EpisodeSeriesSeriesAggregateSelection!
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2731,6 +2786,11 @@ describe("Interface Relationships", () => {
             type EpisodeSeriesRelationship {
               cursor: String!
               node: Series!
+            }
+
+            type EpisodeSeriesSeriesAggregateSelection {
+              count: CountConnection!
+              node: EpisodeSeriesSeriesNodeAggregateSelection
             }
 
             type EpisodeSeriesSeriesAggregationSelection {
@@ -2893,11 +2953,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3197,11 +3257,11 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -3422,11 +3482,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3475,6 +3535,11 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
+            type SeriesEpisodeEpisodesAggregateSelection {
+              count: CountConnection!
+              node: SeriesEpisodeEpisodesNodeAggregateSelection
+            }
+
             type SeriesEpisodeEpisodesAggregationSelection {
               count: Int!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
@@ -3507,7 +3572,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodesConnection {
-              aggregate: SeriesEpisodeEpisodesAggregationSelection!
+              aggregate: SeriesEpisodeEpisodesAggregateSelection!
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3835,6 +3900,15 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -3883,11 +3957,11 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1Aggregate {
+              count: Count!
               node: Interface1AggregateNode!
             }
 
             type Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -4093,11 +4167,11 @@ describe("Interface Relationships", () => {
             }
 
             type Interface2Aggregate {
+              count: Count!
               node: Interface2AggregateNode!
             }
 
             type Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -4238,11 +4312,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Aggregate {
+              count: Count!
               node: Type1AggregateNode!
             }
 
             type Type1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -4273,6 +4347,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Aggregate {
+              count: Count!
               node: Type1Interface1AggregateNode!
             }
 
@@ -4290,7 +4365,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -4305,7 +4379,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
-              aggregate: Type1Interface1Interface1AggregationSelection!
+              aggregate: Type1Interface1Interface1AggregateSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4353,6 +4427,11 @@ describe("Interface Relationships", () => {
             input Type1Interface1FieldInput {
               connect: [Type1Interface1ConnectFieldInput!]
               create: [Type1Interface1CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface1AggregateSelection {
+              count: CountConnection!
+              node: Type1Interface1Interface1NodeAggregateSelection
             }
 
             type Type1Interface1Interface1AggregationSelection {
@@ -4559,11 +4638,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2Aggregate {
+              count: Count!
               node: Type1Interface2AggregateNode!
             }
 
             type Type1Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -4695,11 +4774,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1Aggregate {
+              count: Count!
               node: Type2Interface1AggregateNode!
             }
 
             type Type2Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -4878,11 +4957,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2Aggregate {
+              count: Count!
               node: Type2Interface2AggregateNode!
             }
 
             type Type2Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -5030,6 +5109,15 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -5085,11 +5173,11 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1Aggregate {
+              count: Count!
               node: Interface1AggregateNode!
             }
 
             type Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -5349,11 +5437,11 @@ describe("Interface Relationships", () => {
             }
 
             type Interface2Aggregate {
+              count: Count!
               node: Interface2AggregateNode!
             }
 
             type Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -5557,11 +5645,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Aggregate {
+              count: Count!
               node: Type1AggregateNode!
             }
 
             type Type1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -5592,6 +5680,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Aggregate {
+              count: Count!
               node: Type1Interface1AggregateNode!
             }
 
@@ -5609,7 +5698,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -5624,7 +5712,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
-              aggregate: Type1Interface1Interface1AggregationSelection!
+              aggregate: Type1Interface1Interface1AggregateSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5672,6 +5760,11 @@ describe("Interface Relationships", () => {
             input Type1Interface1FieldInput {
               connect: [Type1Interface1ConnectFieldInput!]
               create: [Type1Interface1CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface1AggregateSelection {
+              count: CountConnection!
+              node: Type1Interface1Interface1NodeAggregateSelection
             }
 
             type Type1Interface1Interface1AggregationSelection {
@@ -5887,11 +5980,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2Aggregate {
+              count: Count!
               node: Type1Interface2AggregateNode!
             }
 
             type Type1Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -6023,11 +6116,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1Aggregate {
+              count: Count!
               node: Type2Interface1AggregateNode!
             }
 
             type Type2Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6215,11 +6308,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2Aggregate {
+              count: Count!
               node: Type2Interface2AggregateNode!
             }
 
             type Type2Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -6373,6 +6466,15 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -6428,11 +6530,11 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1Aggregate {
+              count: Count!
               node: Interface1AggregateNode!
             }
 
             type Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6712,11 +6814,11 @@ describe("Interface Relationships", () => {
             }
 
             type Interface2Aggregate {
+              count: Count!
               node: Interface2AggregateNode!
             }
 
             type Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -6857,11 +6959,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Aggregate {
+              count: Count!
               node: Type1AggregateNode!
             }
 
             type Type1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6892,6 +6994,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Aggregate {
+              count: Count!
               node: Type1Interface1AggregateNode!
             }
 
@@ -6909,7 +7012,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6924,7 +7026,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
-              aggregate: Type1Interface1Interface1AggregationSelection!
+              aggregate: Type1Interface1Interface1AggregateSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6972,6 +7074,11 @@ describe("Interface Relationships", () => {
             input Type1Interface1FieldInput {
               connect: [Type1Interface1ConnectFieldInput!]
               create: [Type1Interface1CreateFieldInput!]
+            }
+
+            type Type1Interface1Interface1AggregateSelection {
+              count: CountConnection!
+              node: Type1Interface1Interface1NodeAggregateSelection
             }
 
             type Type1Interface1Interface1AggregationSelection {
@@ -7187,11 +7294,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2Aggregate {
+              count: Count!
               node: Type1Interface2AggregateNode!
             }
 
             type Type1Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -7385,11 +7492,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1Aggregate {
+              count: Count!
               node: Type2Interface1AggregateNode!
             }
 
             type Type2Interface1AggregateNode {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -7577,11 +7684,11 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2Aggregate {
+              count: Count!
               node: Type2Interface2AggregateNode!
             }
 
             type Type2Interface2AggregateNode {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -7793,12 +7900,12 @@ describe("Interface Relationships", () => {
             }
 
             type CommentAggregate {
+              count: Count!
               node: CommentAggregateNode!
             }
 
             type CommentAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -7946,7 +8053,7 @@ describe("Interface Relationships", () => {
             }
 
             type CommentPostConnection {
-              aggregate: CommentPostPostAggregationSelection!
+              aggregate: CommentPostPostAggregateSelection!
               edges: [CommentPostRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -8011,6 +8118,11 @@ describe("Interface Relationships", () => {
               id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            type CommentPostPostAggregateSelection {
+              count: CountConnection!
+              node: CommentPostPostNodeAggregateSelection
             }
 
             type CommentPostPostAggregationSelection {
@@ -8107,12 +8219,12 @@ describe("Interface Relationships", () => {
             }
 
             type ContentAggregate {
+              count: Count!
               node: ContentAggregateNode!
             }
 
             type ContentAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -8310,6 +8422,15 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateCommentsMutationResponse {
               comments: [Comment!]!
               info: CreateInfo!
@@ -8378,12 +8499,12 @@ describe("Interface Relationships", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -8391,6 +8512,11 @@ describe("Interface Relationships", () => {
               content: StringAggregateSelection!
               count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            type PostCommentCommentsAggregateSelection {
+              count: CountConnection!
+              node: PostCommentCommentsNodeAggregateSelection
             }
 
             type PostCommentCommentsAggregationSelection {
@@ -8426,7 +8552,7 @@ describe("Interface Relationships", () => {
             }
 
             type PostCommentsConnection {
-              aggregate: PostCommentCommentsAggregationSelection!
+              aggregate: PostCommentCommentsAggregateSelection!
               edges: [PostCommentsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -8768,11 +8894,11 @@ describe("Interface Relationships", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -8810,7 +8936,7 @@ describe("Interface Relationships", () => {
             }
 
             type UserContentConnection {
-              aggregate: UserContentContentAggregationSelection!
+              aggregate: UserContentContentAggregateSelection!
               edges: [UserContentRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -8825,6 +8951,11 @@ describe("Interface Relationships", () => {
               NOT: UserContentConnectionWhere
               OR: [UserContentConnectionWhere!]
               node: ContentWhere
+            }
+
+            type UserContentContentAggregateSelection {
+              count: CountConnection!
+              node: UserContentContentNodeAggregateSelection
             }
 
             type UserContentContentAggregationSelection {
@@ -9139,7 +9270,7 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorShowActedInAggregationSelection!
+              aggregate: ActorShowActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -9220,11 +9351,11 @@ describe("Interface Relationships", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -9266,6 +9397,12 @@ describe("Interface Relationships", () => {
               Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ActorSort!]
+            }
+
+            type ActorShowActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorShowActedInEdgeAggregateSelection
+              node: ActorShowActedInNodeAggregateSelection
             }
 
             type ActorShowActedInAggregationSelection {
@@ -9337,6 +9474,15 @@ describe("Interface Relationships", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -9469,11 +9615,11 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -9603,11 +9749,11 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -9773,11 +9919,11 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -10054,11 +10200,11 @@ describe("Interface Relationships", () => {
             }
 
             type ShowAggregate {
+              count: Count!
               node: ShowAggregateNode!
             }
 
             type ShowAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 

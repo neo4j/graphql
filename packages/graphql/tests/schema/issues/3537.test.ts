@@ -336,11 +336,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               password: StringAggregateSelection!
               username: StringAggregateSelection!
             }
@@ -398,16 +398,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type Movie {
               title: String
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -562,11 +566,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               password: StringAggregateSelection!
               username: StringAggregateSelection!
             }
@@ -666,6 +670,10 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -705,11 +713,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 

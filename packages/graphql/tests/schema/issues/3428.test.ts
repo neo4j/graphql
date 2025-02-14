@@ -44,6 +44,15 @@ describe("Relationship nested operations", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -96,7 +105,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MoviePersonActorsAggregationSelection!
+              aggregate: MoviePersonActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -150,11 +159,11 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -179,6 +188,11 @@ describe("Relationship nested operations", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
+            }
+
+            type MoviePersonActorsAggregateSelection {
+              count: CountConnection!
+              node: MoviePersonActorsNodeAggregateSelection
             }
 
             type MoviePersonActorsAggregationSelection {
@@ -277,11 +291,11 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonAggregate {
+              count: Count!
               node: PersonAggregateNode!
             }
 
             type PersonAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -411,6 +425,10 @@ describe("Relationship nested operations", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -484,11 +502,11 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -597,11 +615,11 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonOneAggregate {
+              count: Count!
               node: PersonOneAggregateNode!
             }
 
             type PersonOneAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -664,11 +682,11 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonTwoAggregate {
+              count: Count!
               node: PersonTwoAggregateNode!
             }
 
             type PersonTwoAggregateNode {
-              count: Int!
               nameTwo: StringAggregateSelection!
             }
 

@@ -39,6 +39,15 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -116,11 +125,11 @@ describe("Query Direction", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -178,7 +187,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
-              aggregate: UserUserFriendsAggregationSelection!
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -273,6 +282,11 @@ describe("Query Direction", () => {
               friends: [UserFriendsUpdateFieldInput!]
               name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
+            }
+
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
             }
 
             type UserUserFriendsAggregationSelection {
@@ -346,6 +360,15 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -423,11 +446,11 @@ describe("Query Direction", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -485,7 +508,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
-              aggregate: UserUserFriendsAggregationSelection!
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -580,6 +603,11 @@ describe("Query Direction", () => {
               friends: [UserFriendsUpdateFieldInput!]
               name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               name_SET: String
+            }
+
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
             }
 
             type UserUserFriendsAggregationSelection {

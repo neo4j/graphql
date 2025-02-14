@@ -56,12 +56,12 @@ describe("200", () => {
             }
 
             type CategoryAggregate {
+              count: Count!
               node: CategoryAggregateNode!
             }
 
             type CategoryAggregateNode {
               categoryId: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              count: Int!
               description: StringAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -138,6 +138,10 @@ describe("200", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateCategoriesMutationResponse {

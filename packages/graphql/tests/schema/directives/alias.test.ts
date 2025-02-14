@@ -82,7 +82,7 @@ describe("Alias", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorMovieActedInAggregationSelection!
+              aggregate: ActorMovieActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -269,12 +269,12 @@ describe("Alias", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
               city: StringAggregateSelection!
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -297,6 +297,12 @@ describe("Alias", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorMovieActedInEdgeAggregateSelection
+              node: ActorMovieActedInNodeAggregateSelection
             }
 
             type ActorMovieActedInAggregationSelection {
@@ -390,6 +396,15 @@ describe("Alias", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -436,11 +451,11 @@ describe("Alias", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               rating: FloatAggregateSelection!
               title: StringAggregateSelection!
             }

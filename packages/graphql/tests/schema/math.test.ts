@@ -38,6 +38,10 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -77,11 +81,11 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               viewers: IntAggregateSelection!
             }
@@ -226,6 +230,10 @@ describe("Algebraic", () => {
               sum: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -258,11 +266,11 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               viewers: BigIntAggregateSelection!
             }
@@ -396,6 +404,10 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -435,11 +447,11 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               viewers: FloatAggregateSelection!
             }
@@ -580,6 +592,15 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateDirectorsMutationResponse {
               directors: [Director!]!
               info: CreateInfo!
@@ -614,11 +635,11 @@ describe("Algebraic", () => {
             }
 
             type DirectorAggregate {
+              count: Count!
               node: DirectorAggregateNode!
             }
 
             type DirectorAggregateNode {
-              count: Int!
               lastName: StringAggregateSelection!
             }
 
@@ -667,7 +688,7 @@ describe("Algebraic", () => {
             }
 
             type DirectorDirectsConnection {
-              aggregate: DirectorMovieDirectsAggregationSelection!
+              aggregate: DirectorMovieDirectsAggregateSelection!
               edges: [DirectorDirectsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -764,6 +785,11 @@ describe("Algebraic", () => {
             type DirectorEdge {
               cursor: String!
               node: Director!
+            }
+
+            type DirectorMovieDirectsAggregateSelection {
+              count: CountConnection!
+              node: DirectorMovieDirectsNodeAggregateSelection
             }
 
             type DirectorMovieDirectsAggregationSelection {
@@ -863,11 +889,11 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               viewers: IntAggregateSelection!
             }
@@ -919,7 +945,7 @@ describe("Algebraic", () => {
             }
 
             type MovieDirectedByConnection {
-              aggregate: MovieDirectorDirectedByAggregationSelection!
+              aggregate: MovieDirectorDirectedByAggregateSelection!
               edges: [MovieDirectedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -992,6 +1018,11 @@ describe("Algebraic", () => {
               disconnect: MovieDirectedByDisconnectFieldInput
               update: MovieDirectedByUpdateConnectionInput
               where: MovieDirectedByConnectionWhere
+            }
+
+            type MovieDirectorDirectedByAggregateSelection {
+              count: CountConnection!
+              node: MovieDirectorDirectedByNodeAggregateSelection
             }
 
             type MovieDirectorDirectedByAggregationSelection {
@@ -1154,6 +1185,15 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1201,11 +1241,11 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               viewers: IntAggregateSelection!
             }
@@ -1238,6 +1278,11 @@ describe("Algebraic", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
+            }
+
+            type MoviePersonWorkersAggregateSelection {
+              count: CountConnection!
+              node: MoviePersonWorkersNodeAggregateSelection
             }
 
             type MoviePersonWorkersAggregationSelection {
@@ -1334,7 +1379,7 @@ describe("Algebraic", () => {
             }
 
             type MovieWorkersConnection {
-              aggregate: MoviePersonWorkersAggregationSelection!
+              aggregate: MoviePersonWorkersAggregateSelection!
               edges: [MovieWorkersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1448,11 +1493,11 @@ describe("Algebraic", () => {
             }
 
             type PersonAggregate {
+              count: Count!
               node: PersonAggregateNode!
             }
 
             type PersonAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1494,6 +1539,11 @@ describe("Algebraic", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
+            }
+
+            type PersonProductionWorksInProductionAggregateSelection {
+              count: CountConnection!
+              node: PersonProductionWorksInProductionNodeAggregateSelection
             }
 
             type PersonProductionWorksInProductionAggregationSelection {
@@ -1573,7 +1623,7 @@ describe("Algebraic", () => {
             }
 
             type PersonWorksInProductionConnection {
-              aggregate: PersonProductionWorksInProductionAggregationSelection!
+              aggregate: PersonProductionWorksInProductionAggregateSelection!
               edges: [PersonWorksInProductionRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1656,11 +1706,11 @@ describe("Algebraic", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               viewers: IntAggregateSelection!
             }
 
@@ -1879,6 +1929,15 @@ describe("Algebraic", () => {
               roles_INCLUDES: String
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1944,7 +2003,7 @@ describe("Algebraic", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MoviePersonActorsAggregationSelection!
+              aggregate: MoviePersonActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2025,11 +2084,11 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -2071,6 +2130,12 @@ describe("Algebraic", () => {
               Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [MovieSort!]
+            }
+
+            type MoviePersonActorsAggregateSelection {
+              count: CountConnection!
+              edge: MoviePersonActorsEdgeAggregateSelection
+              node: MoviePersonActorsNodeAggregateSelection
             }
 
             type MoviePersonActorsAggregationSelection {
@@ -2200,7 +2265,7 @@ describe("Algebraic", () => {
             }
 
             type PersonActedInMoviesConnection {
-              aggregate: PersonMovieActedInMoviesAggregationSelection!
+              aggregate: PersonMovieActedInMoviesAggregateSelection!
               edges: [PersonActedInMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2281,11 +2346,11 @@ describe("Algebraic", () => {
             }
 
             type PersonAggregate {
+              count: Count!
               node: PersonAggregateNode!
             }
 
             type PersonAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -2318,6 +2383,12 @@ describe("Algebraic", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
+            }
+
+            type PersonMovieActedInMoviesAggregateSelection {
+              count: CountConnection!
+              edge: PersonMovieActedInMoviesEdgeAggregateSelection
+              node: PersonMovieActedInMoviesNodeAggregateSelection
             }
 
             type PersonMovieActedInMoviesAggregationSelection {

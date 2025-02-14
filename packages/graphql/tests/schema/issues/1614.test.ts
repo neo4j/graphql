@@ -53,6 +53,15 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateCrewMembersMutationResponse {
               crewMembers: [CrewMember!]!
               info: CreateInfo!
@@ -78,11 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMemberAggregate {
-              node: CrewMemberAggregateNode!
-            }
-
-            type CrewMemberAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type CrewMemberAggregateSelection {
@@ -100,6 +105,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             type CrewMemberEdge {
               cursor: String!
               node: CrewMember!
+            }
+
+            type CrewMemberMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: CrewMemberMovieMoviesNodeAggregateSelection
             }
 
             type CrewMemberMovieMoviesAggregationSelection {
@@ -134,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMemberMoviesConnection {
-              aggregate: CrewMemberMovieMoviesAggregationSelection!
+              aggregate: CrewMemberMovieMoviesAggregateSelection!
               edges: [CrewMemberMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -286,11 +296,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 

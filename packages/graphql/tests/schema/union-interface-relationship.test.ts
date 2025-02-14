@@ -152,11 +152,11 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               id: IntAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -196,6 +196,12 @@ describe("Union Interface Relationships", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -248,7 +254,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -438,6 +444,15 @@ describe("Union Interface Relationships", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -524,11 +539,11 @@ describe("Union Interface Relationships", () => {
             }
 
             type InfluencerAggregate {
+              count: Count!
               node: InfluencerAggregateNode!
             }
 
             type InfluencerAggregateNode {
-              count: Int!
               reputation: IntAggregateSelection!
               reviewerId: IntAggregateSelection!
               url: StringAggregateSelection!
@@ -636,6 +651,12 @@ describe("Union Interface Relationships", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -686,7 +707,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -789,11 +810,11 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               imdbId: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1023,6 +1044,12 @@ describe("Union Interface Relationships", () => {
               sort: [MovieSort!]
             }
 
+            type MovieReviewerReviewersAggregateSelection {
+              count: CountConnection!
+              edge: MovieReviewerReviewersEdgeAggregateSelection
+              node: MovieReviewerReviewersNodeAggregateSelection
+            }
+
             type MovieReviewerReviewersAggregationSelection {
               count: Int!
               edge: MovieReviewerReviewersEdgeAggregateSelection
@@ -1058,7 +1085,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieReviewersConnection {
-              aggregate: MovieReviewerReviewersAggregationSelection!
+              aggregate: MovieReviewerReviewersAggregateSelection!
               edges: [MovieReviewersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1327,11 +1354,11 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonAggregate {
+              count: Count!
               node: PersonAggregateNode!
             }
 
             type PersonAggregateNode {
-              count: Int!
               id: IntAggregateSelection!
               name: StringAggregateSelection!
               reputation: IntAggregateSelection!
@@ -1377,6 +1404,12 @@ describe("Union Interface Relationships", () => {
             type PersonEdge {
               cursor: String!
               node: Person!
+            }
+
+            type PersonMovieMoviesAggregateSelection {
+              count: CountConnection!
+              edge: PersonMovieMoviesEdgeAggregateSelection
+              node: PersonMovieMoviesNodeAggregateSelection
             }
 
             type PersonMovieMoviesAggregationSelection {
@@ -1429,7 +1462,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonMoviesConnection {
-              aggregate: PersonMovieMoviesAggregationSelection!
+              aggregate: PersonMovieMoviesAggregateSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1734,11 +1767,11 @@ describe("Union Interface Relationships", () => {
             }
 
             type ReviewerAggregate {
+              count: Count!
               node: ReviewerAggregateNode!
             }
 
             type ReviewerAggregateNode {
-              count: Int!
               reputation: IntAggregateSelection!
               reviewerId: IntAggregateSelection!
             }
