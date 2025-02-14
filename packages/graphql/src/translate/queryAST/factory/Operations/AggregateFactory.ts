@@ -158,22 +158,6 @@ export class AggregateFactory {
                     selection,
                 });
 
-                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
-
-                // TODO: Move to hydrate?
-                const nodeRawFields = {
-                    ...parsedProjectionFields.node?.fieldsByTypeName[entityOrRel.operations.aggregateTypeNames.node],
-                    ...parsedProjectionFields.fields, // Support for deprecated aggregate
-                };
-                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-                    entity,
-                    operations: ["AGGREGATE"],
-                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, nodeRawFields),
-                    context,
-                });
-
-                operation.addAuthFilters(...authFilters);
-
                 return this.hydrateAggregationOperation({
                     operation,
                     entity,
@@ -355,6 +339,10 @@ export class AggregateFactory {
                     entity,
                     operations: ["AGGREGATE"],
                     context,
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, {
+                        ...nodeRawFields,
+                        ...rawProjectionFields,
+                    }),
                 });
 
                 operation.addAuthFilters(...authFilters);
