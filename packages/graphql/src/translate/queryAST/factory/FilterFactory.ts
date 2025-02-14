@@ -809,18 +809,21 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
     }
 
-    private createCountFilter(operatorKey: string, value: unknown): CountFilter {
+    private createCountFilter(operatorKey: string, value: unknown, attachedTo: "node" | "relationship"): CountFilter {
         const operator = this.parseGenericOperator(operatorKey);
         return new CountFilter({
             operator: operator,
             comparisonValue: value,
+            attachedTo,
         });
     }
 
-    private parseConnectionAggregationCountFilter(value: Record<string, any>): CountFilter[] {
-        const nodesCount = value["nodes"];
-        return Object.entries(nodesCount).map(([key, value]) => {
-            return this.createCountFilter(key, value);
+    private parseConnectionAggregationCountFilter(
+        countInput: Record<string, any>,
+        attachedTo: "node" | "relationship"
+    ): CountFilter[] {
+        return Object.entries(countInput).map(([key, value]) => {
+            return this.createCountFilter(key, value, attachedTo);
         });
     }
 
@@ -848,14 +851,17 @@ export class FilterFactory {
                         // A little bit hacky, but here we don't longer know if we're in the likesConnection.aggregate or in likesAggregate that have different syntax for count
                         // so we check if nodes and/or edges fields are present to determine the correct parsing
                         // In v8 we will no longer have the likesAggregate syntax so we can assume the connection syntax
-                        if (isRecord(value) && value.nodes) {
+                        if (isRecord(value) && (value.nodes || value.edges)) {
                             // TODO: Add value.edges when it's supported
-                            return Object.entries(value.nodes).map(([key, value]) => {
-                                return this.createCountFilter(key, value);
+                            return Object.entries(value).flatMap(([key, value]) => {
+                                if (key === "nodes") {
+                                    return this.parseConnectionAggregationCountFilter(value, "node");
+                                }
+                                return this.parseConnectionAggregationCountFilter(value, "relationship");
                             });
                         }
                         return Object.entries(value).map(([key, value]) => {
-                            return this.createCountFilter(key, value);
+                            return this.createCountFilter(key, value, "node");
                         });
                     }
 

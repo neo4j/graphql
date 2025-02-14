@@ -38,7 +38,7 @@ describe("Disconnect using aggregate where", () => {
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             type ${userType.name} @node {
                 name: String!
                 likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
@@ -76,7 +76,7 @@ describe("Disconnect using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${userType.operations.update}(
-                    where: { name_EQ: "${userName}" }
+                    where: { name: { eq: "${userName}" } }
                     update: { 
                         likedPosts: { 
                             disconnect: { 
@@ -122,7 +122,7 @@ describe("Disconnect using aggregate where", () => {
         const query = /* GraphQL */ `
              mutation {
                  ${userType.operations.update}(
-                     where: { name_EQ: "${userName}" }
+                     where: { name: { eq: "${userName}" } }
                      update: { 
                          likedPosts: { 
                              disconnect: { 
@@ -177,7 +177,7 @@ describe("Disconnect using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${userType.operations.update}(
-                    where: { name_EQ: "${userName}" }
+                    where: { name: { eq: "${userName}" } }
                     update: { 
                         likedPosts: {
                             disconnect: {
@@ -194,7 +194,7 @@ describe("Disconnect using aggregate where", () => {
                                                     {
                                                         node: {
                                                             name: { shortestLength: { gt: 2 } }
-                                                        }
+                                                        },
                                                         count: { nodes: { eq: 2 } }
                                                     }
                                                 ]
@@ -261,7 +261,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         postType = testHelper.createUniqueType("Post");
         likeInterface = testHelper.createUniqueType("LikeEdge");
         userUnion = testHelper.createUniqueType("UserUnion");
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             type ${userType.name} @node {
                 name: String!
                 likedPosts: [${postType.name}!]! @relationship(type: "LIKES", direction: OUT, properties: "${likeInterface.name}")
@@ -286,20 +286,22 @@ describe("Disconnect UNIONs using aggregate where", () => {
         `;
 
         await testHelper.executeCypher(`
+            
             CREATE (u:${specialUserType.name} {specialName: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u3:${userType.name} {name: "${userName3}"})
             CREATE (u4:${specialUserType.name} {specialName: "${userName4}"})
-            CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${
-                postType.name
-            } {id: "${postId1}", content: "${content}" })
-            CREATE (u2)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2:${
-                postType.name
-            } {id: "${postId2}", content: "${content2}" })
-            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
-            CREATE (p3:${postType.name} {id: "${postId3}", content: "${content3}" })
+            CREATE (p:${postType.name} {id: "${postId1}", content: "${content}"})
+            CREATE (p2:${postType.name} {id: "${postId2}", content: "${content2}"})
+            CREATE (p3:${postType.name} {id: "${postId3}", content: "${content3}"})
+            
+            CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p)
             CREATE (u)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
-            CREATE (u3)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p2)
+
+            CREATE (u2)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2)
+            
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date3.toISOString()}")}]->(p2)
+            CREATE (u3)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p3)
         `);
 
         await testHelper.initNeo4jGraphQL({
@@ -315,11 +317,11 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
-                    where: { id_EQ: "${postId2}" }
+                    where: { id: { eq: "${postId2}" } }
                     update: {
                         likes: {
                             ${specialUserType.name}: {
-                                    disconnect: {
+                                disconnect: {
                                     where: {
                                         node: {
                                             likedPostsConnection: {
@@ -375,7 +377,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
-                    where: { id_EQ: "${postId2}" }
+                    where: { id: { eq: "${postId2}" } }
                     update: {
                         likes: {
                             ${userType.name}: {
@@ -425,13 +427,18 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        const users = (gqlResult.data as any)[postType.operations.update][postType.plural] as any[];
-        expect(users).toEqual([
-            {
-                id: postId2,
-                likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
-            },
-        ]);
+        expect(gqlResult.data).toEqual(
+            expect.objectContaining({
+                [postType.operations.update]: expect.objectContaining({
+                    [postType.plural]: expect.toIncludeSameMembers([
+                        {
+                            id: postId2,
+                            likes: expect.toIncludeSameMembers([{ specialName: userName }, { name: userName2 }]),
+                        },
+                    ]),
+                }),
+            })
+        );
         const storedValue = await testHelper.executeCypher(
             `
             MATCH (u:${specialUserType.name})-[r:LIKES]->(p:${postType.name})
@@ -451,7 +458,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
-                    where: { id_EQ: "${postId2}" }
+                    where: { id: { eq: "${postId2}" } }
                     update: {
                         likes: {
                             ${userType.name}: {
@@ -527,7 +534,7 @@ describe("Disconnect UNIONs using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(
-                    where: { id_EQ: "${postId2}" }
+                    where: { id: { eq: "${postId2}" } }
                     update: {
                         likes: {
                             ${userType.name}: {
