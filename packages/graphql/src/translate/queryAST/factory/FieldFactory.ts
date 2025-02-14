@@ -42,6 +42,7 @@ import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOp
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
+import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 export class FieldFactory {
@@ -138,11 +139,17 @@ export class FieldFactory {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
                 if (field.name === "count") {
-                    if (field.fieldsByTypeName["Count"] || field.fieldsByTypeName["CountConnection"]) {
-                        // New Count
+                    const countFields = field.fieldsByTypeName["Count"] ?? field.fieldsByTypeName["CountConnection"];
+                    if (countFields) {
+                        const hasNodes = findFieldsByNameInFieldsByTypeNameField(countFields, "nodes").length > 0;
+                        const hasEdges = findFieldsByNameInFieldsByTypeNameField(countFields, "edges").length > 0;
                         return new CountField({
                             alias: field.alias,
                             entity: entity as any,
+                            fields: {
+                                nodes: hasNodes,
+                                edges: hasEdges,
+                            },
                         });
                     }
                     return new DeprecatedCountField({

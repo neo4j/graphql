@@ -24,10 +24,22 @@ import { AggregationField } from "./AggregationField";
 
 export class CountField extends AggregationField {
     private entity: Entity;
+    public edgeVar: Cypher.Variable | undefined;
 
-    constructor({ alias, entity }: { alias: string; entity: Entity }) {
+    private countFields: { nodes: boolean; edges: boolean };
+
+    constructor({
+        alias,
+        entity,
+        fields,
+    }: {
+        alias: string;
+        entity: Entity;
+        fields: { nodes: boolean; edges: boolean };
+    }) {
         super(alias);
         this.entity = entity;
+        this.countFields = fields;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -43,6 +55,20 @@ export class CountField extends AggregationField {
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {
-        return new Cypher.Return([new Cypher.Map({ nodes: this.getAggregationExpr(target) }), returnVar]);
+        const resultMap = new Cypher.Map();
+
+        if (this.countFields.nodes) {
+            resultMap.set("nodes", this.getAggregationExpr(target));
+        }
+        if (this.countFields.edges) {
+            if (!this.edgeVar) {
+                throw new Error(
+                    "Edge variable not defined in Count field. This is likely a bug with the GraphQL library."
+                );
+            }
+            resultMap.set("edges", this.getAggregationExpr(this.edgeVar));
+        }
+
+        return new Cypher.Return([resultMap, returnVar]);
     }
 }

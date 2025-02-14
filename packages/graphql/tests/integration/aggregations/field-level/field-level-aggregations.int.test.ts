@@ -71,6 +71,7 @@ describe("Field Level Aggregations", () => {
                         aggregate {
                             count {
                                 nodes
+                                edges
                             }
                         }
                     }
@@ -89,6 +90,7 @@ describe("Field Level Aggregations", () => {
                         aggregate: {
                             count: {
                                 nodes: 2,
+                                edges: 2,
                             },
                         },
                     },
