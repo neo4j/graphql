@@ -150,7 +150,7 @@ describe("aggregation where count edges", () => {
             {
                 title: "Post B",
                 likes: expect.toIncludeSameMembers([{ name: "Alice" }, { name: "Bob" }]),
-            },            
+            },
         ]);
     });
 });
