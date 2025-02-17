@@ -17,22 +17,19 @@
  * limitations under the License.
  */
 
-import { EventEmitter } from "events";
-import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "../../types";
+import { type ASTNode } from "graphql";
+import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
+import { getParentType } from "./get-parent-type";
 
-export class Neo4jGraphQLSubscriptionsDefaultEngine implements Neo4jGraphQLSubscriptionsEngine {
-    public events: EventEmitter = new EventEmitter();
-
-    public closed = false;
-
-    public publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
-        if (!this.closed) {
-            this.events.emit(eventMeta.event, eventMeta);
-        }
-    }
-
-    /** Stops event publishing */
-    public close(): void {
-        this.closed = true;
-    }
+export function fieldIsInSubscriptionType({
+    path,
+    ancestors,
+    typeMapWithExtensions,
+}: {
+    path: readonly (string | number)[];
+    ancestors: readonly (ASTNode | readonly ASTNode[])[];
+    typeMapWithExtensions: TypeMapWithExtensions;
+}): boolean {
+    const parentTypeAndExtensions = getParentType({ path, ancestors, typeMapWithExtensions });
+    return parentTypeAndExtensions.definition.name.value === "Subscription";
 }

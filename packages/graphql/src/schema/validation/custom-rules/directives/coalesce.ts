@@ -16,51 +16,103 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, FieldDefinitionNode, EnumTypeDefinitionNode } from "graphql";
+
+import type { ASTVisitor, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
+import { GRAPHQL_BUILTIN_SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../../../../constants";
+import { coalesceDirective } from "../../../../graphql/directives";
+import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
+import { getPathToNode } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
-import { getInnerTypeName, isArrayType } from "../utils/utils";
-import { GRAPHQL_BUILTIN_SCALAR_TYPES, isSpatial, isTemporal } from "../../../../constants";
-import { DocumentValidationError } from "../utils/document-validation-error";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
-export function verifyCoalesce(enums: EnumTypeDefinitionNode[]) {
-    return function ({
-        directiveNode,
-        traversedDef,
-    }: {
-        directiveNode: DirectiveNode;
-        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-    }) {
-        if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-            // delegate
-            return;
-        }
-        const coalesceArg = directiveNode.arguments?.find((a) => a.name.value === "value");
-        const expectedType = getInnerTypeName(traversedDef.type);
+export function validateCoalesceDirective(context: Neo4jValidationContext): ASTVisitor {
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
+    }
+    const enumsTypes: EnumTypeDefinitionNode[] = Object.values(typeMapWithExtensions)
+        .map((type) => type.definition)
+        .filter((definition): definition is EnumTypeDefinitionNode => definition.kind === Kind.ENUM_TYPE_DEFINITION);
 
-        if (!coalesceArg) {
-            // delegate to DirectiveArgumentOfCorrectType rule
-            return;
-        }
-
-        if (!isArrayType(traversedDef)) {
-            if (isSpatial(expectedType)) {
-                throw new DocumentValidationError(`@coalesce is not supported by Spatial types.`, ["value"]);
+    return {
+        FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            const coalesce = fieldDefinitionNode.directives?.find(
+                (directive) => directive.name.value === coalesceDirective.name
+            );
+            if (!coalesce) {
+                return;
             }
-            if (isTemporal(expectedType)) {
-                throw new DocumentValidationError(`@coalesce is not supported by Temporal types.`, ["value"]);
+            const valueArg = coalesce.arguments?.find((arg) => arg.name.value === "value");
+            if (!valueArg) {
+                return;
             }
-            if (
-                !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(expectedType) &&
-                !enums.find((x) => x.name.value === expectedType)
-            ) {
-                throw new DocumentValidationError(
-                    `@coalesce directive can only be used on types: Int | Float | String | Boolean | ID | Enum`,
-                    []
+            const isValidLocation =
+                fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                fieldIsInRelationshipPropertiesType({ path, ancestors, typeMapWithExtensions });
+
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
+                if (!isValidLocation) {
+                    throw new DocumentValidationError(
+                        `Directive @"${coalesceDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
+                        []
+                    );
+                }
+                assertTypeIsSupportedByCoalesce(fieldDefinitionNode.type, typeMapWithExtensions);
+                // for compatibility with previous helper we generate the enumTypes here, but it can be passed the typeMap instead.
+                assertArgumentHasSameTypeAsField({
+                    directiveName: coalesceDirective.name,
+                    traversedDef: fieldDefinitionNode,
+                    argument: valueArg,
+                    enums: enumsTypes,
+                });
+            });
+
+            if (!isValid) {
+                const pathToNode = getPathToNode(path, ancestors);
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [fieldDefinitionNode],
+                        path: [...pathToNode[0], `@${coalesceDirective.name}`, ...errorPath],
+                        errorMsg,
+                    })
                 );
             }
-        }
-        assertArgumentHasSameTypeAsField({ directiveName: "@coalesce", traversedDef, argument: coalesceArg, enums });
+        },
     };
+}
+
+function assertTypeIsSupportedByCoalesce(typeNode: TypeNode, typeMapWithExtensions: TypeMapWithExtensions): void {
+    if (typeNode.kind === Kind.LIST_TYPE) {
+        assertTypeIsSupportedByCoalesce(typeNode.type, typeMapWithExtensions);
+    }
+    if (typeNode.kind === Kind.NON_NULL_TYPE) {
+        assertTypeIsSupportedByCoalesce(typeNode.type, typeMapWithExtensions);
+    }
+
+    if (typeNode.kind === Kind.NAMED_TYPE) {
+        if (GRAPHQL_BUILTIN_SCALAR_TYPES.includes(typeNode.name.value)) {
+            return;
+        }
+
+        if (SPATIAL_TYPES.includes(typeNode.name.value)) {
+            throw new DocumentValidationError(`@${coalesceDirective.name} is not supported by Spatial types.`, []);
+        }
+
+        if (TEMPORAL_SCALAR_TYPES.includes(typeNode.name.value)) {
+            throw new DocumentValidationError(`@${coalesceDirective.name} is not supported by Temporal types.`, []);
+        }
+        // check if the type is an enum
+        const typeFromMap = typeMapWithExtensions[typeNode.name.value];
+        if (typeFromMap?.definition.kind === Kind.ENUM_TYPE_DEFINITION) {
+            return;
+        }
+
+        throw new DocumentValidationError(
+            `@${coalesceDirective.name} directive can only be used on types: Int | Float | String | Boolean | ID | Enum`,
+            []
+        );
+    }
 }

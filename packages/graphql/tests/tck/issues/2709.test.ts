@@ -102,7 +102,8 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1)
                 WHERE (this1.name = $param0 AND (this1:Dishney OR this1:Prime OR this1:Netflix))
@@ -134,7 +135,8 @@ describe("https://github.com/neo4j/graphql/issues/2709", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1)
                 WHERE ((this1.name = $param0 OR this1.name = $param1) AND (this1:Dishney OR this1:Prime OR this1:Netflix))
@@ -232,7 +234,8 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Netflix)
                 WHERE this1.name = $param0
@@ -262,7 +265,8 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Dishney)
                 WHERE this1.name = $param0
@@ -288,7 +292,8 @@ describe("https://github.com/neo4j/graphql/issues/2709 union parity", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             WHERE EXISTS {
                 MATCH (this)<-[this0:DISTRIBUTED_BY]-(this1:Dishney)
                 WHERE this1.name = $param0

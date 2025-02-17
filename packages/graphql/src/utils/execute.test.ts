@@ -48,7 +48,7 @@ describe("execute", () => {
 
                         const tx = {
                             run: (paramCypher, paramParams) => {
-                                expect(paramCypher).toEqual(cypher);
+                                expect(paramCypher).toBe(`CYPHER 5\n${cypher}`);
                                 expect(paramParams).toEqual(params);
 
                                 return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
@@ -126,7 +126,7 @@ describe("execute", () => {
 
                     const tx = {
                         run: (paramCypher: string, paramParams) => {
-                            expect(trimmer(paramCypher)).toEqual(cypher);
+                            expect(trimmer(paramCypher)).toBe(`CYPHER 5 ${cypher}`);
                             expect(paramParams).toEqual(params);
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
@@ -189,6 +189,7 @@ describe("execute", () => {
         `);
 
             const expectedCypher = trimmer(`
+            CYPHER 5
             CYPHER runtime=interpreted planner=cost updateStrategy=default expressionEngine=compiled operatorEngine=compiled interpretedPipesFallback=all replan=default
             CREATE (u:User {title: $title})
             RETURN u { .title } as u

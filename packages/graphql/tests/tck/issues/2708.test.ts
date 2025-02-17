@@ -63,7 +63,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -103,7 +104,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -143,7 +145,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -185,7 +188,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -227,7 +231,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -264,7 +269,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -304,7 +310,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -344,7 +351,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -384,7 +392,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -424,7 +433,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -480,7 +490,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -520,7 +531,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -587,7 +599,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -647,7 +660,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -705,7 +719,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -759,7 +774,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -819,7 +835,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)
@@ -902,7 +919,8 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[:IN_GENRE]->(this0:Genre)

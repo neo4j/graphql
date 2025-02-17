@@ -275,6 +275,7 @@ export interface CypherQueryOptions {
     operatorEngine?: "default" | "interpreted" | "compiled";
     interpretedPipesFallback?: "default" | "disabled" | "whitelisted_plans_only" | "all";
     replan?: "default" | "force" | "skip";
+    addVersionPrefix?: boolean;
 }
 
 /** Input field for graphql-compose */
@@ -359,8 +360,6 @@ export type SubscriptionEngineContext = {
 /** Defines a custom mechanism to transport subscription events internally between servers */
 export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
-
-    publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
 
     /** To be called, if needed, in getSchema */
     init?(context: SubscriptionEngineContext): Promise<void>;

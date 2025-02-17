@@ -50,7 +50,8 @@ describe("Cypher Aggregations LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 RETURN { min: min(this.createdAt) } AS var0
             }
@@ -74,7 +75,8 @@ describe("Cypher Aggregations LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 RETURN { max: max(this.createdAt) } AS var0
             }
@@ -99,7 +101,8 @@ describe("Cypher Aggregations LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 RETURN { min: min(this.createdAt), max: max(this.createdAt) } AS var0
             }

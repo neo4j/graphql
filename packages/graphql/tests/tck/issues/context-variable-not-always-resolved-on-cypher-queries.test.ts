@@ -94,7 +94,8 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Exprlabel:test:Resource)
+            "CYPHER 5
+            MATCH (this:Exprlabel:test:Resource)
             WHERE EXISTS {
                 MATCH (this)-[:realizationOf]->(this0:WorkLabel:test:Resource)
                 WHERE EXISTS {
@@ -151,7 +152,8 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Exprlabel:test:Resource)
+            "CYPHER 5
+            MATCH (this:Exprlabel:test:Resource)
             WHERE EXISTS {
                 MATCH (this)-[:realizationOf]->(this0:WorkLabel:test:Resource)
                 WHERE EXISTS {
@@ -224,7 +226,8 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Exprlabel:test:Resource)
+            "CYPHER 5
+            MATCH (this:Exprlabel:test:Resource)
             WHERE EXISTS {
                 MATCH (this)-[:realizationOf]->(this0:WorkLabel:test:Resource)
                 WHERE EXISTS {

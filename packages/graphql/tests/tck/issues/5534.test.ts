@@ -74,7 +74,8 @@ describe("https://github.com/neo4j/graphql/issues/5534", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Product)
+            "CYPHER 5
+            MATCH (this:Product)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:PRODUCT_HAS_FAMILY_PRODUCT]-(this1:Product)

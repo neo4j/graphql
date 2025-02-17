@@ -16,69 +16,114 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, FieldDefinitionNode } from "graphql";
-import { Kind } from "graphql";
+
+import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, TypeNode } from "graphql";
+import { GraphQLID, GraphQLString, Kind } from "graphql";
+import { fulltextDirective } from "../../../../graphql/directives";
 import type { FulltextField } from "../../../../schema-model/annotation/FulltextAnnotation";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import { DocumentValidationError } from "../utils/document-validation-error";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { asArray } from "../../../../utils/utils";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 
-export function verifyFulltext({
-    directiveNode,
-    traversedDef,
-}: {
-    directiveNode: DirectiveNode;
-    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-}) {
-    if (traversedDef.kind !== Kind.OBJECT_TYPE_DEFINITION && traversedDef.kind !== Kind.OBJECT_TYPE_EXTENSION) {
-        // delegate
-        return;
+export function validateFulltextDirective(context: Neo4jValidationContext): ASTVisitor {
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
-    const indexesArg = directiveNode.arguments?.find((a) => a.name.value === "indexes");
-    if (!indexesArg) {
-        // delegate to DirectiveArgumentOfCorrectType rule
-        return;
-    }
-    const indexesValue = parseValueNode(indexesArg.value) as FulltextField[];
-    const compatibleFields = traversedDef.fields?.filter((f) => {
-        if (f.type.kind === Kind.NON_NULL_TYPE) {
-            const innerType = f.type.type;
-            if (innerType.kind === Kind.NAMED_TYPE) {
-                return ["String", "ID"].includes(innerType.name.value);
+    return {
+        ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, _path, _ancestors) {
+            const { directives } = objectTypeDefinitionNode;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
+            const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
+                return extensionNode.directives ?? [];
+            });
+            const allDirectives = [...(directives ?? []), ...extensionsDirectives];
+            const appliedFulltextDirective = allDirectives.find(
+                (directive) => directive.name.value === fulltextDirective.name
+            );
+            if (!appliedFulltextDirective) {
+                return;
             }
-        }
-        if (f.type.kind === Kind.NAMED_TYPE) {
-            return ["String", "ID"].includes(f.type.name.value);
-        }
-        return false;
-    });
-    indexesValue.forEach((index) => {
-        const indexName = index.indexName;
-        const indexNames = indexesValue.filter((i) => indexName === i.indexName);
-        if (indexNames.length > 1) {
-            throw new DocumentValidationError(
-                `@fulltext.indexes invalid value for: ${indexName}. Duplicate index name.`,
-                ["indexes"]
-            );
-        }
+            const indexesArg = appliedFulltextDirective.arguments?.find((a) => a.name.value === "indexes");
+            if (!indexesArg) {
+                // delegate to DirectiveArgumentOfCorrectType rule
+                return;
+            }
 
-        const queryName = index.queryName;
-        const queryNames = indexesValue.filter((i) => queryName === i.queryName);
-        if (queryNames.length > 1) {
-            throw new DocumentValidationError(
-                `@fulltext.indexes invalid value for: ${queryName}. Duplicate query name.`,
-                ["indexes"]
-            );
-        }
+            const compatibleFields = getFulltextCompatibleFields(objectTypeDefinitionNode);
+            const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
+                if (!isValidLocation) {
+                    throw new DocumentValidationError(
+                        `Directive "${fulltextDirective.name}" requires in a type with "@node"`,
+                        []
+                    );
+                }
+                const indexesValues = parseValueNode(indexesArg.value) as FulltextField[];
 
-        (index.fields || []).forEach((field) => {
-            const foundField = compatibleFields?.some((f) => f.name.value === field);
-            if (!foundField) {
-                throw new DocumentValidationError(
-                    `@fulltext.indexes invalid value for: ${indexName}. Field ${field} is not of type String or ID.`,
-                    ["indexes"]
+                indexesValues.forEach((indexValue) => {
+                    const indexName = indexValue.indexName;
+                    const indexNames = indexesValues.filter((i) => indexName === i.indexName);
+                    if (indexNames.length > 1) {
+                        throw new DocumentValidationError(
+                            `@${fulltextDirective.name}.indexes invalid value for: ${indexName}. Duplicate index name.`,
+                            ["indexes"]
+                        );
+                    }
+
+                    const queryName = indexValue.queryName;
+                    const queryNames = indexesValues.filter((i) => queryName === i.queryName);
+                    if (queryNames.length > 1) {
+                        throw new DocumentValidationError(
+                            `@${fulltextDirective.name}.indexes invalid value for: ${queryName}. Duplicate query name.`,
+                            ["indexes"]
+                        );
+                    }
+                    asArray(indexValue.fields).forEach((indexField) => {
+                        if (!compatibleFields[indexField]) {
+                            throw new DocumentValidationError(
+                                `@${fulltextDirective.name}.indexes invalid value for: ${indexValue.indexName}. Field ${indexField} is not of type String or ID.`,
+                                ["indexes"]
+                            );
+                        }
+                    });
+                });
+            });
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [objectTypeDefinitionNode],
+                        path: [objectTypeDefinitionNode.name.value, `@${fulltextDirective.name}`, ...errorPath],
+                        errorMsg,
+                    })
                 );
             }
-        });
-    });
+        },
+    };
+}
+
+function getFulltextCompatibleFields(
+    objectTypeDefinitionNode: ObjectTypeDefinitionNode
+): Record<string, FieldDefinitionNode> {
+    return (objectTypeDefinitionNode.fields ?? []).reduce(
+        (acc, f): Record<string, FieldDefinitionNode> => {
+            if (isFieldFullTextCompatible(f.type)) {
+                acc[f.name.value] = f;
+            }
+            return acc;
+        },
+        {} as Record<string, FieldDefinitionNode>
+    );
+}
+
+function isFieldFullTextCompatible(fieldType: TypeNode): boolean {
+    if (fieldType.kind === Kind.NAMED_TYPE) {
+        return [GraphQLString.name, GraphQLID.name].includes(fieldType.name.value);
+    }
+    if (fieldType.kind === Kind.NON_NULL_TYPE) {
+        return isFieldFullTextCompatible(fieldType.type);
+    }
+    return false;
 }

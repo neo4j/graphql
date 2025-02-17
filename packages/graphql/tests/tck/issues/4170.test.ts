@@ -162,7 +162,8 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Tenant)
             SET this0.id = randomUUID()
             WITH *

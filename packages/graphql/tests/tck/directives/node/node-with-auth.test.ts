@@ -80,7 +80,8 @@ describe("Node Directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
@@ -112,16 +113,18 @@ describe("Node Directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Comment)
+            "CYPHER 5
+            MATCH (this:Comment)
             WHERE (EXISTS {
                 MATCH (this)<-[:HAS_POST]-(this0:Person)
-                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this0.id = $param2)
+                WHERE this0.id = $param0
             } AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"123\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -129,7 +132,6 @@ describe("Node Directive", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"param2\\": \\"123\\",
                 \\"param3\\": \\"admin\\"
             }"
         `);

@@ -55,7 +55,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE EXISTS {
                 MATCH (this)-[:HAS_GROUP]->(this0:Group)
                 WHERE this0.name IN $param0
@@ -84,7 +85,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Group)
+            "CYPHER 5
+            MATCH (this:Group)
             WHERE EXISTS {
                 MATCH (this)<-[:HAS_GROUP]-(this0:User)
                 WHERE EXISTS {
