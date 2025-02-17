@@ -770,6 +770,15 @@ export class FilterFactory {
             context,
         });
 
+        attributes?.forEach((attribute) => {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["FILTER"],
+                context,
+                field: attribute.name,
+            });
+        });
+
         return this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
             operations: ["FILTER"],

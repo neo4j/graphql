@@ -3321,4 +3321,200 @@ describe("auth/is-authenticated", () => {
             });
         });
     });
+
+    describe("filter", () => {
+        test("should throw if not authenticated type definition", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${Product} @node {
+                    id: ID
+                    name: String
+                    purchasedBy: [${User}!]! @relationship(type: "PURCHASED", direction: IN)
+                }
+
+                type ${User} @authentication(operations: [FILTER]) @node {
+                    id: ID
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Product.plural}(where: { purchasedBy: { some: { id: { eq: "1" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            const token = "not valid token";
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+        });
+
+        test("should not throw if authenticated type definition", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${Product} @node {
+                    id: ID
+                    name: String
+                    purchasedBy: [${User}!]! @relationship(type: "PURCHASED", direction: IN)
+                }
+
+                type ${User} @authentication(operations: [FILTER]) @node {
+                    id: ID
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Product.plural}(where: { purchasedBy: { some: { id: { eq: "1" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+        });
+
+        test("should not throw if authenticated with correct role type definition", async () => {
+            const typeDefs = /* GraphQL */ `
+                type JWTPayload @jwt {
+                    roles: [String!]!
+                }
+                
+                type ${Product} @node {
+                    id: ID
+                    name: String
+                    purchasedBy: [${User}!]! @relationship(type: "PURCHASED", direction: IN)
+                }
+
+                type ${User} @authentication(operations: [FILTER], jwt: { roles: { includes: "admin" } }) @node {
+                    id: ID
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Product.plural}(where: { purchasedBy: { some: { id: { eq: "1" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, { roles: ["super-admin", "admin"] });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+        });
+
+        test("should throw if authenticated with incorrect role type definition", async () => {
+            const typeDefs = /* GraphQL */ `
+                type JWTPayload @jwt {
+                    roles: [String!]!
+                }
+                
+                type ${Product} @node {
+                    id: ID
+                    name: String
+                    purchasedBy: [${User}!]! @relationship(type: "PURCHASED", direction: IN)
+                }
+
+                type ${User} @authentication(operations: [FILTER], jwt: { roles: { includes: "admin" } }) @node {
+                    id: ID
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Product.plural}(where: { purchasedBy: { some: { id: { eq: "1" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            const token = createBearerToken(secret, { roles: ["super-admin"] });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+        });
+
+        test("should throw if not authenticated on field definition", async () => {
+            const typeDefs = /* GraphQL */ `
+            type ${Product} @node {
+                    id: ID
+                    name: String
+                    purchasedBy: [${User}!]! @relationship(type: "PURCHASED", direction: IN)
+                }
+
+                type ${User} @node {
+                    id: ID
+                    password: String  @authentication(operations: [FILTER])
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Product.plural}(where: { purchasedBy: { some: { password: { eq: "password" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            const token = "not valid token";
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
+        });
+    });
 });
