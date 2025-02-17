@@ -7,7 +7,40 @@ query TopLevelAggregate {
     }
 }
 
-query TopLevelAggregateWithMultipleFields {
+query TopLevelAggregateWithMultipleFields_only {
+    peopleConnection {
+        aggregate {
+            count {
+                nodes
+            }
+            node {
+                name {
+                    shortest
+                }
+                born {
+                    max
+                }
+            }
+        }
+    }
+}
+
+query NestedAggregation_only {
+    people {
+        name
+        moviesConnection {
+            aggregate {
+                node {
+                    title {
+                        longest
+                    }
+                }
+            }
+        }
+    }
+}
+
+query TopLevelAggregateWithMultipleFieldsDeprecated_only {
     peopleAggregate {
         count
         name {
@@ -19,7 +52,7 @@ query TopLevelAggregateWithMultipleFields {
     }
 }
 
-query NestedAggregation {
+query NestedAggregationDeprecated {
     people {
         name
         moviesAggregate {
