@@ -57,6 +57,10 @@ describe("typename_IN", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -101,11 +105,11 @@ describe("typename_IN", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
@@ -198,11 +202,11 @@ describe("typename_IN", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
@@ -285,11 +289,11 @@ describe("typename_IN", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               numberOfEpisodes: IntAggregateSelection!
               title: StringAggregateSelection!

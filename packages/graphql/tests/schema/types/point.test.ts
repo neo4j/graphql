@@ -38,6 +38,10 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -64,11 +68,7 @@ describe("Point", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -235,6 +235,10 @@ describe("Point", () => {
               z: Float
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -261,11 +265,7 @@ describe("Point", () => {
             }
 
             type MachineAggregate {
-              node: MachineAggregateNode!
-            }
-
-            type MachineAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MachineAggregateSelection {
@@ -383,6 +383,10 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -409,11 +413,7 @@ describe("Point", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -545,6 +545,10 @@ describe("Point", () => {
               z: Float
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -571,11 +575,7 @@ describe("Point", () => {
             }
 
             type MachineAggregate {
-              node: MachineAggregateNode!
-            }
-
-            type MachineAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MachineAggregateSelection {

@@ -69,6 +69,15 @@ describe("Apollo Federation", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -120,12 +129,12 @@ describe("Apollo Federation", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -156,7 +165,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -279,6 +288,11 @@ describe("Apollo Federation", () => {
               content_SET: String
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -361,11 +375,11 @@ describe("Apollo Federation", () => {
             }
 
             type UserAggregate @shareable {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode @shareable {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -409,6 +423,11 @@ describe("Apollo Federation", () => {
               sort: [UserSort!]
             }
 
+            type UserPostPostsAggregateSelection {
+              count: CountConnection!
+              node: UserPostPostsNodeAggregateSelection
+            }
+
             type UserPostPostsAggregationSelection {
               count: Int!
               node: UserPostPostsNodeAggregateSelection
@@ -441,7 +460,7 @@ describe("Apollo Federation", () => {
             }
 
             type UserPostsConnection {
-              aggregate: UserPostPostsAggregationSelection!
+              aggregate: UserPostPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -641,6 +660,15 @@ describe("Apollo Federation", () => {
 
             directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -692,12 +720,12 @@ describe("Apollo Federation", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -727,7 +755,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -836,6 +864,11 @@ describe("Apollo Federation", () => {
               content_SET: String
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -916,11 +949,11 @@ describe("Apollo Federation", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 

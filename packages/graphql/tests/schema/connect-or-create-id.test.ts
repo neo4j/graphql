@@ -52,11 +52,11 @@ describe("connect or create with id", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -77,6 +77,11 @@ describe("connect or create with id", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -120,7 +125,7 @@ describe("connect or create with id", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -271,6 +276,15 @@ describe("connect or create with id", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -308,11 +322,11 @@ describe("connect or create with id", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
@@ -481,6 +495,15 @@ describe("connect or create with id", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -547,12 +570,12 @@ describe("connect or create with id", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
@@ -615,7 +638,7 @@ describe("connect or create with id", () => {
             }
 
             type PostCreatorConnection {
-              aggregate: PostUserCreatorAggregationSelection!
+              aggregate: PostUserCreatorAggregateSelection!
               edges: [PostCreatorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -754,6 +777,11 @@ describe("connect or create with id", () => {
               id_SET: ID
             }
 
+            type PostUserCreatorAggregateSelection {
+              count: CountConnection!
+              node: PostUserCreatorNodeAggregateSelection
+            }
+
             type PostUserCreatorAggregationSelection {
               count: Int!
               node: PostUserCreatorNodeAggregateSelection
@@ -850,11 +878,11 @@ describe("connect or create with id", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -908,6 +936,11 @@ describe("connect or create with id", () => {
               sort: [UserSort!]
             }
 
+            type UserPostPostsAggregateSelection {
+              count: CountConnection!
+              node: UserPostPostsNodeAggregateSelection
+            }
+
             type UserPostPostsAggregationSelection {
               count: Int!
               node: UserPostPostsNodeAggregateSelection
@@ -951,7 +984,7 @@ describe("connect or create with id", () => {
             }
 
             type UserPostsConnection {
-              aggregate: UserPostPostsAggregationSelection!
+              aggregate: UserPostPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

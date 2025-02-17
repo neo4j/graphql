@@ -116,7 +116,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorMovieActedInAggregationSelection!
+              aggregate: ActorMovieActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -212,11 +212,11 @@ describe("Arrays Methods", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -249,6 +249,11 @@ describe("Arrays Methods", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieActedInAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieActedInNodeAggregateSelection
             }
 
             type ActorMovieActedInAggregationSelection {
@@ -327,6 +332,15 @@ describe("Arrays Methods", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -374,6 +388,11 @@ describe("Arrays Methods", () => {
               ratings: [Float!]!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -407,7 +426,7 @@ describe("Arrays Methods", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -488,12 +507,12 @@ describe("Arrays Methods", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 

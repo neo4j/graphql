@@ -51,6 +51,15 @@ describe("Aggregate operations", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -188,11 +197,11 @@ describe("Aggregate operations", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -234,7 +243,7 @@ describe("Aggregate operations", () => {
             }
 
             type PostLikesConnection {
-              aggregate: PostUserLikesAggregationSelection!
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -354,8 +363,8 @@ describe("Aggregate operations", () => {
               title_SET: String
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
               edge: PostUserLikesEdgeAggregateSelection
               node: PostUserLikesNodeAggregateSelection
             }
@@ -460,11 +469,11 @@ describe("Aggregate operations", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               someID: IntAggregateSelection!
               someString: StringAggregateSelection!
             }

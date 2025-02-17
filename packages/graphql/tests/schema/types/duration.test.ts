@@ -39,6 +39,10 @@ describe("Duration", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -79,11 +83,11 @@ describe("Duration", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               duration: DurationAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }

@@ -39,6 +39,10 @@ describe("@settable", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -66,11 +70,11 @@ describe("@settable", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -204,6 +208,10 @@ describe("@settable", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -231,11 +239,11 @@ describe("@settable", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -369,6 +377,10 @@ describe("@settable", () => {
               subscription: Subscription
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -404,11 +416,11 @@ describe("@settable", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -625,7 +637,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorMovieActedInAggregationSelection!
+                  aggregate: ActorMovieActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -709,11 +721,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -733,6 +745,11 @@ describe("@settable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
+                }
+
+                type ActorMovieActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorMovieActedInNodeAggregateSelection
                 }
 
                 type ActorMovieActedInAggregationSelection {
@@ -811,6 +828,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -843,11 +869,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1033,7 +1059,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorMovieActedInAggregationSelection!
+                  aggregate: ActorMovieActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1105,11 +1131,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -1130,6 +1156,11 @@ describe("@settable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
+                }
+
+                type ActorMovieActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorMovieActedInNodeAggregateSelection
                 }
 
                 type ActorMovieActedInAggregationSelection {
@@ -1207,6 +1238,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -1239,11 +1279,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1429,7 +1469,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorMovieActedInAggregationSelection!
+                  aggregate: ActorMovieActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1507,11 +1547,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -1544,6 +1584,11 @@ describe("@settable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
+                }
+
+                type ActorMovieActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorMovieActedInNodeAggregateSelection
                 }
 
                 type ActorMovieActedInAggregationSelection {
@@ -1621,6 +1666,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -1655,6 +1709,11 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
                 type MovieActorActorsAggregationSelection {
                   count: Int!
                   node: MovieActorActorsNodeAggregateSelection
@@ -1687,7 +1746,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorsConnection {
-                  aggregate: MovieActorActorsAggregationSelection!
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1763,11 +1822,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1992,7 +2051,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorMovieActedInAggregationSelection!
+                  aggregate: ActorMovieActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2078,11 +2137,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -2114,6 +2173,11 @@ describe("@settable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
+                }
+
+                type ActorMovieActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorMovieActedInNodeAggregateSelection
                 }
 
                 type ActorMovieActedInAggregationSelection {
@@ -2192,6 +2256,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -2226,6 +2299,11 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
                 type MovieActorActorsAggregationSelection {
                   count: Int!
                   node: MovieActorActorsNodeAggregateSelection
@@ -2258,7 +2336,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorsConnection {
-                  aggregate: MovieActorActorsAggregationSelection!
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2334,11 +2412,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -2647,11 +2725,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -2738,6 +2816,10 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -2775,11 +2857,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -2905,11 +2987,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -3133,11 +3215,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -3224,6 +3306,10 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -3261,11 +3347,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -3391,11 +3477,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -3639,11 +3725,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -3742,6 +3828,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -3781,6 +3876,11 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
                 type MovieActorActorsAggregationSelection {
                   count: Int!
                   node: MovieActorActorsNodeAggregateSelection
@@ -3813,7 +3913,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorsConnection {
-                  aggregate: MovieActorActorsAggregationSelection!
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3889,11 +3989,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -4058,11 +4158,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -4322,11 +4422,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -4425,6 +4525,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -4464,6 +4573,11 @@ describe("@settable", () => {
                   title: String!
                 }
 
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
                 type MovieActorActorsAggregationSelection {
                   count: Int!
                   node: MovieActorActorsNodeAggregateSelection
@@ -4496,7 +4610,7 @@ describe("@settable", () => {
                 }
 
                 type MovieActorsConnection {
-                  aggregate: MovieActorActorsAggregationSelection!
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4572,11 +4686,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -4741,11 +4855,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -4918,7 +5032,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorProductionActedInAggregationSelection!
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5002,11 +5116,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -5035,6 +5149,11 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorProductionActedInNodeAggregateSelection
                 }
 
                 type ActorProductionActedInAggregationSelection {
@@ -5104,6 +5223,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -5141,11 +5269,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -5241,11 +5369,11 @@ describe("@settable", () => {
                 }
 
                 type ProductionAggregate {
+                  count: Count!
                   node: ProductionAggregateNode!
                 }
 
                 type ProductionAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -5347,11 +5475,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -5518,7 +5646,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorProductionActedInAggregationSelection!
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5590,11 +5718,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -5624,6 +5752,11 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorProductionActedInNodeAggregateSelection
                 }
 
                 type ActorProductionActedInAggregationSelection {
@@ -5692,6 +5825,15 @@ describe("@settable", () => {
                   totalCount: Int!
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateActorsMutationResponse {
                   actors: [Actor!]!
                   info: CreateInfo!
@@ -5729,11 +5871,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -5829,11 +5971,11 @@ describe("@settable", () => {
                 }
 
                 type ProductionAggregate {
+                  count: Count!
                   node: ProductionAggregateNode!
                 }
 
                 type ProductionAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -5928,11 +6070,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -6101,7 +6243,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorProductionActedInAggregationSelection!
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6179,11 +6321,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -6225,6 +6367,11 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorProductionActedInNodeAggregateSelection
                 }
 
                 type ActorProductionActedInAggregationSelection {
@@ -6291,6 +6438,15 @@ describe("@settable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -6407,11 +6563,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -6615,11 +6771,11 @@ describe("@settable", () => {
                 }
 
                 type ProductionAggregate {
+                  count: Count!
                   node: ProductionAggregateNode!
                 }
 
                 type ProductionAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -6828,11 +6984,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -7032,7 +7188,7 @@ describe("@settable", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorProductionActedInAggregationSelection!
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7118,11 +7274,11 @@ describe("@settable", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -7163,6 +7319,11 @@ describe("@settable", () => {
                   Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
                   \\"\\"\\"
                   sort: [ActorSort!]
+                }
+
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorProductionActedInNodeAggregateSelection
                 }
 
                 type ActorProductionActedInAggregationSelection {
@@ -7230,6 +7391,15 @@ describe("@settable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -7346,11 +7516,11 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -7571,11 +7741,11 @@ describe("@settable", () => {
                 }
 
                 type ProductionAggregate {
+                  count: Count!
                   node: ProductionAggregateNode!
                 }
 
                 type ProductionAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -7792,11 +7962,11 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }

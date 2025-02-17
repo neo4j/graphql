@@ -51,8 +51,8 @@ describe("Aggregate -> count", () => {
                 {
                     ${randomType.operations.connection}{
                         aggregate {
-                            node {
-                                count
+                            count {
+                                nodes
                             }
                         }
                     }
@@ -65,8 +65,8 @@ describe("Aggregate -> count", () => {
         expect(gqlResult.data).toEqual({
             [randomType.operations.connection]: {
                 aggregate: {
-                    node: {
-                        count: 2,
+                    count: {
+                        nodes: 2,
                     },
                 },
             },
@@ -109,8 +109,8 @@ describe("Aggregate -> count", () => {
                 {
                   ${randomType.operations.connection}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
                     aggregate {
-                        node {
-                            count
+                        count {
+                            nodes
                         }
                     }
                   }
@@ -124,8 +124,8 @@ describe("Aggregate -> count", () => {
         expect(gqlResult.data).toEqual({
             [randomType.operations.connection]: {
                 aggregate: {
-                    node: {
-                        count: 2,
+                    count: {
+                        nodes: 2,
                     },
                 },
             },

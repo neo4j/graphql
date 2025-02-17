@@ -66,6 +66,15 @@ describe("3817", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -171,11 +180,11 @@ describe("3817", () => {
             }
 
             type PersonAggregate {
+              count: Count!
               node: PersonAggregateNode!
             }
 
             type PersonAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -246,7 +255,7 @@ describe("3817", () => {
             }
 
             type PersonFriendsConnection {
-              aggregate: PersonPersonFriendsAggregationSelection!
+              aggregate: PersonPersonFriendsAggregateSelection!
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -336,6 +345,12 @@ describe("3817", () => {
               Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [PersonSort!]
+            }
+
+            type PersonPersonFriendsAggregateSelection {
+              count: CountConnection!
+              edge: PersonPersonFriendsEdgeAggregateSelection
+              node: PersonPersonFriendsNodeAggregateSelection
             }
 
             type PersonPersonFriendsAggregationSelection {

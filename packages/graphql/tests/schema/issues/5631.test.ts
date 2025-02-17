@@ -64,11 +64,7 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
             }
 
             type ActorAggregate {
-              node: ActorAggregateNode!
-            }
-
-            type ActorAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ActorAggregateSelection {
@@ -130,6 +126,10 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -163,11 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/5631", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {

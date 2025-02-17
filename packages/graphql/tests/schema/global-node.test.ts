@@ -39,6 +39,10 @@ describe("Node Interface Types", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -72,11 +76,11 @@ describe("Node Interface Types", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               imdb: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }

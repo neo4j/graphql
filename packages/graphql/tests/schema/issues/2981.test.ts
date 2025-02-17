@@ -60,11 +60,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookAggregate {
+              count: Count!
               node: BookAggregateNode!
             }
 
             type BookAggregateNode {
-              count: Int!
               isbn: StringAggregateSelection!
               originalTitle: StringAggregateSelection!
             }
@@ -148,11 +148,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_ENAggregate {
+              count: Count!
               node: BookTitle_ENAggregateNode!
             }
 
             type BookTitle_ENAggregateNode {
-              count: Int!
               value: StringAggregateSelection!
             }
 
@@ -172,6 +172,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               count_LT: Int
               count_LTE: Int
               node: BookTitle_ENBookNodeAggregationWhereInput
+            }
+
+            type BookTitle_ENBookBookAggregateSelection {
+              count: CountConnection!
+              node: BookTitle_ENBookBookNodeAggregateSelection
             }
 
             type BookTitle_ENBookBookAggregationSelection {
@@ -194,7 +199,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_ENBookConnection {
-              aggregate: BookTitle_ENBookBookAggregationSelection!
+              aggregate: BookTitle_ENBookBookAggregateSelection!
               edges: [BookTitle_ENBookRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -355,11 +360,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_SVAggregate {
+              count: Count!
               node: BookTitle_SVAggregateNode!
             }
 
             type BookTitle_SVAggregateNode {
-              count: Int!
               value: StringAggregateSelection!
             }
 
@@ -379,6 +384,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               count_LT: Int
               count_LTE: Int
               node: BookTitle_SVBookNodeAggregationWhereInput
+            }
+
+            type BookTitle_SVBookBookAggregateSelection {
+              count: CountConnection!
+              node: BookTitle_SVBookBookNodeAggregateSelection
             }
 
             type BookTitle_SVBookBookAggregationSelection {
@@ -401,7 +411,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_SVBookConnection {
-              aggregate: BookTitle_SVBookBookAggregationSelection!
+              aggregate: BookTitle_SVBookBookAggregateSelection!
               edges: [BookTitle_SVBookRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -716,6 +726,15 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               edges: [BookEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateBookTitleEnsMutationResponse {

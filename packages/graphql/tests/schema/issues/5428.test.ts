@@ -40,6 +40,10 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -99,12 +103,12 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             type TestAggregate {
+              count: Count!
               node: TestAggregateNode!
             }
 
             type TestAggregateNode {
               Name: StringAggregateSelection!
-              count: Int!
             }
 
             type TestAggregateSelection {

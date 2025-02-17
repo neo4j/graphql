@@ -168,11 +168,11 @@ describe("Deprecated directed argument", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -205,6 +205,12 @@ describe("Deprecated directed argument", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              edge: ActorMovieMoviesEdgeAggregateSelection
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -246,7 +252,7 @@ describe("Deprecated directed argument", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -392,6 +398,15 @@ describe("Deprecated directed argument", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -431,11 +446,11 @@ describe("Deprecated directed argument", () => {
             }
 
             type GenreAggregate {
+              count: Count!
               node: GenreAggregateNode!
             }
 
             type GenreAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -512,6 +527,12 @@ describe("Deprecated directed argument", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -551,7 +572,7 @@ describe("Deprecated directed argument", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -632,11 +653,11 @@ describe("Deprecated directed argument", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -762,11 +783,11 @@ describe("Deprecated directed argument", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 

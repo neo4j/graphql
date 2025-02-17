@@ -43,6 +43,15 @@ describe("Pluralize consistency", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -147,11 +156,11 @@ describe("Pluralize consistency", () => {
             }
 
             type super_friendAggregate {
+              count: Count!
               node: super_friendAggregateNode!
             }
 
             type super_friendAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -214,11 +223,11 @@ describe("Pluralize consistency", () => {
             }
 
             type super_userAggregate {
+              count: Count!
               node: super_userAggregateNode!
             }
 
             type super_userAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -263,7 +272,7 @@ describe("Pluralize consistency", () => {
             }
 
             type super_userMy_friendConnection {
-              aggregate: super_usersuper_friendMy_friendAggregationSelection!
+              aggregate: super_usersuper_friendMy_friendAggregateSelection!
               edges: [super_userMy_friendRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -401,6 +410,11 @@ describe("Pluralize consistency", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+            }
+
+            type super_usersuper_friendMy_friendAggregateSelection {
+              count: CountConnection!
+              node: super_usersuper_friendMy_friendNodeAggregateSelection
             }
 
             type super_usersuper_friendMy_friendAggregationSelection {

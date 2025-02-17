@@ -46,8 +46,10 @@ describe("aggregations-top_level-basic", () => {
                 {
                     ${randomType.operations.connection} {
                         aggregate {
+                            count {
+                                nodes
+                            }
                             node {
-                                count
                                 id {
                                     longest 
                                 }
@@ -64,8 +66,10 @@ describe("aggregations-top_level-basic", () => {
         expect(gqlResult.data).toEqual({
             [randomType.operations.connection]: {
                 aggregate: {
+                    count: {
+                        nodes: 2,
+                    },
                     node: {
-                        count: 2,
                         id: {
                             longest: "asd3",
                         },
@@ -90,8 +94,8 @@ describe("aggregations-top_level-basic", () => {
                 {
                     ${randomType.operations.connection} {
                         aggregate {
-                            node {
-                                count
+                            count {
+                                nodes
                             }
                         }
                     }
@@ -105,8 +109,8 @@ describe("aggregations-top_level-basic", () => {
         expect(gqlResult.data).toEqual({
             [randomType.operations.connection]: {
                 aggregate: {
-                    node: {
-                        count: 0,
+                    count: {
+                        nodes: 0,
                     },
                 },
             },

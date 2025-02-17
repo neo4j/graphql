@@ -64,6 +64,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               subscription: Subscription
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -93,11 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type CreatureAggregate {
-              node: CreatureAggregateNode!
-            }
-
-            type CreatureAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type CreatureAggregateSelection {
@@ -280,11 +280,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
@@ -450,11 +450,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -589,11 +585,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -769,11 +765,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episode: IntAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!

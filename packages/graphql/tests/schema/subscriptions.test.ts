@@ -58,11 +58,11 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -159,6 +159,15 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -222,6 +231,11 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -253,7 +267,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -327,13 +341,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -620,11 +634,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
-              node: ActorAggregateNode!
-            }
-
-            type ActorAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ActorAggregateSelection {
@@ -666,6 +676,11 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
@@ -700,7 +715,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -862,6 +877,15 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -925,6 +949,10 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
             }
@@ -951,7 +979,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1002,13 +1030,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -1307,6 +1335,15 @@ describe("Subscriptions", () => {
               Star: StarWhere
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1504,13 +1541,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -1734,11 +1771,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -1780,6 +1813,11 @@ describe("Subscriptions", () => {
               node: Person!
             }
 
+            type PersonMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: PersonMovieMoviesNodeAggregateSelection
+            }
+
             type PersonMovieMoviesAggregationSelection {
               count: Int!
               node: PersonMovieMoviesNodeAggregateSelection
@@ -1814,7 +1852,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnection {
-              aggregate: PersonMovieMoviesAggregationSelection!
+              aggregate: PersonMovieMoviesAggregateSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2003,11 +2041,7 @@ describe("Subscriptions", () => {
             }
 
             type StarAggregate {
-              node: StarAggregateNode!
-            }
-
-            type StarAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type StarAggregateSelection {
@@ -2049,6 +2083,11 @@ describe("Subscriptions", () => {
               node: Star!
             }
 
+            type StarMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: StarMovieMoviesNodeAggregateSelection
+            }
+
             type StarMovieMoviesAggregationSelection {
               count: Int!
               node: StarMovieMoviesNodeAggregateSelection
@@ -2083,7 +2122,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnection {
-              aggregate: StarMovieMoviesAggregationSelection!
+              aggregate: StarMovieMoviesAggregateSelection!
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2388,11 +2427,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
-              node: ActorAggregateNode!
-            }
-
-            type ActorAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ActorAggregateSelection {
@@ -2434,6 +2469,11 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
@@ -2468,7 +2508,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2630,6 +2670,15 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -2693,6 +2742,11 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -2726,7 +2780,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2785,13 +2839,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -3081,11 +3135,11 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -3182,6 +3236,15 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -3245,6 +3308,11 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -3276,7 +3344,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3350,13 +3418,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -3584,11 +3652,11 @@ describe("Subscriptions", () => {
             }
 
             type AgreementAggregate {
+              count: Count!
               node: AgreementAggregateNode!
             }
 
             type AgreementAggregateNode {
-              count: Int!
               id: IntAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -3662,7 +3730,7 @@ describe("Subscriptions", () => {
             }
 
             type AgreementOwnerConnection {
-              aggregate: AgreementUserOwnerAggregationSelection!
+              aggregate: AgreementUserOwnerAggregateSelection!
               edges: [AgreementOwnerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3794,6 +3862,11 @@ describe("Subscriptions", () => {
               updatedAgreement: AgreementEventPayload!
             }
 
+            type AgreementUserOwnerAggregateSelection {
+              count: CountConnection!
+              node: AgreementUserOwnerNodeAggregateSelection
+            }
+
             type AgreementUserOwnerAggregationSelection {
               count: Int!
               node: AgreementUserOwnerNodeAggregateSelection
@@ -3831,6 +3904,15 @@ describe("Subscriptions", () => {
               edges: [AgreementEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateAgreementsMutationResponse {
@@ -3932,11 +4014,11 @@ describe("Subscriptions", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               username: StringAggregateSelection!
             }
@@ -4053,6 +4135,15 @@ describe("Subscriptions", () => {
             input ActorWhere {
               Person: PersonWhere
               Star: StarWhere
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -4252,13 +4343,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -4482,11 +4573,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -4528,6 +4615,11 @@ describe("Subscriptions", () => {
               node: Person!
             }
 
+            type PersonMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: PersonMovieMoviesNodeAggregateSelection
+            }
+
             type PersonMovieMoviesAggregationSelection {
               count: Int!
               node: PersonMovieMoviesNodeAggregateSelection
@@ -4562,7 +4654,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnection {
-              aggregate: PersonMovieMoviesAggregationSelection!
+              aggregate: PersonMovieMoviesAggregateSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4751,11 +4843,7 @@ describe("Subscriptions", () => {
             }
 
             type StarAggregate {
-              node: StarAggregateNode!
-            }
-
-            type StarAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type StarAggregateSelection {
@@ -4785,6 +4873,11 @@ describe("Subscriptions", () => {
             type StarEdge {
               cursor: String!
               node: Star!
+            }
+
+            type StarMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: StarMovieMoviesNodeAggregateSelection
             }
 
             type StarMovieMoviesAggregationSelection {
@@ -4821,7 +4914,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnection {
-              aggregate: StarMovieMoviesAggregationSelection!
+              aggregate: StarMovieMoviesAggregateSelection!
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5059,6 +5152,10 @@ describe("Subscriptions", () => {
               subscription: Subscription
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -5088,11 +5185,7 @@ describe("Subscriptions", () => {
             }
 
             type CreatureAggregate {
-              node: CreatureAggregateNode!
-            }
-
-            type CreatureAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type CreatureAggregateSelection {
@@ -5275,11 +5368,11 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
@@ -5445,11 +5538,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -5584,11 +5673,11 @@ describe("Subscriptions", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
@@ -5764,11 +5853,11 @@ describe("Subscriptions", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episode: IntAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!

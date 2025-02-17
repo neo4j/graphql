@@ -25,6 +25,7 @@ import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls"
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
+import { CountField } from "../fields/aggregation-fields/CountField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { EntitySelection } from "../selection/EntitySelection";
@@ -172,12 +173,7 @@ export class AggregationOperation extends Operation {
         const nodeMap = new Cypher.Map();
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
-            if (this.isInConnectionField) {
-                // Default fields are in node in connection translation
-                nodeMap.set(f.getProjectionField(returnVariable));
-            } else {
-                this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            }
+            this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
             return this.createSubquery(f, pattern, returnVariable, context);
         });
 
@@ -236,6 +232,10 @@ export class AggregationOperation extends Operation {
             } else {
                 matchClause.where(filterPredicates);
             }
+        }
+
+        if (field instanceof CountField) {
+            field.edgeVar = nestedContext.relationship;
         }
 
         const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);

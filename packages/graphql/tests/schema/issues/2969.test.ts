@@ -45,6 +45,15 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -101,12 +110,12 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -137,7 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -270,6 +279,11 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               content_SET: String
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -353,11 +367,11 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -404,6 +418,11 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               sort: [UserSort!]
             }
 
+            type UserPostPostsAggregateSelection {
+              count: CountConnection!
+              node: UserPostPostsNodeAggregateSelection
+            }
+
             type UserPostPostsAggregationSelection {
               count: Int!
               node: UserPostPostsNodeAggregateSelection
@@ -436,7 +455,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
             }
 
             type UserPostsConnection {
-              aggregate: UserPostPostsAggregationSelection!
+              aggregate: UserPostPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

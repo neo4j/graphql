@@ -84,6 +84,15 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -166,11 +175,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceAggregate {
+              count: Count!
               node: ResourceAggregateNode!
             }
 
             type ResourceAggregateNode {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
@@ -229,7 +238,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceContainedByConnection {
-              aggregate: ResourceResourceContainedByAggregationSelection!
+              aggregate: ResourceResourceContainedByAggregateSelection!
               edges: [ResourceContainedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -378,11 +387,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceEntityAggregate {
+              count: Count!
               node: ResourceEntityAggregateNode!
             }
 
             type ResourceEntityAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
@@ -466,6 +475,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Specify one or more ResourceSort objects to sort Resources by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ResourceSort!]
+            }
+
+            type ResourceResourceContainedByAggregateSelection {
+              count: CountConnection!
+              node: ResourceResourceContainedByNodeAggregateSelection
             }
 
             type ResourceResourceContainedByAggregationSelection {

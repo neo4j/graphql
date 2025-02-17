@@ -51,6 +51,10 @@ describe("@vector schema", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -84,11 +88,11 @@ describe("@vector schema", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }

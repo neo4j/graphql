@@ -50,6 +50,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -150,11 +159,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type ProfileAggregate {
+              count: Count!
               node: ProfileAggregateNode!
             }
 
             type ProfileAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               userName: StringAggregateSelection!
             }
@@ -279,11 +288,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               userName: StringAggregateSelection!
             }
@@ -327,7 +336,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserFollowingConnection {
-              aggregate: UserProfileFollowingAggregationSelection!
+              aggregate: UserProfileFollowingAggregateSelection!
               edges: [UserFollowingRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -421,6 +430,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [UserSort!]
+            }
+
+            type UserProfileFollowingAggregateSelection {
+              count: CountConnection!
+              edge: UserProfileFollowingEdgeAggregateSelection
+              node: UserProfileFollowingNodeAggregateSelection
             }
 
             type UserProfileFollowingAggregationSelection {

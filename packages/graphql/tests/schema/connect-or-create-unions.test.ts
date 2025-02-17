@@ -248,11 +248,11 @@ describe("Connect Or Create", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -340,6 +340,10 @@ describe("Connect Or Create", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -377,11 +381,11 @@ describe("Connect Or Create", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               isan: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -521,11 +525,11 @@ describe("Connect Or Create", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               isan: StringAggregateSelection!
               title: StringAggregateSelection!
             }

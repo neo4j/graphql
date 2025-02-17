@@ -42,6 +42,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -102,11 +106,11 @@ describe("Plural option", () => {
             }
 
             type TechAggregate {
+              count: Count!
               node: TechAggregateNode!
             }
 
             type TechAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -212,6 +216,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -272,11 +280,11 @@ describe("Plural option", () => {
             }
 
             type TechAggregate {
+              count: Count!
               node: TechAggregateNode!
             }
 
             type TechAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -382,6 +390,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -442,11 +454,11 @@ describe("Plural option", () => {
             }
 
             type TechAggregate {
+              count: Count!
               node: TechAggregateNode!
             }
 
             type TechAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -552,6 +564,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -611,11 +627,11 @@ describe("Plural option", () => {
             }
 
             type TechsAggregate {
+              count: Count!
               node: TechsAggregateNode!
             }
 
             type TechsAggregateNode {
-              count: Int!
               value: StringAggregateSelection!
             }
 
@@ -709,6 +725,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -790,11 +810,11 @@ describe("Plural option", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               value: StringAggregateSelection!
             }
 
@@ -864,6 +884,10 @@ describe("Plural option", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -940,11 +964,11 @@ describe("Plural option", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               value: StringAggregateSelection!
             }
 
@@ -1023,6 +1047,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1097,11 +1125,11 @@ describe("Plural option", () => {
             }
 
             type UsersAggregate {
+              count: Count!
               node: UsersAggregateNode!
             }
 
             type UsersAggregateNode {
-              count: Int!
               value: StringAggregateSelection!
             }
 

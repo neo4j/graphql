@@ -31,7 +31,6 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
-import { getResolveTreeByFieldName } from "../../../utils/resolveTree";
 import { ConnectionAggregationField } from "../../ast/fields/ConnectionAggregationField";
 import type { Field } from "../../ast/fields/Field";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
@@ -230,6 +229,7 @@ export class ConnectionFactory {
             target,
             resolveTree,
         });
+
         this.hydrateConnectionOperationWithAggregation({
             target,
             resolveTreeAggregate: resolveTreeAggregate[0],
@@ -256,66 +256,48 @@ export class ConnectionFactory {
     }) {
         if (relationship) {
             const resolveTreeAggregateFields =
-                resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregationFieldTypename()];
-
+                resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregateFieldTypename()];
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
-                const nodeField = getResolveTreeByFieldName({
-                    fieldName: "node",
-                    selection: resolveTreeAggregateFields,
+                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                    entityOrRel: relationship ?? target,
+                    resolveTree: resolveTreeAggregate,
+                    context,
                 });
-                const edgeField = getResolveTreeByFieldName({
-                    fieldName: "edge",
-                    selection: resolveTreeAggregateFields,
+                // NOTE: This will always be true on 7.x and this attribute should be removed
+                aggregationOperation.isInConnectionField = true;
+                const aggregationField = new ConnectionAggregationField({
+                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                    nodeAlias: "node",
+                    operation: aggregationOperation,
                 });
 
-                if (nodeField || edgeField) {
-                    const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                        entityOrRel: relationship ?? target,
-                        resolveTree: resolveTreeAggregate,
-                        context,
-                    });
-                    // NOTE: This will always be true on 7.x and this attribute should be removed
-                    aggregationOperation.isInConnectionField = true;
-                    const aggregationField = new ConnectionAggregationField({
-                        alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                        nodeAlias: nodeField?.alias ?? "node",
-                        operation: aggregationOperation,
-                    });
-
-                    operation.setAggregationField(aggregationField);
-                }
+                operation.setAggregationField(aggregationField);
             }
         } else {
             const resolveTreeAggregateFields =
                 resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
 
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
-                const nodeField = getResolveTreeByFieldName({
-                    fieldName: "node",
-                    selection: resolveTreeAggregateFields,
+                const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                    entityOrRel: relationship ?? target,
+                    resolveTree: resolveTreeAggregate,
+                    context,
                 });
-                if (nodeField) {
-                    const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-                        entityOrRel: relationship ?? target,
-                        resolveTree: nodeField,
-                        context,
-                    });
-                    // NOTE: This will always be true on 7.x and this attribute should be removed
-                    aggregationOperation.isInConnectionField = true;
-                    const aggregationField = new ConnectionAggregationField({
-                        alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                        nodeAlias: nodeField.alias,
-                        operation: aggregationOperation,
-                    });
+                // NOTE: This will always be true on 7.x and this attribute should be removed
+                aggregationOperation.isInConnectionField = true;
+                const aggregationField = new ConnectionAggregationField({
+                    alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                    nodeAlias: "node",
+                    operation: aggregationOperation,
+                });
 
-                    operation.setAggregationField(aggregationField);
-                }
+                operation.setAggregationField(aggregationField);
             }
         }
     }
 
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | CompositeConnectionReadOperation
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation,
     >({
         entityOrRel,
         resolveTree,
@@ -391,7 +373,6 @@ export class ConnectionFactory {
         let edgeField: ResolveTree | undefined;
 
         const fields: Record<string, ResolveTree> = {};
-
         Object.entries(rawFields).forEach(([key, field]) => {
             if (field.name === "node") {
                 nodeField = field;
@@ -402,11 +383,12 @@ export class ConnectionFactory {
             }
         });
 
-        return {
+        const result = {
             node: nodeField,
             edge: edgeField,
             fields,
         };
+        return result;
     }
 
     private getConnectionOptions(

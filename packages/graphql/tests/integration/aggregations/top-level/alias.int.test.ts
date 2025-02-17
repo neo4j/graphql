@@ -69,8 +69,10 @@ describe("aggregations-top_level-alias", () => {
                 {
                     ${typeMovie.operations.connection}(where: { testString_EQ: "${testString}" }) {
                         aggr: aggregate {
+                            _count: count {
+                                n: nodes
+                            }
                             n: node {
-                                _count: count
                                 _id: id {
                                     _shortest: shortest
                                     _longest: longest
@@ -101,8 +103,10 @@ describe("aggregations-top_level-alias", () => {
         expect(gqlResult.data).toEqual({
             [typeMovie.operations.connection]: {
                 aggr: {
+                    _count: {
+                        n: 4,
+                    },
                     n: {
-                        _count: 4,
                         _id: {
                             _shortest: "1",
                             _longest: "4444",
@@ -160,8 +164,10 @@ describe("aggregations-top_level-alias", () => {
                 {
                     ${typeMovie.operations.connection}(where: { testString_EQ: "${testString}" }) {
                         aggr1: aggregate {
+                            count {
+                                nodes
+                            }
                             node {
-                                count
                                 title {
                                     shortest: shortest
                                     longest: longest
@@ -192,8 +198,8 @@ describe("aggregations-top_level-alias", () => {
         expect(gqlResult.data).toEqual({
             [typeMovie.operations.connection]: {
                 aggr1: {
+                    count: { nodes: 4 },
                     node: {
-                        count: 4,
                         title: {
                             shortest: "1",
                             longest: "4444",
