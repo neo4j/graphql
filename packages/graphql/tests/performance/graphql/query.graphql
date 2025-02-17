@@ -13,13 +13,6 @@ query SimpleQueryWithRelationship {
     }
 }
 
-# https://github.com/neo4j/graphql/issues/187
-query QueryWhere {
-    movies(where: { actors: { name: "Keanu Reeves" } }) {
-        released
-    }
-}
-
 query SimpleQueryWithNestedWhere {
     movies(where: { actors_SOME: { name: "Keanu Reeves" } }) {
         title
@@ -108,9 +101,9 @@ query OrFilterOnRelationshipsAndNested {
                 { actors_SOME: { born: 1997 } }
                 { actors_SOME: { born: 1998 } }
                 { actors_SOME: { born: 1956 } }
-                { directors: { movies: { title: "Matrix" } } }
-                { directors: { movies: { title: "foo" } } }
-                { directors: { movies: { title: "bar" } } }
+                { directors_SOME: { movies_SOME: { title: "Matrix" } } }
+                { directors_SOME: { movies_SOME: { title: "foo" } } }
+                { directors_SOME: { movies_SOME: { title: "bar" } } }
             ]
         }
     ) {
