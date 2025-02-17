@@ -28,6 +28,7 @@ import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { fromGlobalId } from "../../../utils/global-ids";
 import { asArray, filterTruthy } from "../../../utils/utils";
+import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { CypherOneToOneRelationshipFilter } from "../ast/filters/CypherOneToOneRelationshipFilter";
@@ -763,9 +764,15 @@ export class FilterFactory {
         attributes: AttributeAdapter[] | undefined,
         context: Neo4jGraphQLTranslationContext
     ): AuthorizationFilters[] {
+        checkEntityAuthentication({
+            entity: entity.entity,
+            targetOperations: ["FILTER"],
+            context,
+        });
+
         return this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
-            operations: ["READ"],
+            operations: ["FILTER"],
             context,
             attributes,
         });

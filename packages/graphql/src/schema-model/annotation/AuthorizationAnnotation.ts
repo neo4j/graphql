@@ -18,13 +18,14 @@
  */
 
 import type { GraphQLWhereArg } from "../../types";
-import type { Annotation } from "./Annotation";
 import type { ValueOf } from "../../utils/value-of";
+import type { Annotation } from "./Annotation";
 
 export const AuthorizationAnnotationArguments = ["filter", "validate"] as const;
 
 export const AuthorizationFilterOperationRule = [
     "READ",
+    "FILTER",
     "AGGREGATE",
     "UPDATE",
     "DELETE",

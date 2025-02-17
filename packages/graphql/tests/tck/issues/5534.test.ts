@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/issues/5534", () => {
                     filter: [
                         {
                             requireAuthentication: false
-                            operations: [READ, AGGREGATE]
+                            operations: [READ, AGGREGATE, FILTER]
                             where: { AND: [{ node: { isPublic: { eq: true } } }, { node: { isEmpty: { eq: true } } }] }
                         }
                     ]

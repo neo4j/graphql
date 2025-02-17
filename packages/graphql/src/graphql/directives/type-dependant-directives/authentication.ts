@@ -19,11 +19,12 @@
 
 import { astFromDirective } from "@graphql-tools/utils";
 import type { DirectiveDefinitionNode } from "graphql";
-import { GraphQLString, GraphQLDirective, GraphQLInputObjectType, GraphQLList, DirectiveLocation } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLInputObjectType, GraphQLList, GraphQLString } from "graphql";
 import { AUTHENTICATION_OPERATION } from "./static-definitions";
 
 const authenticationDefaultOperations = [
     "READ",
+    "FILTER",
     "AGGREGATE",
     "CREATE",
     "UPDATE",

@@ -22,6 +22,7 @@ import type { Annotation } from "./Annotation";
 
 export type AuthenticationOperation =
     | "READ"
+    | "FILTER"
     | "AGGREGATE"
     | "CREATE"
     | "UPDATE"

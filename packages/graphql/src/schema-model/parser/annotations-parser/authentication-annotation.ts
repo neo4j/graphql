@@ -24,6 +24,7 @@ import { parseArgumentsFromUnknownDirective } from "../parse-arguments";
 
 const authenticationDefaultOperations: AuthenticationOperation[] = [
     "READ",
+    "FILTER",
     "AGGREGATE",
     "CREATE",
     "UPDATE",
