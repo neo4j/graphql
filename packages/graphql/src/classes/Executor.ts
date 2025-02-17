@@ -209,8 +209,8 @@ export class Executor {
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
         const transactionConfig: TransactionConfig = {
             metadata: {
-                ...this.transactionMetadata,
                 app: APP_ID,
+                ...this.transactionMetadata,
                 type: "user-transpiled",
             },
         };
