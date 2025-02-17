@@ -81,7 +81,7 @@ export function getCountType(composer: SchemaComposer): ObjectTypeComposer {
         countField.addFields({
             nodes: {
                 type: new GraphQLNonNull(GraphQLInt),
-                resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+                resolve: numericalResolver,
             },
         });
     });
@@ -94,11 +94,11 @@ export function getCountConnectionType(composer: SchemaComposer): ObjectTypeComp
         countField.addFields({
             nodes: {
                 type: new GraphQLNonNull(GraphQLInt),
-                resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+                resolve: numericalResolver,
             },
             edges: {
                 type: new GraphQLNonNull(GraphQLInt),
-                resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+                resolve: numericalResolver,
             },
         });
     });
