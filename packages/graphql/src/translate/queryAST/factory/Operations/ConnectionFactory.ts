@@ -31,7 +31,6 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
-import { getResolveTreeByFieldName } from "../../../utils/resolveTree";
 import { ConnectionAggregationField } from "../../ast/fields/ConnectionAggregationField";
 import type { Field } from "../../ast/fields/Field";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
@@ -259,15 +258,6 @@ export class ConnectionFactory {
             const resolveTreeAggregateFields =
                 resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregateFieldTypename()];
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
-                const nodeField = getResolveTreeByFieldName({
-                    fieldName: "node",
-                    selection: resolveTreeAggregateFields,
-                });
-                const edgeField = getResolveTreeByFieldName({
-                    fieldName: "edge",
-                    selection: resolveTreeAggregateFields,
-                });
-
                 const aggregationOperation = this.aggregateFactory.createAggregationOperation({
                     entityOrRel: relationship ?? target,
                     resolveTree: resolveTreeAggregate,
@@ -277,7 +267,7 @@ export class ConnectionFactory {
                 aggregationOperation.isInConnectionField = true;
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                    nodeAlias: nodeField?.alias ?? "node",
+                    nodeAlias: "node",
                     operation: aggregationOperation,
                 });
 
@@ -288,10 +278,6 @@ export class ConnectionFactory {
                 resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection];
 
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
-                const nodeField = getResolveTreeByFieldName({
-                    fieldName: "node",
-                    selection: resolveTreeAggregateFields,
-                });
                 const aggregationOperation = this.aggregateFactory.createAggregationOperation({
                     entityOrRel: relationship ?? target,
                     resolveTree: resolveTreeAggregate,
@@ -301,7 +287,7 @@ export class ConnectionFactory {
                 aggregationOperation.isInConnectionField = true;
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-                    nodeAlias: nodeField?.alias ?? "node",
+                    nodeAlias: "node",
                     operation: aggregationOperation,
                 });
 

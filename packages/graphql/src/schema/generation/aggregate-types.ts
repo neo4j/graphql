@@ -76,8 +76,8 @@ export function withAggregateSelectionType({
 
 /** Top level count */
 export function getCountType(composer: SchemaComposer): ObjectTypeComposer {
-    const CountFieldName = "Count";
-    return composer.getOrCreateOTC(CountFieldName, (countField) => {
+    const countFieldName = "Count";
+    return composer.getOrCreateOTC(countFieldName, (countField) => {
         countField.addFields({
             nodes: {
                 type: new GraphQLNonNull(GraphQLInt),
@@ -89,8 +89,8 @@ export function getCountType(composer: SchemaComposer): ObjectTypeComposer {
 
 /** Nested count */
 export function getCountConnectionType(composer: SchemaComposer): ObjectTypeComposer {
-    const CountFieldName = "CountConnection";
-    return composer.getOrCreateOTC(CountFieldName, (countField) => {
+    const countFieldName = "CountConnection";
+    return composer.getOrCreateOTC(countFieldName, (countField) => {
         countField.addFields({
             nodes: {
                 type: new GraphQLNonNull(GraphQLInt),
