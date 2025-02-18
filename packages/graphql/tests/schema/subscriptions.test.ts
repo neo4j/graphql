@@ -171,6 +171,11 @@ describe("Subscriptions", () => {
               set: Boolean
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -312,9 +317,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -788,9 +801,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -975,6 +996,11 @@ describe("Subscriptions", () => {
               set: Boolean
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -1127,9 +1153,16 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -1519,6 +1552,11 @@ describe("Subscriptions", () => {
             \\"\\"\\"Boolean mutations\\"\\"\\"
             input BooleanScalarMutations {
               set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             \\"\\"\\"
@@ -2111,11 +2149,19 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonMoviesConnections
               \\"\\"\\"
-              aggregate: PersonMoviesAggregateInput
+              aggregate: PersonMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -2381,9 +2427,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input StarMoviesConnectionAggregateInput {
+              AND: [StarMoviesConnectionAggregateInput!]
+              NOT: StarMoviesConnectionAggregateInput
+              OR: [StarMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: StarMoviesNodeAggregationWhereInput
+            }
+
             input StarMoviesConnectionFilters {
               \\"\\"\\"Filter Stars by aggregating results on related StarMoviesConnections\\"\\"\\"
-              aggregate: StarMoviesAggregateInput
+              aggregate: StarMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Stars where all of the related StarMoviesConnections match this filter
               \\"\\"\\"
@@ -2772,9 +2826,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -2959,6 +3021,11 @@ describe("Subscriptions", () => {
               set: Boolean
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -3118,9 +3185,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3603,6 +3678,11 @@ describe("Subscriptions", () => {
               set: Boolean
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -3744,9 +3824,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -4106,6 +4194,11 @@ describe("Subscriptions", () => {
             \\"\\"\\"Boolean mutations\\"\\"\\"
             input BooleanScalarMutations {
               set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             \\"\\"\\"
@@ -4698,11 +4791,19 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonMoviesConnections
               \\"\\"\\"
-              aggregate: PersonMoviesAggregateInput
+              aggregate: PersonMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -4958,9 +5059,17 @@ describe("Subscriptions", () => {
               totalCount: Int!
             }
 
+            input StarMoviesConnectionAggregateInput {
+              AND: [StarMoviesConnectionAggregateInput!]
+              NOT: StarMoviesConnectionAggregateInput
+              OR: [StarMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: StarMoviesNodeAggregationWhereInput
+            }
+
             input StarMoviesConnectionFilters {
               \\"\\"\\"Filter Stars by aggregating results on related StarMoviesConnections\\"\\"\\"
-              aggregate: StarMoviesAggregateInput
+              aggregate: StarMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Stars where all of the related StarMoviesConnections match this filter
               \\"\\"\\"

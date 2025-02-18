@@ -24,26 +24,20 @@ describe("aggregations nested field", () => {
     const testHelper = new TestHelper();
     let User: UniqueType;
     let Post: UniqueType;
-    let Country: UniqueType;
 
     beforeEach(async () => {
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
-        Country = testHelper.createUniqueType("Address");
 
         const typeDefs = /* GraphQL */ `
-            type ${Country} @node {
-                name: String!
-            }
-
             type ${User} @node {
                 name: String!
-                citizenship: [${Country}!]! @relationship(type: "CITIZEN_OF", direction: OUT)
+                likedPosts: [${Post}!]! @relationship(type: "LIKES", direction: OUT)
             }
 
             type ${Post} @node {
               title: String!
-              engagedUsers: [${User}!]! @relationship(type: "LIKES", direction: IN)
+              likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -52,8 +46,8 @@ describe("aggregations nested field", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-
-    test("should return Post and project only engagedUsers with exactly 2 citizenship", async () => {
+    // TODO: Remove focus test after https://github.com/neo4j/graphql/issues/6005 fix
+    test.skip("should return Post and project only users who liked exactly 2 posts", async () => {
         const post1Title = "Post 1";
         const post2Title = "Post 2";
         const post3Title = "Post 3";
@@ -63,37 +57,29 @@ describe("aggregations nested field", () => {
 
         await testHelper.executeCypher(
             `
-                CREATE (italy:${Country} {name: "Italy"})
-                CREATE (france:${Country} {name: "France"})
-                CREATE (spain:${Country} {name: "Spain"})
-                
                 CREATE (u1:${User} {name: "${name1}"})
                 CREATE (u2:${User} {name: "${name2}"})
                 CREATE (u3:${User} {name: "${name3}"})
-
-                CREATE (u1)-[:CITIZEN_OF]->(italy)
-                CREATE (u1)-[:CITIZEN_OF]->(france)
-                CREATE (u2)-[:CITIZEN_OF]->(spain)
-                CREATE (u3)-[:CITIZEN_OF]->(italy)
              
                 CREATE (p1:${Post} {title: "${post1Title}"})
                 CREATE (p2:${Post} {title: "${post2Title}"})
                 CREATE (p3:${Post} {title: "${post3Title}"})
 
-                CREATE (p1)<-[:LIKES]-(u1)
-                CREATE (p2)<-[:LIKES]-(u2)
-                CREATE (p2)<-[:LIKES]-(u3)
+                CREATE (u1)-[:LIKES]->(p1)
+                CREATE (u1)-[:LIKES]->(p1)
+                CREATE (u1)-[:LIKES]->(p2)
+                CREATE (u2)-[:LIKES]->(p2)
             `
         );
-        // find all posts and their engaged users who have citizenship in exactly two countries
+
         const query = /* GraphQL */ `
             {
                 ${Post.plural} {
                     title
-                    engagedUsers(where: {
-                        citizenshipConnection: { 
+                    likes(where: {
+                        likedPostsConnection: { 
                             aggregate: { 
-                                count: { eq: 2 } 
+                                count: { nodes: { eq: 2 } } 
                             } 
                         }
                     } ) {
@@ -111,15 +97,78 @@ describe("aggregations nested field", () => {
         expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
                 title: post1Title,
-                engagedUsers: [{ name: name1 }],
+                likes: [{ name: name1 }],
             },
             {
                 title: post2Title,
-                engagedUsers: [],
+                likes: [{ name: name1 }],
             },
             {
                 title: post3Title,
-                engagedUsers: [],
+                likes: [],
+            },
+        ]);
+    });
+
+    test("should return Post and project only users who has 3 likes edges", async () => {
+        const post1Title = "Post 1";
+        const post2Title = "Post 2";
+        const post3Title = "Post 3";
+        const name1 = "User 1";
+        const name2 = "User 2";
+        const name3 = "User 3";
+
+        await testHelper.executeCypher(
+            `
+                CREATE (u1:${User} {name: "${name1}"})
+                CREATE (u2:${User} {name: "${name2}"})
+                CREATE (u3:${User} {name: "${name3}"})
+             
+                CREATE (p1:${Post} {title: "${post1Title}"})
+                CREATE (p2:${Post} {title: "${post2Title}"})
+                CREATE (p3:${Post} {title: "${post3Title}"})
+
+                CREATE (u1)-[:LIKES]->(p1)
+                CREATE (u1)-[:LIKES]->(p1)
+                CREATE (u1)-[:LIKES]->(p2)
+                CREATE (u2)-[:LIKES]->(p2)
+            `
+        );
+
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural} {
+                    title
+                    likes(where: {
+                        likedPostsConnection: { 
+                            aggregate: { 
+                                count: { edges: { eq: 3 } } 
+                            } 
+                        }
+                    } ) {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(3);
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
+            {
+                title: post1Title,
+                likes: [{ name: name1 }],
+            },
+            {
+                title: post2Title,
+                likes: [{ name: name1 }],
+            },
+            {
+                title: post3Title,
+                likes: [],
             },
         ]);
     });

@@ -89,7 +89,7 @@ describe("Update using aggregate where", () => {
                                 node: {
                                     likesConnection: {
                                         aggregate: {
-                                            count: { eq: 2 }
+                                            count: { nodes: { eq: 2 } }
                                         }
                                     }
                                 } 
@@ -163,7 +163,7 @@ describe("Update using aggregate where", () => {
                                     likesConnection: {
                                         aggregate: {
                                             OR: [
-                                                { count: { eq: 2 } },
+                                                { count: { nodes: { eq: 2 } } },
                                                 {
                                                     node: {
                                                         name: { shortestLength: { lt: 10 } }

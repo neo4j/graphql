@@ -53,6 +53,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateCrewMembersMutationResponse {
               crewMembers: [CrewMember!]!
               info: CreateInfo!
@@ -136,11 +141,19 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               totalCount: Int!
             }
 
+            input CrewMemberMoviesConnectionAggregateInput {
+              AND: [CrewMemberMoviesConnectionAggregateInput!]
+              NOT: CrewMemberMoviesConnectionAggregateInput
+              OR: [CrewMemberMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: CrewMemberMoviesNodeAggregationWhereInput
+            }
+
             input CrewMemberMoviesConnectionFilters {
               \\"\\"\\"
               Filter CrewMembers by aggregating results on related CrewMemberMoviesConnections
               \\"\\"\\"
-              aggregate: CrewMemberMoviesAggregateInput
+              aggregate: CrewMemberMoviesConnectionAggregateInput
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"

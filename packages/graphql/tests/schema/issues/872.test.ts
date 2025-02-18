@@ -124,11 +124,19 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               totalCount: Int!
             }
 
+            input Actor2MoviesConnectionAggregateInput {
+              AND: [Actor2MoviesConnectionAggregateInput!]
+              NOT: Actor2MoviesConnectionAggregateInput
+              OR: [Actor2MoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Actor2MoviesNodeAggregationWhereInput
+            }
+
             input Actor2MoviesConnectionFilters {
               \\"\\"\\"
               Filter Actor2s by aggregating results on related Actor2MoviesConnections
               \\"\\"\\"
-              aggregate: Actor2MoviesAggregateInput
+              aggregate: Actor2MoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actor2s where all of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
@@ -335,9 +343,17 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -481,6 +497,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type CreateActor2sMutationResponse {

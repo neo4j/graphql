@@ -762,6 +762,11 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -962,9 +967,17 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionAggregateInput {
+                  AND: [MovieGenresConnectionAggregateInput!]
+                  NOT: MovieGenresConnectionAggregateInput
+                  OR: [MovieGenresConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  edge: RelPropertiesAggregationWhereInput
+                }
+
                 input MovieGenresConnectionFilters {
                   \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
-                  aggregate: MovieGenresAggregateInput
+                  aggregate: MovieGenresConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1333,6 +1346,11 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -1555,9 +1573,17 @@ describe("@populatedBy tests", () => {
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionAggregateInput {
+                  AND: [MovieGenresConnectionAggregateInput!]
+                  NOT: MovieGenresConnectionAggregateInput
+                  OR: [MovieGenresConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  edge: RelPropertiesAggregationWhereInput
+                }
+
                 input MovieGenresConnectionFilters {
                   \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
-                  aggregate: MovieGenresAggregateInput
+                  aggregate: MovieGenresConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"

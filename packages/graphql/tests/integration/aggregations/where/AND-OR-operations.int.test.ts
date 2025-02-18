@@ -80,7 +80,7 @@ describe("Nested within AND/OR", () => {
                 ${postType.plural}(where: { 
                     likesConnection: {
                         aggregate: {
-                            count: { eq: 3 }
+                            count: { nodes: { eq: 3 } }
                             node: {
                                 testString: { shortestLength: { eq: 3 } }
                             }
@@ -111,7 +111,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             OR: [
-                                { count: {eq: 3 } }
+                                { count: { nodes: { eq: 3 } } }
                                 {
                                     node: {
                                         testString: { shortestLength: { eq: 3 } }
@@ -154,7 +154,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             AND: [
-                                { count: { eq: 3 } }
+                                { count: { nodes: { eq: 3 } } }
                                 {
                                     node: {
                                         testString: {shortestLength: {eq: 3} }
@@ -188,7 +188,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             AND: [
-                                { count: { lte: 2 } }
+                                { count: { nodes: { lte: 2 } } }
                                 {
                                     AND: [
                                         {
@@ -234,7 +234,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             AND: [
-                                { NOT: { count_GT: 2 } }
+                                { NOT: { count: { nodes: { gt: 2 } } } }
                                 {
                                     AND: [
                                         {
@@ -280,7 +280,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             OR: [
-                                { count: { lte: 2 } }
+                                { count: { nodes: { lte: 2 } } }
                                 {
                                     OR: [
                                         {
@@ -332,7 +332,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             AND: [
-                                { count: { lte: 2 } }
+                                { count: { nodes: { lte: 2 } } }
                                 {
                                     OR: [
                                         {
@@ -378,7 +378,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             AND: [
-                                { NOT: { count_GT: 2 } }
+                                { NOT: { count: { nodes: { gt: 2 } } } }
                                 {
                                     OR: [
                                         {
@@ -424,7 +424,7 @@ describe("Nested within AND/OR", () => {
                     likesConnection: {
                         aggregate: {
                             OR: [
-                                { count_GTE: 2 }
+                                { count: { nodes: { gte: 2 } } }
                                 {
                                     AND: [
                                         {

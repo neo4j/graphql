@@ -26,7 +26,7 @@ import { RelationshipAdapter } from "../../../schema-model/relationship/model-ad
 import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
-import { asArray, filterTruthy } from "../../../utils/utils";
+import { asArray, filterTruthy, isRecord } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { CypherOneToOneRelationshipFilter } from "../ast/filters/CypherOneToOneRelationshipFilter";
@@ -63,7 +63,7 @@ import {
 } from "./parsers/parse-where-field";
 
 type AggregateWhereInput = {
-    count: number;
+    count: number | Record<string, any>;
     count_LT: number;
     count_LTE: number;
     count_GT: number;
@@ -809,6 +809,24 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
     }
 
+    private createCountFilter(operatorKey: string, value: unknown, attachedTo: "node" | "relationship"): CountFilter {
+        const operator = this.parseGenericOperator(operatorKey);
+        return new CountFilter({
+            operator: operator,
+            comparisonValue: value,
+            attachedTo,
+        });
+    }
+
+    private parseConnectionAggregationCountFilter(
+        countInput: Record<string, any>,
+        attachedTo: "node" | "relationship"
+    ): CountFilter[] {
+        return Object.entries(countInput).map(([key, value]) => {
+            return this.createCountFilter(key, value, attachedTo);
+        });
+    }
+
     private getAggregationNestedFilters(
         where: AggregateWhereInput,
         relationship: RelationshipAdapter
@@ -830,13 +848,20 @@ export class FilterFactory {
 
                 if (fieldName === "count") {
                     if (!operator) {
-                        return Object.entries(value).map(([key, value]) => {
-                            const operator = this.parseGenericOperator(key);
-
-                            return new CountFilter({
-                                operator: operator,
-                                comparisonValue: value,
+                        // A little bit hacky, but here we don't longer know if we're in the likesConnection.aggregate or in likesAggregate that have different syntax for count
+                        // so we check if nodes and/or edges fields are present to determine the correct parsing
+                        // In v8 we will no longer have the likesAggregate syntax so we can assume the connection syntax
+                        if (isRecord(value) && (value.nodes || value.edges)) {
+                            // TODO: Add value.edges when it's supported
+                            return Object.entries(value).flatMap(([key, value]) => {
+                                if (key === "nodes") {
+                                    return this.parseConnectionAggregationCountFilter(value, "node");
+                                }
+                                return this.parseConnectionAggregationCountFilter(value, "relationship");
                             });
+                        }
+                        return Object.entries(value).map(([key, value]) => {
+                            return this.createCountFilter(key, value, "node");
                         });
                     }
 

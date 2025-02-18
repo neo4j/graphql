@@ -54,6 +54,11 @@ describe("Interfaces", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -167,11 +172,18 @@ describe("Interfaces", () => {
               where: MovieConnectWhere
             }
 
+            input MovieMoviesConnectionAggregateInput {
+              AND: [MovieMoviesConnectionAggregateInput!]
+              NOT: MovieMoviesConnectionAggregateInput
+              OR: [MovieMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieMoviesConnectionFilters {
               \\"\\"\\"
               Filter Movies by aggregating results on related MovieNodeMoviesConnections
               \\"\\"\\"
-              aggregate: MovieMoviesAggregateInput
+              aggregate: MovieMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -258,11 +270,18 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieNodeMoviesConnectionAggregateInput {
+              AND: [MovieNodeMoviesConnectionAggregateInput!]
+              NOT: MovieNodeMoviesConnectionAggregateInput
+              OR: [MovieNodeMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieNodeMoviesConnectionFilters {
               \\"\\"\\"
               Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
               \\"\\"\\"
-              aggregate: MovieNodeMoviesAggregateInput
+              aggregate: MovieNodeMoviesConnectionAggregateInput
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -518,6 +537,11 @@ describe("Interfaces", () => {
 
             directive @something(something: String) on INTERFACE
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -631,11 +655,18 @@ describe("Interfaces", () => {
               where: MovieConnectWhere
             }
 
+            input MovieMoviesConnectionAggregateInput {
+              AND: [MovieMoviesConnectionAggregateInput!]
+              NOT: MovieMoviesConnectionAggregateInput
+              OR: [MovieMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieMoviesConnectionFilters {
               \\"\\"\\"
               Filter Movies by aggregating results on related MovieNodeMoviesConnections
               \\"\\"\\"
-              aggregate: MovieMoviesAggregateInput
+              aggregate: MovieMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -722,11 +753,18 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieNodeMoviesConnectionAggregateInput {
+              AND: [MovieNodeMoviesConnectionAggregateInput!]
+              NOT: MovieNodeMoviesConnectionAggregateInput
+              OR: [MovieNodeMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieNodeMoviesConnectionFilters {
               \\"\\"\\"
               Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
               \\"\\"\\"
-              aggregate: MovieNodeMoviesAggregateInput
+              aggregate: MovieNodeMoviesConnectionAggregateInput
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"

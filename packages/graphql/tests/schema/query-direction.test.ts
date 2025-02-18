@@ -39,6 +39,11 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -221,9 +226,17 @@ describe("Query Direction", () => {
               totalCount: Int!
             }
 
+            input UserFriendsConnectionAggregateInput {
+              AND: [UserFriendsConnectionAggregateInput!]
+              NOT: UserFriendsConnectionAggregateInput
+              OR: [UserFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserFriendsNodeAggregationWhereInput
+            }
+
             input UserFriendsConnectionFilters {
               \\"\\"\\"Filter Users by aggregating results on related UserFriendsConnections\\"\\"\\"
-              aggregate: UserFriendsAggregateInput
+              aggregate: UserFriendsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -409,6 +422,11 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -591,9 +609,17 @@ describe("Query Direction", () => {
               totalCount: Int!
             }
 
+            input UserFriendsConnectionAggregateInput {
+              AND: [UserFriendsConnectionAggregateInput!]
+              NOT: UserFriendsConnectionAggregateInput
+              OR: [UserFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserFriendsNodeAggregationWhereInput
+            }
+
             input UserFriendsConnectionFilters {
               \\"\\"\\"Filter Users by aggregating results on related UserFriendsConnections\\"\\"\\"
-              aggregate: UserFriendsAggregateInput
+              aggregate: UserFriendsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"

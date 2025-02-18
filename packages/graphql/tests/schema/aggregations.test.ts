@@ -624,6 +624,11 @@ describe("Aggregations", () => {
               subtract: BigInt
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1222,9 +1227,18 @@ describe("Aggregations", () => {
               totalCount: Int!
             }
 
+            input PostLikesConnectionAggregateInput {
+              AND: [PostLikesConnectionAggregateInput!]
+              NOT: PostLikesConnectionAggregateInput
+              OR: [PostLikesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: LikesAggregationWhereInput
+              node: PostLikesNodeAggregationWhereInput
+            }
+
             input PostLikesConnectionFilters {
               \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
-              aggregate: PostLikesAggregateInput
+              aggregate: PostLikesConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
@@ -1920,6 +1934,11 @@ describe("Aggregations", () => {
               subtract: BigInt
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -2456,9 +2475,17 @@ describe("Aggregations", () => {
               totalCount: Int!
             }
 
+            input PostLikesConnectionAggregateInput {
+              AND: [PostLikesConnectionAggregateInput!]
+              NOT: PostLikesConnectionAggregateInput
+              OR: [PostLikesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostLikesNodeAggregationWhereInput
+            }
+
             input PostLikesConnectionFilters {
               \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
-              aggregate: PostLikesAggregateInput
+              aggregate: PostLikesConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"

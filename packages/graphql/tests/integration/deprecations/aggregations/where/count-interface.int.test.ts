@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("aggregations-where-count interface relationships of concrete types", () => {
     let testHelper: TestHelper;
@@ -82,11 +82,9 @@ describe("aggregations-where-count interface relationships of concrete types", (
         const query = /* GraphQL */ `
             {
                 ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { eq: 1 } } 
-                        } 
-                    } 
+                    likesAggregate: { 
+                        count: { eq: 1 } 
+                    }
                 }) {
                     title
                     likes {
@@ -138,11 +136,9 @@ describe("aggregations-where-count interface relationships of concrete types", (
         const query = /* GraphQL */ `
             {
                 ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { lt: 1 } } 
-                        } 
-                    } 
+                    likesAggregate: { 
+                        count: { lt: 1 } 
+                    }
                 }) {
                     title
                     likes {
@@ -194,11 +190,9 @@ describe("aggregations-where-count interface relationships of concrete types", (
         const query = /* GraphQL */ `
             {
                 ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { lte: 1 } } 
-                        } 
-                    } 
+                    likesAggregate: { 
+                        count: { lte: 1 } 
+                    }
                 }) {
                     title
                     likes {
@@ -258,11 +252,9 @@ describe("aggregations-where-count interface relationships of concrete types", (
         const query = /* GraphQL */ `
             {
                 ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { gt: 1 } } 
-                        } 
-                    } 
+                    likesAggregate: { 
+                        count: { gt: 1 } 
+                    }
                 }) {
                     title
                     likes {
@@ -318,11 +310,9 @@ describe("aggregations-where-count interface relationships of concrete types", (
         const query = /* GraphQL */ `
             {
                 ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { nodes: { gte: 1 } } 
-                        } 
-                    } 
+                    likesAggregate: { 
+                        count: { gte: 1 } 
+                    }
                 }) {
                     title
                     likes {

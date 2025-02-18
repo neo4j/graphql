@@ -162,11 +162,20 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related ActorActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -384,6 +393,11 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -523,9 +537,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related ShowActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -782,9 +805,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
               \\"\\"\\"Filter Series by aggregating results on related ShowActorsConnections\\"\\"\\"
-              aggregate: SeriesActorsAggregateInput
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -983,9 +1015,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               totalCount: Int!
             }
 
+            input ShowActorsConnectionAggregateInput {
+              AND: [ShowActorsConnectionAggregateInput!]
+              NOT: ShowActorsConnectionAggregateInput
+              OR: [ShowActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ShowActorsEdgeAggregationWhereInput
+              node: ShowActorsNodeAggregationWhereInput
+            }
+
             input ShowActorsConnectionFilters {
               \\"\\"\\"Filter Shows by aggregating results on related ShowActorsConnections\\"\\"\\"
-              aggregate: ShowActorsAggregateInput
+              aggregate: ShowActorsConnectionAggregateInput
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"

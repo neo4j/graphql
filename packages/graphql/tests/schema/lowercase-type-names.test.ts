@@ -57,6 +57,11 @@ describe("lower case type names", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [actor!]!
               info: CreateInfo!
@@ -321,9 +326,17 @@ describe("lower case type names", () => {
               totalCount: Int!
             }
 
+            input actorMoviesConnectionAggregateInput {
+              AND: [actorMoviesConnectionAggregateInput!]
+              NOT: actorMoviesConnectionAggregateInput
+              OR: [actorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: actorMoviesNodeAggregationWhereInput
+            }
+
             input actorMoviesConnectionFilters {
               \\"\\"\\"Filter actors by aggregating results on related actorMoviesConnections\\"\\"\\"
-              aggregate: actorMoviesAggregateInput
+              aggregate: actorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
               \\"\\"\\"
@@ -592,9 +605,17 @@ describe("lower case type names", () => {
               totalCount: Int!
             }
 
+            input movieActorsConnectionAggregateInput {
+              AND: [movieActorsConnectionAggregateInput!]
+              NOT: movieActorsConnectionAggregateInput
+              OR: [movieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: movieActorsNodeAggregationWhereInput
+            }
+
             input movieActorsConnectionFilters {
               \\"\\"\\"Filter movies by aggregating results on related movieActorsConnections\\"\\"\\"
-              aggregate: movieActorsAggregateInput
+              aggregate: movieActorsConnectionAggregateInput
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter
               \\"\\"\\"

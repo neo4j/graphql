@@ -48,6 +48,11 @@ describe("162", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -290,11 +295,18 @@ describe("162", () => {
               totalCount: Int!
             }
 
+            input TigerJawLevel2Part1ConnectionAggregateInput {
+              AND: [TigerJawLevel2Part1ConnectionAggregateInput!]
+              NOT: TigerJawLevel2Part1ConnectionAggregateInput
+              OR: [TigerJawLevel2Part1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input TigerJawLevel2Part1ConnectionFilters {
               \\"\\"\\"
               Filter TigerJawLevel2s by aggregating results on related TigerJawLevel2Part1Connections
               \\"\\"\\"
-              aggregate: TigerJawLevel2Part1AggregateInput
+              aggregate: TigerJawLevel2Part1ConnectionAggregateInput
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
@@ -416,11 +428,19 @@ describe("162", () => {
               totalCount: Int!
             }
 
+            input TigerJawLevel2Part1TigerConnectionAggregateInput {
+              AND: [TigerJawLevel2Part1TigerConnectionAggregateInput!]
+              NOT: TigerJawLevel2Part1TigerConnectionAggregateInput
+              OR: [TigerJawLevel2Part1TigerConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
+            }
+
             input TigerJawLevel2Part1TigerConnectionFilters {
               \\"\\"\\"
               Filter TigerJawLevel2Part1s by aggregating results on related TigerJawLevel2Part1TigerConnections
               \\"\\"\\"
-              aggregate: TigerJawLevel2Part1TigerAggregateInput
+              aggregate: TigerJawLevel2Part1TigerConnectionAggregateInput
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"

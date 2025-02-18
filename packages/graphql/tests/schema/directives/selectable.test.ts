@@ -802,11 +802,19 @@ describe("@selectable", () => {
                   where: MovieConnectWhere
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
                   Filter Actors by aggregating results on related ActorActedInConnections
                   \\"\\"\\"
-                  aggregate: ActorActedInAggregateInput
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -995,6 +1003,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type CreateActorsMutationResponse {
@@ -1263,11 +1276,19 @@ describe("@selectable", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
                   Filter Actors by aggregating results on related ActorActedInConnections
                   \\"\\"\\"
-                  aggregate: ActorActedInAggregateInput
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1465,6 +1486,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type CreateActorsMutationResponse {
@@ -2803,11 +2829,19 @@ describe("@selectable", () => {
                   where: ProductionConnectWhere
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
                   Filter Actors by aggregating results on related ActorActedInConnections
                   \\"\\"\\"
-                  aggregate: ActorActedInAggregateInput
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -2996,6 +3030,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type CreateActorsMutationResponse {
@@ -3440,11 +3479,19 @@ describe("@selectable", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
                   \\"\\"\\"
                   Filter Actors by aggregating results on related ActorActedInConnections
                   \\"\\"\\"
-                  aggregate: ActorActedInAggregateInput
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -3642,6 +3689,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type CreateActorsMutationResponse {

@@ -194,7 +194,7 @@ function getRelationshipConnectionFilters(
     return [
         {
             name: "aggregate",
-            typeName: relationshipAdapter.operations.aggregateInputTypeName,
+            typeName: relationshipAdapter.operations.connectionAggregateInputTypeName,
             description: `Filter ${pluralize(relationshipAdapter.source.name)} by aggregating results on related ${pluralize(relationshipAdapter.operations.connectionFieldTypename)}`,
         },
         ...quantifierFilters,

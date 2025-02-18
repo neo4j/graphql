@@ -70,13 +70,7 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
             {
-                ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { eq: 1 } 
-                        } 
-                    } 
-                }) {
+                ${Post.plural}(where: { likesConnection: { aggregate: { count: { nodes: { eq: 1 } } } } }) {
                     title
                     likes {
                         name
@@ -124,13 +118,7 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
             {
-                ${Post.plural}(where: {
-                    likesConnection: { 
-                        aggregate: { 
-                            count: { lt: 1 } 
-                        } 
-                    } 
-                }) {
+                ${Post.plural}(where: { likesConnection: { aggregate: { count: { nodes: { lt: 1 } } } } }) {
                     title
                     likes {
                         name
@@ -181,7 +169,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { lte: 1 } 
+                            count: { nodes: { lte: 1 } } 
                         } 
                     } 
                 }) {
@@ -243,7 +231,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gt: 1 } 
+                            count: { nodes: { gt: 1 } } 
                         } 
                     } 
                 }) {
@@ -301,7 +289,7 @@ describe("aggregations-where-count", () => {
                 ${Post.plural}(where: {
                     likesConnection: { 
                         aggregate: { 
-                            count: { gt: 1 } 
+                            count: { nodes: { gt: 1 } } 
                         } 
                     } 
                 }) {

@@ -397,9 +397,18 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input BookAuthorConnectionAggregateInput {
+              AND: [BookAuthorConnectionAggregateInput!]
+              NOT: BookAuthorConnectionAggregateInput
+              OR: [BookAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: WroteAggregationWhereInput
+              node: BookAuthorNodeAggregationWhereInput
+            }
+
             input BookAuthorConnectionFilters {
               \\"\\"\\"Filter Books by aggregating results on related BookAuthorConnections\\"\\"\\"
-              aggregate: BookAuthorAggregateInput
+              aggregate: BookAuthorConnectionAggregateInput
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
               \\"\\"\\"
@@ -578,6 +587,11 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateAuthorsMutationResponse {
               authors: [Author!]!
               info: CreateInfo!
@@ -713,11 +727,20 @@ describe("Unions", () => {
               totalCount: Int!
             }
 
+            input JournalAuthorConnectionAggregateInput {
+              AND: [JournalAuthorConnectionAggregateInput!]
+              NOT: JournalAuthorConnectionAggregateInput
+              OR: [JournalAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: WroteAggregationWhereInput
+              node: JournalAuthorNodeAggregationWhereInput
+            }
+
             input JournalAuthorConnectionFilters {
               \\"\\"\\"
               Filter Journals by aggregating results on related JournalAuthorConnections
               \\"\\"\\"
-              aggregate: JournalAuthorAggregateInput
+              aggregate: JournalAuthorConnectionAggregateInput
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter
               \\"\\"\\"

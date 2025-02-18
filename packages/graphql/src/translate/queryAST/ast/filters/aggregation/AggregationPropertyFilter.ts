@@ -42,7 +42,7 @@ export class AggregationPropertyFilter extends Filter {
         logicalOperator,
         comparisonValue,
         aggregationOperator,
-        attachedTo,
+        attachedTo = "node",
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
@@ -57,7 +57,7 @@ export class AggregationPropertyFilter extends Filter {
         this.comparisonValue = comparisonValue;
         this.logicalOperator = logicalOperator;
         this.aggregationOperator = aggregationOperator;
-        this.attachedTo = attachedTo ?? "node";
+        this.attachedTo = attachedTo;
     }
 
     public getChildren(): QueryASTNode[] {

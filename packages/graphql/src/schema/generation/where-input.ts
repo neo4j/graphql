@@ -34,7 +34,7 @@ import type { RelationshipDeclarationAdapter } from "../../schema-model/relation
 import { isUnionEntity } from "../../translate/queryAST/utils/is-union-entity";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
-import { withAggregateInputType } from "./aggregate-types";
+import { withAggregateInputType, withConnectionAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputWithRelationshipFilters } from "./augment-where-input";
 
 function isEmptyObject(obj: Record<string, unknown>): boolean {
@@ -145,7 +145,7 @@ function makeWhereFields({
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
-    composer: SchemaComposer
+    composer: SchemaComposer;
 }): InputTypeComposerFieldConfigMapDefinition {
     if (entityAdapter instanceof UnionEntityAdapter) {
         const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -161,7 +161,6 @@ function makeWhereFields({
         features,
         ignoreCypherFieldFilters,
         composer,
-        
     });
 }
 
@@ -177,7 +176,7 @@ export function withSourceWhereInputType({
     deprecatedDirectives: Directive[];
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
     features: Neo4jFeaturesSettings | undefined;
-}): InputTypeComposer | undefined {
+}): void {
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
@@ -202,16 +201,22 @@ export function withSourceWhereInputType({
         features,
     });
 
+    withConnectionAggregateInputType({
+        relationshipAdapter,
+        entityAdapter: relationshipTarget,
+        composer: composer,
+        userDefinedDirectivesOnTargetFields,
+        features,
+    });
+
     if (relationshipAdapter.isFilterableByAggregate()) {
         whereInput.addFields({
-            [relationshipAdapter.operations.aggregateTypeName]: {
+            [relationshipAdapter.operations.aggregateFieldName]: {
                 type: whereAggregateInput,
                 directives: deprecatedDirectives,
             },
         });
     }
-
-    return whereInput;
 }
 
 export function withConnectWhereFieldInputType(

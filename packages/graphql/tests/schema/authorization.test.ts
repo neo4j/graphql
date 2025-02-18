@@ -47,6 +47,11 @@ describe("Authorization", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -171,9 +176,17 @@ describe("Authorization", () => {
               totalCount: Int!
             }
 
+            input PostAuthorConnectionAggregateInput {
+              AND: [PostAuthorConnectionAggregateInput!]
+              NOT: PostAuthorConnectionAggregateInput
+              OR: [PostAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostAuthorNodeAggregationWhereInput
+            }
+
             input PostAuthorConnectionFilters {
               \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
-              aggregate: PostAuthorAggregateInput
+              aggregate: PostAuthorConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"
@@ -491,9 +504,17 @@ describe("Authorization", () => {
               totalCount: Int!
             }
 
+            input UserPostsConnectionAggregateInput {
+              AND: [UserPostsConnectionAggregateInput!]
+              NOT: UserPostsConnectionAggregateInput
+              OR: [UserPostsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserPostsNodeAggregationWhereInput
+            }
+
             input UserPostsConnectionFilters {
               \\"\\"\\"Filter Users by aggregating results on related UserPostsConnections\\"\\"\\"
-              aggregate: UserPostsAggregateInput
+              aggregate: UserPostsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"

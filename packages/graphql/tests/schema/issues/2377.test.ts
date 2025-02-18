@@ -84,6 +84,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -292,11 +297,19 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               totalCount: Int!
             }
 
+            input ResourceContainedByConnectionAggregateInput {
+              AND: [ResourceContainedByConnectionAggregateInput!]
+              NOT: ResourceContainedByConnectionAggregateInput
+              OR: [ResourceContainedByConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ResourceContainedByNodeAggregationWhereInput
+            }
+
             input ResourceContainedByConnectionFilters {
               \\"\\"\\"
               Filter Resources by aggregating results on related ResourceContainedByConnections
               \\"\\"\\"
-              aggregate: ResourceContainedByAggregateInput
+              aggregate: ResourceContainedByConnectionAggregateInput
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"

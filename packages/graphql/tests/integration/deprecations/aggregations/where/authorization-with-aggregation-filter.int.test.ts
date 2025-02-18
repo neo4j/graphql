@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { createBearerToken } from "../../../utils/create-bearer-token";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import { createBearerToken } from "../../../../utils/create-bearer-token";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("authorization-with-aggregation-filter", () => {
     const testHelper = new TestHelper();
@@ -56,10 +56,8 @@ describe("authorization-with-aggregation-filter", () => {
                             operations: [READ],
                             where: {
                                 node: {
-                                    likesConnection: {
-                                        aggregate: {
-                                            count: { nodes: { gt: 1 } }
-                                        }
+                                    likesAggregate: {
+                                        count: { gt: 1 }
                                     }
                                 }
                             }
@@ -145,10 +143,8 @@ describe("authorization-with-aggregation-filter", () => {
                             operations: [READ],
                             where: {
                                 node: {
-                                    likesConnection: {
-                                        aggregate: {
-                                            count: { nodes: { gte: 1 } }
-                                        }
+                                    likesAggregate: {
+                                        count: { gte: 1 }
                                     }
                                 }
                             }
@@ -218,10 +214,8 @@ describe("authorization-with-aggregation-filter", () => {
                             operations: [UPDATE],
                             where: {
                                 node: {
-                                    likesConnection: {
-                                        aggregate: {
-                                            count: { nodes: { eq: 2 } }
-                                        }
+                                    likesAggregate: {
+                                        count: { eq: 2 }
                                     }
                                 }
                             }
@@ -299,10 +293,8 @@ describe("authorization-with-aggregation-filter", () => {
                             operations: [UPDATE],
                             where: {
                                 node: {
-                                    likesConnection: {
-                                        aggregate: {
-                                            count: { nodes: { eq: 2 } }
-                                        }
+                                    likesAggregate: {
+                                        count: { eq: 2 }
                                     }
                                 }
                             }

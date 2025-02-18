@@ -83,7 +83,7 @@ describe("Delete using top level aggregate where", () => {
                     where: { 
                         likesConnection: {
                             aggregate: {
-                                count: { eq: 3 }
+                                count: { nodes: { eq: 3 } }
                                 node: {
                                     testString: { shortestLength: { eq: 3 } }
                                 }
@@ -117,7 +117,7 @@ describe("Delete using top level aggregate where", () => {
                     likesConnection: {
                         aggregate: {
                             OR: [
-                                { count: { eq: 3 } },
+                                { count: { nodes: { eq: 3 } } },
                                 {
                                     node: {
                                         testString: { shortestLength: { eq: 3 } }
@@ -152,7 +152,7 @@ describe("Delete using top level aggregate where", () => {
                     likesConnection: {
                         aggregate: {
                             AND: [
-                                { count: { eq: 3 } },
+                                { count: { nodes: { eq: 3 } } },
                                 {
                                     node: {
                                         testString: { shortestLength: { eq: 3 } }

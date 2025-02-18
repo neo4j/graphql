@@ -113,11 +113,20 @@ describe("inheritance", () => {
               where: PersonConnectWhere
             }
 
+            input ActorFriendsConnectionAggregateInput {
+              AND: [ActorFriendsConnectionAggregateInput!]
+              NOT: ActorFriendsConnectionAggregateInput
+              OR: [ActorFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: FriendsWithAggregationWhereInput
+              node: ActorFriendsNodeAggregationWhereInput
+            }
+
             input ActorFriendsConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related PersonFriendsConnections
               \\"\\"\\"
-              aggregate: ActorFriendsAggregateInput
+              aggregate: ActorFriendsConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -263,6 +272,11 @@ describe("inheritance", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type CreateActorsMutationResponse {
@@ -483,11 +497,20 @@ describe("inheritance", () => {
               totalCount: Int!
             }
 
+            input PersonFriendsConnectionAggregateInput {
+              AND: [PersonFriendsConnectionAggregateInput!]
+              NOT: PersonFriendsConnectionAggregateInput
+              OR: [PersonFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PersonFriendsEdgeAggregationWhereInput
+              node: PersonFriendsNodeAggregationWhereInput
+            }
+
             input PersonFriendsConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonFriendsConnections
               \\"\\"\\"
-              aggregate: PersonFriendsAggregateInput
+              aggregate: PersonFriendsConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"

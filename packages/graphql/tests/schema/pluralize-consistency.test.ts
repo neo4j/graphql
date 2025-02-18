@@ -43,6 +43,11 @@ describe("Pluralize consistency", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -308,11 +313,19 @@ describe("Pluralize consistency", () => {
               totalCount: Int!
             }
 
+            input super_userMy_friendConnectionAggregateInput {
+              AND: [super_userMy_friendConnectionAggregateInput!]
+              NOT: super_userMy_friendConnectionAggregateInput
+              OR: [super_userMy_friendConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: super_userMy_friendNodeAggregationWhereInput
+            }
+
             input super_userMy_friendConnectionFilters {
               \\"\\"\\"
               Filter super_users by aggregating results on related super_userMy_friendConnections
               \\"\\"\\"
-              aggregate: super_userMy_friendAggregateInput
+              aggregate: super_userMy_friendConnectionAggregateInput
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
