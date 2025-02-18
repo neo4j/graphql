@@ -264,17 +264,9 @@ describe("Relationship", () => {
               totalCount: Int!
             }
 
-            input AggregationCountFilters {
-              eq: Int
-              gt: Int
-              gte: Int
-              lt: Int
-              lte: Int
-            }
-
             input ConnectionAggregationCountFilterInput {
-              edges: AggregationCountFilters
-              nodes: AggregationCountFilters
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type CreateActorsMutationResponse {

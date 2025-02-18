@@ -127,6 +127,11 @@ describe("Exclude attribute suffix based filtering", () => {
               set: CartesianPointInput
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -842,11 +847,20 @@ describe("Exclude attribute suffix based filtering", () => {
               totalCount: Int!
             }
 
+            input typeAActedInConnectionAggregateInput {
+              AND: [typeAActedInConnectionAggregateInput!]
+              NOT: typeAActedInConnectionAggregateInput
+              OR: [typeAActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: relTypeAggregationWhereInput
+              node: typeAActedInNodeAggregationWhereInput
+            }
+
             input typeAActedInConnectionFilters {
               \\"\\"\\"
               Filter typeAS by aggregating results on related typeAActedInConnections
               \\"\\"\\"
-              aggregate: typeAActedInAggregateInput
+              aggregate: typeAActedInConnectionAggregateInput
               \\"\\"\\"
               Return typeAS where all of the related typeAActedInConnections match this filter
               \\"\\"\\"
@@ -1243,9 +1257,18 @@ describe("Exclude attribute suffix based filtering", () => {
               totalCount: Int!
             }
 
+            input typeBRelsConnectionAggregateInput {
+              AND: [typeBRelsConnectionAggregateInput!]
+              NOT: typeBRelsConnectionAggregateInput
+              OR: [typeBRelsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: relTypeAggregationWhereInput
+              node: typeBRelsNodeAggregationWhereInput
+            }
+
             input typeBRelsConnectionFilters {
               \\"\\"\\"Filter typeBS by aggregating results on related typeBRelsConnections\\"\\"\\"
-              aggregate: typeBRelsAggregateInput
+              aggregate: typeBRelsConnectionAggregateInput
               \\"\\"\\"
               Return typeBS where all of the related typeBRelsConnections match this filter
               \\"\\"\\"

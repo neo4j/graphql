@@ -61,6 +61,11 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -251,11 +256,19 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               totalCount: Int!
             }
 
+            input PersonFriendsConnectionAggregateInput {
+              AND: [PersonFriendsConnectionAggregateInput!]
+              NOT: PersonFriendsConnectionAggregateInput
+              OR: [PersonFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: FriendOfAggregationWhereInput
+            }
+
             input PersonFriendsConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonFriendsConnections
               \\"\\"\\"
-              aggregate: PersonFriendsAggregateInput
+              aggregate: PersonFriendsConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"

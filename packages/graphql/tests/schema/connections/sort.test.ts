@@ -43,6 +43,11 @@ describe("Sort", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -172,11 +177,18 @@ describe("Sort", () => {
               totalCount: Int!
             }
 
+            input Node1RelatedToConnectionAggregateInput {
+              AND: [Node1RelatedToConnectionAggregateInput!]
+              NOT: Node1RelatedToConnectionAggregateInput
+              OR: [Node1RelatedToConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input Node1RelatedToConnectionFilters {
               \\"\\"\\"
               Filter Node1s by aggregating results on related Node1RelatedToConnections
               \\"\\"\\"
-              aggregate: Node1RelatedToAggregateInput
+              aggregate: Node1RelatedToConnectionAggregateInput
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
@@ -385,11 +397,19 @@ describe("Sort", () => {
               totalCount: Int!
             }
 
+            input Node2RelatedToConnectionAggregateInput {
+              AND: [Node2RelatedToConnectionAggregateInput!]
+              NOT: Node2RelatedToConnectionAggregateInput
+              OR: [Node2RelatedToConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Node2RelatedToNodeAggregationWhereInput
+            }
+
             input Node2RelatedToConnectionFilters {
               \\"\\"\\"
               Filter Node2s by aggregating results on related Node2RelatedToConnections
               \\"\\"\\"
-              aggregate: Node2RelatedToAggregateInput
+              aggregate: Node2RelatedToConnectionAggregateInput
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"

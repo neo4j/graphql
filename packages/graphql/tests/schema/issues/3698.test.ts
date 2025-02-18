@@ -71,6 +71,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               subscription: Subscription
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -212,11 +217,19 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               totalCount: Int!
             }
 
+            input GenreProductConnectionAggregateInput {
+              AND: [GenreProductConnectionAggregateInput!]
+              NOT: GenreProductConnectionAggregateInput
+              OR: [GenreProductConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: GenreProductNodeAggregationWhereInput
+            }
+
             input GenreProductConnectionFilters {
               \\"\\"\\"
               Filter Genres by aggregating results on related GenreProductConnections
               \\"\\"\\"
-              aggregate: GenreProductAggregateInput
+              aggregate: GenreProductConnectionAggregateInput
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
               \\"\\"\\"
@@ -618,9 +631,17 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               totalCount: Int!
             }
 
+            input MovieGenreConnectionAggregateInput {
+              AND: [MovieGenreConnectionAggregateInput!]
+              NOT: MovieGenreConnectionAggregateInput
+              OR: [MovieGenreConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieGenreNodeAggregationWhereInput
+            }
+
             input MovieGenreConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieGenreConnections\\"\\"\\"
-              aggregate: MovieGenreAggregateInput
+              aggregate: MovieGenreConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieGenreConnections match this filter
               \\"\\"\\"

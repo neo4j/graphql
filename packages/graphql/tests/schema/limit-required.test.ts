@@ -160,11 +160,20 @@ describe("limitRequired constructor option", () => {
               where: ProductionConnectWhere
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related PersonActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonActedInConnections match this filter
               \\"\\"\\"
@@ -317,11 +326,20 @@ describe("limitRequired constructor option", () => {
               where: MovieConnectWhere
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related PersonMoviesConnections
               \\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -528,6 +546,11 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -664,9 +687,18 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -951,11 +983,20 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input PersonActedInConnectionAggregateInput {
+              AND: [PersonActedInConnectionAggregateInput!]
+              NOT: PersonActedInConnectionAggregateInput
+              OR: [PersonActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PersonActedInEdgeAggregationWhereInput
+              node: PersonActedInNodeAggregationWhereInput
+            }
+
             input PersonActedInConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonActedInConnections
               \\"\\"\\"
-              aggregate: PersonActedInAggregateInput
+              aggregate: PersonActedInConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
               \\"\\"\\"
@@ -1084,11 +1125,20 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PersonMoviesEdgeAggregationWhereInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonMoviesConnections
               \\"\\"\\"
-              aggregate: PersonMoviesAggregateInput
+              aggregate: PersonMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -1687,11 +1737,20 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related ActorActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2015,9 +2074,18 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -2280,6 +2348,11 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             union Contact = Email | Telephone
 
             input ContactRelationshipFilters {
@@ -2506,9 +2579,18 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3264,9 +3346,18 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -3440,6 +3531,11 @@ describe("limitRequired constructor option", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type CreateActorsMutationResponse {
@@ -3899,9 +3995,18 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
               \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-              aggregate: ActorMoviesAggregateInput
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -4075,6 +4180,11 @@ describe("limitRequired constructor option", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type CreateActorsMutationResponse {

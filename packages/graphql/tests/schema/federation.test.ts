@@ -69,6 +69,11 @@ describe("Apollo Federation", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -177,9 +182,17 @@ describe("Apollo Federation", () => {
               totalCount: Int!
             }
 
+            input PostAuthorConnectionAggregateInput {
+              AND: [PostAuthorConnectionAggregateInput!]
+              NOT: PostAuthorConnectionAggregateInput
+              OR: [PostAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostAuthorNodeAggregationWhereInput
+            }
+
             input PostAuthorConnectionFilters {
               \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
-              aggregate: PostAuthorAggregateInput
+              aggregate: PostAuthorConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"
@@ -517,9 +530,17 @@ describe("Apollo Federation", () => {
               totalCount: Int!
             }
 
+            input UserPostsConnectionAggregateInput {
+              AND: [UserPostsConnectionAggregateInput!]
+              NOT: UserPostsConnectionAggregateInput
+              OR: [UserPostsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserPostsNodeAggregationWhereInput
+            }
+
             input UserPostsConnectionFilters {
               \\"\\"\\"Filter Users by aggregating results on related UserPostsConnections\\"\\"\\"
-              aggregate: UserPostsAggregateInput
+              aggregate: UserPostsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"
@@ -746,6 +767,11 @@ describe("Apollo Federation", () => {
 
             directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -853,9 +879,17 @@ describe("Apollo Federation", () => {
               totalCount: Int!
             }
 
+            input PostAuthorConnectionAggregateInput {
+              AND: [PostAuthorConnectionAggregateInput!]
+              NOT: PostAuthorConnectionAggregateInput
+              OR: [PostAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostAuthorNodeAggregationWhereInput
+            }
+
             input PostAuthorConnectionFilters {
               \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
-              aggregate: PostAuthorAggregateInput
+              aggregate: PostAuthorConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"

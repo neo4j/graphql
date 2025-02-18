@@ -627,6 +627,11 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateDirectorsMutationResponse {
               directors: [Director!]!
               info: CreateInfo!
@@ -715,11 +720,19 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input DirectorDirectsConnectionAggregateInput {
+              AND: [DirectorDirectsConnectionAggregateInput!]
+              NOT: DirectorDirectsConnectionAggregateInput
+              OR: [DirectorDirectsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: DirectorDirectsNodeAggregationWhereInput
+            }
+
             input DirectorDirectsConnectionFilters {
               \\"\\"\\"
               Filter Directors by aggregating results on related DirectorDirectsConnections
               \\"\\"\\"
-              aggregate: DirectorDirectsAggregateInput
+              aggregate: DirectorDirectsConnectionAggregateInput
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
               \\"\\"\\"
@@ -1021,11 +1034,19 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input MovieDirectedByConnectionAggregateInput {
+              AND: [MovieDirectedByConnectionAggregateInput!]
+              NOT: MovieDirectedByConnectionAggregateInput
+              OR: [MovieDirectedByConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieDirectedByNodeAggregationWhereInput
+            }
+
             input MovieDirectedByConnectionFilters {
               \\"\\"\\"
               Filter Movies by aggregating results on related MovieDirectedByConnections
               \\"\\"\\"
-              aggregate: MovieDirectedByAggregateInput
+              aggregate: MovieDirectedByConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieDirectedByConnections match this filter
               \\"\\"\\"
@@ -1321,6 +1342,11 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1537,11 +1563,19 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input MovieWorkersConnectionAggregateInput {
+              AND: [MovieWorkersConnectionAggregateInput!]
+              NOT: MovieWorkersConnectionAggregateInput
+              OR: [MovieWorkersConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieWorkersNodeAggregationWhereInput
+            }
+
             input MovieWorkersConnectionFilters {
               \\"\\"\\"
               Filter Movies by aggregating results on related MovieWorkersConnections
               \\"\\"\\"
-              aggregate: MovieWorkersAggregateInput
+              aggregate: MovieWorkersConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
               \\"\\"\\"
@@ -1803,11 +1837,19 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input PersonWorksInProductionConnectionAggregateInput {
+              AND: [PersonWorksInProductionConnectionAggregateInput!]
+              NOT: PersonWorksInProductionConnectionAggregateInput
+              OR: [PersonWorksInProductionConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonWorksInProductionNodeAggregationWhereInput
+            }
+
             input PersonWorksInProductionConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonWorksInProductionConnections
               \\"\\"\\"
-              aggregate: PersonWorksInProductionAggregateInput
+              aggregate: PersonWorksInProductionConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
               \\"\\"\\"
@@ -2150,6 +2192,11 @@ describe("Algebraic", () => {
               roles_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter roles: { includes: ... }\\")
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -2260,9 +2307,18 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2537,11 +2593,20 @@ describe("Algebraic", () => {
               totalCount: Int!
             }
 
+            input PersonActedInMoviesConnectionAggregateInput {
+              AND: [PersonActedInMoviesConnectionAggregateInput!]
+              NOT: PersonActedInMoviesConnectionAggregateInput
+              OR: [PersonActedInMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: PersonActedInMoviesNodeAggregationWhereInput
+            }
+
             input PersonActedInMoviesConnectionFilters {
               \\"\\"\\"
               Filter People by aggregating results on related PersonActedInMoviesConnections
               \\"\\"\\"
-              aggregate: PersonActedInMoviesAggregateInput
+              aggregate: PersonActedInMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter
               \\"\\"\\"

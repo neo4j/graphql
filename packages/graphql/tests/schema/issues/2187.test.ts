@@ -48,6 +48,11 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -190,9 +195,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               totalCount: Int!
             }
 
+            input GenreMoviesConnectionAggregateInput {
+              AND: [GenreMoviesConnectionAggregateInput!]
+              NOT: GenreMoviesConnectionAggregateInput
+              OR: [GenreMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: GenreMoviesNodeAggregationWhereInput
+            }
+
             input GenreMoviesConnectionFilters {
               \\"\\"\\"Filter Genres by aggregating results on related GenreMoviesConnections\\"\\"\\"
-              aggregate: GenreMoviesAggregateInput
+              aggregate: GenreMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -513,9 +526,17 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               totalCount: Int!
             }
 
+            input MovieGenresConnectionAggregateInput {
+              AND: [MovieGenresConnectionAggregateInput!]
+              NOT: MovieGenresConnectionAggregateInput
+              OR: [MovieGenresConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieGenresNodeAggregationWhereInput
+            }
+
             input MovieGenresConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
-              aggregate: MovieGenresAggregateInput @deprecated(reason: \\"Do not use genre\\")
+              aggregate: MovieGenresConnectionAggregateInput @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"

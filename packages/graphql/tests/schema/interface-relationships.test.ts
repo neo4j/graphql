@@ -152,11 +152,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related ActorActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -347,6 +356,11 @@ describe("Interface Relationships", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type CreateActorsMutationResponse {
@@ -887,11 +901,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related ActorActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -1109,6 +1132,11 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -1227,11 +1255,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input EpisodeSeriesConnectionAggregateInput {
+              AND: [EpisodeSeriesConnectionAggregateInput!]
+              NOT: EpisodeSeriesConnectionAggregateInput
+              OR: [EpisodeSeriesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
             input EpisodeSeriesConnectionFilters {
               \\"\\"\\"
               Filter Episodes by aggregating results on related EpisodeSeriesConnections
               \\"\\"\\"
-              aggregate: EpisodeSeriesAggregateInput
+              aggregate: EpisodeSeriesConnectionAggregateInput
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
@@ -1497,11 +1533,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"
               Filter Movies by aggregating results on related ProductionActorsConnections
               \\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1723,11 +1768,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ProductionActorsConnectionAggregateInput {
+              AND: [ProductionActorsConnectionAggregateInput!]
+              NOT: ProductionActorsConnectionAggregateInput
+              OR: [ProductionActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
             input ProductionActorsConnectionFilters {
               \\"\\"\\"
               Filter Productions by aggregating results on related ProductionActorsConnections
               \\"\\"\\"
-              aggregate: ProductionActorsAggregateInput
+              aggregate: ProductionActorsConnectionAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2042,11 +2096,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
               \\"\\"\\"
               Filter Series by aggregating results on related ProductionActorsConnections
               \\"\\"\\"
-              aggregate: SeriesActorsAggregateInput
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2198,11 +2261,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input SeriesEpisodesConnectionAggregateInput {
+              AND: [SeriesEpisodesConnectionAggregateInput!]
+              NOT: SeriesEpisodesConnectionAggregateInput
+              OR: [SeriesEpisodesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: SeriesEpisodesNodeAggregationWhereInput
+            }
+
             input SeriesEpisodesConnectionFilters {
               \\"\\"\\"
               Filter Series by aggregating results on related SeriesEpisodesConnections
               \\"\\"\\"
-              aggregate: SeriesEpisodesAggregateInput
+              aggregate: SeriesEpisodesConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
@@ -2609,11 +2680,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related ActorActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2831,6 +2911,11 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -2949,11 +3034,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input EpisodeSeriesConnectionAggregateInput {
+              AND: [EpisodeSeriesConnectionAggregateInput!]
+              NOT: EpisodeSeriesConnectionAggregateInput
+              OR: [EpisodeSeriesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
             input EpisodeSeriesConnectionFilters {
               \\"\\"\\"
               Filter Episodes by aggregating results on related EpisodeSeriesConnections
               \\"\\"\\"
-              aggregate: EpisodeSeriesAggregateInput
+              aggregate: EpisodeSeriesConnectionAggregateInput
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
@@ -3219,11 +3312,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"
               Filter Movies by aggregating results on related ProductionActorsConnections
               \\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3445,11 +3547,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ProductionActorsConnectionAggregateInput {
+              AND: [ProductionActorsConnectionAggregateInput!]
+              NOT: ProductionActorsConnectionAggregateInput
+              OR: [ProductionActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
             input ProductionActorsConnectionFilters {
               \\"\\"\\"
               Filter Productions by aggregating results on related ProductionActorsConnections
               \\"\\"\\"
-              aggregate: ProductionActorsAggregateInput
+              aggregate: ProductionActorsConnectionAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3784,11 +3895,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: StarredInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
               \\"\\"\\"
               Filter Series by aggregating results on related ProductionActorsConnections
               \\"\\"\\"
-              aggregate: SeriesActorsAggregateInput
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3940,11 +4060,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input SeriesEpisodesConnectionAggregateInput {
+              AND: [SeriesEpisodesConnectionAggregateInput!]
+              NOT: SeriesEpisodesConnectionAggregateInput
+              OR: [SeriesEpisodesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: SeriesEpisodesNodeAggregationWhereInput
+            }
+
             input SeriesEpisodesConnectionFilters {
               \\"\\"\\"
               Filter Series by aggregating results on related SeriesEpisodesConnections
               \\"\\"\\"
-              aggregate: SeriesEpisodesAggregateInput
+              aggregate: SeriesEpisodesConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
@@ -4314,6 +4442,11 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -4449,11 +4582,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionAggregateInput {
+              AND: [Interface1Interface2ConnectionAggregateInput!]
+              NOT: Interface1Interface2ConnectionAggregateInput
+              OR: [Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Interface1Interface2AggregateInput
+              aggregate: Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -4858,11 +4999,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Type1Interface1ConnectionAggregateInput {
+              AND: [Type1Interface1ConnectionAggregateInput!]
+              NOT: Type1Interface1ConnectionAggregateInput
+              OR: [Type1Interface1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1NodeAggregationWhereInput
+            }
+
             input Type1Interface1ConnectionFilters {
               \\"\\"\\"
               Filter Type1s by aggregating results on related Type1Interface1Connections
               \\"\\"\\"
-              aggregate: Type1Interface1AggregateInput
+              aggregate: Type1Interface1ConnectionAggregateInput
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
@@ -4951,11 +5100,19 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type1Interface1Interface2ConnectionAggregateInput {
+              AND: [Type1Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type1Interface1Interface2ConnectionAggregateInput
+              OR: [Type1Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type1Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Type1Interface1Interface2AggregateInput
+              aggregate: Type1Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -5311,11 +5468,19 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type2Interface1Interface2ConnectionAggregateInput {
+              AND: [Type2Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type2Interface1Interface2ConnectionAggregateInput
+              OR: [Type2Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type2Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type2Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Type2Interface1Interface2AggregateInput
+              aggregate: Type2Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -5610,6 +5775,11 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -5769,11 +5939,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionAggregateInput {
+              AND: [Interface1Interface2ConnectionAggregateInput!]
+              NOT: Interface1Interface2ConnectionAggregateInput
+              OR: [Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Interface1Interface2EdgeAggregationWhereInput
+              node: Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Interface1Interface2AggregateInput
+              aggregate: Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -6294,11 +6473,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Type1Interface1ConnectionAggregateInput {
+              AND: [Type1Interface1ConnectionAggregateInput!]
+              NOT: Type1Interface1ConnectionAggregateInput
+              OR: [Type1Interface1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1NodeAggregationWhereInput
+            }
+
             input Type1Interface1ConnectionFilters {
               \\"\\"\\"
               Filter Type1s by aggregating results on related Type1Interface1Connections
               \\"\\"\\"
-              aggregate: Type1Interface1AggregateInput
+              aggregate: Type1Interface1ConnectionAggregateInput
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
@@ -6389,11 +6576,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type1Interface1Interface2ConnectionAggregateInput {
+              AND: [Type1Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type1Interface1Interface2ConnectionAggregateInput
+              OR: [Type1Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PropsAggregationWhereInput
+              node: Type1Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type1Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Type1Interface1Interface2AggregateInput
+              aggregate: Type1Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -6758,11 +6954,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type2Interface1Interface2ConnectionAggregateInput {
+              AND: [Type2Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type2Interface1Interface2ConnectionAggregateInput
+              OR: [Type2Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PropsAggregationWhereInput
+              node: Type2Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type2Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Type2Interface1Interface2AggregateInput
+              aggregate: Type2Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7070,6 +7275,11 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -7229,11 +7439,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionAggregateInput {
+              AND: [Interface1Interface2ConnectionAggregateInput!]
+              NOT: Interface1Interface2ConnectionAggregateInput
+              OR: [Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Interface1Interface2EdgeAggregationWhereInput
+              node: Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Interface1Interface2AggregateInput
+              aggregate: Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7710,11 +7929,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Type1Interface1ConnectionAggregateInput {
+              AND: [Type1Interface1ConnectionAggregateInput!]
+              NOT: Type1Interface1ConnectionAggregateInput
+              OR: [Type1Interface1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1NodeAggregationWhereInput
+            }
+
             input Type1Interface1ConnectionFilters {
               \\"\\"\\"
               Filter Type1s by aggregating results on related Type1Interface1Connections
               \\"\\"\\"
-              aggregate: Type1Interface1AggregateInput
+              aggregate: Type1Interface1ConnectionAggregateInput
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
@@ -7805,11 +8032,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type1Interface1Interface2ConnectionAggregateInput {
+              AND: [Type1Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type1Interface1Interface2ConnectionAggregateInput
+              OR: [Type1Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Type1PropsAggregationWhereInput
+              node: Type1Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type1Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Type1Interface1Interface2AggregateInput
+              aggregate: Type1Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -8237,11 +8473,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type2Interface1Interface2ConnectionAggregateInput {
+              AND: [Type2Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type2Interface1Interface2ConnectionAggregateInput
+              OR: [Type2Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Type2PropsAggregationWhereInput
+              node: Type2Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type2Interface1Interface2ConnectionFilters {
               \\"\\"\\"
               Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
               \\"\\"\\"
-              aggregate: Type2Interface1Interface2AggregateInput
+              aggregate: Type2Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -8655,11 +8900,19 @@ describe("Interface Relationships", () => {
               where: UserConnectWhere
             }
 
+            input CommentCreatorConnectionAggregateInput {
+              AND: [CommentCreatorConnectionAggregateInput!]
+              NOT: CommentCreatorConnectionAggregateInput
+              OR: [CommentCreatorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: CommentCreatorNodeAggregationWhereInput
+            }
+
             input CommentCreatorConnectionFilters {
               \\"\\"\\"
               Filter Comments by aggregating results on related ContentCreatorConnections
               \\"\\"\\"
-              aggregate: CommentCreatorAggregateInput
+              aggregate: CommentCreatorConnectionAggregateInput
               \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -8761,11 +9014,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input CommentPostConnectionAggregateInput {
+              AND: [CommentPostConnectionAggregateInput!]
+              NOT: CommentPostConnectionAggregateInput
+              OR: [CommentPostConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: CommentPostNodeAggregationWhereInput
+            }
+
             input CommentPostConnectionFilters {
               \\"\\"\\"
               Filter Comments by aggregating results on related CommentPostConnections
               \\"\\"\\"
-              aggregate: CommentPostAggregateInput
+              aggregate: CommentPostConnectionAggregateInput
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
               \\"\\"\\"
@@ -8979,6 +9240,11 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             interface Content {
               content: String
               creator(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
@@ -9037,11 +9303,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ContentCreatorConnectionAggregateInput {
+              AND: [ContentCreatorConnectionAggregateInput!]
+              NOT: ContentCreatorConnectionAggregateInput
+              OR: [ContentCreatorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ContentCreatorNodeAggregationWhereInput
+            }
+
             input ContentCreatorConnectionFilters {
               \\"\\"\\"
               Filter Contents by aggregating results on related ContentCreatorConnections
               \\"\\"\\"
-              aggregate: ContentCreatorAggregateInput
+              aggregate: ContentCreatorConnectionAggregateInput
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -9366,9 +9640,17 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input PostCommentsConnectionAggregateInput {
+              AND: [PostCommentsConnectionAggregateInput!]
+              NOT: PostCommentsConnectionAggregateInput
+              OR: [PostCommentsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostCommentsNodeAggregationWhereInput
+            }
+
             input PostCommentsConnectionFilters {
               \\"\\"\\"Filter Posts by aggregating results on related PostCommentsConnections\\"\\"\\"
-              aggregate: PostCommentsAggregateInput
+              aggregate: PostCommentsConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
               \\"\\"\\"
@@ -9491,11 +9773,19 @@ describe("Interface Relationships", () => {
               where: UserConnectWhere
             }
 
+            input PostCreatorConnectionAggregateInput {
+              AND: [PostCreatorConnectionAggregateInput!]
+              NOT: PostCreatorConnectionAggregateInput
+              OR: [PostCreatorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostCreatorNodeAggregationWhereInput
+            }
+
             input PostCreatorConnectionFilters {
               \\"\\"\\"
               Filter Posts by aggregating results on related ContentCreatorConnections
               \\"\\"\\"
-              aggregate: PostCreatorAggregateInput
+              aggregate: PostCreatorConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -9817,9 +10107,17 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input UserContentConnectionAggregateInput {
+              AND: [UserContentConnectionAggregateInput!]
+              NOT: UserContentConnectionAggregateInput
+              OR: [UserContentConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserContentNodeAggregationWhereInput
+            }
+
             input UserContentConnectionFilters {
               \\"\\"\\"Filter Users by aggregating results on related UserContentConnections\\"\\"\\"
-              aggregate: UserContentAggregateInput
+              aggregate: UserContentConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"
@@ -10161,11 +10459,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
               \\"\\"\\"
               Filter Actors by aggregating results on related ActorActedInConnections
               \\"\\"\\"
-              aggregate: ActorActedInAggregateInput
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -10383,6 +10690,11 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -10498,9 +10810,18 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
               \\"\\"\\"Filter Movies by aggregating results on related ShowActorsConnections\\"\\"\\"
-              aggregate: MovieActorsAggregateInput
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -10803,9 +11124,18 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: StarredInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
               \\"\\"\\"Filter Series by aggregating results on related ShowActorsConnections\\"\\"\\"
-              aggregate: SeriesActorsAggregateInput
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -11004,9 +11334,18 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ShowActorsConnectionAggregateInput {
+              AND: [ShowActorsConnectionAggregateInput!]
+              NOT: ShowActorsConnectionAggregateInput
+              OR: [ShowActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ShowActorsEdgeAggregationWhereInput
+              node: ShowActorsNodeAggregationWhereInput
+            }
+
             input ShowActorsConnectionFilters {
               \\"\\"\\"Filter Shows by aggregating results on related ShowActorsConnections\\"\\"\\"
-              aggregate: ShowActorsAggregateInput
+              aggregate: ShowActorsConnectionAggregateInput
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"

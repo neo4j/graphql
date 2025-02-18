@@ -993,9 +993,16 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -1166,6 +1173,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -1261,9 +1273,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1733,9 +1753,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -1928,6 +1956,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -2023,9 +2056,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -2495,9 +2536,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -2690,6 +2739,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -2785,9 +2839,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3242,9 +3304,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -3437,6 +3507,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -3508,19 +3583,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectFieldInput {
                       connect: [ActorConnectInput!]
                       where: ActorConnectWhere
@@ -3532,9 +3594,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -4005,9 +4075,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -4200,6 +4278,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -4295,9 +4378,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -4769,9 +4860,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -4951,6 +5050,11 @@ describe("@filterable directive", () => {
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
                     }
 
                     type CreateActorsMutationResponse {
@@ -5475,9 +5579,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -5670,6 +5782,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -5741,19 +5858,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectFieldInput {
                       connect: [ActorConnectInput!]
                       where: ActorConnectWhere
@@ -5765,9 +5869,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -6231,9 +6343,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -6415,6 +6535,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -6476,19 +6601,6 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectFieldInput {
                       where: PersonConnectWhere
                     }
@@ -6499,9 +6611,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -7037,9 +7157,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -7221,6 +7349,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -7305,9 +7438,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -7844,9 +7985,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -8028,6 +8177,11 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
                     type CreateActorsMutationResponse {
                       actors: [Actor!]!
                       info: CreateInfo!
@@ -8089,19 +8243,6 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectFieldInput {
                       where: PersonConnectWhere
                     }
@@ -8112,9 +8253,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
                       \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsAggregateInput
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8666,9 +8815,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -8951,11 +9108,19 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input AppearanceMoviesConnectionAggregateInput {
+                      AND: [AppearanceMoviesConnectionAggregateInput!]
+                      NOT: AppearanceMoviesConnectionAggregateInput
+                      OR: [AppearanceMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: AppearanceMoviesNodeAggregationWhereInput
+                    }
+
                     input AppearanceMoviesConnectionFilters {
                       \\"\\"\\"
                       Filter Appearances by aggregating results on related AppearanceMoviesConnections
                       \\"\\"\\"
-                      aggregate: AppearanceMoviesAggregateInput
+                      aggregate: AppearanceMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -9135,6 +9300,11 @@ describe("@filterable directive", () => {
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
                     }
 
                     type CreateActorsMutationResponse {
@@ -9758,9 +9928,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -10043,11 +10221,19 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input AppearanceMoviesConnectionAggregateInput {
+                      AND: [AppearanceMoviesConnectionAggregateInput!]
+                      NOT: AppearanceMoviesConnectionAggregateInput
+                      OR: [AppearanceMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: AppearanceMoviesNodeAggregationWhereInput
+                    }
+
                     input AppearanceMoviesConnectionFilters {
                       \\"\\"\\"
                       Filter Appearances by aggregating results on related AppearanceMoviesConnections
                       \\"\\"\\"
-                      aggregate: AppearanceMoviesAggregateInput
+                      aggregate: AppearanceMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -10227,6 +10413,11 @@ describe("@filterable directive", () => {
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
                     }
 
                     type CreateActorsMutationResponse {
@@ -10850,9 +11041,17 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
                       \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
-                      aggregate: ActorMoviesAggregateInput
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -11135,11 +11334,19 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
+                    input AppearanceMoviesConnectionAggregateInput {
+                      AND: [AppearanceMoviesConnectionAggregateInput!]
+                      NOT: AppearanceMoviesConnectionAggregateInput
+                      OR: [AppearanceMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: AppearanceMoviesNodeAggregationWhereInput
+                    }
+
                     input AppearanceMoviesConnectionFilters {
                       \\"\\"\\"
                       Filter Appearances by aggregating results on related AppearanceMoviesConnections
                       \\"\\"\\"
-                      aggregate: AppearanceMoviesAggregateInput
+                      aggregate: AppearanceMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
                       \\"\\"\\"
@@ -11319,6 +11526,11 @@ describe("@filterable directive", () => {
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
                     }
 
                     type CreateActorsMutationResponse {
