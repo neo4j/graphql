@@ -158,6 +158,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this1
                 RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
             }
             RETURN this { actorsAggregate: { node: { age: var2 } } } AS this"
@@ -223,6 +224,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH DISTINCT this1
                 RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
             RETURN this { moviesAggregate: { node: { released: var2 } } } AS this"
@@ -268,6 +270,7 @@ describe("Field Level Aggregations", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                WITH DISTINCT this4
                 RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
             }
             RETURN this { actorsAggregate: { node: { name: var2, age: var5 } } } AS this"

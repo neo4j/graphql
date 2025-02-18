@@ -74,6 +74,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             }
             CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var1
             }
             CALL {
@@ -85,10 +86,12 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             }
             CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var3
             }
             CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var4
             }
             RETURN { _count: var0, _id: var1, _title: var2, _imdbRating: var3, _createdAt: var4 }"
