@@ -123,11 +123,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
-            type Count {
+            type Count @shareable {
               nodes: Int!
             }
 
-            type CountConnection {
+            type CountConnection @shareable {
               edges: Int!
               nodes: Int!
             }
@@ -461,11 +461,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               totalCount: Int!
             }
 
-            type Count {
+            type Count @shareable {
               nodes: Int!
             }
 
-            type CountConnection {
+            type CountConnection @shareable {
               edges: Int!
               nodes: Int!
             }

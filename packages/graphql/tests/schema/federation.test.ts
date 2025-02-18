@@ -69,11 +69,11 @@ describe("Apollo Federation", () => {
 
             directive @shareable on FIELD_DEFINITION | OBJECT
 
-            type Count {
+            type Count @shareable {
               nodes: Int!
             }
 
-            type CountConnection {
+            type CountConnection @shareable {
               edges: Int!
               nodes: Int!
             }
@@ -660,11 +660,11 @@ describe("Apollo Federation", () => {
 
             directive @link(as: String, for: link__Purpose, import: [link__Import], url: String) repeatable on SCHEMA
 
-            type Count {
+            type Count @federation__shareable {
               nodes: Int!
             }
 
-            type CountConnection {
+            type CountConnection @federation__shareable {
               edges: Int!
               nodes: Int!
             }
