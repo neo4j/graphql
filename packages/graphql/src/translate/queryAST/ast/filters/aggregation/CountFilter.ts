@@ -56,12 +56,14 @@ export class CountFilter extends Filter {
             throw new Error("No parent node found!");
         }
         const target = this.getTarget(queryASTContext);
+        // FIXME: the below fixes the issue with count but the distinct should be done across the whole aggregations.
+        // BUG: https://github.com/neo4j/graphql/issues/6005
         // NOTE: should distinct be always used in case of node?
-        const countExpr = this.attachedTo === "node" ? Cypher.count(target).distinct(): Cypher.count(target);
+        // const countExpr = this.attachedTo === "node" ? Cypher.count(target).distinct(): Cypher.count(target);
        
         return this.createBaseOperation({
             operator: this.operator,
-            expr: countExpr,
+            expr: Cypher.count(target),
             param: new Cypher.Param(this.comparisonValue),
         });
     }

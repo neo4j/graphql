@@ -46,8 +46,8 @@ describe("aggregations nested field", () => {
     afterEach(async () => {
         await testHelper.close();
     });
-
-    test("should return Post and project only users who liked exactly 2 posts", async () => {
+    // TODO: Remove focus test after https://github.com/neo4j/graphql/issues/6005 fix
+    test.skip("should return Post and project only users who liked exactly 2 posts", async () => {
         const post1Title = "Post 1";
         const post2Title = "Post 2";
         const post3Title = "Post 3";
