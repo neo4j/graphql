@@ -185,7 +185,7 @@ describe("@fulltext schema", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesByDescription(after: String, first: Int, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesByTitle(after: String, first: Int, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!

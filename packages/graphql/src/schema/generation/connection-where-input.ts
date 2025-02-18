@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
-import type {
-    InputTypeComposer,
-    InputTypeComposerFieldConfigMapDefinition,
-    ObjectTypeComposer,
-    SchemaComposer,
-} from "graphql-compose";
-import { PageInfo } from "../../graphql/objects/PageInfo";
+import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 // tODO: refactor into smaller fns for unions, like disconnect-input
@@ -166,51 +159,4 @@ function makeConnectionSortInputTypeFields({
         return undefined;
     }
     return fields;
-}
-
-function withRelationshipObjectType({
-    relationshipAdapter,
-    composer,
-}: {
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    composer: SchemaComposer;
-}): ObjectTypeComposer {
-    const typeName = relationshipAdapter.operations.relationshipFieldTypename;
-    if (composer.has(typeName)) {
-        return composer.getOTC(typeName);
-    }
-    const relationshipObjectType = composer.createObjectTC({
-        name: typeName,
-        fields: { cursor: new GraphQLNonNull(GraphQLString), node: `${relationshipAdapter.target.name}!` },
-    });
-
-    // TODO: RelationshipDeclarationAdapter is handled by doForRelationshipDeclaration - improve
-    if (relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.hasAnyProperties) {
-        relationshipObjectType.addFields({
-            properties: composer.getOTC(relationshipAdapter.propertiesTypeName).NonNull,
-        });
-    }
-    return relationshipObjectType;
-}
-
-export function withConnectionObjectType({
-    relationshipAdapter,
-    composer,
-}: {
-    relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
-    composer: SchemaComposer;
-}): ObjectTypeComposer {
-    const typeName = relationshipAdapter.operations.connectionFieldTypename;
-    if (composer.has(typeName)) {
-        return composer.getOTC(typeName);
-    }
-    const connectionObjectType = composer.createObjectTC({
-        name: typeName,
-        fields: {
-            edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
-            totalCount: new GraphQLNonNull(GraphQLInt),
-            pageInfo: new GraphQLNonNull(PageInfo),
-        },
-    });
-    return connectionObjectType;
 }

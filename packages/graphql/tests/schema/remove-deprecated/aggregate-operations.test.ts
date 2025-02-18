@@ -223,7 +223,6 @@ describe("Aggregate operations", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -271,6 +270,7 @@ describe("Aggregate operations", () => {
             }
 
             type PostLikesConnection {
+              aggregate: PostUserLikesAggregationSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

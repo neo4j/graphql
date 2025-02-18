@@ -180,7 +180,7 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -364,7 +364,7 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, sort: [MachineSort!], where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\"\\")
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\" instead\\")
               machinesConnection(after: String, first: Int, sort: [MachineSort!], where: MachineWhere): MachinesConnection!
             }
 
@@ -524,7 +524,7 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -676,7 +676,7 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\"\\")
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\" instead\\")
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 

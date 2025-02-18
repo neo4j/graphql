@@ -132,11 +132,11 @@ describe("limitRequired constructor option", () => {
 
             type Actor implements Person {
               actedIn(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
+              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int!, sort: [PersonActedInConnectionSort!], where: PersonActedInConnectionWhere): PersonActedInConnection!
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
               name: String!
             }
@@ -640,7 +640,7 @@ describe("limitRequired constructor option", () => {
 
             type Movie implements Production {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int!, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID!
               runtime: Int!
@@ -682,6 +682,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1428,19 +1429,19 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int!, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\"\\")
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int!, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               productions(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int!, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int!, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int!, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -1701,13 +1702,13 @@ describe("limitRequired constructor option", () => {
 
             type Actor {
               actedIn(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
+              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int!, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               contact(limit: Int!, offset: Int, where: ContactWhere): [Contact!]!
               contactConnection(after: String, first: Int!, where: ActorContactConnectionWhere): ActorContactConnection!
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -1732,6 +1733,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregationSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2069,6 +2071,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2532,7 +2535,7 @@ describe("limitRequired constructor option", () => {
 
             type Movie implements Production {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
+              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int!, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID!
               runtime: Int!
@@ -2574,6 +2577,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregationSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2937,23 +2941,23 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               contacts(limit: Int!, offset: Int, where: ContactWhere): [Contact!]!
               emails(limit: Int!, offset: Int, sort: [EmailSort!], where: EmailWhere): [Email!]!
-              emailsAggregate(where: EmailWhere): EmailAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"emailsConnection\\\\\\"\\")
+              emailsAggregate(where: EmailWhere): EmailAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"emailsConnection\\\\\\" instead\\")
               emailsConnection(after: String, first: Int!, sort: [EmailSort!], where: EmailWhere): EmailsConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\"\\")
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int!, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int!, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\"\\")
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int!, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
               telephones(limit: Int!, offset: Int, sort: [TelephoneSort!], where: TelephoneWhere): [Telephone!]!
-              telephonesAggregate(where: TelephoneWhere): TelephoneAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"telephonesConnection\\\\\\"\\")
+              telephonesAggregate(where: TelephoneWhere): TelephoneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"telephonesConnection\\\\\\" instead\\")
               telephonesConnection(after: String, first: Int!, sort: [TelephoneSort!], where: TelephoneWhere): TelephonesConnection!
             }
 
@@ -3272,7 +3276,7 @@ describe("limitRequired constructor option", () => {
             type Actor {
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -3341,6 +3345,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3755,10 +3760,10 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesByDescription(after: String, first: Int!, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesByTitle(after: String, first: Int!, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
@@ -3921,7 +3926,7 @@ describe("limitRequired constructor option", () => {
             type Actor {
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
+              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -3990,6 +3995,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregationSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4404,11 +4410,11 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\"\\")
+              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               descriptionQuery(after: String, first: Int!, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               titleQuery(after: String, first: Int!, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
             }

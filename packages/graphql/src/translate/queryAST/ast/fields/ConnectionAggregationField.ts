@@ -54,7 +54,8 @@ export class ConnectionAggregationField extends Field {
         if (!this.projectionExpr) {
             throw new Error("Projection expression of operation not available (has transpile been called)?");
         }
-        return { [this.alias]: new Cypher.Map({ [this.nodeAlias]: this.projectionExpr }) };
+
+        return { [this.alias]: this.projectionExpr };
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {

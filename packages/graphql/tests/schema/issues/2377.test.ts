@@ -221,10 +221,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type Query {
               resourceEntities(limit: Int, offset: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): [ResourceEntity!]!
-              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourceEntitiesConnection\\\\\\"\\")
+              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourceEntitiesConnection\\\\\\" instead\\")
               resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): ResourceEntitiesConnection!
               resources(limit: Int, offset: Int, sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourcesConnection\\\\\\"\\")
+              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourcesConnection\\\\\\" instead\\")
               resourcesConnection(after: String, first: Int, sort: [ResourceSort!], where: ResourceWhere): ResourcesConnection!
             }
 
@@ -233,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Resources encapsulating the given resource (e.g., a github org contains a repo)
               \\"\\"\\"
               containedBy(limit: Int, offset: Int, sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              containedByAggregate(where: ResourceWhere): ResourceResourceContainedByAggregationSelection
+              containedByAggregate(where: ResourceWhere): ResourceResourceContainedByAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"containedByConnection\\\\\\" instead\\")
               containedByConnection(after: String, first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
               createdAt: DateTime!
               externalIds: [ID!]
@@ -291,6 +291,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceContainedByConnection {
+              aggregate: ResourceResourceContainedByAggregationSelection!
               edges: [ResourceContainedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -141,7 +141,7 @@ describe("RelationshipAdapter", () => {
 
     test("should parse selectable", () => {
         const relationshipAdapter = userAdapter.relationships.get("accounts");
-        expect(relationshipAdapter?.isAggregable()).toBeTrue();
+        expect(relationshipAdapter?.isAggregable()).toBeFalse();
         expect(relationshipAdapter?.isReadable()).toBeFalse();
     });
 });

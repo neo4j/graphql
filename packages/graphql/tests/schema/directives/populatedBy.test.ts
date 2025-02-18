@@ -302,7 +302,7 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -554,7 +554,7 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -900,7 +900,7 @@ describe("@populatedBy tests", () => {
 
                 type Movie {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection
+                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
                 }
@@ -961,6 +961,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
+                  aggregate: MovieGenreGenresAggregationSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1124,10 +1125,10 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\"\\")
+                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1505,7 +1506,7 @@ describe("@populatedBy tests", () => {
 
                 type Movie {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection
+                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
                 }
@@ -1566,6 +1567,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
+                  aggregate: MovieGenreGenresAggregationSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1729,10 +1731,10 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\"\\")
+                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\"\\")
+                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 

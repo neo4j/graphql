@@ -101,7 +101,7 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -156,7 +156,7 @@ describe("Query Direction", () => {
 
             type User {
               friends(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
+              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
             }
@@ -220,6 +220,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregationSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -483,7 +484,7 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\"\\")
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -538,7 +539,7 @@ describe("Query Direction", () => {
 
             type User {
               friends(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
+              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
             }
@@ -602,6 +603,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregationSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

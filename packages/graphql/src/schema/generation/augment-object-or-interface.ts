@@ -27,11 +27,8 @@ import type { RelationshipDeclarationAdapter } from "../../schema-model/relation
 import type { ConnectionQueryArgs, Neo4jFeaturesSettings } from "../../types";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
-import {
-    makeConnectionWhereInputType,
-    withConnectionObjectType,
-    withConnectionSortInputType,
-} from "./connection-where-input";
+import { withConnectionObjectType } from "./connection-object-type";
+import { makeConnectionWhereInputType, withConnectionSortInputType } from "./connection-where-input";
 import { makeSortInput } from "./sort-and-options-input";
 
 export function augmentObjectOrInterfaceTypeWithRelationshipField({

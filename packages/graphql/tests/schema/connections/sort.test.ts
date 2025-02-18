@@ -106,7 +106,7 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection
+              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"relatedToConnection\\\\\\" instead\\")
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
@@ -172,6 +172,7 @@ describe("Sort", () => {
             }
 
             type Node1RelatedToConnection {
+              aggregate: Node1Node2RelatedToAggregationSelection!
               edges: [Node1RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -323,7 +324,7 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
+              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"relatedToConnection\\\\\\" instead\\")
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
@@ -392,6 +393,7 @@ describe("Sort", () => {
             }
 
             type Node2RelatedToConnection {
+              aggregate: Node2Node1RelatedToAggregationSelection!
               edges: [Node2RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -563,10 +565,10 @@ describe("Sort", () => {
 
             type Query {
               node1s(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              node1sAggregate(where: Node1Where): Node1AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"node1sConnection\\\\\\"\\")
+              node1sAggregate(where: Node1Where): Node1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"node1sConnection\\\\\\" instead\\")
               node1sConnection(after: String, first: Int, sort: [Node1Sort!], where: Node1Where): Node1sConnection!
               node2s(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              node2sAggregate(where: Node2Where): Node2AggregateSelection! @deprecated(reason: \\"Please use the explicit the field \\\\\\"aggregate\\\\\\" inside \\\\\\"node2sConnection\\\\\\"\\")
+              node2sAggregate(where: Node2Where): Node2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"node2sConnection\\\\\\" instead\\")
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 

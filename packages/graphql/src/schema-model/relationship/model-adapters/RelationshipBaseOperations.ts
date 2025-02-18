@@ -119,7 +119,7 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
     public get aggregateInputTypeName(): string {
         return `${this.prefixForTypename}AggregateInput`;
     }
-    
+
     public get connectionAggregateInputTypeName(): string {
         return `${this.prefixForTypename}ConnectionAggregateInput`;
     }
