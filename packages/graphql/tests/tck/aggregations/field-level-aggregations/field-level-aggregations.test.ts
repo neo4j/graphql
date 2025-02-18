@@ -70,7 +70,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    RETURN { nodes: count(DISTINCT this1), edges: count(DISTINCT this0) } AS var2
+                    RETURN { nodes: count(this1), edges: count(this0) } AS var2
                 }
                 CALL {
                     WITH *
