@@ -339,6 +339,29 @@
 
 - [#5837](https://github.com/neo4j/graphql/pull/5837) [`721691a`](https://github.com/neo4j/graphql/commit/721691a84eaa34996c0c97edb7ede1ae4775dd2f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added a validation rule to avoid defining fields as lists of nullable elements, as Neo4j does not support this.
 
+## 6.3.1
+
+### Patch Changes
+
+- [#5952](https://github.com/neo4j/graphql/pull/5952) [`4e14680`](https://github.com/neo4j/graphql/commit/4e1468076bbd23cdd9156b039de1d03bbc68942c) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `addVersionPrefix` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    This prepends all Cypher queries with a `CYPHER [version]` statement:
+
+    ```cypher
+    CYPHER 5
+    MATCH (this:Movie)
+    WHERE this.title = $param0
+    RETURN this { .title } AS this
+    ```
+
 ## 6.3.0
 
 ### Minor Changes
