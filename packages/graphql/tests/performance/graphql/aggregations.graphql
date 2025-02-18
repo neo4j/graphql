@@ -7,7 +7,7 @@ query TopLevelAggregate {
     }
 }
 
-query TopLevelAggregateWithMultipleFields_only {
+query TopLevelAggregateWithMultipleFields {
     peopleConnection {
         aggregate {
             count {
@@ -25,7 +25,7 @@ query TopLevelAggregateWithMultipleFields_only {
     }
 }
 
-query NestedAggregation_only {
+query NestedAggregation {
     people {
         name
         moviesConnection {
@@ -40,7 +40,7 @@ query NestedAggregation_only {
     }
 }
 
-query TopLevelAggregateWithMultipleFieldsDeprecated_only {
+query TopLevelAggregateWithMultipleFieldsDeprecated {
     peopleAggregate {
         count
         name {

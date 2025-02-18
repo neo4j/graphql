@@ -51,7 +51,7 @@ export class CountField extends AggregationField {
     }
 
     public getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
-        return Cypher.count(variable).distinct();
+        return Cypher.count(variable);
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {

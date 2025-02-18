@@ -139,8 +139,10 @@ export class ConnectionReadOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        const contextTarget = context.target;
-        if (!contextTarget) throw new Error();
+        if (!context.hasTarget())
+            throw new Error(
+                "Error generating query: contxt has no target in ConnectionReadOperation. This is likely a bug with the @neo4j/graphql library"
+            );
 
         // eslint-disable-next-line prefer-const
         let { selection: selectionClause, nestedContext } = this.selection.apply(context);
@@ -170,7 +172,7 @@ export class ConnectionReadOperation extends Operation {
         const aggregationSubqueries = (this.aggregationField?.getSubqueries(context) ?? []).map((sq) => {
             const subquery = new Cypher.Call(sq);
             if (!isTopLevel) {
-                return subquery.importWith(contextTarget);
+                return subquery.importWith(context.target);
             } else {
                 return subquery;
             }
