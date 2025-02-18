@@ -69,6 +69,7 @@ describe("Cypher Aggregations Many", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { shortest: min(this.id), longest: max(this.id) } AS var0
             }
             CALL {
@@ -80,10 +81,12 @@ describe("Cypher Aggregations Many", () => {
             }
             CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) } AS var2
             }
             CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
             RETURN { id: var0, title: var1, imdbRating: var2, createdAt: var3 }"
