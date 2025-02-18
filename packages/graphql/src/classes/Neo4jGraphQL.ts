@@ -125,7 +125,6 @@ class Neo4jGraphQL {
     }
 
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
-        console.log("Get subgraph schema");
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
             await this.subgraphSchema;
