@@ -103,7 +103,8 @@ export class AggregationOperation extends Operation {
         const clauses = this.transpileAggregation(context);
 
         const isTopLevel = !(this.entity instanceof RelationshipAdapter);
-        if (isTopLevel || this.isInConnectionField) {
+        if (isTopLevel && !this.isInConnectionField) {
+            // This is to support deprecated aggregations
             const clausesSubqueries = clauses.flatMap((sq) => new Cypher.Call(sq));
 
             return {

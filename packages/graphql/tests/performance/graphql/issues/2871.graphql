@@ -1,5 +1,5 @@
 query NestedRelationshipFilter {
-    movies(where: { actors: { movies_SOME: { title: "The Matrix" } } }) {
+    movies(where: { actors_SOME: { movies_SOME: { title: "The Matrix" } } }) {
         title
     }
 }
