@@ -74,36 +74,6 @@ export function withAggregateSelectionType({
     return aggregateSelection;
 }
 
-/** Top level count */
-export function getCountType(composer: SchemaComposer): ObjectTypeComposer {
-    const countFieldName = "Count";
-    return composer.getOrCreateOTC(countFieldName, (countField) => {
-        countField.addFields({
-            nodes: {
-                type: new GraphQLNonNull(GraphQLInt),
-                resolve: numericalResolver,
-            },
-        });
-    });
-}
-
-/** Nested count */
-export function getCountConnectionType(composer: SchemaComposer): ObjectTypeComposer {
-    const countFieldName = "CountConnection";
-    return composer.getOrCreateOTC(countFieldName, (countField) => {
-        countField.addFields({
-            nodes: {
-                type: new GraphQLNonNull(GraphQLInt),
-                resolve: numericalResolver,
-            },
-            edges: {
-                type: new GraphQLNonNull(GraphQLInt),
-                resolve: numericalResolver,
-            },
-        });
-    });
-}
-
 /** Create aggregate field inside connections */
 function createConnectionAggregate({
     entityAdapter,
@@ -133,7 +103,7 @@ function createConnectionAggregate({
     const connectionAggregate = composer.createObjectTC({
         name: entityAdapter.operations.aggregateTypeNames.connection,
         fields: {
-            count: getCountType(composer).NonNull,
+            count: aggregationTypesMapper.getCountType().NonNull,
         },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
