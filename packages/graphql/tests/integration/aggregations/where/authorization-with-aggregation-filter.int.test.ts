@@ -21,7 +21,7 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("authorization-with-aggregation-filter", () => {
+describe("Authorization with aggregation filter rule", () => {
     const testHelper = new TestHelper();
     const secret = "secret";
     let User: UniqueType;
@@ -81,14 +81,19 @@ describe("authorization-with-aggregation-filter", () => {
             CREATE (p1:${Post} {id: "post-1", content: "Popular post"})
             CREATE (p2:${Post} {id: "post-2", content: "Less popular post"})
             CREATE (p3:${Post} {id: "post-3", content: "Unpopular post"})
+            
             CREATE (u1:${User} {id: "1", name: "User 1"})
             CREATE (u2:${User} {id: "2", name: "User 2"})
             CREATE (u3:${User} {id: "3", name: "User 3"})
+
             CREATE (u1)-[:LIKES]->(p1)
             CREATE (u2)-[:LIKES]->(p1)
             CREATE (u3)-[:LIKES]->(p1)
+
             CREATE (u1)-[:LIKES]->(p2)
+            
             CREATE (u2)-[:LIKES]->(p2)
+            
             CREATE (u1)-[:LIKES]->(p3)
             CREATE (u2)-[:LIKES]->(p3)
         `);
@@ -108,21 +113,22 @@ describe("authorization-with-aggregation-filter", () => {
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[Post.plural]).toHaveLength(3);
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                content: "Popular post",
-                likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }, { name: "User 3" }]),
-            },
-            {
-                content: "Less popular post",
-                likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }]),
-            },
-            {
-                content: "Unpopular post",
-                likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }]),
-            },
-        ]);
+        expect(gqlResult.data).toEqual({
+            [Post.plural]: expect.toIncludeSameMembers([
+                {
+                    content: "Popular post",
+                    likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }, { name: "User 3" }]),
+                },
+                {
+                    content: "Less popular post",
+                    likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }]),
+                },
+                {
+                    content: "Unpopular post",
+                    likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }]),
+                },
+            ]),
+        });
     });
 
     test("should not authorize read operations on posts with less than one like", async () => {
@@ -170,12 +176,15 @@ describe("authorization-with-aggregation-filter", () => {
             CREATE (p1:${Post} {id: "post-1", content: "Popular post"})
             CREATE (p2:${Post} {id: "post-2", content: "Less popular post"})
             CREATE (p3:${Post} {id: "post-3", content: "Unpopular post"})
+
             CREATE (u1:${User} {id: "1", name: "User 1"})
             CREATE (u2:${User} {id: "2", name: "User 2"})
             CREATE (u3:${User} {id: "3", name: "User 3"})
+            
             CREATE (u1)-[:LIKES]->(p1)
             CREATE (u2)-[:LIKES]->(p1)
             CREATE (u3)-[:LIKES]->(p1)
+
             CREATE (u1)-[:LIKES]->(p2)
             CREATE (u2)-[:LIKES]->(p2)
         `);
@@ -195,7 +204,11 @@ describe("authorization-with-aggregation-filter", () => {
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+        expect(gqlResult.errors).toEqual([
+            expect.objectContaining({
+                message: "Forbidden",
+            }),
+        ]);
     });
 
     test("should authorize update operations on post with exactly two likes", async () => {
@@ -244,8 +257,10 @@ describe("authorization-with-aggregation-filter", () => {
             CREATE (p2:${Post} {id: "post-2", content: "Less popular post"})
             CREATE (u1:${User} {id: "1", name: "User 1"})
             CREATE (u2:${User} {id: "2", name: "User 2"})
+
             CREATE (u1)-[:LIKES]->(p1)
             CREATE (u2)-[:LIKES]->(p1)
+
             CREATE (u2)-[:LIKES]->(p2)
         `);
 
@@ -325,6 +340,7 @@ describe("authorization-with-aggregation-filter", () => {
             CREATE (u1:${User} {id: "1", name: "User 1"})
             CREATE (u2:${User} {id: "2", name: "User 2"})
             CREATE (u3:${User} {id: "3", name: "User 3"})
+
             CREATE (u1)-[:LIKES]->(p1)
             CREATE (u2)-[:LIKES]->(p1)
             CREATE (u3)-[:LIKES]->(p1)
@@ -345,8 +361,209 @@ describe("authorization-with-aggregation-filter", () => {
         `;
 
         const token = createBearerToken(secret, {});
-        const failResult = await testHelper.executeGraphQLWithToken(updateQuery, token);
+        const gqlResult = await testHelper.executeGraphQLWithToken(updateQuery, token);
 
-        expect((failResult.errors as any[])[0].message).toBe("Forbidden");
+        expect(gqlResult.errors).toBeDefined();
+        expect(gqlResult.errors).toEqual([
+            expect.objectContaining({
+                message: "Forbidden",
+            }),
+        ]);
+    });
+
+    test("should filter only posts with more than one like", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${User} @node {
+                id: ID!
+                name: String!
+            }
+
+            type ${Post} @node {
+                id: ID!
+                content: String!
+                likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+            }
+
+            extend type ${Post}
+                @authorization(
+                    filter: [
+                        {
+                            operations: [READ],
+                            where: {
+                                node: {
+                                    likesConnection: {
+                                        aggregate: {
+                                            count: { nodes: { eq: 3 } }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                )
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        await testHelper.executeCypher(`
+            CREATE (p1:${Post} {id: "post-1", content: "Popular post"})
+            CREATE (p2:${Post} {id: "post-2", content: "Less popular post"})
+            CREATE (p3:${Post} {id: "post-3", content: "Unpopular post"})
+            
+            CREATE (u1:${User} {id: "1", name: "User 1"})
+            CREATE (u2:${User} {id: "2", name: "User 2"})
+            CREATE (u3:${User} {id: "3", name: "User 3"})
+
+            CREATE (u1)-[:LIKES]->(p1)
+            CREATE (u2)-[:LIKES]->(p1)
+            CREATE (u3)-[:LIKES]->(p1)
+
+            CREATE (u1)-[:LIKES]->(p2)
+            
+            CREATE (u2)-[:LIKES]->(p2)
+            
+            CREATE (u1)-[:LIKES]->(p3)
+            CREATE (u2)-[:LIKES]->(p3)
+        `);
+
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural} {
+                    content
+                    likes {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data).toEqual({
+            [Post.plural]: expect.toIncludeSameMembers([
+                {
+                    content: "Popular post",
+                    likes: expect.toIncludeSameMembers([{ name: "User 1" }, { name: "User 2" }, { name: "User 3" }]),
+                },
+            ]),
+        });
+    });
+
+    test("should filter only posts with more than one like (using Connection fields)", async () => {
+        const typeDefs = /* GraphQL */ `
+            type ${User} @node {
+                id: ID!
+                name: String!
+            }
+
+            type ${Post} @node {
+                id: ID!
+                content: String!
+                likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
+            }
+
+            extend type ${Post}
+                @authorization(
+                    filter: [
+                        {
+                            operations: [READ],
+                            where: {
+                                node: {
+                                    likesConnection: {
+                                        aggregate: {
+                                            count: { nodes: { eq: 3 } }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                )
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        await testHelper.executeCypher(`
+            CREATE (p1:${Post} {id: "post-1", content: "Popular post"})
+            CREATE (p2:${Post} {id: "post-2", content: "Less popular post"})
+            CREATE (p3:${Post} {id: "post-3", content: "Unpopular post"})
+            
+            CREATE (u1:${User} {id: "1", name: "User 1"})
+            CREATE (u2:${User} {id: "2", name: "User 2"})
+            CREATE (u3:${User} {id: "3", name: "User 3"})
+
+            CREATE (u1)-[:LIKES]->(p1)
+            CREATE (u2)-[:LIKES]->(p1)
+            CREATE (u3)-[:LIKES]->(p1)
+
+            CREATE (u1)-[:LIKES]->(p2)
+            
+            CREATE (u2)-[:LIKES]->(p2)
+            
+            CREATE (u1)-[:LIKES]->(p3)
+            CREATE (u2)-[:LIKES]->(p3)
+        `);
+
+        const query = /* GraphQL */ `
+            {
+                ${Post.operations.connection} {
+                    edges {
+                        node {
+                            content
+                            likesConnection {
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data).toEqual({
+            [Post.operations.connection]: {
+                edges: expect.toIncludeSameMembers([
+                    {
+                        node: {
+                            content: "Popular post",
+                            likesConnection: {
+                                edges: expect.toIncludeSameMembers([
+                                    {
+                                        node: {
+                                            name: "User 1",
+                                        },
+                                    },
+                                    { node: { name: "User 2" } },
+                                    { node: { name: "User 3" } },
+                                ]),
+                            },
+                        },
+                    },
+                ]),
+            },
+        });
     });
 });
