@@ -127,6 +127,7 @@ describe("aggregation where count edges", () => {
             },
         ]);
     });
+    
     test("should filter correctly when multiple edges are connected to the same node", async () => {
         const query = /* GraphQL */ `
             {

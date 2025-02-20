@@ -57,13 +57,9 @@ export class CountFilter extends Filter {
         }
         const target = this.getTarget(queryASTContext);
 
-        // BUG: https://github.com/neo4j/graphql/issues/6005
-        // NOTE: should distinct be always used in case of node? (currently not, only for aggregation inside connection)
-        const countExpr = this.attachedTo === "node" ? Cypher.count(target).distinct() : Cypher.count(target);
-
         return this.createBaseOperation({
             operator: this.operator,
-            expr: countExpr,
+            expr: Cypher.count(target).distinct(),
             param: new Cypher.Param(this.comparisonValue),
         });
     }
