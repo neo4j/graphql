@@ -210,18 +210,17 @@ describe("auth/roles - deprecated", () => {
         });
 
         // This tests reproduces the security issue related to authorization without match #195
-        // eslint-disable-next-line jest/no-disabled-tests
+
         test("should throw if missing role on type definition and no nodes are matched", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
-                type NotANode @authorization(validate: [{
-                    when: [BEFORE],
-                    operations: [READ],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
-                }]) {
+                type NotANode
+                    @authorization(
+                        validate: [{ when: [BEFORE], operations: [READ], where: { jwt: { roles_INCLUDES: "admin" } } }]
+                    ) {
                     name: String
                 }
             `;
