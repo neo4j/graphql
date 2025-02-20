@@ -813,4 +813,132 @@ describe("auth/where", () => {
             expect(users).toEqual([{ id: userId, posts: [{ id: postId2 }] }]);
         });
     });
+
+    describe("filter", () => {
+        test("should add $jwt.id filter over relationship", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${User} @node {
+                    id: ID
+                    name: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                type ${Post} @node {
+                    id: ID
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                extend type ${User} @authorization(filter: [{ operations: [FILTER], where: { node: { id: { eq: "$jwt.sub" } } } }])
+            `;
+
+            const userId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const userId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { creator: { some: { name: { eq: "darrell" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                CREATE (:${User} {id: "${userId1}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId1}"})
+                CREATE (:${User} {id: "${userId2}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId2}"})
+            `);
+
+            const token = createBearerToken(secret, { sub: userId1 });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({ [Post.plural]: [{ id: postId1 }] });
+        });
+
+        test("should add $jwt.id to filter over connection", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${User} @node {
+                    id: ID
+                    name: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                type ${Post} @node {
+                    id: ID
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                extend type ${User} @authorization(filter: [{ operations: [FILTER], where: { node: { id: { eq: "$jwt.sub" } } } }])
+            `;
+
+            const userId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const userId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { creatorConnection: { some: { node: { name: { eq: "darrell" } } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                CREATE (:${User} {id: "${userId1}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId1}"})
+                CREATE (:${User} {id: "${userId2}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId2}"})
+            `);
+
+            const token = createBearerToken(secret, { sub: userId1 });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({ [Post.plural]: [{ id: postId1 }] });
+        });
+    });
 });
