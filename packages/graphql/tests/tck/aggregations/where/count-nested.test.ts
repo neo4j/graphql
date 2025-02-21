@@ -65,7 +65,7 @@ describe("Cypher Aggregations where with count", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    RETURN count(this3) = $param0 AS var4
+                    RETURN count(DISTINCT this3) = $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true
@@ -108,7 +108,7 @@ describe("Cypher Aggregations where with count", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    RETURN count(this3) < $param0 AS var4
+                    RETURN count(DISTINCT this3) < $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true
@@ -151,7 +151,7 @@ describe("Cypher Aggregations where with count", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    RETURN count(this3) <= $param0 AS var4
+                    RETURN count(DISTINCT this3) <= $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true
@@ -194,7 +194,7 @@ describe("Cypher Aggregations where with count", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    RETURN count(this3) > $param0 AS var4
+                    RETURN count(DISTINCT this3) > $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true
@@ -237,7 +237,7 @@ describe("Cypher Aggregations where with count", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    RETURN count(this3) >= $param0 AS var4
+                    RETURN count(DISTINCT this3) >= $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true
@@ -280,7 +280,7 @@ describe("Cypher Aggregations where with count", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    RETURN count(this3) IN $param0 AS var4
+                    RETURN count(DISTINCT this3) IN $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true

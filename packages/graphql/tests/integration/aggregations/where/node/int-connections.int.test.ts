@@ -47,7 +47,6 @@ describe("aggregations-where-node-int - connections", () => {
             `
                     CREATE (p:${Post} {title: "A popular Post"})
                     CREATE (p)<-[:LIKES]-(u1:${User} { someInt: ${someInt1} })
-                    CREATE (p)<-[:LIKES]-(u1)
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt2} })
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt3} })
                     CREATE (:${Post} {title: "An unpopular Post"})
@@ -388,7 +387,6 @@ describe("aggregations-where-node-int - connections - interface relationships of
             `
                     CREATE (p:${Post} {title: "A popular Post"})
                     CREATE (p)<-[:LIKES]-(u1:${User} { someInt: ${someInt1} })
-                    CREATE (p)<-[:LIKES]-(u1)
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt2} })
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt3} })
                     CREATE (:${Post} {title: "An unpopular Post"})

@@ -154,15 +154,15 @@ export class AggregationPropertyFilter extends Filter {
     ): Cypher.Function {
         switch (aggregationOperator) {
             case "AVERAGE":
-                return Cypher.avg(property).distinct();
+                return Cypher.avg(property);
             case "MIN":
             case "SHORTEST":
-                return Cypher.min(property).distinct();
+                return Cypher.min(property);
             case "MAX":
             case "LONGEST":
-                return Cypher.max(property).distinct();
+                return Cypher.max(property);
             case "SUM":
-                return Cypher.sum(property).distinct();
+                return Cypher.sum(property);
             default:
                 throw new Error(`Invalid operator ${aggregationOperator}`);
         }

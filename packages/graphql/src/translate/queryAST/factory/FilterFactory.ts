@@ -40,6 +40,7 @@ import { AggregationDurationFilter } from "../ast/filters/aggregation/Aggregatio
 import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import { AggregationTimeFilter } from "../ast/filters/aggregation/AggregationTimePropertyFilter";
+import { CountDeprecatedFilter } from "../ast/filters/aggregation/CountDeprecatedFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
 import { DateTimeFilter } from "../ast/filters/property-filters/DateTimeFilter";
@@ -809,8 +810,20 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
     }
 
-    private createCountFilter(operatorKey: string, value: unknown, attachedTo: "node" | "relationship"): CountFilter {
+    private createCountFilter(
+        operatorKey: string,
+        value: unknown,
+        attachedTo: "node" | "relationship",
+        useDeprecated = true
+    ): CountFilter {
         const operator = this.parseGenericOperator(operatorKey);
+        if (useDeprecated) {
+            return new CountDeprecatedFilter({
+                operator: operator,
+                comparisonValue: value,
+                attachedTo,
+            });
+        }
         return new CountFilter({
             operator: operator,
             comparisonValue: value,
@@ -823,7 +836,7 @@ export class FilterFactory {
         attachedTo: "node" | "relationship"
     ): CountFilter[] {
         return Object.entries(countInput).map(([key, value]) => {
-            return this.createCountFilter(key, value, attachedTo);
+            return this.createCountFilter(key, value, attachedTo, false);
         });
     }
 

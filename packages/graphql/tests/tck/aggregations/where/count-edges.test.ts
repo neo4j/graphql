@@ -57,7 +57,7 @@ describe("Cypher Aggregations where with count edges", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:LIKES]->(this1:User)
-                RETURN count(this0) = $param0 AS var2
+                RETURN count(DISTINCT this0) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -90,7 +90,7 @@ describe("Cypher Aggregations where with count edges", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:LIKES]->(this1:User)
-                RETURN count(this0) < $param0 AS var2
+                RETURN count(DISTINCT this0) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -123,7 +123,7 @@ describe("Cypher Aggregations where with count edges", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this0:LIKES]->(this1:User)
-                RETURN (count(this1) = $param0 AND count(this0) = $param1) AS var2
+                RETURN (count(DISTINCT this1) = $param0 AND count(DISTINCT this0) = $param1) AS var2
             }
             WITH *
             WHERE var2 = true
