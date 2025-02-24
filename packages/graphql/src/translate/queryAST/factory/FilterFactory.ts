@@ -810,12 +810,17 @@ export class FilterFactory {
         return this.wrapMultipleFiltersInLogical(filterTruthy(filterASTs));
     }
 
-    private createCountFilter(
-        operatorKey: string,
-        value: unknown,
-        attachedTo: "node" | "relationship",
-        useDeprecated = true
-    ): CountFilter {
+    private createCountFilter({
+        operatorKey,
+        value,
+        attachedTo,
+        useDeprecated = true,
+    }: {
+        operatorKey: string;
+        value: unknown;
+        attachedTo: "node" | "relationship";
+        useDeprecated?: boolean;
+    }): CountFilter {
         const operator = this.parseGenericOperator(operatorKey);
         if (useDeprecated) {
             return new CountDeprecatedFilter({
@@ -836,7 +841,12 @@ export class FilterFactory {
         attachedTo: "node" | "relationship"
     ): CountFilter[] {
         return Object.entries(countInput).map(([key, value]) => {
-            return this.createCountFilter(key, value, attachedTo, false);
+            return this.createCountFilter({
+                operatorKey: key,
+                value,
+                attachedTo,
+                useDeprecated: false,
+            });
         });
     }
 
@@ -874,7 +884,11 @@ export class FilterFactory {
                             });
                         }
                         return Object.entries(value).map(([key, value]) => {
-                            return this.createCountFilter(key, value, "node");
+                            return this.createCountFilter({
+                                operatorKey: key,
+                                value,
+                                attachedTo: "node",
+                            });
                         });
                     }
 
