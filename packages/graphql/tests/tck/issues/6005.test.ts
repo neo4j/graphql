@@ -20,7 +20,7 @@
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/6005 filters (count only)", () => {
+describe("https://github.com/neo4j/graphql/issues/6005", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
@@ -47,80 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters (count only)", ()
         });
     });
 
-    test("filter movies by actors count with duplicate results (deprecated syntax, no DISTINCT)", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies(where: { actorsAggregate: { count: { eq: 4 } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN count(this1) = $param0 AS var2
-            }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .title } AS this"
-        `);
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 4,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("filter movies by actors count with duplicate results at the field-level (deprecated syntax, no DISTINCT)", async () => {
-        const query = /* GraphQL */ `
-            query {
-                actors {
-                    movies(where: { actorsAggregate: { count: { eq: 4 } } }) {
-                        title
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH DISTINCT this1
-                CALL {
-                    WITH this1
-                    MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    RETURN count(this3) = $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .title } AS this1
-                RETURN collect(this1) AS var5
-            }
-            RETURN this { movies: var5 } AS this"
-        `);
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 4,
-                    \\"high\\": 0
-                }
-            }"
-        `);
-    });
-
-    test("filter movies by actors count with unique results (connection syntax, with DISTINCT)", async () => {
+    test("filter movies by actors count with unique results", async () => {
         const query = /* GraphQL */ `
             query {
                 movies(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
@@ -152,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters (count only)", ()
                 `);
     });
 
-    test("filter movies by actors count with unique results at the field-level (connection syntax, with DISTINCT)", async () => {
+    test("filter movies by actors count with unique results at the field-level", async () => {
         const query = /* GraphQL */ `
             query {
                 actors {
@@ -193,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters (count only)", ()
                 `);
     });
 
-    test("filter movies by actors count with unique results on a connection projection (connection syntax, with DISTINCT)", async () => {
+    test("filter movies by actors count with unique results on a connection projection", async () => {
         const query = /* GraphQL */ `
             query {
                 moviesConnection(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
@@ -237,7 +164,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters (count only)", ()
                 `);
     });
 
-    test("filter movies by actors count with unique results on a connection projection at the field-level (connection syntax, with DISTINCT)", async () => {
+    test("filter movies by actors count with unique results on a connection projection at the field-level", async () => {
         const query = /* GraphQL */ `
             query {
                 actorsConnection {
@@ -299,45 +226,6 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters (count only)", ()
                         \\"high\\": 0
                     }
                 }"
-        `);
-    });
-
-    test("filter movies by related movies count with duplicate results, double nested (deprecated syntax, no DISTINCT)", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movies(where: { actors: { some: { moviesAggregate: { count: { eq: 4 } } } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)<-[:ACTED_IN]-(this0:Actor)
-                CALL {
-                    WITH this0
-                    MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
-            }
-            WITH *
-            WHERE var4 = true
-            RETURN this { .title } AS this"
-        `);
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 4,
-                    \\"high\\": 0
-                }
-            }"
         `);
     });
 });

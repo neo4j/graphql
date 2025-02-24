@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/6005 filters", () => {
+describe("https://github.com/neo4j/graphql/issues/6005", () => {
     let Movie: UniqueType;
     let Actor: UniqueType;
 
@@ -62,62 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters", () => {
         await testHelper.close();
     });
 
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by actors count with duplicate results (deprecated syntax)", async () => {
-        // should count the 4 actors with Arnold counted twice
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(where: { actorsAggregate: { count: { eq: 4 } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "Terminator",
-                },
-            ],
-        });
-    });
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by actors count with duplicate results at the field-level (deprecated syntax, no DISTINCT)", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Actor.plural} {
-                    name
-                    movies(where: { actorsAggregate: { count: { eq: 4 } } }) {
-                        title
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Actor.plural]: expect.toIncludeSameMembers([
-                { name: "Arnold", movies: [{ title: "Terminator" }] },
-                { name: "Linda", movies: [{ title: "Terminator" }] },
-                { name: "Another actor", movies: [{ title: "Terminator" }] },
-            ]),
-        });
-    });
-
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by actors count with unique results (connection syntax)", async () => {
+    test("should filter movies by actors count with unique results", async () => {
         // count should be the 3 actors but should not count Arnold twice
         const query = /* GraphQL */ `
             query {
@@ -138,11 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters", () => {
         });
     });
 
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by actors count with unique results at the field-level (connection syntax, with DISTINCT)", async () => {
+    test("should filter movies by actors count with unique results at the field-level", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
@@ -169,10 +110,10 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters", () => {
      * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
      * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
      **/
-    test("should filter movies by actors count on connection projection (connection syntax, with DISTINCT)", async () => {
+    test("should filter movies by actors count on connection projection", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}Connection(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
+                ${Movie.operations.connection}(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
                     edges {
                         node {
                             title
@@ -197,14 +138,10 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters", () => {
         });
     });
 
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by actors count on connection projection at field-level (connection syntax, with DISTINCT)", async () => {
+    test("should filter movies by actors count on connection projection at field-level", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Actor.plural}Connection {
+                ${Actor.operations.connection} {
                     edges {
                         node {
                             name
@@ -262,31 +199,7 @@ describe("https://github.com/neo4j/graphql/issues/6005 filters", () => {
         });
     });
 
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by related movies count with duplicate results, double nested (deprecated syntax, no DISTINCT)", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(where: { actors: { all: { moviesAggregate: { count: { eq: 1 } } } } }) {
-                    title
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Movie.plural]: expect.toBeArrayOfSize(0),
-        });
-    });
-
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
-    test("should filter movies by related movies count with duplicate results, double nested (connection syntax, with DISTINCT)", async () => {
+    test("should filter movies by related movies count with duplicate results, double nested", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural}(where: { actors: { all: { moviesConnection: { aggregate: { count: { nodes: { eq: 1 } } } } } } }) {
