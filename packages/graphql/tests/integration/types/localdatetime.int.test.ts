@@ -246,7 +246,7 @@ describe("LocalDateTime", () => {
             "should filter based on localDT comparison, for filter %s",
             async (filter) => {
                 const futureId = generate({ readable: false });
-                const future = "2025-02-18T18:10:55.462Z".split("Z")[0];
+                const future = "6025-02-18T18:10:55.462Z".split("Z")[0];
                 const parsedFuture = parseLocalDateTime(future);
                 const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                     parsedFuture.year,
@@ -358,7 +358,7 @@ describe("LocalDateTime", () => {
     describe("sorting", () => {
         test.each(["ASC", "DESC"])("should sort based on localDT, sorting by %s", async (sort) => {
             const futureId = generate({ readable: false });
-            const future = "2025-08-10T05:25:26.654Z".split("Z")[0];
+            const future = "6025-08-10T05:25:26.654Z".split("Z")[0];
             const parsedFuture = parseLocalDateTime(future);
             const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                 parsedFuture.year,
