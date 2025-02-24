@@ -20,19 +20,25 @@
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Cypher Aggregations where with count edges", () => {
+describe("https://github.com/neo4j/graphql/issues/6005", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type User @node {
-                name: String!
+            type Movie @node {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
-
-            type Post @node {
-                content: String!
-                likes: [User!]! @relationship(type: "LIKES", direction: OUT)
+            type Actor @node {
+                name: String!
+                age: Int!
+                born: DateTime!
+                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+            type ActedIn @relationshipProperties {
+                screentime: Int!
+                character: String!
             }
         `;
 
@@ -41,11 +47,11 @@ describe("Cypher Aggregations where with count edges", () => {
         });
     });
 
-    test("Equality Count Edges", async () => {
+    test("filter movies by actors count with duplicate results (deprecated syntax, no DISTINCT)", async () => {
         const query = /* GraphQL */ `
-            {
-                posts(where: { likesConnection: { aggregate: { count: { edges: { eq: 10 } } } } }) {
-                    content
+            query {
+                movies(where: { actorsAggregate: { count: { eq: 4 } } }) {
+                    title
                 }
             }
         `;
@@ -53,32 +59,33 @@ describe("Cypher Aggregations where with count edges", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:LIKES]->(this1:User)
-                RETURN count(DISTINCT this0) = $param0 AS var2
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                RETURN count(this1) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { .title } AS this"
         `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 10,
+                    \\"low\\": 4,
                     \\"high\\": 0
                 }
             }"
         `);
     });
 
-    test("LT Count Edges", async () => {
+    test("filter movies by actors count with duplicate results at the field-level", async () => {
         const query = /* GraphQL */ `
-            {
-                posts(where: { likesConnection: { aggregate: { count: { edges: { lt: 10 } } } } }) {
-                    content
+            query {
+                actors {
+                    movies(where: { actorsAggregate: { count: { eq: 4 } } }) {
+                        title
+                    }
                 }
             }
         `;
@@ -86,32 +93,38 @@ describe("Cypher Aggregations where with count edges", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:LIKES]->(this1:User)
-                RETURN count(DISTINCT this0) < $param0 AS var2
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH DISTINCT this1
+                CALL {
+                    WITH this1
+                    MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    RETURN count(this3) = $param0 AS var4
+                }
+                WITH *
+                WHERE var4 = true
+                WITH this1 { .title } AS this1
+                RETURN collect(this1) AS var5
             }
-            WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            RETURN this { movies: var5 } AS this"
         `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 10,
+                    \\"low\\": 4,
                     \\"high\\": 0
                 }
             }"
         `);
     });
 
-    test("Combined Count Edges and Nodes", async () => {
+    test("filter movies by related movies count with duplicate results, double nested", async () => {
         const query = /* GraphQL */ `
-            {
-                posts(where: { likesConnection: { aggregate: { count: { edges: { eq: 3 }, nodes: { eq: 2 } } } } }) {
-                    content
+            query {
+                movies(where: { actors: { some: { moviesAggregate: { count: { eq: 4 } } } } }) {
+                    title
                 }
             }
         `;
@@ -119,25 +132,27 @@ describe("Cypher Aggregations where with count edges", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)-[this0:LIKES]->(this1:User)
-                RETURN (count(DISTINCT this1) = $param0 AND count(DISTINCT this0) = $param1) AS var2
+                MATCH (this)<-[:ACTED_IN]-(this0:Actor)
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
+                    RETURN count(this2) = $param0 AS var3
+                }
+                WITH *
+                WHERE var3 = true
+                RETURN count(this0) > 0 AS var4
             }
             WITH *
-            WHERE var2 = true
-            RETURN this { .content } AS this"
+            WHERE var4 = true
+            RETURN this { .title } AS this"
         `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 2,
-                    \\"high\\": 0
-                },
-                \\"param1\\": {
-                    \\"low\\": 3,
+                    \\"low\\": 4,
                     \\"high\\": 0
                 }
             }"

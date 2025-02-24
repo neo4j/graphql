@@ -20,7 +20,6 @@
 import Cypher from "@neo4j/cypher-builder";
 import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { hasTarget } from "../../../utils/context-has-target";
 import { getEntityLabels } from "../../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
@@ -50,7 +49,9 @@ export class AggregationFilter extends Filter {
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        if (!hasTarget(context)) throw new Error("No parent node found!");
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         this.subqueryReturnVariable = new Cypher.Variable();
         const relatedEntity = this.relationship.target;
 

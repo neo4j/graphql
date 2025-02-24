@@ -127,8 +127,8 @@ describe("aggregation where count edges", () => {
             },
         ]);
     });
-    // TODO: Remove focus test after https://github.com/neo4j/graphql/issues/6005 fix
-    test.skip("should filter correctly when multiple edges are connected to the same node", async () => {
+    
+    test("should filter correctly when multiple edges are connected to the same node", async () => {
         const query = /* GraphQL */ `
             {
                 ${Post.plural}(
