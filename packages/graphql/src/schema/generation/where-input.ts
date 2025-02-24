@@ -25,6 +25,7 @@ import type {
     InputTypeComposerFieldConfigMapDefinition,
     SchemaComposer,
 } from "graphql-compose";
+import { DEPRECATED } from "../../constants";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -213,7 +214,16 @@ export function withSourceWhereInputType({
         whereInput.addFields({
             [relationshipAdapter.operations.aggregateFieldName]: {
                 type: whereAggregateInput,
-                directives: deprecatedDirectives,
+                directives: deprecatedDirectives.length
+                    ? deprecatedDirectives
+                    : [
+                          {
+                              name: DEPRECATED,
+                              args: {
+                                  reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
+                              },
+                          },
+                      ],
             },
         });
     }

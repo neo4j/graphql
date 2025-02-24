@@ -1065,7 +1065,7 @@ describe("@populatedBy tests", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   genres: GenreRelationshipFilters
-                  genresAggregate: MovieGenresAggregateInput
+                  genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the genresConnection filter, please use { genresConnection: { aggregate: {...} } } instead\\")
                   genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
@@ -1671,7 +1671,7 @@ describe("@populatedBy tests", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   genres: GenreRelationshipFilters
-                  genresAggregate: MovieGenresAggregateInput
+                  genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the genresConnection filter, please use { genresConnection: { aggregate: {...} } } instead\\")
                   genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter

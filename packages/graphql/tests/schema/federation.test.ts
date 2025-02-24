@@ -346,7 +346,7 @@ describe("Apollo Federation", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               author: UserRelationshipFilters
-              authorAggregate: PostAuthorAggregateInput
+              authorAggregate: PostAuthorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the authorConnection filter, please use { authorConnection: { aggregate: {...} } } instead\\")
               authorConnection: PostAuthorConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
@@ -666,7 +666,7 @@ describe("Apollo Federation", () => {
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               posts: PostRelationshipFilters
-              postsAggregate: UserPostsAggregateInput
+              postsAggregate: UserPostsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the postsConnection filter, please use { postsConnection: { aggregate: {...} } } instead\\")
               postsConnection: UserPostsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
@@ -1020,7 +1020,7 @@ describe("Apollo Federation", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               author: UserRelationshipFilters
-              authorAggregate: PostAuthorAggregateInput
+              authorAggregate: PostAuthorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the authorConnection filter, please use { authorConnection: { aggregate: {...} } } instead\\")
               authorConnection: PostAuthorConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter

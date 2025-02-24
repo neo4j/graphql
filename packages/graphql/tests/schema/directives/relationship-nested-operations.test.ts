@@ -256,7 +256,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -689,7 +689,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -1122,7 +1122,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -1554,7 +1554,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -1986,7 +1986,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -2414,7 +2414,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -2833,7 +2833,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -3253,7 +3253,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -3831,7 +3831,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -3864,7 +3864,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -4407,7 +4407,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -4440,7 +4440,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -9667,7 +9667,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10263,7 +10263,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10864,7 +10864,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11459,7 +11459,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -12059,7 +12059,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -12650,7 +12650,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -13383,7 +13383,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -13416,7 +13416,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -14142,7 +14142,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -14175,7 +14175,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter

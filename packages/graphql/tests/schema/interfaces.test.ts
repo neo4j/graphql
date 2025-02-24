@@ -344,7 +344,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieNodeMoviesAggregateInput
+              moviesAggregate: MovieNodeMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
@@ -420,7 +420,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieMoviesAggregateInput
+              moviesAggregate: MovieMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
@@ -827,7 +827,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieNodeMoviesAggregateInput
+              moviesAggregate: MovieNodeMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
@@ -903,7 +903,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieMoviesAggregateInput
+              moviesAggregate: MovieMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter

@@ -241,7 +241,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               NOT: Actor2Where
               OR: [Actor2Where!]
               movies: MovieRelationshipFilters
-              moviesAggregate: Actor2MoviesAggregateInput
+              moviesAggregate: Actor2MoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: Actor2MoviesConnectionFilters
               \\"\\"\\"
               Return Actor2s where all of the related Actor2MoviesConnections match this filter
@@ -458,7 +458,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter

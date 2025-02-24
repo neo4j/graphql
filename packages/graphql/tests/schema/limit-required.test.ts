@@ -472,7 +472,7 @@ describe("limitRequired constructor option", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonActedInConnections match this filter
@@ -505,7 +505,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonMoviesConnections match this filter
@@ -874,7 +874,7 @@ describe("limitRequired constructor option", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -1269,7 +1269,7 @@ describe("limitRequired constructor option", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: PersonActedInAggregateInput
+              actedInAggregate: PersonActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: PersonActedInConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
@@ -1302,7 +1302,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: PersonMoviesAggregateInput
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
@@ -2251,7 +2251,7 @@ describe("limitRequired constructor option", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -2310,7 +2310,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -2769,7 +2769,7 @@ describe("limitRequired constructor option", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -3497,7 +3497,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4147,7 +4147,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter

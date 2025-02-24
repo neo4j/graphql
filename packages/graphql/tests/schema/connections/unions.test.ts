@@ -546,7 +546,7 @@ describe("Unions", () => {
               NOT: BookWhere
               OR: [BookWhere!]
               author: AuthorRelationshipFilters
-              authorAggregate: BookAuthorAggregateInput
+              authorAggregate: BookAuthorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the authorConnection filter, please use { authorConnection: { aggregate: {...} } } instead\\")
               authorConnection: BookAuthorConnectionFilters
               \\"\\"\\"
               Return Books where all of the related BookAuthorConnections match this filter
@@ -878,7 +878,7 @@ describe("Unions", () => {
               NOT: JournalWhere
               OR: [JournalWhere!]
               author: AuthorRelationshipFilters
-              authorAggregate: JournalAuthorAggregateInput
+              authorAggregate: JournalAuthorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the authorConnection filter, please use { authorConnection: { aggregate: {...} } } instead\\")
               authorConnection: JournalAuthorConnectionFilters
               \\"\\"\\"
               Return Journals where all of the related JournalAuthorConnections match this filter

@@ -430,7 +430,7 @@ describe("Pluralize consistency", () => {
               NOT: super_userWhere
               OR: [super_userWhere!]
               my_friend: super_friendRelationshipFilters
-              my_friendAggregate: super_userMy_friendAggregateInput
+              my_friendAggregate: super_userMy_friendAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the my_friendConnection filter, please use { my_friendConnection: { aggregate: {...} } } instead\\")
               my_friendConnection: super_userMy_friendConnectionFilters
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter

@@ -233,7 +233,7 @@ describe("inheritance", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               friends: PersonRelationshipFilters
-              friendsAggregate: ActorFriendsAggregateInput
+              friendsAggregate: ActorFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: ActorFriendsConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
@@ -674,7 +674,7 @@ describe("inheritance", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               friends: PersonRelationshipFilters
-              friendsAggregate: PersonFriendsAggregateInput
+              friendsAggregate: PersonFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter

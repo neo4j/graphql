@@ -352,7 +352,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ShowRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -673,7 +673,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
@@ -942,7 +942,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
@@ -1236,7 +1236,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: ShowWhere
               OR: [ShowWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ShowActorsAggregateInput
+              actorsAggregate: ShowActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter

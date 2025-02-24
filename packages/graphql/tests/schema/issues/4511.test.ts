@@ -254,7 +254,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: CreatureWhere
               OR: [CreatureWhere!]
               movies: ProductionRelationshipFilters
-              moviesAggregate: CreatureMoviesAggregateInput
+              moviesAggregate: CreatureMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: CreatureMoviesConnectionFilters
               \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
@@ -493,7 +493,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               director: CreatureRelationshipFilters
-              directorAggregate: MovieDirectorAggregateInput
+              directorAggregate: MovieDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
               directorConnection: MovieDirectorConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
@@ -705,7 +705,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               movies: ProductionRelationshipFilters
-              moviesAggregate: PersonMoviesAggregateInput
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
@@ -903,7 +903,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               director: CreatureRelationshipFilters
-              directorAggregate: ProductionDirectorAggregateInput
+              directorAggregate: ProductionDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
               directorConnection: ProductionDirectorConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
@@ -1178,7 +1178,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               director: CreatureRelationshipFilters
-              directorAggregate: SeriesDirectorAggregateInput
+              directorAggregate: SeriesDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
               directorConnection: SeriesDirectorConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter

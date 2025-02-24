@@ -404,7 +404,7 @@ describe("Union Interface Relationships", () => {
               id_LT: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lt: ... }\\")
               id_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lte: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1273,7 +1273,7 @@ describe("Union Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -1333,7 +1333,7 @@ describe("Union Interface Relationships", () => {
               imdbId_LT: Int @deprecated(reason: \\"Please use the relevant generic filter imdbId: { lt: ... }\\")
               imdbId_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter imdbId: { lte: ... }\\")
               reviewers: ReviewerRelationshipFilters
-              reviewersAggregate: MovieReviewersAggregateInput
+              reviewersAggregate: MovieReviewersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the reviewersConnection filter, please use { reviewersConnection: { aggregate: {...} } } instead\\")
               reviewersConnection: MovieReviewersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
@@ -1673,7 +1673,7 @@ describe("Union Interface Relationships", () => {
               id_LT: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lt: ... }\\")
               id_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lte: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: PersonMoviesAggregateInput
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
