@@ -22,7 +22,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Aggregations filters outside connection filters", () => {
-    test("should remove deprecated aggregate operations", async () => {
+    test("should remove deprecated aggregate filters", async () => {
         const typeDefs = /* GraphQL */ `
             type User @node {
                 someID: Int
