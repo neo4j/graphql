@@ -451,6 +451,7 @@ export type Neo4jFeaturesSettings = {
     excludeDeprecatedFields?: {
         mutationOperations?: boolean;
         aggregationFilters?: boolean;
+        aggregationFiltersOutsideConnection?: boolean
         relationshipFilters?: boolean;
         attributeFilters?: boolean;
         deprecatedAggregateOperations?: boolean;

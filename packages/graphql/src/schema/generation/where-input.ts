@@ -37,6 +37,7 @@ import type { Neo4jFeaturesSettings } from "../../types";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType, withConnectionAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputWithRelationshipFilters } from "./augment-where-input";
+import { shouldAddDeprecatedFields } from "./utils";
 
 function isEmptyObject(obj: Record<string, unknown>): boolean {
     return !Object.keys(obj).length;
@@ -201,7 +202,7 @@ export function withSourceWhereInputType({
         userDefinedDirectivesOnTargetFields,
         features,
     });
-
+    // TODO: Likely this should be added only in case of relationshipAdapter.isFilterableByAggregate()
     withConnectionAggregateInputType({
         relationshipAdapter,
         entityAdapter: relationshipTarget,
@@ -210,7 +211,10 @@ export function withSourceWhereInputType({
         features,
     });
 
-    if (relationshipAdapter.isFilterableByAggregate()) {
+    if (
+        relationshipAdapter.isFilterableByAggregate() &&
+        shouldAddDeprecatedFields(features, "aggregationFiltersOutsideConnection")
+    ) {
         whereInput.addFields({
             [relationshipAdapter.operations.aggregateFieldName]: {
                 type: whereAggregateInput,
