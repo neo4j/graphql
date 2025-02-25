@@ -58,11 +58,11 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -176,6 +176,15 @@ describe("Subscriptions", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -284,6 +293,11 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -311,7 +325,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -415,13 +429,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -720,11 +734,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
-              node: ActorAggregateNode!
-            }
-
-            type ActorAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ActorAggregateSelection {
@@ -766,6 +776,11 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
@@ -795,7 +810,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1001,6 +1016,15 @@ describe("Subscriptions", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -1125,6 +1149,10 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
             }
@@ -1147,7 +1175,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1226,13 +1254,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -1559,6 +1587,15 @@ describe("Subscriptions", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1836,13 +1873,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -2068,11 +2105,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -2114,6 +2147,11 @@ describe("Subscriptions", () => {
               node: Person!
             }
 
+            type PersonMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: PersonMovieMoviesNodeAggregateSelection
+            }
+
             type PersonMovieMoviesAggregationSelection {
               count: Int!
               node: PersonMovieMoviesNodeAggregateSelection
@@ -2143,7 +2181,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnection {
-              aggregate: PersonMovieMoviesAggregationSelection!
+              aggregate: PersonMovieMoviesAggregateSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2346,11 +2384,7 @@ describe("Subscriptions", () => {
             }
 
             type StarAggregate {
-              node: StarAggregateNode!
-            }
-
-            type StarAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type StarAggregateSelection {
@@ -2392,6 +2426,11 @@ describe("Subscriptions", () => {
               node: Star!
             }
 
+            type StarMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: StarMovieMoviesNodeAggregateSelection
+            }
+
             type StarMovieMoviesAggregationSelection {
               count: Int!
               node: StarMovieMoviesNodeAggregateSelection
@@ -2421,7 +2460,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnection {
-              aggregate: StarMovieMoviesAggregationSelection!
+              aggregate: StarMovieMoviesAggregateSelection!
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2745,11 +2784,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
-              node: ActorAggregateNode!
-            }
-
-            type ActorAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ActorAggregateSelection {
@@ -2791,6 +2826,11 @@ describe("Subscriptions", () => {
               node: Actor!
             }
 
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
@@ -2820,7 +2860,7 @@ describe("Subscriptions", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3026,6 +3066,15 @@ describe("Subscriptions", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -3150,6 +3199,11 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -3179,7 +3233,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3267,13 +3321,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -3565,11 +3619,11 @@ describe("Subscriptions", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -3683,6 +3737,15 @@ describe("Subscriptions", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -3791,6 +3854,11 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -3818,7 +3886,7 @@ describe("Subscriptions", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3922,13 +3990,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -4132,6 +4200,484 @@ describe("Subscriptions", () => {
         `);
     });
 
+    test("Type with relationship to a subscriptions excluded type", async () => {
+        const typeDefs = gql`
+            type User @mutation(operations: []) @subscription(events: []) @node {
+                username: String!
+                name: String
+            }
+            type Agreement @node {
+                id: Int!
+                name: String
+                owner: User @relationship(type: "OWNED_BY", direction: OUT)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                subscriptions: new TestCDCEngine(),
+            },
+        });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            type Agreement {
+              id: Int!
+              name: String
+              owner(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): User
+              ownerAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): AgreementUserOwnerAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"ownerConnection\\\\\\" instead\\")
+              ownerConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AgreementOwnerConnectionSort!], where: AgreementOwnerConnectionWhere): AgreementOwnerConnection!
+            }
+
+            type AgreementAggregate {
+              count: Count!
+              node: AgreementAggregateNode!
+            }
+
+            type AgreementAggregateNode {
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
+            type AgreementAggregateSelection {
+              count: Int!
+              id: IntAggregateSelection!
+              name: StringAggregateSelection!
+            }
+
+            input AgreementCreateInput {
+              id: Int!
+              name: String
+              owner: AgreementOwnerFieldInput
+            }
+
+            type AgreementCreatedEvent {
+              createdAgreement: AgreementEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input AgreementDeleteInput {
+              owner: AgreementOwnerDeleteFieldInput
+            }
+
+            type AgreementDeletedEvent {
+              deletedAgreement: AgreementEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            type AgreementEdge {
+              cursor: String!
+              node: Agreement!
+            }
+
+            type AgreementEventPayload {
+              id: Int!
+              name: String
+            }
+
+            input AgreementOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more AgreementSort objects to sort Agreements by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [AgreementSort!]
+            }
+
+            input AgreementOwnerAggregateInput {
+              AND: [AgreementOwnerAggregateInput!]
+              NOT: AgreementOwnerAggregateInput
+              OR: [AgreementOwnerAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: AgreementOwnerNodeAggregationWhereInput
+            }
+
+            input AgreementOwnerConnectFieldInput {
+              \\"\\"\\"
+              Whether or not to overwrite any matching relationship with the new properties.
+              \\"\\"\\"
+              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
+              where: UserConnectWhere
+            }
+
+            type AgreementOwnerConnection {
+              aggregate: AgreementUserOwnerAggregateSelection!
+              edges: [AgreementOwnerRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input AgreementOwnerConnectionSort {
+              node: UserSort
+            }
+
+            input AgreementOwnerConnectionWhere {
+              AND: [AgreementOwnerConnectionWhere!]
+              NOT: AgreementOwnerConnectionWhere
+              OR: [AgreementOwnerConnectionWhere!]
+              node: UserWhere
+            }
+
+            input AgreementOwnerCreateFieldInput {
+              node: UserCreateInput!
+            }
+
+            input AgreementOwnerDeleteFieldInput {
+              where: AgreementOwnerConnectionWhere
+            }
+
+            input AgreementOwnerDisconnectFieldInput {
+              where: AgreementOwnerConnectionWhere
+            }
+
+            input AgreementOwnerFieldInput {
+              connect: AgreementOwnerConnectFieldInput
+              create: AgreementOwnerCreateFieldInput
+            }
+
+            input AgreementOwnerNodeAggregationWhereInput {
+              AND: [AgreementOwnerNodeAggregationWhereInput!]
+              NOT: AgreementOwnerNodeAggregationWhereInput
+              OR: [AgreementOwnerNodeAggregationWhereInput!]
+              name_AVERAGE_LENGTH_EQUAL: Float
+              name_AVERAGE_LENGTH_GT: Float
+              name_AVERAGE_LENGTH_GTE: Float
+              name_AVERAGE_LENGTH_LT: Float
+              name_AVERAGE_LENGTH_LTE: Float
+              name_LONGEST_LENGTH_EQUAL: Int
+              name_LONGEST_LENGTH_GT: Int
+              name_LONGEST_LENGTH_GTE: Int
+              name_LONGEST_LENGTH_LT: Int
+              name_LONGEST_LENGTH_LTE: Int
+              name_SHORTEST_LENGTH_EQUAL: Int
+              name_SHORTEST_LENGTH_GT: Int
+              name_SHORTEST_LENGTH_GTE: Int
+              name_SHORTEST_LENGTH_LT: Int
+              name_SHORTEST_LENGTH_LTE: Int
+              username_AVERAGE_LENGTH_EQUAL: Float
+              username_AVERAGE_LENGTH_GT: Float
+              username_AVERAGE_LENGTH_GTE: Float
+              username_AVERAGE_LENGTH_LT: Float
+              username_AVERAGE_LENGTH_LTE: Float
+              username_LONGEST_LENGTH_EQUAL: Int
+              username_LONGEST_LENGTH_GT: Int
+              username_LONGEST_LENGTH_GTE: Int
+              username_LONGEST_LENGTH_LT: Int
+              username_LONGEST_LENGTH_LTE: Int
+              username_SHORTEST_LENGTH_EQUAL: Int
+              username_SHORTEST_LENGTH_GT: Int
+              username_SHORTEST_LENGTH_GTE: Int
+              username_SHORTEST_LENGTH_LT: Int
+              username_SHORTEST_LENGTH_LTE: Int
+            }
+
+            type AgreementOwnerRelationship {
+              cursor: String!
+              node: User!
+            }
+
+            input AgreementOwnerUpdateConnectionInput {
+              node: UserUpdateInput
+            }
+
+            input AgreementOwnerUpdateFieldInput {
+              connect: AgreementOwnerConnectFieldInput
+              create: AgreementOwnerCreateFieldInput
+              delete: AgreementOwnerDeleteFieldInput
+              disconnect: AgreementOwnerDisconnectFieldInput
+              update: AgreementOwnerUpdateConnectionInput
+              where: AgreementOwnerConnectionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Agreements by. The order in which sorts are applied is not guaranteed when specifying many fields in one AgreementSort object.
+            \\"\\"\\"
+            input AgreementSort {
+              id: SortDirection
+              name: SortDirection
+            }
+
+            input AgreementSubscriptionWhere {
+              AND: [AgreementSubscriptionWhere!]
+              NOT: AgreementSubscriptionWhere
+              OR: [AgreementSubscriptionWhere!]
+              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: Int
+              id_GT: Int
+              id_GTE: Int
+              id_IN: [Int!]
+              id_LT: Int
+              id_LTE: Int
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_EQ: String
+              name_IN: [String]
+              name_STARTS_WITH: String
+            }
+
+            input AgreementUpdateInput {
+              id: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
+              id_DECREMENT: Int
+              id_INCREMENT: Int
+              id_SET: Int
+              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
+              name_SET: String
+              owner: AgreementOwnerUpdateFieldInput
+            }
+
+            type AgreementUpdatedEvent {
+              event: EventType!
+              previousState: AgreementEventPayload!
+              timestamp: Float!
+              updatedAgreement: AgreementEventPayload!
+            }
+
+            type AgreementUserOwnerAggregateSelection {
+              count: CountConnection!
+              node: AgreementUserOwnerNodeAggregateSelection
+            }
+
+            type AgreementUserOwnerAggregationSelection {
+              count: Int!
+              node: AgreementUserOwnerNodeAggregateSelection
+            }
+
+            type AgreementUserOwnerNodeAggregateSelection {
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
+            input AgreementWhere {
+              AND: [AgreementWhere!]
+              NOT: AgreementWhere
+              OR: [AgreementWhere!]
+              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_EQ: Int
+              id_GT: Int
+              id_GTE: Int
+              id_IN: [Int!]
+              id_LT: Int
+              id_LTE: Int
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_EQ: String
+              name_IN: [String]
+              name_STARTS_WITH: String
+              owner: UserWhere
+              ownerAggregate: AgreementOwnerAggregateInput
+              ownerConnection: AgreementOwnerConnectionWhere
+            }
+
+            type AgreementsConnection {
+              aggregate: AgreementAggregate!
+              edges: [AgreementEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
+            type CreateAgreementsMutationResponse {
+              agreements: [Agreement!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            type Mutation {
+              createAgreements(input: [AgreementCreateInput!]!): CreateAgreementsMutationResponse!
+              deleteAgreements(delete: AgreementDeleteInput, where: AgreementWhere): DeleteInfo!
+              updateAgreements(update: AgreementUpdateInput, where: AgreementWhere): UpdateAgreementsMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type Query {
+              agreements(limit: Int, offset: Int, options: AgreementOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AgreementSort!], where: AgreementWhere): [Agreement!]!
+              agreementsAggregate(where: AgreementWhere): AgreementAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"agreementsConnection\\\\\\" instead\\")
+              agreementsConnection(after: String, first: Int, sort: [AgreementSort!], where: AgreementWhere): AgreementsConnection!
+              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
+              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type Subscription {
+              agreementCreated(where: AgreementSubscriptionWhere): AgreementCreatedEvent!
+              agreementDeleted(where: AgreementSubscriptionWhere): AgreementDeletedEvent!
+              agreementUpdated(where: AgreementSubscriptionWhere): AgreementUpdatedEvent!
+            }
+
+            type UpdateAgreementsMutationResponse {
+              agreements: [Agreement!]!
+              info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type User {
+              name: String
+              username: String!
+            }
+
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
+              name: StringAggregateSelection!
+              username: StringAggregateSelection!
+            }
+
+            input UserConnectWhere {
+              node: UserWhere!
+            }
+
+            input UserCreateInput {
+              name: String
+              username: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
+            input UserOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [UserSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+            \\"\\"\\"
+            input UserSort {
+              name: SortDirection
+              username: SortDirection
+            }
+
+            input UserUpdateInput {
+              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
+              name_SET: String
+              username: String @deprecated(reason: \\"Please use the explicit _SET field\\")
+              username_SET: String
+            }
+
+            input UserWhere {
+              AND: [UserWhere!]
+              NOT: UserWhere
+              OR: [UserWhere!]
+              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_EQ: String
+              name_IN: [String]
+              name_STARTS_WITH: String
+              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              username_CONTAINS: String
+              username_ENDS_WITH: String
+              username_EQ: String
+              username_IN: [String!]
+              username_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              aggregate: UserAggregate!
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }"
+        `);
+    });
+
     test("Type with relationship to a subscriptions excluded type + Union type", async () => {
         const typeDefs = gql`
             type Movie @node {
@@ -4199,6 +4745,15 @@ describe("Subscriptions", () => {
             input ConnectionAggregationCountFilterInput {
               edges: IntScalarFilters
               nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -4478,13 +5033,13 @@ describe("Subscriptions", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -4710,11 +5265,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -4756,6 +5307,11 @@ describe("Subscriptions", () => {
               node: Person!
             }
 
+            type PersonMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: PersonMovieMoviesNodeAggregateSelection
+            }
+
             type PersonMovieMoviesAggregationSelection {
               count: Int!
               node: PersonMovieMoviesNodeAggregateSelection
@@ -4785,7 +5341,7 @@ describe("Subscriptions", () => {
             }
 
             type PersonMoviesConnection {
-              aggregate: PersonMovieMoviesAggregationSelection!
+              aggregate: PersonMovieMoviesAggregateSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4988,11 +5544,7 @@ describe("Subscriptions", () => {
             }
 
             type StarAggregate {
-              node: StarAggregateNode!
-            }
-
-            type StarAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type StarAggregateSelection {
@@ -5024,6 +5576,11 @@ describe("Subscriptions", () => {
               node: Star!
             }
 
+            type StarMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: StarMovieMoviesNodeAggregateSelection
+            }
+
             type StarMovieMoviesAggregationSelection {
               count: Int!
               node: StarMovieMoviesNodeAggregateSelection
@@ -5053,7 +5610,7 @@ describe("Subscriptions", () => {
             }
 
             type StarMoviesConnection {
-              aggregate: StarMovieMoviesAggregationSelection!
+              aggregate: StarMovieMoviesAggregateSelection!
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5260,6 +5817,1002 @@ describe("Subscriptions", () => {
             type UpdateStarsMutationResponse {
               info: UpdateInfo!
               stars: [Star!]!
+            }"
+        `);
+    });
+
+    test("Type with relationship to a subscriptions excluded type + Interface type", async () => {
+        const typeDefs = gql`
+            type Movie implements Production @subscription(events: []) @node {
+                title: String!
+                id: ID @unique
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Series implements Production @node {
+                title: String!
+                episode: Int!
+                id: ID @unique
+                director: Creature! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            interface Production {
+                id: ID
+                director: Creature! @declareRelationship
+            }
+
+            type Person implements Creature @node {
+                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+            }
+
+            interface Creature {
+                movies: Production! @declareRelationship
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                subscriptions: new TestCDCEngine(),
+            },
+        });
+
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+              subscription: Subscription
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreatePeopleMutationResponse {
+              info: CreateInfo!
+              people: [Person!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            interface Creature {
+              movies(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
+              moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type CreatureAggregate {
+              count: Count!
+            }
+
+            type CreatureAggregateSelection {
+              count: Int!
+            }
+
+            input CreatureConnectInput {
+              movies: CreatureMoviesConnectFieldInput
+            }
+
+            input CreatureConnectWhere {
+              node: CreatureWhere!
+            }
+
+            input CreatureCreateInput {
+              Person: PersonCreateInput
+            }
+
+            input CreatureDeleteInput {
+              movies: CreatureMoviesDeleteFieldInput
+            }
+
+            input CreatureDisconnectInput {
+              movies: CreatureMoviesDisconnectFieldInput
+            }
+
+            type CreatureEdge {
+              cursor: String!
+              node: Creature!
+            }
+
+            enum CreatureImplementation {
+              Person
+            }
+
+            input CreatureMoviesAggregateInput {
+              AND: [CreatureMoviesAggregateInput!]
+              NOT: CreatureMoviesAggregateInput
+              OR: [CreatureMoviesAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: CreatureMoviesNodeAggregationWhereInput
+            }
+
+            input CreatureMoviesConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            type CreatureMoviesConnection {
+              edges: [CreatureMoviesRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input CreatureMoviesConnectionSort {
+              node: ProductionSort
+            }
+
+            input CreatureMoviesConnectionWhere {
+              AND: [CreatureMoviesConnectionWhere!]
+              NOT: CreatureMoviesConnectionWhere
+              OR: [CreatureMoviesConnectionWhere!]
+              node: ProductionWhere
+            }
+
+            input CreatureMoviesCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input CreatureMoviesDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureMoviesDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureMoviesNodeAggregationWhereInput {
+              AND: [CreatureMoviesNodeAggregationWhereInput!]
+              NOT: CreatureMoviesNodeAggregationWhereInput
+              OR: [CreatureMoviesNodeAggregationWhereInput!]
+              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            type CreatureMoviesRelationship {
+              cursor: String!
+              node: Production!
+            }
+
+            input CreatureMoviesUpdateConnectionInput {
+              node: ProductionUpdateInput
+            }
+
+            input CreatureMoviesUpdateFieldInput {
+              connect: CreatureMoviesConnectFieldInput
+              create: CreatureMoviesCreateFieldInput
+              delete: CreatureMoviesDeleteFieldInput
+              disconnect: CreatureMoviesDisconnectFieldInput
+              update: CreatureMoviesUpdateConnectionInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input CreatureOptions {
+              limit: Int
+              offset: Int
+            }
+
+            input CreatureUpdateInput {
+              movies: CreatureMoviesUpdateFieldInput
+            }
+
+            input CreatureWhere {
+              AND: [CreatureWhere!]
+              NOT: CreatureWhere
+              OR: [CreatureWhere!]
+              movies: ProductionWhere
+              moviesAggregate: CreatureMoviesAggregateInput
+              moviesConnection: CreatureMoviesConnectionWhere
+              typename: [CreatureImplementation!]
+              typename_IN: [CreatureImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
+            }
+
+            type CreaturesConnection {
+              aggregate: CreatureAggregate!
+              edges: [CreatureEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            enum EventType {
+              CREATE
+              CREATE_RELATIONSHIP
+              DELETE
+              DELETE_RELATIONSHIP
+              UPDATE
+            }
+
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            type Movie implements Production {
+              director(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
+              directorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: CreatureWhere): MovieCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
+              directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              id: ID
+              title: String!
+            }
+
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
+            type MovieAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
+            input MovieCreateInput {
+              director: MovieDirectorFieldInput
+              id: ID
+              title: String!
+            }
+
+            type MovieCreatureDirectorAggregationSelection {
+              count: Int!
+            }
+
+            input MovieDeleteInput {
+              director: MovieDirectorDeleteFieldInput
+            }
+
+            input MovieDirectorAggregateInput {
+              AND: [MovieDirectorAggregateInput!]
+              NOT: MovieDirectorAggregateInput
+              OR: [MovieDirectorAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
+            input MovieDirectorConnectFieldInput {
+              connect: CreatureConnectInput
+              where: CreatureConnectWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: CreatureCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              delete: CreatureDeleteInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorDisconnectFieldInput {
+              disconnect: CreatureDisconnectInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              connect: MovieDirectorConnectFieldInput
+              create: MovieDirectorCreateFieldInput
+            }
+
+            input MovieDirectorUpdateConnectionInput {
+              node: CreatureUpdateInput
+            }
+
+            input MovieDirectorUpdateFieldInput {
+              connect: MovieDirectorConnectFieldInput
+              create: MovieDirectorCreateFieldInput
+              delete: MovieDirectorDeleteFieldInput
+              disconnect: MovieDirectorDisconnectFieldInput
+              update: MovieDirectorUpdateConnectionInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            input MovieOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [MovieSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              id: SortDirection
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              director: MovieDirectorUpdateFieldInput
+              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
+              id_SET: ID
+              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
+              title_SET: String
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              director: CreatureWhere
+              directorAggregate: MovieDirectorAggregateInput
+              directorConnection: ProductionDirectorConnectionWhere
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_EQ: ID
+              id_IN: [ID]
+              id_STARTS_WITH: ID
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_EQ: String
+              title_IN: [String!]
+              title_STARTS_WITH: String
+            }
+
+            type MoviesConnection {
+              aggregate: MovieAggregate!
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type PeopleConnection {
+              aggregate: PersonAggregate!
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Person implements Creature {
+              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
+              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): PersonProductionMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+            }
+
+            type PersonAggregate {
+              count: Count!
+            }
+
+            type PersonAggregateSelection {
+              count: Int!
+            }
+
+            input PersonCreateInput {
+              movies: PersonMoviesFieldInput
+            }
+
+            type PersonCreatedEvent {
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonDeleteInput {
+              movies: PersonMoviesDeleteFieldInput
+            }
+
+            type PersonDeletedEvent {
+              event: EventType!
+              timestamp: Float!
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
+            }
+
+            input PersonMoviesAggregateInput {
+              AND: [PersonMoviesAggregateInput!]
+              NOT: PersonMoviesAggregateInput
+              OR: [PersonMoviesAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
+            input PersonMoviesConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            input PersonMoviesCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input PersonMoviesDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonMoviesDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonMoviesFieldInput {
+              connect: PersonMoviesConnectFieldInput
+              create: PersonMoviesCreateFieldInput
+            }
+
+            input PersonMoviesNodeAggregationWhereInput {
+              AND: [PersonMoviesNodeAggregationWhereInput!]
+              NOT: PersonMoviesNodeAggregationWhereInput
+              OR: [PersonMoviesNodeAggregationWhereInput!]
+              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            input PersonMoviesUpdateConnectionInput {
+              node: ProductionUpdateInput
+            }
+
+            input PersonMoviesUpdateFieldInput {
+              connect: PersonMoviesConnectFieldInput
+              create: PersonMoviesCreateFieldInput
+              delete: PersonMoviesDeleteFieldInput
+              disconnect: PersonMoviesDisconnectFieldInput
+              update: PersonMoviesUpdateConnectionInput
+              where: CreatureMoviesConnectionWhere
+            }
+
+            input PersonOptions {
+              limit: Int
+              offset: Int
+            }
+
+            type PersonProductionMoviesAggregationSelection {
+              count: Int!
+              node: PersonProductionMoviesNodeAggregateSelection
+            }
+
+            type PersonProductionMoviesNodeAggregateSelection {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            input PersonUpdateInput {
+              movies: PersonMoviesUpdateFieldInput
+            }
+
+            type PersonUpdatedEvent {
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input PersonWhere {
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
+              movies: ProductionWhere
+              moviesAggregate: PersonMoviesAggregateInput
+              moviesConnection: CreatureMoviesConnectionWhere
+            }
+
+            interface Production {
+              director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
+              directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              id: ID
+            }
+
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            type ProductionAggregateSelection {
+              count: Int!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+            }
+
+            input ProductionConnectInput {
+              director: ProductionDirectorConnectFieldInput
+            }
+
+            input ProductionConnectWhere {
+              node: ProductionWhere!
+            }
+
+            input ProductionCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
+            input ProductionDeleteInput {
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input ProductionDirectorAggregateInput {
+              AND: [ProductionDirectorAggregateInput!]
+              NOT: ProductionDirectorAggregateInput
+              OR: [ProductionDirectorAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
+            input ProductionDirectorConnectFieldInput {
+              connect: CreatureConnectInput
+              where: CreatureConnectWhere
+            }
+
+            type ProductionDirectorConnection {
+              edges: [ProductionDirectorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ProductionDirectorConnectionWhere {
+              AND: [ProductionDirectorConnectionWhere!]
+              NOT: ProductionDirectorConnectionWhere
+              OR: [ProductionDirectorConnectionWhere!]
+              node: CreatureWhere
+            }
+
+            input ProductionDirectorCreateFieldInput {
+              node: CreatureCreateInput!
+            }
+
+            input ProductionDirectorDeleteFieldInput {
+              delete: CreatureDeleteInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input ProductionDirectorDisconnectFieldInput {
+              disconnect: CreatureDisconnectInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            type ProductionDirectorRelationship {
+              cursor: String!
+              node: Creature!
+            }
+
+            input ProductionDirectorUpdateConnectionInput {
+              node: CreatureUpdateInput
+            }
+
+            input ProductionDirectorUpdateFieldInput {
+              connect: ProductionDirectorConnectFieldInput
+              create: ProductionDirectorCreateFieldInput
+              delete: ProductionDirectorDeleteFieldInput
+              disconnect: ProductionDirectorDisconnectFieldInput
+              update: ProductionDirectorUpdateConnectionInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input ProductionDisconnectInput {
+              director: ProductionDirectorDisconnectFieldInput
+            }
+
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
+            input ProductionOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [ProductionSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              id: SortDirection
+            }
+
+            input ProductionUpdateInput {
+              director: ProductionDirectorUpdateFieldInput
+              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
+              id_SET: ID
+            }
+
+            input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              director: CreatureWhere
+              directorAggregate: ProductionDirectorAggregateInput
+              directorConnection: ProductionDirectorConnectionWhere
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_EQ: ID
+              id_IN: [ID]
+              id_STARTS_WITH: ID
+              typename: [ProductionImplementation!]
+              typename_IN: [ProductionImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
+            }
+
+            type ProductionsConnection {
+              aggregate: ProductionAggregate!
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Query {
+              creatures(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): [Creature!]!
+              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"creaturesConnection\\\\\\" instead\\")
+              creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
+              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+              peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
+              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
+              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
+            }
+
+            type Series implements Production {
+              director(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
+              directorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: CreatureWhere): SeriesCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
+              directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              episode: Int!
+              id: ID
+              title: String!
+            }
+
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
+            type SeriesAggregateSelection {
+              count: Int!
+              episode: IntAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              title: StringAggregateSelection!
+            }
+
+            type SeriesConnection {
+              aggregate: SeriesAggregate!
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesCreateInput {
+              director: SeriesDirectorFieldInput
+              episode: Int!
+              id: ID
+              title: String!
+            }
+
+            type SeriesCreatedEvent {
+              createdSeries: SeriesEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            type SeriesCreatureDirectorAggregationSelection {
+              count: Int!
+            }
+
+            input SeriesDeleteInput {
+              director: SeriesDirectorDeleteFieldInput
+            }
+
+            type SeriesDeletedEvent {
+              deletedSeries: SeriesEventPayload!
+              event: EventType!
+              timestamp: Float!
+            }
+
+            input SeriesDirectorAggregateInput {
+              AND: [SeriesDirectorAggregateInput!]
+              NOT: SeriesDirectorAggregateInput
+              OR: [SeriesDirectorAggregateInput!]
+              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count_EQ: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+            }
+
+            input SeriesDirectorConnectFieldInput {
+              connect: CreatureConnectInput
+              where: CreatureConnectWhere
+            }
+
+            input SeriesDirectorCreateFieldInput {
+              node: CreatureCreateInput!
+            }
+
+            input SeriesDirectorDeleteFieldInput {
+              delete: CreatureDeleteInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDirectorDisconnectFieldInput {
+              disconnect: CreatureDisconnectInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            input SeriesDirectorFieldInput {
+              connect: SeriesDirectorConnectFieldInput
+              create: SeriesDirectorCreateFieldInput
+            }
+
+            input SeriesDirectorUpdateConnectionInput {
+              node: CreatureUpdateInput
+            }
+
+            input SeriesDirectorUpdateFieldInput {
+              connect: SeriesDirectorConnectFieldInput
+              create: SeriesDirectorCreateFieldInput
+              delete: SeriesDirectorDeleteFieldInput
+              disconnect: SeriesDirectorDisconnectFieldInput
+              update: SeriesDirectorUpdateConnectionInput
+              where: ProductionDirectorConnectionWhere
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
+            type SeriesEventPayload {
+              episode: Int!
+              id: ID
+              title: String!
+            }
+
+            input SeriesOptions {
+              limit: Int
+              offset: Int
+              \\"\\"\\"
+              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
+              \\"\\"\\"
+              sort: [SeriesSort!]
+            }
+
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
+            input SeriesSort {
+              episode: SortDirection
+              id: SortDirection
+              title: SortDirection
+            }
+
+            input SeriesSubscriptionWhere {
+              AND: [SeriesSubscriptionWhere!]
+              NOT: SeriesSubscriptionWhere
+              OR: [SeriesSubscriptionWhere!]
+              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episode_EQ: Int
+              episode_GT: Int
+              episode_GTE: Int
+              episode_IN: [Int!]
+              episode_LT: Int
+              episode_LTE: Int
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_EQ: ID
+              id_IN: [ID]
+              id_STARTS_WITH: ID
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_EQ: String
+              title_IN: [String!]
+              title_STARTS_WITH: String
+            }
+
+            input SeriesUpdateInput {
+              director: SeriesDirectorUpdateFieldInput
+              episode: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
+              episode_DECREMENT: Int
+              episode_INCREMENT: Int
+              episode_SET: Int
+              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
+              id_SET: ID
+              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
+              title_SET: String
+            }
+
+            type SeriesUpdatedEvent {
+              event: EventType!
+              previousState: SeriesEventPayload!
+              timestamp: Float!
+              updatedSeries: SeriesEventPayload!
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              NOT: SeriesWhere
+              OR: [SeriesWhere!]
+              director: CreatureWhere
+              directorAggregate: SeriesDirectorAggregateInput
+              directorConnection: ProductionDirectorConnectionWhere
+              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              episode_EQ: Int
+              episode_GT: Int
+              episode_GTE: Int
+              episode_IN: [Int!]
+              episode_LT: Int
+              episode_LTE: Int
+              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_EQ: ID
+              id_IN: [ID]
+              id_STARTS_WITH: ID
+              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              title_CONTAINS: String
+              title_ENDS_WITH: String
+              title_EQ: String
+              title_IN: [String!]
+              title_STARTS_WITH: String
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            type Subscription {
+              personCreated: PersonCreatedEvent!
+              personDeleted: PersonDeletedEvent!
+              personUpdated: PersonUpdatedEvent!
+              seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
+              seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
+              seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdatePeopleMutationResponse {
+              info: UpdateInfo!
+              people: [Person!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
             }"
         `);
     });

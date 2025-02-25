@@ -41,7 +41,7 @@ export const CartesianPoint = new GraphQLObjectType({
         },
         srid: {
             type: new GraphQLNonNull(GraphQLInt),
-            resolve: (source, args, context, info) => numericalResolver(source, args, context, info),
+            resolve: numericalResolver,
         },
     },
 });

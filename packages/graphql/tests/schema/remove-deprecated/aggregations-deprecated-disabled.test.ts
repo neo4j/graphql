@@ -80,6 +80,10 @@ describe("Deprecated Aggregations disabled", () => {
               subtract: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -274,11 +278,11 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               imdbRating: FloatAggregateSelection!
               isbn: StringAggregateSelection!
@@ -633,6 +637,15 @@ describe("Deprecated Aggregations disabled", () => {
             input ConnectionAggregationCountFilterInput {
               edges: IntScalarFilters
               nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -1048,11 +1061,11 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -1095,7 +1108,7 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type PostLikesConnection {
-              aggregate: PostUserLikesAggregationSelection!
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1208,6 +1221,12 @@ describe("Deprecated Aggregations disabled", () => {
               likes: [PostLikesUpdateFieldInput!]
               title: StringScalarMutations
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
+            }
+
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
+              edge: PostUserLikesEdgeAggregateSelection
+              node: PostUserLikesNodeAggregateSelection
             }
 
             type PostUserLikesAggregationSelection {
@@ -1392,11 +1411,11 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
@@ -1675,6 +1694,15 @@ describe("Deprecated Aggregations disabled", () => {
             input ConnectionAggregationCountFilterInput {
               edges: IntScalarFilters
               nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -2161,11 +2189,11 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -2207,7 +2235,7 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type PostLikesConnection {
-              aggregate: PostUserLikesAggregationSelection!
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2319,6 +2347,11 @@ describe("Deprecated Aggregations disabled", () => {
               likes: [PostLikesUpdateFieldInput!]
               title: StringScalarMutations
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
+            }
+
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
+              node: PostUserLikesNodeAggregateSelection
             }
 
             type PostUserLikesAggregationSelection {
@@ -2502,11 +2535,11 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!

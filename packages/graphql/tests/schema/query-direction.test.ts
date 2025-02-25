@@ -44,6 +44,15 @@ describe("Query Direction", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -162,11 +171,11 @@ describe("Query Direction", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -220,7 +229,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
-              aggregate: UserUserFriendsAggregationSelection!
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -347,6 +356,11 @@ describe("Query Direction", () => {
               friends: [UserFriendsUpdateFieldInput!]
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+            }
+
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
             }
 
             type UserUserFriendsAggregationSelection {
@@ -427,6 +441,15 @@ describe("Query Direction", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -545,11 +568,11 @@ describe("Query Direction", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -603,7 +626,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
-              aggregate: UserUserFriendsAggregationSelection!
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -730,6 +753,11 @@ describe("Query Direction", () => {
               friends: [UserFriendsUpdateFieldInput!]
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+            }
+
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
             }
 
             type UserUserFriendsAggregationSelection {

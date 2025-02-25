@@ -162,6 +162,10 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -205,6 +209,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
@@ -212,7 +217,6 @@ describe("@populatedBy tests", () => {
                   callback1: StringAggregateSelection!
                   callback2: StringAggregateSelection!
                   callback3: StringAggregateSelection!
-                  count: Int!
                 }
 
                 type MovieAggregateSelection {
@@ -385,6 +389,10 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -452,6 +460,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
@@ -459,7 +468,6 @@ describe("@populatedBy tests", () => {
                   callback1: IntAggregateSelection!
                   callback2: IntAggregateSelection!
                   callback3: IntAggregateSelection!
-                  count: Int!
                 }
 
                 type MovieAggregateSelection {
@@ -767,6 +775,15 @@ describe("@populatedBy tests", () => {
                   nodes: IntScalarFilters
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -808,11 +825,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type GenreAggregate {
-                  node: GenreAggregateNode!
-                }
-
-                type GenreAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type GenreAggregateSelection {
@@ -906,11 +919,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregate {
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type MovieAggregateSelection {
@@ -929,6 +938,11 @@ describe("@populatedBy tests", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
+                }
+
+                type MovieGenreGenresAggregateSelection {
+                  count: CountConnection!
+                  edge: MovieGenreGenresEdgeAggregateSelection
                 }
 
                 type MovieGenreGenresAggregationSelection {
@@ -961,7 +975,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
-                  aggregate: MovieGenreGenresAggregationSelection!
+                  aggregate: MovieGenreGenresAggregateSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1351,6 +1365,15 @@ describe("@populatedBy tests", () => {
                   nodes: IntScalarFilters
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -1392,11 +1415,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type GenreAggregate {
-                  node: GenreAggregateNode!
-                }
-
-                type GenreAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type GenreAggregateSelection {
@@ -1512,11 +1531,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieAggregate {
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type MovieAggregateSelection {
@@ -1535,6 +1550,11 @@ describe("@populatedBy tests", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
+                }
+
+                type MovieGenreGenresAggregateSelection {
+                  count: CountConnection!
+                  edge: MovieGenreGenresEdgeAggregateSelection
                 }
 
                 type MovieGenreGenresAggregationSelection {
@@ -1567,7 +1587,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
-                  aggregate: MovieGenreGenresAggregationSelection!
+                  aggregate: MovieGenreGenresAggregateSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

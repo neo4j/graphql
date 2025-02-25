@@ -55,6 +55,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -206,11 +215,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type ProfileAggregate {
+              count: Count!
               node: ProfileAggregateNode!
             }
 
             type ProfileAggregateNode {
-              count: Int!
               userName: StringAggregateSelection!
             }
 
@@ -355,11 +364,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               userName: StringAggregateSelection!
             }
 
@@ -401,7 +410,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserFollowingConnection {
-              aggregate: UserProfileFollowingAggregationSelection!
+              aggregate: UserProfileFollowingAggregateSelection!
               edges: [UserFollowingRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -509,6 +518,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               disconnect: [UserFollowingDisconnectFieldInput!]
               update: UserFollowingUpdateConnectionInput
               where: UserFollowingConnectionWhere
+            }
+
+            type UserProfileFollowingAggregateSelection {
+              count: CountConnection!
+              edge: UserProfileFollowingEdgeAggregateSelection
+              node: UserProfileFollowingNodeAggregateSelection
             }
 
             type UserProfileFollowingAggregationSelection {

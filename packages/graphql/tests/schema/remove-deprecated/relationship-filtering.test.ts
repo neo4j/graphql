@@ -138,6 +138,15 @@ describe("Exclude suffix based filtering", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -587,12 +596,12 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type interfaceCAggregate {
+              count: Count!
               node: interfaceCAggregateNode!
             }
 
             type interfaceCAggregateNode {
               averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
@@ -971,7 +980,7 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeAActedInConnection {
-              aggregate: typeAtypeBActedInAggregationSelection!
+              aggregate: typeAtypeBActedInAggregateSelection!
               edges: [typeAActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1150,11 +1159,11 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeAAggregate {
+              count: Count!
               node: typeAAggregateNode!
             }
 
             type typeAAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1228,6 +1237,12 @@ describe("Exclude suffix based filtering", () => {
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
+            type typeAtypeBActedInAggregateSelection {
+              count: CountConnection!
+              edge: typeAtypeBActedInEdgeAggregateSelection
+              node: typeAtypeBActedInNodeAggregateSelection
+            }
+
             type typeAtypeBActedInAggregationSelection {
               count: Int!
               edge: typeAtypeBActedInEdgeAggregateSelection
@@ -1271,12 +1286,12 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeBAggregate {
+              count: Count!
               node: typeBAggregateNode!
             }
 
             type typeBAggregateNode {
               averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
@@ -1363,7 +1378,7 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeBRelsConnection {
-              aggregate: typeBtypeARelsAggregationSelection!
+              aggregate: typeBtypeARelsAggregateSelection!
               edges: [typeBRelsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1610,6 +1625,12 @@ describe("Exclude suffix based filtering", () => {
               time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
               time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
               time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
+            }
+
+            type typeBtypeARelsAggregateSelection {
+              count: CountConnection!
+              edge: typeBtypeARelsEdgeAggregateSelection
+              node: typeBtypeARelsNodeAggregateSelection
             }
 
             type typeBtypeARelsAggregationSelection {

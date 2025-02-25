@@ -2,7 +2,7 @@
 "@neo4j/graphql": minor
 ---
 
-Add aggregate fieldd in connection:
+Add aggregate field in connection:
 
 ```graphql
 query {
