@@ -30,7 +30,11 @@ describe("Authorization with aggregation filter rule", () => {
                 name: String!
             }
 
-            type Post @node @authorization(filter: [{ where: { node: { likesAggregate: { count: 3 } } } }]) {
+            type Post
+                @node
+                @authorization(
+                    filter: [{ where: { node: { likesConnection: { aggregate: { count: { nodes: { eq: 3 } } } } } } }]
+                ) {
                 content: String!
                 likes: [User!]! @relationship(type: "LIKES", direction: IN)
             }
@@ -38,6 +42,7 @@ describe("Authorization with aggregation filter rule", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            features: { authorization: { key: "secret" } },
         });
     });
 
@@ -49,7 +54,6 @@ describe("Authorization with aggregation filter rule", () => {
                 }
             }
         `;
-
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
@@ -57,7 +61,7 @@ describe("Authorization with aggregation filter rule", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) = $param0 AS var2
+                RETURN count(DISTINCT this1) = $param0 AS var2
             }
             WITH *
             WHERE ($isAuthenticated = true AND var2 = true)
@@ -92,7 +96,7 @@ describe("Authorization with aggregation filter rule", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[this1:LIKES]-(this2:User)
-                RETURN count(this2) = $param0 AS var3
+                RETURN count(DISTINCT this2) = $param0 AS var3
             }
             WITH *
             WHERE ($isAuthenticated = true AND var3 = true)
