@@ -14,7 +14,7 @@ Following the changes of moving aggregations inside the connection fields, the a
 }
 ```
 
-**Deprecate aggregation filters:**
+**Deprecated aggregation filters:**
 
 ```graphql
 {
