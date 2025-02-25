@@ -131,7 +131,12 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return `${this.entityAdapter.name}ImplementationsSubscriptionWhere`;
     }
 
+    /** @deprecated use `getAggregateFieldTypename` instead */
     public getAggregationFieldTypename(): string {
+        return this.aggregateTypeNames.selection;
+    }
+
+    public getAggregateFieldTypename(): string {
         return this.aggregateTypeNames.selection;
     }
 

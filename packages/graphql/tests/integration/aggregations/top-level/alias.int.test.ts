@@ -67,25 +67,27 @@ describe("aggregations-top_level-alias", () => {
         );
 
         const query = /* GraphQL */ `
-            {
-                ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
-                    aggr: aggregate {
-                        n: node {
-                            _count: count
-                            _title: title {
-                                _shortest: shortest
-                                _longest: longest
+                {
+                    ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" }}) {
+                        aggr: aggregate {
+                            _count: count {
+                                n: nodes
                             }
-                            _imdbRating: imdbRating {
-                                _min: min
-                                _max: max
-                                _average: average
+                            n: node {
+                                _title: title {
+                                    _shortest: shortest
+                                    _longest: longest
+                                }
+                                _imdbRating: imdbRating {
+                                    _min: min
+                                    _max: max
+                                    _average: average
+                                }
+                                _createdAt: createdAt {
+                                    _min: min
+                                    _max: max
+                                }
                             }
-                            _createdAt: createdAt {
-                                _min: min
-                                _max: max
-                            }
-                        }
                     }
                 }
             }
@@ -98,8 +100,10 @@ describe("aggregations-top_level-alias", () => {
         expect(gqlResult.data).toEqual({
             [typeMovie.operations.connection]: {
                 aggr: {
+                    _count: {
+                        n: 4,
+                    },
                     n: {
-                        _count: 4,
                         _title: {
                             _shortest: "1",
                             _longest: "4444",
@@ -151,32 +155,34 @@ describe("aggregations-top_level-alias", () => {
         );
 
         const query = /* GraphQL */ `
-            {
-                ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
-                    aggr1: aggregate {
-                        node {
-                            count
-                            title {
-                                shortest: shortest
-                                longest: longest
+                {
+                    ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                        aggr1: aggregate {
+                            count {
+                                nodes
                             }
-                            imdbRating: imdbRating {
-                                min: min
-                                max: max
-                                average: average
-                            }        
+                            node {
+                                title {
+                                    shortest: shortest
+                                    longest: longest
+                                }
+                                imdbRating: imdbRating {
+                                    min: min
+                                    max: max
+                                    average: average
+                                }        
+                            }       
                         }
-                    }
-                    aggr2: aggregate {
-                        node {
-                            _title: title {
-                                shortest: shortest
-                                longest: longest
-                            }    
+                        aggr2: aggregate {
+                            node {
+                                _title: title {
+                                    shortest: shortest
+                                    longest: longest
+                                }    
+                            }
                         }
                     }
                 }
-            }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
@@ -186,8 +192,8 @@ describe("aggregations-top_level-alias", () => {
         expect(gqlResult.data).toEqual({
             [typeMovie.operations.connection]: {
                 aggr1: {
+                    count: { nodes: 4 },
                     node: {
-                        count: 4,
                         title: {
                             shortest: "1",
                             longest: "4444",

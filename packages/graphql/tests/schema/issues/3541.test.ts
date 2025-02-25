@@ -70,11 +70,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -130,6 +130,15 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               nodes: IntScalarFilters
             }
 
+            type Count @shareable {
+              nodes: Int!
+            }
+
+            type CountConnection @shareable {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -157,6 +166,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -180,7 +194,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -254,11 +268,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MovieAggregate @shareable {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode @shareable {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -447,11 +461,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -518,6 +532,15 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             input ConnectionAggregationCountFilterInput {
               edges: IntScalarFilters
               nodes: IntScalarFilters
+            }
+
+            type Count @shareable {
+              nodes: Int!
+            }
+
+            type CountConnection @shareable {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -588,6 +611,11 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               node: MovieActorActorsNodeAggregateSelection
@@ -615,7 +643,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

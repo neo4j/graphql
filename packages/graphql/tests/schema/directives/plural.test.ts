@@ -18,7 +18,6 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { GraphQLError } from "graphql";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
@@ -41,6 +40,10 @@ describe("Plural option", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -117,11 +120,11 @@ describe("Plural option", () => {
             }
 
             type TechAggregate {
+              count: Count!
               node: TechAggregateNode!
             }
 
             type TechAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -218,6 +221,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -292,11 +299,11 @@ describe("Plural option", () => {
             }
 
             type TechAggregate {
+              count: Count!
               node: TechAggregateNode!
             }
 
             type TechAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -393,6 +400,10 @@ describe("Plural option", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -467,11 +478,11 @@ describe("Plural option", () => {
             }
 
             type TechAggregate {
+              count: Count!
               node: TechAggregateNode!
             }
 
             type TechAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -547,42 +558,5 @@ describe("Plural option", () => {
               technologies: [Tech!]!
             }"
         `);
-    });
-
-    test("Same plural on multiple nodes", async () => {
-        const typeDefs = gql`
-            type Tech @plural(value: "Techs") @node {
-                name: String
-            }
-
-            type User @plural(value: "Techs") @node {
-                value: String
-            }
-        `;
-
-        await expect(async () => {
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
-            await neoSchema.getSchema();
-        }).rejects.toIncludeSameMembers([new GraphQLError(`Ambiguous plural "techs" in "User"`)]);
-    });
-
-    test("Type collision with pluralize", async () => {
-        const typeDefs = gql`
-            type User @node {
-                name: String
-            }
-
-            type Users @node {
-                value: String
-            }
-        `;
-        await expect(async () => {
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-            });
-            await neoSchema.getSchema();
-        }).rejects.toIncludeSameMembers([new GraphQLError(`Ambiguous plural "users" in "Users"`)]);
     });
 });

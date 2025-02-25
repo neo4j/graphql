@@ -67,6 +67,10 @@ describe("@default directive", () => {
               set: Boolean
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -270,11 +274,11 @@ describe("@default directive", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               fromInterface: StringAggregateSelection!
               name: StringAggregateSelection!
               numberOfFriends: IntAggregateSelection!
@@ -316,11 +320,11 @@ describe("@default directive", () => {
             }
 
             type UserInterfaceAggregate {
+              count: Count!
               node: UserInterfaceAggregateNode!
             }
 
             type UserInterfaceAggregateNode {
-              count: Int!
               fromInterface: StringAggregateSelection!
               toBeOverridden: StringAggregateSelection!
             }

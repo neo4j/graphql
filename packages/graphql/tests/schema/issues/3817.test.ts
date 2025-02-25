@@ -66,6 +66,15 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -196,11 +205,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -251,7 +256,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             type PersonFriendsConnection {
-              aggregate: PersonPersonFriendsAggregationSelection!
+              aggregate: PersonPersonFriendsAggregateSelection!
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -338,6 +343,11 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               disconnect: [PersonFriendsDisconnectFieldInput!]
               update: PersonFriendsUpdateConnectionInput
               where: PersonFriendsConnectionWhere
+            }
+
+            type PersonPersonFriendsAggregateSelection {
+              count: CountConnection!
+              edge: PersonPersonFriendsEdgeAggregateSelection
             }
 
             type PersonPersonFriendsAggregationSelection {

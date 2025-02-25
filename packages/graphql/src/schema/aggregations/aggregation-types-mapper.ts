@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLInt, GraphQLNonNull } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Subgraph } from "../../classes/Subgraph";
 import { numericalResolver } from "../resolvers/field/numerical";
@@ -25,14 +26,54 @@ export class AggregationTypesMapper {
     private readonly aggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
 
     private readonly subgraph: Subgraph | undefined;
+    private readonly composer: SchemaComposer;
 
     constructor(composer: SchemaComposer, subgraph?: Subgraph) {
         this.subgraph = subgraph;
         this.aggregationSelectionTypes = this.getOrCreateAggregationSelectionTypes(composer);
+        this.composer = composer;
     }
 
     public getAggregationType(typeName: string): ObjectTypeComposer<unknown, unknown> | undefined {
         return this.aggregationSelectionTypes[typeName];
+    }
+
+    /** Top level count */
+    public getCountType(): ObjectTypeComposer {
+        const countFieldName = "Count";
+        const directives: string[] = this.subgraph ? [this.subgraph.getFullyQualifiedDirectiveName("shareable")] : [];
+        return this.composer.getOrCreateOTC(countFieldName, (countField) => {
+            countField.addFields({
+                nodes: {
+                    type: new GraphQLNonNull(GraphQLInt),
+                    resolve: numericalResolver,
+                },
+            });
+            for (const directiveName of directives) {
+                countField.setDirectiveByName(directiveName);
+            }
+        });
+    }
+
+    /** Nested count */
+    public getCountConnectionType(): ObjectTypeComposer {
+        const countFieldName = "CountConnection";
+        const directives: string[] = this.subgraph ? [this.subgraph.getFullyQualifiedDirectiveName("shareable")] : [];
+        return this.composer.getOrCreateOTC(countFieldName, (countField) => {
+            countField.addFields({
+                nodes: {
+                    type: new GraphQLNonNull(GraphQLInt),
+                    resolve: numericalResolver,
+                },
+                edges: {
+                    type: new GraphQLNonNull(GraphQLInt),
+                    resolve: numericalResolver,
+                },
+            });
+            for (const directiveName of directives) {
+                countField.setDirectiveByName(directiveName);
+            }
+        });
     }
 
     private getOrCreateAggregationSelectionTypes(

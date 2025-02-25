@@ -62,11 +62,11 @@ describe("Unions", () => {
             }
 
             type AuthorAggregate {
+              count: Count!
               node: AuthorAggregateNode!
             }
 
             type AuthorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -343,11 +343,11 @@ describe("Unions", () => {
             }
 
             type BookAggregate {
+              count: Count!
               node: BookAggregateNode!
             }
 
             type BookAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -368,6 +368,12 @@ describe("Unions", () => {
               count_LTE: Int
               edge: WroteAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
+            }
+
+            type BookAuthorAuthorAggregateSelection {
+              count: CountConnection!
+              edge: BookAuthorAuthorEdgeAggregateSelection
+              node: BookAuthorAuthorNodeAggregateSelection
             }
 
             type BookAuthorAuthorAggregationSelection {
@@ -391,7 +397,7 @@ describe("Unions", () => {
             }
 
             type BookAuthorConnection {
-              aggregate: BookAuthorAuthorAggregationSelection!
+              aggregate: BookAuthorAuthorAggregateSelection!
               edges: [BookAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -592,6 +598,15 @@ describe("Unions", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateAuthorsMutationResponse {
               authors: [Author!]!
               info: CreateInfo!
@@ -673,11 +688,11 @@ describe("Unions", () => {
             }
 
             type JournalAggregate {
+              count: Count!
               node: JournalAggregateNode!
             }
 
             type JournalAggregateNode {
-              count: Int!
               subject: StringAggregateSelection!
             }
 
@@ -698,6 +713,12 @@ describe("Unions", () => {
               count_LTE: Int
               edge: WroteAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
+            }
+
+            type JournalAuthorAuthorAggregateSelection {
+              count: CountConnection!
+              edge: JournalAuthorAuthorEdgeAggregateSelection
+              node: JournalAuthorAuthorNodeAggregateSelection
             }
 
             type JournalAuthorAuthorAggregationSelection {
@@ -721,7 +742,7 @@ describe("Unions", () => {
             }
 
             type JournalAuthorConnection {
-              aggregate: JournalAuthorAuthorAggregationSelection!
+              aggregate: JournalAuthorAuthorAggregateSelection!
               edges: [JournalAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

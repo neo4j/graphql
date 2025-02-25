@@ -146,11 +146,11 @@ describe("Cypher", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -285,6 +285,10 @@ describe("Cypher", () => {
             input CartesianPointListFilters {
               eq: [CartesianPointInput!]
               includes: CartesianPointInput
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -498,11 +502,7 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -867,6 +867,10 @@ describe("Cypher", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -893,11 +897,7 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -998,6 +998,10 @@ describe("Cypher", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -1024,11 +1028,7 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -1165,11 +1165,11 @@ describe("Cypher", () => {
             }
 
             type BlogAggregate {
+              count: Count!
               node: BlogAggregateNode!
             }
 
             type BlogAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -1231,6 +1231,10 @@ describe("Cypher", () => {
               Post: PostWhere
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateBlogsMutationResponse {
               blogs: [Blog!]!
               info: CreateInfo!
@@ -1279,12 +1283,12 @@ describe("Cypher", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -1466,11 +1470,11 @@ describe("Cypher", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1536,6 +1540,10 @@ describe("Cypher", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -1568,11 +1576,7 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -1651,11 +1655,7 @@ describe("Cypher", () => {
             }
 
             type ProductionAggregate {
-              node: ProductionAggregateNode!
-            }
-
-            type ProductionAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ProductionAggregateSelection {
@@ -1805,11 +1805,11 @@ describe("Cypher", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1875,6 +1875,10 @@ describe("Cypher", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -1907,11 +1911,7 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -2084,11 +2084,11 @@ describe("Cypher", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -2143,6 +2143,10 @@ describe("Cypher", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -2201,11 +2205,7 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -2344,6 +2344,10 @@ describe("Cypher", () => {
               subscription: Subscription
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -2379,11 +2383,11 @@ describe("Cypher", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
