@@ -52,7 +52,7 @@ describe("Cypher Aggregations Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.screenTime) } AS var0
             }
             RETURN { screenTime: var0 }"
@@ -77,7 +77,7 @@ describe("Cypher Aggregations Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { max: max(this.screenTime) } AS var0
             }
             RETURN { screenTime: var0 }"
@@ -103,7 +103,7 @@ describe("Cypher Aggregations Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.screenTime), max: max(this.screenTime) } AS var0
             }
             RETURN { screenTime: var0 }"

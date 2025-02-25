@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
-                WITH DISTINCT this6
+                WITH this6
                 RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var8 } } } AS this"
