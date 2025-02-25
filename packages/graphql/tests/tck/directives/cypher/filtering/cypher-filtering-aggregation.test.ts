@@ -54,7 +54,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -117,7 +118,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -132,6 +134,7 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE var1 > $param0
+                WITH DISTINCT this
                 RETURN { min: min(this.released) } AS var2
             }
             RETURN { released: var2 }"
@@ -180,7 +183,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -244,7 +248,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this

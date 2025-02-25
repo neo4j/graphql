@@ -64,11 +64,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor2Aggregate {
+              count: Count!
               node: Actor2AggregateNode!
             }
 
             type Actor2AggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -89,6 +89,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type Actor2Edge {
               cursor: String!
               node: Actor2!
+            }
+
+            type Actor2MovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: Actor2MovieMoviesNodeAggregateSelection
             }
 
             type Actor2MovieMoviesAggregationSelection {
@@ -118,7 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor2MoviesConnection {
-              aggregate: Actor2MovieMoviesAggregationSelection!
+              aggregate: Actor2MovieMoviesAggregateSelection!
               edges: [Actor2MoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -283,11 +288,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -308,6 +313,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: ActorMovieMoviesNodeAggregateSelection
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -337,7 +347,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type ActorMoviesConnection {
-              aggregate: ActorMovieMoviesAggregationSelection!
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -504,6 +514,15 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActor2sMutationResponse {
               actor2s: [Actor2!]!
               info: CreateInfo!
@@ -570,11 +589,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 

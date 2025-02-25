@@ -54,7 +54,8 @@ describe("Field Level Aggregations", () => {
 
         await testHelper.executeCypher(`
             CREATE (m:${typeMovie.name} { title: "Terminator"})
-            CREATE(m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(a1:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 50, character: "someone" }]-(a1)
             CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})
         `);
     });
@@ -63,14 +64,15 @@ describe("Field Level Aggregations", () => {
         await testHelper.close();
     });
 
-    test.skip("count nodes", async () => {
+    test("count nodes and edges with repeated relationships", async () => {
         const query = `
             query {
                 ${typeMovie.plural} {
                     actorsConnection {
                         aggregate {
-                            node {
-                                count
+                            count {
+                                nodes
+                                edges
                             }
                         }
                     }
@@ -87,8 +89,9 @@ describe("Field Level Aggregations", () => {
                 {
                     actorsConnection: {
                         aggregate: {
-                            node: {
-                                count: 2,
+                            count: {
+                                nodes: 2,
+                                edges: 3,
                             },
                         },
                     },
@@ -251,9 +254,9 @@ describe("Field Level Aggregations", () => {
                                 edge: {
                                     screentime: {
                                         max: 120,
-                                        min: 60,
-                                        average: 90,
-                                        sum: 180,
+                                        min: 50,
+                                        average: expect.closeTo(76.67),
+                                        sum: 230,
                                     },
                                 },
                             },

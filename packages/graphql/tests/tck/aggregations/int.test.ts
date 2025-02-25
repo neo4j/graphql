@@ -50,8 +50,10 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { min: min(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -74,8 +76,10 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { max: max(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -98,8 +102,10 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { average: avg(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -122,8 +128,10 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { sum: sum(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -149,8 +157,10 @@ describe("Cypher Aggregations Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
+                WITH DISTINCT this
                 RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"

@@ -52,6 +52,15 @@ describe("Authorization", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -138,11 +147,11 @@ describe("Authorization", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -170,7 +179,7 @@ describe("Authorization", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -306,6 +315,11 @@ describe("Authorization", () => {
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -439,11 +453,11 @@ describe("Authorization", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -498,7 +512,7 @@ describe("Authorization", () => {
             }
 
             type UserPostsConnection {
-              aggregate: UserUserPostsAggregationSelection!
+              aggregate: UserUserPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -628,6 +642,11 @@ describe("Authorization", () => {
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               posts: [UserPostsUpdateFieldInput!]
+            }
+
+            type UserUserPostsAggregateSelection {
+              count: CountConnection!
+              node: UserUserPostsNodeAggregateSelection
             }
 
             type UserUserPostsAggregationSelection {

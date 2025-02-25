@@ -48,7 +48,8 @@ describe("QueryDirection in relationships connection", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
@@ -92,7 +93,8 @@ describe("QueryDirection in relationships connection", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)

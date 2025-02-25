@@ -59,6 +59,10 @@ describe("Interfaces", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -114,11 +118,7 @@ describe("Interfaces", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -232,11 +232,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodeAggregate {
-              node: MovieNodeAggregateNode!
-            }
-
-            type MovieNodeAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieNodeAggregateSelection {
@@ -542,6 +538,10 @@ describe("Interfaces", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -597,11 +597,7 @@ describe("Interfaces", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -715,11 +711,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodeAggregate {
-              node: MovieNodeAggregateNode!
-            }
-
-            type MovieNodeAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieNodeAggregateSelection {

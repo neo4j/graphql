@@ -49,6 +49,15 @@ describe("Relationship nested operations", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -130,7 +139,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MoviePersonActorsAggregationSelection!
+              aggregate: MoviePersonActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -204,11 +213,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -222,6 +227,11 @@ describe("Relationship nested operations", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
+            }
+
+            type MoviePersonActorsAggregateSelection {
+              count: CountConnection!
+              node: MoviePersonActorsNodeAggregateSelection
             }
 
             type MoviePersonActorsAggregationSelection {
@@ -321,11 +331,11 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonAggregate {
+              count: Count!
               node: PersonAggregateNode!
             }
 
             type PersonAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -476,6 +486,10 @@ describe("Relationship nested operations", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -577,11 +591,7 @@ describe("Relationship nested operations", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -681,11 +691,11 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonOneAggregate {
+              count: Count!
               node: PersonOneAggregateNode!
             }
 
             type PersonOneAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -750,11 +760,11 @@ describe("Relationship nested operations", () => {
             }
 
             type PersonTwoAggregate {
+              count: Count!
               node: PersonTwoAggregateNode!
             }
 
             type PersonTwoAggregateNode {
-              count: Int!
               nameTwo: StringAggregateSelection!
             }
 

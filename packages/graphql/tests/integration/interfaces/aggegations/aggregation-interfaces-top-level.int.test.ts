@@ -71,8 +71,10 @@ describe("Top-level interface query fields", () => {
             query {
                 productionsConnection {
                     aggregate {
+                        count {
+                            nodes
+                        }
                         node {
-                            count
                             title {
                                 longest
                                 shortest
@@ -89,8 +91,10 @@ describe("Top-level interface query fields", () => {
         expect(queryResult.data).toEqual({
             productionsConnection: {
                 aggregate: {
+                    count: {
+                        nodes: 4,
+                    },
                     node: {
-                        count: 4,
                         title: {
                             longest: "The Matrix is a very interesting movie: The Documentary",
                             shortest: "The Show",

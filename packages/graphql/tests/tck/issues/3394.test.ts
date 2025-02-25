@@ -55,7 +55,8 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Product)
+            "CYPHER 5
+            MATCH (this:Product)
             WITH *
             ORDER BY this.fg_item DESC
             RETURN this { .description, id: this.fg_item_id, partNumber: this.fg_item } AS this"
@@ -80,7 +81,8 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Employee)
+            "CYPHER 5
+            MATCH (this:Employee)
             CALL {
                 WITH this
                 MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
@@ -113,7 +115,8 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this0:Product)
+                "CYPHER 5
+                MATCH (this0:Product)
                 WITH collect({ node: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
@@ -150,7 +153,8 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Employee)
+                "CYPHER 5
+                MATCH (this:Employee)
                 CALL {
                     WITH this
                     MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)

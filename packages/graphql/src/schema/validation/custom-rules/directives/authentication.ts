@@ -1,0 +1,106 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import { authenticationDirectiveScaffold } from "../../../../graphql/directives/type-dependant-directives/authentication";
+import { isRootType } from "../../../../utils/is-root-type";
+import { asArray } from "../../../../utils/utils";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRootType } from "../utils/location-helpers/is-in-root-type";
+import { fieldIsInSubscriptionType } from "../utils/location-helpers/is-in-subscription-type";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
+import { getPathToNode } from "../utils/path-parser";
+
+export function validateAuthenticationDirective(context: Neo4jValidationContext): ASTVisitor {
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
+    }
+    return {
+        FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            if (
+                !fieldDefinitionNode.directives?.find(
+                    (directive) => directive.name.value === authenticationDirectiveScaffold.name
+                )
+            ) {
+                return;
+            }
+
+            const isValidLocation =
+                (fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                    fieldIsInRootType({ path, ancestors, typeMapWithExtensions })) &&
+                !fieldIsInSubscriptionType({ path, ancestors, typeMapWithExtensions });
+
+            const { isValid, errorMsg } = assertValid(() => {
+                if (!isValidLocation) {
+                    throw new DocumentValidationError(
+                        `Directive "${authenticationDirectiveScaffold.name}" requires in a type with "@node" or in root types: Query, and Mutation`,
+                        []
+                    );
+                }
+            });
+            const pathToNode = getPathToNode(path, ancestors);
+
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [fieldDefinitionNode],
+                        path: [...pathToNode[0], `@${authenticationDirectiveScaffold.name}`],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+        ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, path, ancestors) {
+            const { directives } = objectTypeDefinitionNode;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
+            const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
+                return extensionNode.directives ?? [];
+            });
+            const allDirectives = [...(directives ?? []), ...extensionsDirectives];
+            if (!allDirectives.find((directive) => directive.name.value === authenticationDirectiveScaffold.name)) {
+                return;
+            }
+            const isValidLocation =
+                (typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions }) ||
+                    isRootType(objectTypeDefinitionNode)) &&
+                objectTypeDefinitionNode.name.value !== "Subscription";
+            const { isValid, errorMsg } = assertValid(() => {
+                if (!isValidLocation) {
+                    throw new DocumentValidationError(
+                        `Directive "${authenticationDirectiveScaffold.name}" requires in a type with "@node" or in root types: Query, and Mutation`,
+                        []
+                    );
+                }
+            });
+            const pathToNode = getPathToNode(path, ancestors);
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [objectTypeDefinitionNode],
+                        path: [...pathToNode[0], `@${authenticationDirectiveScaffold.name}`],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+    };
+}

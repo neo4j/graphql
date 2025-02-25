@@ -156,7 +156,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             WITH *
             WHERE (EXISTS {
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
@@ -234,7 +235,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             WITH *
             WHERE ((this.price >= $param0 AND EXISTS {
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
@@ -324,7 +326,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             WITH *
             WHERE ((this.price >= $param0 AND EXISTS {
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
@@ -427,7 +430,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             WITH *
             WHERE ((this.price >= $param0 AND EXISTS {
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)
@@ -541,7 +545,8 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Mandate)
+            "CYPHER 5
+            MATCH (this:Mandate)
             WITH *
             WHERE ((this.price >= $param0 AND EXISTS {
                 MATCH (this)-[:HAS_VALUATION]->(this0:Valuation)

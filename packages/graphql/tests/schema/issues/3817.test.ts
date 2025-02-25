@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
+describe("https://github.com/neo4j/graphql/issues/3817", () => {
     test("3817", async () => {
         const typeDefs = gql`
             type Person @node {
@@ -64,6 +64,15 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             input ConnectionAggregationCountFilterInput {
               edges: IntScalarFilters
               nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -196,11 +205,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -251,7 +256,7 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             type PersonFriendsConnection {
-              aggregate: PersonPersonFriendsAggregationSelection!
+              aggregate: PersonPersonFriendsAggregateSelection!
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -338,6 +343,11 @@ describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
               disconnect: [PersonFriendsDisconnectFieldInput!]
               update: PersonFriendsUpdateConnectionInput
               where: PersonFriendsConnectionWhere
+            }
+
+            type PersonPersonFriendsAggregateSelection {
+              count: CountConnection!
+              edge: PersonPersonFriendsEdgeAggregateSelection
             }
 
             type PersonPersonFriendsAggregationSelection {

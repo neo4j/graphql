@@ -81,7 +81,8 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
         const result = await translateQuery(neoSchema, query, { contextValues: { cypherParams: { tenant: "BULK" } } });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Bulk:BULK)
+            "CYPHER 5
+            MATCH (this:Bulk:BULK)
             CALL {
                 WITH this
                 MATCH (this)-[this0:MATERIAL_BULK]->(this1:Material)

@@ -53,6 +53,15 @@ describe("162", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -185,11 +194,11 @@ describe("162", () => {
             }
 
             type TigerAggregate {
+              count: Count!
               node: TigerAggregateNode!
             }
 
             type TigerAggregateNode {
-              count: Int!
               x: IntAggregateSelection!
             }
 
@@ -219,11 +228,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Aggregate {
-              node: TigerJawLevel2AggregateNode!
-            }
-
-            type TigerJawLevel2AggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type TigerJawLevel2AggregateSelection {
@@ -252,7 +257,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1Aggregate {
-              node: TigerJawLevel2Part1AggregateNode!
+              count: Count!
             }
 
             input TigerJawLevel2Part1AggregateInput {
@@ -265,10 +270,6 @@ describe("162", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-            }
-
-            type TigerJawLevel2Part1AggregateNode {
-              count: Int!
             }
 
             type TigerJawLevel2Part1AggregateSelection {
@@ -289,7 +290,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1Connection {
-              aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection!
+              aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregateSelection!
               edges: [TigerJawLevel2Part1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -422,7 +423,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigerConnection {
-              aggregate: TigerJawLevel2Part1TigerTigerAggregationSelection!
+              aggregate: TigerJawLevel2Part1TigerTigerAggregateSelection!
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -517,6 +518,11 @@ describe("162", () => {
             type TigerJawLevel2Part1TigerRelationship {
               cursor: String!
               node: Tiger!
+            }
+
+            type TigerJawLevel2Part1TigerTigerAggregateSelection {
+              count: CountConnection!
+              node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
             }
 
             type TigerJawLevel2Part1TigerTigerAggregationSelection {
@@ -619,6 +625,10 @@ describe("162", () => {
             \\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
+            }
+
+            type TigerJawLevel2TigerJawLevel2Part1Part1AggregateSelection {
+              count: CountConnection!
             }
 
             type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {

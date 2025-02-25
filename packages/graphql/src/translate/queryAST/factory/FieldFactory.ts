@@ -35,12 +35,14 @@ import { OperationField } from "../ast/fields/OperationField";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
+import { DeprecatedCountField } from "../ast/fields/aggregation-fields/DeprecatedCountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
+import { findFieldsByNameInFieldsByTypeNameField } from "./parsers/find-fields-by-name-in-fields-by-type-name-field";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 export class FieldFactory {
@@ -137,7 +139,20 @@ export class FieldFactory {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
                 if (field.name === "count") {
-                    return new CountField({
+                    const countFields = field.fieldsByTypeName["Count"] ?? field.fieldsByTypeName["CountConnection"];
+                    if (countFields) {
+                        const hasNodes = findFieldsByNameInFieldsByTypeNameField(countFields, "nodes").length > 0;
+                        const hasEdges = findFieldsByNameInFieldsByTypeNameField(countFields, "edges").length > 0;
+                        return new CountField({
+                            alias: field.alias,
+                            entity: entity as any,
+                            fields: {
+                                nodes: hasNodes,
+                                edges: hasEdges,
+                            },
+                        });
+                    }
+                    return new DeprecatedCountField({
                         alias: field.alias,
                         entity: entity as any,
                     });

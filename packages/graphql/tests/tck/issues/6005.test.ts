@@ -59,16 +59,17 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                        "MATCH (this:Movie)
-                        CALL {
-                            WITH this
-                            MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                            RETURN count(DISTINCT this1) = $param0 AS var2
-                        }
-                        WITH *
-                        WHERE var2 = true
-                        RETURN this { .title } AS this"
-                `);
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL {
+                WITH this
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                RETURN count(DISTINCT this1) = $param0 AS var2
+            }
+            WITH *
+            WHERE var2 = true
+            RETURN this { .title } AS this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": {
@@ -93,7 +94,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -136,7 +138,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
@@ -188,7 +191,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Actor)
+            "CYPHER 5
+            MATCH (this0:Actor)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

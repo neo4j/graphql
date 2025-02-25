@@ -55,6 +55,10 @@ describe("Null", () => {
               eq: [Boolean!]
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -253,13 +257,13 @@ describe("Null", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
             }
