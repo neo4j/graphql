@@ -23,7 +23,7 @@ import type { Driver, QueryConfig } from "neo4j-driver";
 import { Memoize } from "typescript-memoize";
 import { APP_ID } from "../../constants";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
-import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionEngineContext, SubscriptionsEvent } from "../../types";
+import type { Neo4jGraphQLSubscriptionsEngine, SubscriptionEngineContext } from "../../types";
 import { CDCApi } from "./cdc/cdc-api";
 import { CDCEventParser } from "./cdc/cdc-event-parser";
 
@@ -63,10 +63,6 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
                 "CDC Event parser not available on SubscriptionEngine. Forgot to call .init on SubscriptionEngine?"
             );
         return this._parser;
-    }
-
-    public publish(_eventMeta: SubscriptionsEvent): void | Promise<void> {
-        // Disable Default Publishing mechanism
     }
 
     public async init({ schemaModel }: SubscriptionEngineContext): Promise<void> {

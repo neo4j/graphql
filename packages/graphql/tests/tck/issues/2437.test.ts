@@ -81,7 +81,8 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Agent)
+            "CYPHER 5
+            MATCH (this:Agent)
             WITH *
             WHERE (this.uuid = $param0 AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {

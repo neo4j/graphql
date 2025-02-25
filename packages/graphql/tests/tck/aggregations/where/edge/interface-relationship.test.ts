@@ -79,7 +79,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1)
@@ -119,7 +120,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Actor)
                 CALL {
                     WITH this0
@@ -173,7 +175,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Actor)
                 CALL {
                     WITH this0

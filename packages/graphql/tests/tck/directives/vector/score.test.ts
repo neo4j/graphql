@@ -73,7 +73,8 @@ describe("Cypher -> vector -> Score", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND var1 >= $param2)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -245,7 +246,8 @@ describe("Cypher -> vector -> Score", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -418,7 +420,8 @@ describe("Cypher -> vector -> Score", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount

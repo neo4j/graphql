@@ -18,22 +18,31 @@
  */
 
 import type { Maybe } from "@graphql-tools/utils/typings/types";
-import type { DocumentNode, GraphQLSchema, GraphQLError } from "graphql";
+import type { ASTVisitor, DocumentNode, GraphQLError, GraphQLSchema } from "graphql";
 import { visit, visitInParallel } from "graphql";
-import type { SDLValidationRule } from "graphql/validation/ValidationContext";
-import { SDLValidationContext } from "graphql/validation/ValidationContext";
+import type { SDLValidationContext } from "graphql/validation/ValidationContext";
+import type { Neo4jGraphQLCallbacks } from "../../types";
+import { Neo4jValidationContext } from "./Neo4jValidationContext";
 import { mapError } from "./utils/map-error";
+
+type Neo4jValidationRule = <T extends SDLValidationContext>(context: T) => ASTVisitor;
 
 export function validateSDL(
     documentAST: DocumentNode,
-    rules: ReadonlyArray<SDLValidationRule>,
-    schemaToExtend?: Maybe<GraphQLSchema>
+    rules: ReadonlyArray<Neo4jValidationRule>,
+    schemaToExtend?: Maybe<GraphQLSchema>,
+    callbacks?: Neo4jGraphQLCallbacks
 ): ReadonlyArray<GraphQLError> {
     const errors: Array<GraphQLError> = [];
-    const context = new SDLValidationContext(documentAST, schemaToExtend, (error) => {
-        const mappedError = mapError(error);
-        errors.push(mappedError);
-    });
+    const context = new Neo4jValidationContext(
+        documentAST,
+        schemaToExtend,
+        (error) => {
+            const mappedError = mapError(error);
+            errors.push(mappedError);
+        },
+        callbacks
+    );
     const visitors = rules.map((rule) => rule(context));
     visit(documentAST, visitInParallel(visitors));
     return errors;

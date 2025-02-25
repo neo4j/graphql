@@ -63,7 +63,8 @@ describe("Cypher Aggregations Many with Alias directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH this
                 ORDER BY size(this._title) DESC

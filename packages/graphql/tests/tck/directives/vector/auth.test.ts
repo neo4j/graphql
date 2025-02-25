@@ -85,7 +85,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[:DIRECTED]-(this2:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
@@ -284,7 +285,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[:DIRECTED]-(this2:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
@@ -485,7 +487,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
                 MATCH (this0)<-[:DIRECTED]-(this2:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
@@ -691,7 +694,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
@@ -897,7 +901,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
@@ -1107,7 +1112,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($param3 IS NOT NULL AND this2.year = $param3)
@@ -1311,7 +1317,8 @@ describe("Cypher -> vector -> Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($param3 IS NOT NULL AND this2.year = $param3)

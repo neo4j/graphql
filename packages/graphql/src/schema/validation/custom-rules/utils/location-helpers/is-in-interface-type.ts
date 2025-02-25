@@ -17,12 +17,19 @@
  * limitations under the License.
  */
 
-import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsDefaultEngine } from "./Neo4jGraphQLSubscriptionsDefaultEngine";
+import { Kind, type ASTNode } from "graphql";
+import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
+import { getParentType } from "./get-parent-type";
 
-describe("Neo4jGraphQLSubscriptionsDefaultEngine", () => {
-    test("should construct without arguments", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsDefaultEngine();
-        expect(plugin.events).toBeInstanceOf(EventEmitter);
-    });
-});
+export function fieldIsInInterfaceType({
+    path,
+    ancestors,
+    typeMapWithExtensions,
+}: {
+    path: readonly (string | number)[];
+    ancestors: readonly (ASTNode | readonly ASTNode[])[];
+    typeMapWithExtensions: TypeMapWithExtensions;
+}): boolean {
+    const parentTypeAndExtensions = getParentType({ path, ancestors, typeMapWithExtensions });
+    return parentTypeAndExtensions.definition.kind === Kind.INTERFACE_TYPE_DEFINITION;
+}

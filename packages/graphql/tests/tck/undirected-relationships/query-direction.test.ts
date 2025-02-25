@@ -52,7 +52,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 CALL {
                     WITH this
                     MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
@@ -81,7 +82,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
@@ -123,7 +125,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
@@ -202,7 +205,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
@@ -285,7 +289,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
@@ -356,7 +361,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
@@ -417,7 +423,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 CALL {
                     WITH this
                     MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
@@ -446,7 +453,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0
@@ -488,7 +496,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0
@@ -567,7 +576,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0
@@ -650,7 +660,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0
@@ -721,7 +732,8 @@ describe("queryDirection in relationships", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 WHERE EXISTS {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0

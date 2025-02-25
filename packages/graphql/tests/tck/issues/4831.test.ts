@@ -51,7 +51,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -84,7 +85,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -117,7 +119,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -146,7 +149,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -177,7 +181,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -210,7 +215,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -243,7 +249,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {
@@ -272,7 +279,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Test)
+                "CYPHER 5
+                MATCH (this:Test)
                 CALL {
                     WITH this
                     CALL {

@@ -65,7 +65,8 @@ describe("Field Level Aggregations Alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Person)

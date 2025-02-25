@@ -61,7 +61,8 @@ describe("#190", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE EXISTS {
                 MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:UserDemographics)
                 WHERE (this0.type = $param0 AND this0.value = $param1)
@@ -112,7 +113,8 @@ describe("#190", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE EXISTS {
                 MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:UserDemographics)
                 WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3)

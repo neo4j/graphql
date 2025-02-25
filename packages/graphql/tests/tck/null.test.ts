@@ -56,7 +56,8 @@ describe("Cypher NULL", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title IS NULL
             RETURN this { .title } AS this"
         `);
@@ -76,7 +77,8 @@ describe("Cypher NULL", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE NOT (this.title IS NULL)
             RETURN this { .title } AS this"
         `);

@@ -65,7 +65,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -133,7 +134,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -210,7 +212,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -289,7 +292,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -359,7 +363,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -445,7 +450,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -568,7 +574,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -692,7 +699,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -816,7 +824,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -941,7 +950,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1066,7 +1076,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1190,7 +1201,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1314,7 +1326,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1439,7 +1452,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1565,7 +1579,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {

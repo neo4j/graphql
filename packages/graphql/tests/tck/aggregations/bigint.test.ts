@@ -50,7 +50,8 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
                 WITH DISTINCT this
                 RETURN { min: min(this.size) } AS var0
@@ -75,7 +76,8 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
                 WITH DISTINCT this
                 RETURN { max: max(this.size) } AS var0
@@ -100,7 +102,8 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
                 WITH DISTINCT this
                 RETURN { average: avg(this.size) } AS var0
@@ -125,7 +128,8 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
                 WITH DISTINCT this
                 RETURN { sum: sum(this.size) } AS var0
@@ -153,7 +157,8 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
                 WITH DISTINCT this
                 RETURN { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } AS var0

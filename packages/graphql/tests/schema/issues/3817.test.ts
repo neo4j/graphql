@@ -22,7 +22,7 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("ttps://github.com/neo4j/graphql/issues/3817", () => {
+describe("https://github.com/neo4j/graphql/issues/3817", () => {
     test("3817", async () => {
         const typeDefs = gql`
             type Person @node {

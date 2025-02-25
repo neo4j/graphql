@@ -120,7 +120,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE this.id = $param0
             CALL {
                 WITH this
@@ -180,7 +181,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Workspace)
+            "CYPHER 5
+            MATCH (this:Workspace)
             WITH *
             WHERE (this.id = $param0 AND ($isAuthenticated = true AND (EXISTS {
                 MATCH (this)<-[:MEMBER_OF]-(this0:User)
@@ -244,7 +246,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Page)
+            "CYPHER 5
+            MATCH (this:Page)
             WITH *
             WHERE ((EXISTS {
                 MATCH (this)<-[:HAS_PAGE]-(this0:Workspace)
@@ -299,7 +302,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Page)
+            "CYPHER 5
+            MATCH (this:Page)
             WITH *
             WHERE ($isAuthenticated = true AND (EXISTS {
                 MATCH (this)<-[:CREATED_PAGE]-(this0:User)

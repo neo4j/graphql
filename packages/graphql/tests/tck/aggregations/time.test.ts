@@ -50,7 +50,8 @@ describe("Cypher Aggregations Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH DISTINCT this
                 RETURN { min: min(this.createdAt) } AS var0
@@ -75,7 +76,8 @@ describe("Cypher Aggregations Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH DISTINCT this
                 RETURN { max: max(this.createdAt) } AS var0
@@ -101,7 +103,8 @@ describe("Cypher Aggregations Time", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WITH DISTINCT this
                 RETURN { min: min(this.createdAt), max: max(this.createdAt) } AS var0
