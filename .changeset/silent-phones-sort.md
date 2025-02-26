@@ -2,7 +2,7 @@
 "@neo4j/graphql": minor
 ---
 
-Following the changes of moving aggregations inside the connection fields, the aggregation filter `count` is now supported on both nodes and relationships.
+The aggregation filter `count` now supports both, nodes and relationships.
 
 **Count filter on nodes:**
 
