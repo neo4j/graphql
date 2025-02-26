@@ -104,12 +104,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
     test("should return null aggregations", async () => {
         const query = /* GraphQL */ `
             query {
-                showsAggregate(where: { title_STARTS_WITH: "asdasdasd" }) {
-                    title {
-                        longest
-                    }
-                    release {
-                        min
+                showsConnection(where: { title_STARTS_WITH: "asdasdasd" }) {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                            release {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -118,12 +122,16 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
         const response = await testHelper.executeGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
-            showsAggregate: {
-                title: {
-                    longest: null,
-                },
-                release: {
-                    min: null,
+            showsConnection: {
+                aggregate: {
+                    node: {
+                        title: {
+                            longest: null,
+                        },
+                        release: {
+                            min: null,
+                        },
+                    },
                 },
             },
         });

@@ -106,8 +106,12 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             query Family {
                 ${Family.plural} {
                     id
-                    membersAggregate {
-                        count
+                    membersConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -121,14 +125,22 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
         expect((result.data as any)[Family.plural]).toIncludeSameMembers([
             {
                 id: "family1",
-                membersAggregate: {
-                    count: 0,
+                membersConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 0,
+                        },
+                    },
                 },
             },
             {
                 id: "family2",
-                membersAggregate: {
-                    count: 1,
+                membersConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 1,
+                        },
+                    },
                 },
             },
         ]);
@@ -139,8 +151,12 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             query Family {
                 ${Family.plural} {
                     id
-                    membersAggregate {
-                        count
+                    membersConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -154,14 +170,22 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
         expect((result.data as any)[Family.plural]).toIncludeSameMembers([
             {
                 id: "family1",
-                membersAggregate: {
-                    count: 0,
+                membersConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 0,
+                        },
+                    },
                 },
             },
             {
                 id: "family2",
-                membersAggregate: {
-                    count: 0,
+                membersConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 0,
+                        },
+                    },
                 },
             },
         ]);

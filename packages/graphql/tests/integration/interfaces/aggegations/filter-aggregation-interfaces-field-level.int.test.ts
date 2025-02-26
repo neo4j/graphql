@@ -102,17 +102,19 @@ describe("Field-level filter interface query fields", () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
-                    actedInAggregate(where: { title_STARTS_WITH: "The" }) {
-                        edge {
-                            screenTime {
-                                min
-                                max
+                    actedInConnection(where: { node: {title_STARTS_WITH: "The" } }) {
+                        aggregate {
+                            edge {
+                                screenTime {
+                                    min
+                                    max
+                                }
                             }
-                        }
-                        node {
-                            title {
-                                longest
-                                shortest
+                            node {
+                                title {
+                                    longest
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -126,17 +128,19 @@ describe("Field-level filter interface query fields", () => {
         expect(queryResult.errors).toBeUndefined();
         expect((queryResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            max: 100,
-                            min: 20,
+                actedInConnection: {
+                    aggregate: {
+                        edge: {
+                            screenTime: {
+                                max: 100,
+                                min: 20,
+                            },
                         },
-                    },
-                    node: {
-                        title: {
-                            longest: "The Series Three",
-                            shortest: "The Movie One",
+                        node: {
+                            title: {
+                                longest: "The Series Three",
+                                shortest: "The Movie One",
+                            },
                         },
                     },
                 },
@@ -166,17 +170,19 @@ describe("Field-level filter interface query fields", () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
-                    actedInAggregate(where: { AND: [{title_STARTS_WITH: "The"}, {NOT: {title_CONTAINS: "Series"}}] }) {
-                        edge {
-                            screenTime {
-                                min
-                                max
+                    actedInConnection(where: { node: { AND: [{title_STARTS_WITH: "The"}, {NOT: {title_CONTAINS: "Series"}}] }}) {
+                        aggregate {
+                            edge {
+                                screenTime {
+                                    min
+                                    max
+                                }
                             }
-                        }
-                        node {
-                            title {
-                                longest
-                                shortest
+                            node {
+                                title {
+                                    longest
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -190,34 +196,38 @@ describe("Field-level filter interface query fields", () => {
         expect(queryResult.errors).toBeUndefined();
         expect((queryResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            max: 100,
-                            min: 20,
+                actedInConnection: {
+                    aggregate: {
+                        edge: {
+                            screenTime: {
+                                max: 100,
+                                min: 20,
+                            },
                         },
-                    },
-                    node: {
-                        title: {
-                            longest: "The Movie Three",
-                            shortest: "The Movie One",
+                        node: {
+                            title: {
+                                longest: "The Movie Three",
+                                shortest: "The Movie One",
+                            },
                         },
                     },
                 },
                 name: "Actor One",
             },
             {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            max: 728,
-                            min: 240,
+                actedInConnection: {
+                    aggregate: {
+                        edge: {
+                            screenTime: {
+                                max: 728,
+                                min: 240,
+                            },
                         },
-                    },
-                    node: {
-                        title: {
-                            longest: "The Movie Three",
-                            shortest: "The Movie Two",
+                        node: {
+                            title: {
+                                longest: "The Movie Three",
+                                shortest: "The Movie Two",
+                            },
                         },
                     },
                 },

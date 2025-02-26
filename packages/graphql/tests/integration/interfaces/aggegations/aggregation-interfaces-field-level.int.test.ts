@@ -92,38 +92,6 @@ describe("Interface Field Level Aggregations", () => {
         await testHelper.close();
     });
 
-    test("Count - deprecated", async () => {
-        const query = /* GraphQL */ `
-            {
-                ${Actor.plural} {
-                    actedInAggregate {
-                        count
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[Actor.plural][0][`actedInAggregate`]).toEqual({
-            count: 4,
-        });
-
-        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
-            {
-                actedInAggregate: {
-                    count: 4,
-                },
-            },
-            {
-                actedInAggregate: {
-                    count: 4,
-                },
-            },
-        ]);
-    });
-
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
@@ -327,36 +295,6 @@ describe("Interface Field Level Aggregations", () => {
                 },
             ]),
         });
-    });
-
-    // Edge aggregation
-    test("Edge Count - deprecated", async () => {
-        const query = /* GraphQL */ `
-            {
-                ${Actor.plural} {
-                    actedInAggregate {
-                        count
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
-            {
-                actedInAggregate: {
-                    count: 4,
-                },
-            },
-            {
-                actedInAggregate: {
-                    count: 4,
-                },
-            },
-        ]);
     });
 
     test("Edge sum", async () => {

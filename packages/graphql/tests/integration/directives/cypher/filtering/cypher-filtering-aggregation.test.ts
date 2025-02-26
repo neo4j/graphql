@@ -63,9 +63,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.aggregate}(where: { custom_field_STARTS_WITH: "he" }) {
-                    title {
-                        shortest
+                ${Movie.operations.connection}(where: { custom_field_STARTS_WITH: "he" }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -75,9 +79,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.operations.aggregate]: {
-                title: {
-                    shortest: "The Matrix",
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        title: {
+                            shortest: "The Matrix",
+                        },
+                    },
                 },
             },
         });
@@ -114,9 +122,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.aggregate}(where: { custom_field_GT: 0 }) {
-                    title {
-                        longest
+                ${Movie.operations.connection}(where: { custom_field_GT: 0 }) {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -126,9 +138,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.operations.aggregate]: {
-                title: {
-                    longest: "The Matrix",
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        title: {
+                            longest: "The Matrix",
+                        },
+                    },
                 },
             },
         });
@@ -165,9 +181,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.aggregate}(where: { custom_field_CONTAINS: "es" }) {
-                    released {
-                        max
+                ${Movie.operations.connection}(where: { custom_field_CONTAINS: "es" }) {
+                    aggregate {
+                        node {
+                            released {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -177,9 +197,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.operations.aggregate]: {
-                released: {
-                    max: 2003,
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        released: {
+                            max: 2003,
+                        },
+                    },
                 },
             },
         });
@@ -216,9 +240,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.aggregate}(where: { custom_field_GT: 0 }) {
-                    released {
-                        min
+                ${Movie.operations.connection}(where: { custom_field_GT: 0 }) {
+                    aggregate {
+                        node {
+                            released {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -228,9 +256,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.operations.aggregate]: {
-                released: {
-                    min: 1999,
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        released: {
+                            min: 1999,
+                        },
+                    },
                 },
             },
         });
@@ -267,9 +299,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.aggregate}(where: { custom_field_INCLUDES: 1 }) {
-                    title {
-                        shortest
+                ${Movie.operations.connection}(where: { custom_field_INCLUDES: 1 }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -279,9 +315,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.operations.aggregate]: {
-                title: {
-                    shortest: "The Matrix",
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        title: {
+                            shortest: "The Matrix",
+                        },
+                    },
                 },
             },
         });
@@ -318,9 +358,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.aggregate}(where: { custom_field_INCLUDES: "c" }) {
-                    title {
-                        shortest
+                ${Movie.operations.connection}(where: { custom_field_INCLUDES: "c" }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -330,9 +374,13 @@ describe("cypher directive filtering - Aggregation", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.operations.aggregate]: {
-                title: {
-                    shortest: "The Matrix",
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        title: {
+                            shortest: "The Matrix",
+                        },
+                    },
                 },
             },
         });

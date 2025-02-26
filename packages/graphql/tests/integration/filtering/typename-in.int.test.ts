@@ -149,8 +149,12 @@ describe("typename_IN", () => {
     test("aggregation", async () => {
         const query = `
         {
-            productionsAggregate(where: { OR: [ { typename: [${Movie.name}, ${Series.name}] } { typename: [${Cartoon.name}] } ] }) {
-                count
+            productionsConnection(where: { OR: [ { typename: [${Movie.name}, ${Series.name}] } { typename: [${Cartoon.name}] } ] }) {
+                aggregate {
+                    count {
+                        nodes
+                    }
+                }    
             }
         }  
         `;
@@ -158,8 +162,10 @@ describe("typename_IN", () => {
         const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                count: 3,
+            productionsConnection: {
+                count: {
+                    nodes: 3,
+                },
             },
         });
     });
@@ -168,8 +174,12 @@ describe("typename_IN", () => {
         const query = `
         {
             ${Actor.plural} {
-                actedInAggregate(where: { NOT:  { typename: [${Movie.name}, ${Series.name}] } }) {
-                    count
+                actedInConnection(where: { NOT:  { typename: [${Movie.name}, ${Series.name}] } }) {
+                    aggegate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         } 
@@ -180,8 +190,10 @@ describe("typename_IN", () => {
         expect(queryResult.data).toEqual({
             [Actor.plural]: expect.arrayContaining([
                 {
-                    actedInAggregate: {
-                        count: 1,
+                    actedInConnection: {
+                        count: {
+                            nodes: 1,
+                        },
                     },
                 },
             ]),

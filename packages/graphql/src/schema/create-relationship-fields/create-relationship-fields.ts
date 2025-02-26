@@ -18,8 +18,7 @@
  */
 
 import { GraphQLNonNull, GraphQLString, type DirectiveNode } from "graphql";
-import type { Directive, InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
-import { ObjectTypeComposer } from "graphql-compose";
+import { ObjectTypeComposer, type Directive, type InterfaceTypeComposer, type SchemaComposer } from "graphql-compose";
 import { type ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
@@ -30,7 +29,6 @@ import { RelationshipAdapter } from "../../schema-model/relationship/model-adapt
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
-import { DEPRECATE_NESTED_AGGREGATION } from "../constants";
 import {
     augmentObjectOrInterfaceTypeWithConnectionField,
     augmentObjectOrInterfaceTypeWithRelationshipField,
@@ -48,7 +46,6 @@ import { getRelationshipPropertiesTypeDescription, withObjectType } from "../gen
 import { withRelationInputType } from "../generation/relation-input";
 import { withSortInputType } from "../generation/sort-and-options-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput, withUpdateInputType } from "../generation/update-input";
-import { shouldAddDeprecatedFields } from "../generation/utils";
 import { withSourceWhereInputType, withWhereInputType } from "../generation/where-input";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
@@ -269,29 +266,7 @@ export function createRelationshipFields({
             // make a new fn augmentObjectTypeWithAggregationField
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
-            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
-                relationshipAdapter,
-                features
-            );
-
-            const aggregationFieldsBaseArgs = {
-                where: relationshipTarget.operations.whereInputTypeName,
-            };
-
-            if (relationshipAdapter.aggregate) {
-                if (shouldAddDeprecatedFields(features, "deprecatedAggregateOperations")) {
-                    composeNode.addFields({
-                        [relationshipAdapter.operations.aggregateFieldName]: {
-                            type: aggregationTypeObject,
-                            args: aggregationFieldsBaseArgs,
-                            directives:
-                                deprecatedDirectives.length > 0
-                                    ? deprecatedDirectives
-                                    : [DEPRECATE_NESTED_AGGREGATION(relationshipAdapter)],
-                        },
-                    });
-                }
-            }
+            fieldAggregationComposer.createAggregationTypeObject(relationshipAdapter, features);
         }
 
         if (relationshipTarget instanceof ConcreteEntityAdapter) {

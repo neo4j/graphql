@@ -61,10 +61,12 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         const query = `
             query {
                 ${typeMovie.plural} {
-                    actorsAggregate {
-                        node {
-                            myName {
-                                shortest
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                myName {
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -75,12 +77,20 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            node: {
-                myName: {
-                    shortest: "Linda",
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [
+                {
+                    actorsConnection: {
+                        aggregate: {
+                            node: {
+                                myName: {
+                                    shortest: "Linda",
+                                },
+                            },
+                        },
+                    },
                 },
-            },
+            ],
         });
     });
 
@@ -88,10 +98,12 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         const query = `
             query {
                 ${typeMovie.plural} {
-                    actorsAggregate {
-                        edge {
-                            time {
-                                max
+                    actorsConnection {
+                        aggregate {
+                            edge {
+                                time {
+                                    max
+                                }
                             }
                         }
                     }
@@ -102,12 +114,20 @@ describe("https://github.com/neo4j/graphql/issues/2669", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            edge: {
-                time: {
-                    max: 120,
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [
+                {
+                    actorsConnection: {
+                        aggregate: {
+                            edge: {
+                                time: {
+                                    max: 120,
+                                },
+                            },
+                        },
+                    },
                 },
-            },
+            ],
         });
     });
 });
