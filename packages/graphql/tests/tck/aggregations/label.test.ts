@@ -76,7 +76,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Film)
-                WITH DISTINCT this
+                WITH this
                 RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var0
             }
             CALL {
@@ -88,12 +88,12 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             }
             CALL {
                 MATCH (this:Film)
-                WITH DISTINCT this
+                WITH this
                 RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
             }
             CALL {
                 MATCH (this:Film)
-                WITH DISTINCT this
+                WITH this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
             RETURN { _id: var0, _title: var1, _imdbRating: var2, _createdAt: var3 }"
@@ -132,7 +132,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Actor:Person:Alien)
-                WITH DISTINCT this
+                WITH this
                 RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var0
             }
             CALL {
@@ -144,12 +144,12 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             }
             CALL {
                 MATCH (this:Actor:Person:Alien)
-                WITH DISTINCT this
+                WITH this
                 RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
             }
             CALL {
                 MATCH (this:Actor:Person:Alien)
-                WITH DISTINCT this
+                WITH this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
             RETURN { _id: var0, _name: var1, _imdbRating: var2, _createdAt: var3 }"

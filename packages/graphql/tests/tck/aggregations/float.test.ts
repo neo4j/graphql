@@ -52,7 +52,7 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.actorCount) } AS var0
             }
             RETURN { actorCount: var0 }"
@@ -77,7 +77,7 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { max: max(this.actorCount) } AS var0
             }
             RETURN { actorCount: var0 }"
@@ -102,7 +102,7 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { average: avg(this.actorCount) } AS var0
             }
             RETURN { actorCount: var0 }"
@@ -127,7 +127,7 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { sum: sum(this.actorCount) } AS var0
             }
             RETURN { actorCount: var0 }"
@@ -155,7 +155,7 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
             }
             RETURN { actorCount: var0 }"
@@ -188,7 +188,7 @@ describe("Cypher Aggregations Float", () => {
             }
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
             }
             RETURN { count: var0, actorCount: var1 }"
