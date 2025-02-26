@@ -67,7 +67,7 @@ export class AggregationAttributeField extends AggregationField {
                 .return(projection);
         }
 
-        return new Cypher.With(target).distinct().return([this.getAggregationExpr(target), returnVar]);
+        return new Cypher.With(target).return([this.getAggregationExpr(target), returnVar]);
     }
 
     private createAggregationExpr(target: Cypher.Variable | Cypher.Property): Cypher.Expr {

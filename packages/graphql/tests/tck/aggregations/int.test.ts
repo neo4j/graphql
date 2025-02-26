@@ -53,7 +53,7 @@ describe("Cypher Aggregations Int", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -79,7 +79,7 @@ describe("Cypher Aggregations Int", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { max: max(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -105,7 +105,7 @@ describe("Cypher Aggregations Int", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { average: avg(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -131,7 +131,7 @@ describe("Cypher Aggregations Int", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { sum: sum(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"
@@ -160,7 +160,7 @@ describe("Cypher Aggregations Int", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } AS var0
             }
             RETURN { imdbRating: var0 }"

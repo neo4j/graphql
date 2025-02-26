@@ -73,12 +73,12 @@ describe("Cypher Aggregations Many", () => {
             }
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) } AS var1
             }
             CALL {
                 MATCH (this:Movie)
-                WITH DISTINCT this
+                WITH this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
             RETURN { title: var0, imdbRating: var1, createdAt: var2 }"

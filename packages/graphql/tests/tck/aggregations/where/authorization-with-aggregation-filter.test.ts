@@ -57,7 +57,8 @@ describe("Authorization with aggregation filter rule", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -92,7 +93,8 @@ describe("Authorization with aggregation filter rule", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Post)
+            "CYPHER 5
+            MATCH (this0:Post)
             CALL {
                 WITH this0
                 MATCH (this0)<-[this1:LIKES]-(this2:User)
