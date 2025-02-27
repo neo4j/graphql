@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/4615", () => {
     const testHelper = new TestHelper();
@@ -101,19 +101,15 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
         await testHelper.close();
     });
 
-    test("should return null aggregations", async () => {
+    test("should return null aggregations - deprecated", async () => {
         const query = /* GraphQL */ `
             query {
-                showsConnection(where: { title_STARTS_WITH: "asdasdasd" }) {
-                    aggregate {
-                        node {
-                            title {
-                                longest
-                            }
-                            release {
-                                min
-                            }
-                        }
+                showsAggregate(where: { title_STARTS_WITH: "asdasdasd" }) {
+                    title {
+                        longest
+                    }
+                    release {
+                        min
                     }
                 }
             }
@@ -122,16 +118,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
         const response = await testHelper.executeGraphQL(query);
         expect(response.errors).toBeFalsy();
         expect(response.data).toEqual({
-            showsConnection: {
-                aggregate: {
-                    node: {
-                        title: {
-                            longest: null,
-                        },
-                        release: {
-                            min: null,
-                        },
-                    },
+            showsAggregate: {
+                title: {
+                    longest: null,
+                },
+                release: {
+                    min: null,
                 },
             },
         });
