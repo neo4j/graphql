@@ -147,17 +147,19 @@ describe("Field-level filter interface query fields", () => {
                 name: "Actor One",
             },
             {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            max: 728,
-                            min: 88,
+                actedInConnection: {
+                    aggregate: {
+                        edge: {
+                            screenTime: {
+                                max: 728,
+                                min: 88,
+                            },
                         },
-                    },
-                    node: {
-                        title: {
-                            longest: "The Series Three",
-                            shortest: "The Movie Two",
+                        node: {
+                            title: {
+                                longest: "The Series Three",
+                                shortest: "The Movie Two",
+                            },
                         },
                     },
                 },

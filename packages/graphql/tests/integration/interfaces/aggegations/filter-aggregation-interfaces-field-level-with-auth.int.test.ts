@@ -47,7 +47,7 @@ describe("Field-level filter interface query fields with authorization", () => {
                 title: String!
                 cost: Float!
                 runtime: Int!
-                ${Actor.plural}: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actedIn: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
             type ${Series} implements ${Production} @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "series-reader" } } }]) @node {
@@ -110,10 +110,12 @@ describe("Field-level filter interface query fields with authorization", () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
-                    actedInAggregate(where: { title_STARTS_WITH: "The" }) {
-                        node {
-                            title {
-                                longest
+                    actedInConnection(where: { node: { title_STARTS_WITH: "The" } }) {
+                        aggregate {
+                            node {
+                                title {
+                                    longest
+                                }
                             }
                         }
                     }
@@ -126,8 +128,14 @@ describe("Field-level filter interface query fields with authorization", () => {
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect((queryResult as any).data[Actor.plural]).toIncludeSameMembers([
-            { actedInAggregate: { node: { title: { longest: "The Series Three" } } }, name: "Actor One" },
-            { actedInAggregate: { node: { title: { longest: "The Series Three" } } }, name: "Actor Two" },
+            {
+                actedInConnection: { aggregate: { node: { title: { longest: "The Series Three" } } } },
+                name: "Actor One",
+            },
+            {
+                actedInConnection: { aggregate: { node: { title: { longest: "The Series Three" } } } },
+                name: "Actor Two",
+            },
         ]);
     });
 
@@ -135,10 +143,12 @@ describe("Field-level filter interface query fields with authorization", () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
-                    actedInAggregate(where: { title_STARTS_WITH: "The" }) {
-                        node {
-                            title {
-                                longest
+                    actedInConnection(where: { node: { title_STARTS_WITH: "The" } }) {
+                        aggregate {
+                            node {
+                                title {
+                                    longest
+                                }
                             }
                         }
                     }
@@ -158,10 +168,12 @@ describe("Field-level filter interface query fields with authorization", () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
-                    actedInAggregate(where: { title_STARTS_WITH: "The" }) {
-                        node {
-                            title {
-                                longest
+                    actedInConnection(where: { node: { title_STARTS_WITH: "The" } }) {
+                        aggregate {
+                            node {
+                                title {
+                                    longest
+                                }
                             }
                         }
                     }
