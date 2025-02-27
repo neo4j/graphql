@@ -216,6 +216,10 @@ export class ConnectionFilter extends Filter {
         const returnVar = new Cypher.Variable();
         const innerFiltersPredicates: Cypher.Predicate[] = [];
 
+        const authFilterSubqueries = this.getAuthFilterSubqueries(this.target.name, queryASTContext).map((sq) =>
+            new Cypher.Call(sq).importWith(queryASTContext.target)
+        );
+
         const subqueries = this.innerFilters.flatMap((f) => {
             const nestedSubqueries = f
                 .getSubqueries(queryASTContext)
@@ -231,7 +235,7 @@ export class ConnectionFilter extends Filter {
             return clauses;
         });
 
-        if (subqueries.length === 0) return []; // Hack logic to change predicates logic
+        // if (subqueries.length === 0) return []; // Hack logic to change predicates logic
 
         const comparisonValue = this.operator === "NONE" ? Cypher.false : Cypher.true;
         this.subqueryPredicate = Cypher.eq(returnVar, comparisonValue);
@@ -244,7 +248,7 @@ export class ConnectionFilter extends Filter {
         const withPredicateReturn = new Cypher.With("*")
             .where(Cypher.and(...innerFiltersPredicates))
             .return([countComparisonPredicate, returnVar]);
-        return [Cypher.utils.concat(match, ...subqueries, withPredicateReturn)];
+        return [Cypher.utils.concat(match, ...authFilterSubqueries, ...subqueries, withPredicateReturn)];
     }
 
     // This method has a big deal of complexity due to a couple of factors:
@@ -310,5 +314,12 @@ export class ConnectionFilter extends Filter {
         if (!authFilters) return [];
 
         return filterTruthy(authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    protected getAuthFilterSubqueries(name: string, context: QueryASTContext): Cypher.Clause[] {
+        const authFilters = this.authFilters[name];
+        if (!authFilters) return [];
+
+        return filterTruthy(authFilters.flatMap((f) => f.getSubqueries(context)));
     }
 }

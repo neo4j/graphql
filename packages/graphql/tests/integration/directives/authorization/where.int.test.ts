@@ -940,5 +940,155 @@ describe("auth/where", () => {
 
             expect(gqlResult.data).toEqual({ [Post.plural]: [{ id: postId1 }] });
         });
+
+        test("should add filter to relationship filter for users with over 2 posts", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${User} @node {
+                    id: ID
+                    name: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                type ${Post} @node {
+                    id: ID
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                extend type ${User} @authorization(filter: [{ operations: [FILTER], where: { node: { postsAggregate: { count: { gt: 2 } } } } }])
+            `;
+
+            const userId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const userId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId3 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId4 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { creator: { some: { name: { eq: "darrell" } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                CREATE (:${User} {id: "${userId1}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId1}"})
+                CREATE (u:${User} {id: "${userId2}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId2}"})
+                CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId3}"})
+                CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId4}"})
+            `);
+
+            const token = createBearerToken(secret, { sub: userId1 });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Post.plural]: expect.toIncludeSameMembers([{ id: postId2 }, { id: postId3 }, { id: postId4 }]),
+            });
+        });
+
+        test("should add filter to connection filter for users with over 2 posts", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${User} @node {
+                    id: ID
+                    name: String
+                    posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+                }
+
+                type ${Post} @node {
+                    id: ID
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
+                }
+
+                extend type ${User} @authorization(filter: [{ operations: [FILTER], where: { node: { postsAggregate: { count: { gt: 2 } } } } }])
+            `;
+
+            const userId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const userId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId1 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId3 = generate({
+                charset: "alphabetic",
+            });
+
+            const postId4 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { creatorConnection: { some: { node: { name: { eq: "darrell" } } } } }) {
+                        id
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: secret,
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                CREATE (:${User} {id: "${userId1}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId1}"})
+                CREATE (u:${User} {id: "${userId2}", name: "darrell"})-[:HAS_POST]->(:${Post} {id: "${postId2}"})
+                CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId3}"})
+                CREATE (u)-[:HAS_POST]->(:${Post} {id: "${postId4}"})
+            `);
+
+            const token = createBearerToken(secret, { sub: userId1 });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+
+            expect(gqlResult.data).toEqual({
+                [Post.plural]: expect.toIncludeSameMembers([{ id: postId2 }, { id: postId3 }, { id: postId4 }]),
+            });
+        });
     });
 });

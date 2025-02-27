@@ -92,7 +92,6 @@ export class RelationshipFilter extends Filter {
 
         const nestedSubqueries = this.targetNodeFilters.flatMap((f) => f.getSubqueries(nestedContext));
         const nestedSelection = this.getNestedSelectionSubqueries(nestedContext);
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
 
         if (nestedSubqueries.length > 0) {
             subqueries.push(...this.getNestedSubqueries(nestedContext));
@@ -100,10 +99,6 @@ export class RelationshipFilter extends Filter {
 
         if (nestedSelection.length > 0) {
             subqueries.push(...nestedSelection);
-        }
-
-        if (authFilterSubqueries.length > 0) {
-            subqueries.push(...authFilterSubqueries);
         }
 
         return subqueries;
@@ -160,6 +155,11 @@ export class RelationshipFilter extends Filter {
         context: QueryASTContext
     ): Cypher.Predicate | undefined {
         const predicates = this.targetNodeFilters.map((c) => c.getPredicate(context));
+
+        const authFilterSubqueries = this.getAuthFilterSubqueries(context).map((sq) =>
+            new Cypher.Call(sq).importWith("*")
+        );
+
         const authPredicates = this.getAuthFilterPredicate(context);
         const innerPredicate = Cypher.and(...authPredicates, ...predicates);
 
@@ -186,12 +186,23 @@ export class RelationshipFilter extends Filter {
             }
             case "NONE":
             case "SOME": {
+                let exists: Cypher.Exists;
+
                 const match = new Cypher.Match(pattern);
+
                 if (innerPredicate) {
-                    match.where(innerPredicate);
+                    if (authFilterSubqueries.length > 0) {
+                        const withPredicateReturn = new Cypher.With("*").where(Cypher.and(innerPredicate));
+                        const clause = Cypher.utils.concat(match, ...authFilterSubqueries, withPredicateReturn);
+                        exists = new Cypher.Exists(clause);
+                    } else {
+                        match.where(innerPredicate);
+                        exists = new Cypher.Exists(match);
+                    }
+                } else {
+                    exists = new Cypher.Exists(match);
                 }
 
-                const exists = new Cypher.Exists(match);
                 if (this.operator === "NONE") {
                     return Cypher.not(exists);
                 }
