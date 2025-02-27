@@ -151,6 +151,7 @@ export class ConnectionFactory {
                     relationship,
                     context,
                     operation: compositeConnectionOp,
+                    whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
                 });
             }
         }
@@ -233,6 +234,7 @@ export class ConnectionFactory {
             relationship,
             context,
             operation,
+            whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
         });
 
         return operation;
@@ -244,12 +246,14 @@ export class ConnectionFactory {
         relationship,
         context,
         operation,
+        whereArgs,
     }: {
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
         resolveTreeAggregate: ResolveTree | undefined;
         relationship: RelationshipAdapter | undefined;
         context: Neo4jGraphQLTranslationContext;
         operation: ConnectionReadOperation | CompositeConnectionReadOperation;
+        whereArgs: Record<string, any>;
     }) {
         if (relationship) {
             const resolveTreeAggregateFields =
@@ -260,6 +264,7 @@ export class ConnectionFactory {
                     entityOrRel: relationship ?? target,
                     resolveTree: resolveTreeAggregate,
                     context,
+                    extraWhereArgs: whereArgs,
                 });
                 // NOTE: This will always be true on 7.x and this attribute should be removed
                 aggregationOperation.isInConnectionField = true;
@@ -280,6 +285,7 @@ export class ConnectionFactory {
                     entityOrRel: relationship ?? target,
                     resolveTree: resolveTreeAggregate,
                     context,
+                    extraWhereArgs: whereArgs,
                 });
 
                 // NOTE: This will always be true on 7.x and this attribute should be removed

@@ -79,16 +79,20 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                     WITH this0
                     CALL {
                         WITH this0
-                        MATCH (this0)-[this1:FOLLOWED_BY]->(this2:AStep)
-                        WITH { node: { __resolveType: \\"AStep\\", __id: id(this2), id: this2.id } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this0
-                        MATCH (this0)-[this3:FOLLOWED_BY]->(this4:BStep)
-                        WITH { node: { __resolveType: \\"BStep\\", __id: id(this4), id: this4.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this0
+                            MATCH (this0)-[this1:FOLLOWED_BY]->(this2:AStep)
+                            WITH { node: { __resolveType: \\"AStep\\", __id: id(this2), id: this2.id } } AS edge
+                            RETURN edge
+                            UNION
+                            WITH this0
+                            MATCH (this0)-[this3:FOLLOWED_BY]->(this4:BStep)
+                            WITH { node: { __resolveType: \\"BStep\\", __id: id(this4), id: this4.id } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
@@ -101,16 +105,20 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                     WITH this6
                     CALL {
                         WITH this6
-                        MATCH (this6)-[this7:FOLLOWED_BY]->(this8:AStep)
-                        WITH { node: { __resolveType: \\"AStep\\", __id: id(this8), id: this8.id } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this6
-                        MATCH (this6)-[this9:FOLLOWED_BY]->(this10:BStep)
-                        WITH { node: { __resolveType: \\"BStep\\", __id: id(this10), id: this10.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this6
+                            MATCH (this6)-[this7:FOLLOWED_BY]->(this8:AStep)
+                            WITH { node: { __resolveType: \\"AStep\\", __id: id(this8), id: this8.id } } AS edge
+                            RETURN edge
+                            UNION
+                            WITH this6
+                            MATCH (this6)-[this9:FOLLOWED_BY]->(this10:BStep)
+                            WITH { node: { __resolveType: \\"BStep\\", __id: id(this10), id: this10.id } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var11
                 }
@@ -157,16 +165,20 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                     WITH this0
                     CALL {
                         WITH this0
-                        MATCH (this0)<-[this1:FOLLOWED_BY]-(this2:AStep)
-                        WITH { node: { __resolveType: \\"AStep\\", __id: id(this2), id: this2.id } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this0
-                        MATCH (this0)<-[this3:FOLLOWED_BY]-(this4:BStep)
-                        WITH { node: { __resolveType: \\"BStep\\", __id: id(this4), id: this4.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this0
+                            MATCH (this0)<-[this1:FOLLOWED_BY]-(this2:AStep)
+                            WITH { node: { __resolveType: \\"AStep\\", __id: id(this2), id: this2.id } } AS edge
+                            RETURN edge
+                            UNION
+                            WITH this0
+                            MATCH (this0)<-[this3:FOLLOWED_BY]-(this4:BStep)
+                            WITH { node: { __resolveType: \\"BStep\\", __id: id(this4), id: this4.id } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
@@ -179,16 +191,20 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                     WITH this6
                     CALL {
                         WITH this6
-                        MATCH (this6)<-[this7:FOLLOWED_BY]-(this8:AStep)
-                        WITH { node: { __resolveType: \\"AStep\\", __id: id(this8), id: this8.id } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this6
-                        MATCH (this6)<-[this9:FOLLOWED_BY]-(this10:BStep)
-                        WITH { node: { __resolveType: \\"BStep\\", __id: id(this10), id: this10.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this6
+                            MATCH (this6)<-[this7:FOLLOWED_BY]-(this8:AStep)
+                            WITH { node: { __resolveType: \\"AStep\\", __id: id(this8), id: this8.id } } AS edge
+                            RETURN edge
+                            UNION
+                            WITH this6
+                            MATCH (this6)<-[this9:FOLLOWED_BY]-(this10:BStep)
+                            WITH { node: { __resolveType: \\"BStep\\", __id: id(this10), id: this10.id } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var11
                 }

@@ -540,15 +540,19 @@ describe("Connection auth filter", () => {
                     WITH this0
                     CALL {
                         WITH this0
-                        MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                        WHERE ($isAuthenticated = true AND EXISTS {
-                            MATCH (this2)<-[:HAS_POST]-(this3:User)
-                            WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                        })
-                        WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this0
+                            MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                            WHERE ($isAuthenticated = true AND EXISTS {
+                                MATCH (this2)<-[:HAS_POST]-(this3:User)
+                                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                            })
+                            WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
@@ -611,15 +615,19 @@ describe("Connection auth filter", () => {
                     WITH this0
                     CALL {
                         WITH this0
-                        MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                        WHERE (this2.id = $param2 AND ($isAuthenticated = true AND EXISTS {
-                            MATCH (this2)<-[:HAS_POST]-(this3:User)
-                            WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                        }))
-                        WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this0
+                            MATCH (this0)-[this1:HAS_POST]->(this2:Post)
+                            WHERE (this2.id = $param2 AND ($isAuthenticated = true AND EXISTS {
+                                MATCH (this2)<-[:HAS_POST]-(this3:User)
+                                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                            }))
+                            WITH { node: { __resolveType: \\"Post\\", __id: id(this2), id: this2.id } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var4
                 }
