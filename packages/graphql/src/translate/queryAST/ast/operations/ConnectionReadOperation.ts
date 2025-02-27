@@ -95,7 +95,6 @@ export class ConnectionReadOperation extends Operation {
     /** Sets the aggregation field and adds the needed filters */
     public setAggregationField(aggregationField: ConnectionAggregationField): void {
         this.aggregationField = aggregationField;
-        this.aggregationField.operation.addFilters(...this.filters);
     }
 
     public getChildren(): QueryASTNode[] {
