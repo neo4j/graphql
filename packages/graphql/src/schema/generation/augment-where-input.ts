@@ -50,6 +50,10 @@ export function augmentWhereInputWithRelationshipFilters({
     deprecatedDirectives: Directive[];
     features?: Neo4jFeaturesSettings;
 }) {
+    if (!relationshipAdapter.isFilterableByAggregate() && !relationshipAdapter.isFilterableByValue()) {
+        return {};
+    }
+
     if (relationshipAdapter.isFilterableByValue()) {
         // Relationship filters
         const relationshipFiltersFields = fieldConfigsToFieldConfigMap({
@@ -82,11 +86,9 @@ export function augmentWhereInputWithRelationshipFilters({
             whereInput.addFields(legacyConnection);
         }
     }
-    if (!relationshipAdapter.isFilterableByAggregate() && !relationshipAdapter.isFilterableByValue()) {
-        return {};
-    }
 
     // Connection filters
+    // Connection filters are generated for both aggregation filters and value filters.
     const connectionFiltersFields = fieldConfigsToFieldConfigMap({
         deprecatedDirectives,
         fields: getRelationshipConnectionFilters(relationshipAdapter),
@@ -102,6 +104,7 @@ export function augmentWhereInputWithRelationshipFilters({
         },
     });
 }
+
 // exported as reused by Cypher filters
 export function getRelationshipFilters({
     relationshipInfo,
@@ -158,9 +161,9 @@ function getRelationshipFiltersUsingOptions({
 function getRelationshipConnectionFilters(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
 ): FieldConfig[] {
-    const quantifierFilters: FieldConfig[] = [];
+    const connectionFilters: FieldConfig[] = [];
     if (relationshipAdapter.isFilterableByValue()) {
-        quantifierFilters.push(
+        connectionFilters.push(
             ...[
                 {
                     name: "all",
@@ -194,17 +197,14 @@ function getRelationshipConnectionFilters(
         );
     }
 
-    if (!relationshipAdapter.isFilterableByAggregate()) {
-        return quantifierFilters;
-    }
-    return [
-        {
+    if (relationshipAdapter.isFilterableByAggregate()) {
+        connectionFilters.push({
             name: "aggregate",
             typeName: relationshipAdapter.operations.connectionAggregateInputTypeName,
             description: `Filter ${pluralize(relationshipAdapter.source.name)} by aggregating results on related ${pluralize(relationshipAdapter.operations.connectionFieldTypename)}`,
-        },
-        ...quantifierFilters,
-    ];
+        });
+    }
+    return connectionFilters;
 }
 
 function getRelationshipFiltersLegacy(
