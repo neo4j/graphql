@@ -25,8 +25,6 @@ import type {
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { DEPRECATED } from "../../constants";
-import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
@@ -196,11 +194,7 @@ function getRelationshipConnectionFilters(
         );
     }
 
-    if (
-        relationshipAdapter.target instanceof UnionEntityAdapter ||
-        relationshipAdapter.target instanceof InterfaceEntityAdapter ||
-        !relationshipAdapter.isFilterableByAggregate()
-    ) {
+    if (!relationshipAdapter.isFilterableByAggregate()) {
         return quantifierFilters;
     }
     return [

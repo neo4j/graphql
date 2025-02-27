@@ -22,8 +22,6 @@ import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
-// ActorMoviesAggregateInput -> ActorMoviesNodeAggregationWhereInput
-// ActorMoviesConnectionFilters -> ActorMoviesConnectionAggregateInput -> ActorMoviesNodeAggregationWhereInput
 
 describe("@filterable directive", () => {
     describe("on SCALAR", () => {
@@ -44,6 +42,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -93,6 +94,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -145,6 +149,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -193,6 +200,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -216,9 +226,6 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable value and aggregation filters", async () => {
@@ -240,6 +247,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -263,9 +273,6 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeDefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeDefined();
         });
 
         test("enable only aggregation filters", async () => {
@@ -287,6 +294,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -310,9 +320,6 @@ describe("@filterable directive", () => {
             expect(single).toBeUndefined();
 
             expect(aggregate).toBeDefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeDefined();
         });
 
         test("enable only value filters", async () => {
@@ -334,6 +341,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -357,13 +367,10 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
     });
 
-    describe("on INTERFACE RELATIONSHIP FIELD, (aggregation are not generated for abstract types)", () => {
+    describe("on INTERFACE RELATIONSHIP FIELD", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = /* GraphQL */ `
                 type Actor implements Person @node {
@@ -385,6 +392,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -408,9 +418,6 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable value and aggregation filters", async () => {
@@ -436,6 +443,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -458,10 +468,7 @@ describe("@filterable directive", () => {
             expect(all).toBeDefined();
             expect(single).toBeDefined();
 
-            expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined(); // even if aggregate is enabled, it should not be generated for abstract types
+            expect(aggregate).toBeDefined();
         });
 
         test("enable only value filters", async () => {
@@ -487,6 +494,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -510,12 +520,9 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
 
-        test("disable value filters", async () => {
+        test("disable value and aggregation filters", async () => {
             const typeDefs = /* GraphQL */ `
                 type Actor implements Person @node {
                     username: String!
@@ -538,6 +545,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -552,9 +562,6 @@ describe("@filterable directive", () => {
 
             const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
             expect(connectionFiltersType).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
     });
 
@@ -584,6 +591,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -607,9 +617,6 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable value and aggregation filters (not generated for abstract types)", async () => {
@@ -639,6 +646,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -662,9 +672,6 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable only value filters", async () => {
@@ -694,6 +701,9 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
+                    excludeDeprecatedFields: {
+                        aggregationFiltersOutsideConnection: true,
+                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -717,13 +727,10 @@ describe("@filterable directive", () => {
             expect(single).toBeDefined();
 
             expect(aggregate).toBeUndefined();
-
-            const actorsAggregate = movieWhereFields["actorsAggregate"];
-            expect(actorsAggregate).toBeUndefined();
         });
     });
 
-    describe.skip("snapshot tests", () => {
+    describe("snapshot tests", () => {
         describe("on SCALAR", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = /* GraphQL */ `
@@ -742,6 +749,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -828,18 +838,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -987,7 +985,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1108,19 +1105,6 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -1354,7 +1338,6 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -1503,6 +1486,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -1589,19 +1575,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -1772,7 +1745,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1893,19 +1865,6 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -2139,7 +2098,6 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2288,6 +2246,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -2374,19 +2335,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -2557,7 +2505,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -2678,19 +2625,6 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -2912,7 +2846,6 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -3057,6 +2990,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3144,19 +3080,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -3327,7 +3250,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -3462,17 +3384,7 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3519,44 +3431,6 @@ describe("@filterable directive", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      password: StringScalarAggregationFilters
-                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -3831,6 +3705,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3917,19 +3794,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -4100,7 +3964,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4221,19 +4084,6 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
-                    }
-
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -4467,7 +4317,6 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -4618,6 +4467,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -4704,19 +4556,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -4876,7 +4715,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4999,19 +4837,6 @@ describe("@filterable directive", () => {
                       username: StringAggregateSelection!
                     }
 
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectFieldInput {
                       connect: [ActorConnectInput!]
                       where: ActorConnectWhere
@@ -5022,6 +4847,19 @@ describe("@filterable directive", () => {
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                      aggregate: MovieActorsConnectionAggregateInput
                     }
 
                     input MovieActorsConnectionSort {
@@ -5213,7 +5051,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                      actorsConnection: MovieActorsConnectionFilters
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
                       title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
@@ -5339,6 +5177,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -5425,19 +5266,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -5608,7 +5436,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -5743,17 +5570,7 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -5800,44 +5617,6 @@ describe("@filterable directive", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      password: StringScalarAggregationFilters
-                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -6094,7 +5873,7 @@ describe("@filterable directive", () => {
             });
         });
 
-        describe("on INTERFACE RELATIONSHIP FIELD, (aggregation does not exists on abstract types)", () => {
+        describe("on INTERFACE RELATIONSHIP FIELD", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = /* GraphQL */ `
                     type Actor implements Person @node {
@@ -6116,6 +5895,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -6191,19 +5973,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -6363,7 +6132,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -6487,17 +6255,7 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -6542,28 +6300,6 @@ describe("@filterable directive", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -6932,6 +6668,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -7007,19 +6746,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -7179,7 +6905,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -7290,19 +7015,6 @@ describe("@filterable directive", () => {
                       actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
-                    }
-
-                    input MovieActorsAggregateInput {
-                      AND: [MovieActorsAggregateInput!]
-                      NOT: MovieActorsAggregateInput
-                      OR: [MovieActorsAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -7526,7 +7238,6 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: PersonRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -7762,6 +7473,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -7837,19 +7551,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -8009,7 +7710,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -8133,17 +7833,7 @@ describe("@filterable directive", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8188,28 +7878,6 @@ describe("@filterable directive", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -8556,7 +8224,7 @@ describe("@filterable directive", () => {
             });
         });
 
-        describe("on UNION RELATIONSHIP FIELD, (aggregation does not exists on abstract types)", () => {
+        describe("on UNION RELATIONSHIP FIELD, (aggregation does not exists on union types)", () => {
             test("default arguments should disable aggregation", async () => {
                 const typeDefs = /* GraphQL */ `
                     type Actor @node {
@@ -8582,6 +8250,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -8669,19 +8340,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -8841,7 +8499,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -8963,19 +8620,6 @@ describe("@filterable directive", () => {
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input AppearanceMoviesAggregateInput {
-                      AND: [AppearanceMoviesAggregateInput!]
-                      NOT: AppearanceMoviesAggregateInput
-                      OR: [AppearanceMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: AppearanceMoviesNodeAggregationWhereInput
                     }
 
                     input AppearanceMoviesConnectFieldInput {
@@ -9137,7 +8781,6 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
@@ -9697,6 +9340,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -9784,19 +9430,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -9956,7 +9589,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -10078,19 +9710,6 @@ describe("@filterable directive", () => {
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input AppearanceMoviesAggregateInput {
-                      AND: [AppearanceMoviesAggregateInput!]
-                      NOT: AppearanceMoviesAggregateInput
-                      OR: [AppearanceMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: AppearanceMoviesNodeAggregationWhereInput
                     }
 
                     input AppearanceMoviesConnectFieldInput {
@@ -10252,7 +9871,6 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
@@ -10812,6 +10430,9 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
+                        excludeDeprecatedFields: {
+                            aggregationFiltersOutsideConnection: true,
+                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -10899,19 +10520,6 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input ActorMoviesAggregateInput {
-                      AND: [ActorMoviesAggregateInput!]
-                      NOT: ActorMoviesAggregateInput
-                      OR: [ActorMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -11071,7 +10679,6 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -11193,19 +10800,6 @@ describe("@filterable directive", () => {
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
-                    }
-
-                    input AppearanceMoviesAggregateInput {
-                      AND: [AppearanceMoviesAggregateInput!]
-                      NOT: AppearanceMoviesAggregateInput
-                      OR: [AppearanceMoviesAggregateInput!]
-                      count: IntScalarFilters
-                      count_EQ: Int
-                      count_GT: Int
-                      count_GTE: Int
-                      count_LT: Int
-                      count_LTE: Int
-                      node: AppearanceMoviesNodeAggregationWhereInput
                     }
 
                     input AppearanceMoviesConnectFieldInput {
@@ -11367,7 +10961,6 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter

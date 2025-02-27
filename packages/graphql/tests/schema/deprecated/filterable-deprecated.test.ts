@@ -328,14 +328,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -378,14 +376,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -428,14 +424,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -530,14 +524,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -584,14 +576,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -638,14 +628,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -692,14 +680,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -750,14 +736,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -808,14 +792,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -866,14 +848,12 @@ describe("@filterable directive - deprecated", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
             const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
             const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
             const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
             const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
             const actorsConnectionFilters = [
-                actorsConnection,
                 actorsConnectionALL,
                 actorsConnectionNONE,
                 actorsConnectionSINGLE,
@@ -3628,17 +3608,7 @@ describe("@filterable directive - deprecated", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -3685,44 +3655,6 @@ describe("@filterable directive - deprecated", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      password: StringScalarAggregationFilters
-                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -5190,6 +5122,19 @@ describe("@filterable directive - deprecated", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
+                    input MovieActorsConnectionFilters {
+                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                      aggregate: MovieActorsConnectionAggregateInput
+                    }
+
                     input MovieActorsConnectionSort {
                       node: ActorSort
                     }
@@ -5380,6 +5325,7 @@ describe("@filterable directive - deprecated", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                      actorsConnection: MovieActorsConnectionFilters
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
                       title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
@@ -5909,17 +5855,7 @@ describe("@filterable directive - deprecated", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -5966,44 +5902,6 @@ describe("@filterable directive - deprecated", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      password: StringScalarAggregationFilters
-                      password_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { eq: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { gte: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lt: ... } } }' instead.\\")
-                      password_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'password: { averageLength: { lte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { eq: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { gte: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lt: ... } } }' instead.\\")
-                      password_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { longestLength: { lte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { eq: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { gte: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lt: ... } } }' instead.\\")
-                      password_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'password: { shortestLength: { lte: ... } } }' instead.\\")
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -6653,17 +6551,7 @@ describe("@filterable directive - deprecated", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -6708,28 +6596,6 @@ describe("@filterable directive - deprecated", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {
@@ -8299,17 +8165,7 @@ describe("@filterable directive - deprecated", () => {
                       totalCount: Int!
                     }
 
-                    input MovieActorsConnectionAggregateInput {
-                      AND: [MovieActorsConnectionAggregateInput!]
-                      NOT: MovieActorsConnectionAggregateInput
-                      OR: [MovieActorsConnectionAggregateInput!]
-                      count: ConnectionAggregationCountFilterInput
-                      node: MovieActorsNodeAggregationWhereInput
-                    }
-
                     input MovieActorsConnectionFilters {
-                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
-                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -8354,28 +8210,6 @@ describe("@filterable directive - deprecated", () => {
                     input MovieActorsFieldInput {
                       connect: [MovieActorsConnectFieldInput!]
                       create: [MovieActorsCreateFieldInput!]
-                    }
-
-                    input MovieActorsNodeAggregationWhereInput {
-                      AND: [MovieActorsNodeAggregationWhereInput!]
-                      NOT: MovieActorsNodeAggregationWhereInput
-                      OR: [MovieActorsNodeAggregationWhereInput!]
-                      username: StringScalarAggregationFilters
-                      username_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { eq: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { gte: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lt: ... } } }' instead.\\")
-                      username_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'username: { averageLength: { lte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { eq: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { gte: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lt: ... } } }' instead.\\")
-                      username_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { longestLength: { lte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { eq: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { gte: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lt: ... } } }' instead.\\")
-                      username_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'username: { shortestLength: { lte: ... } } }' instead.\\")
                     }
 
                     type MovieActorsRelationship {

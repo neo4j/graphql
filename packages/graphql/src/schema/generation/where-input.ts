@@ -195,43 +195,39 @@ export function withSourceWhereInputType({
         return;
     }
 
-    const whereAggregateInput = withAggregateInputType({
-        relationshipAdapter,
-        entityAdapter: relationshipTarget,
-        composer: composer,
-        userDefinedDirectivesOnTargetFields,
-        features,
-    });
-    // TODO: Likely this should be added only in case of relationshipAdapter.isFilterableByAggregate()
-    //if (relationshipAdapter.isFilterableByAggregate()) {
-    withConnectionAggregateInputType({
-        relationshipAdapter,
-        entityAdapter: relationshipTarget,
-        composer: composer,
-        userDefinedDirectivesOnTargetFields,
-        features,
-    });
-    //}
-
-    if (
-        relationshipAdapter.isFilterableByAggregate() &&
-        shouldAddDeprecatedFields(features, "aggregationFiltersOutsideConnection")
-    ) {
-        whereInput.addFields({
-            [relationshipAdapter.operations.aggregateFieldName]: {
-                type: whereAggregateInput,
-                directives: deprecatedDirectives.length
-                    ? deprecatedDirectives
-                    : [
-                          {
-                              name: DEPRECATED,
-                              args: {
-                                  reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
-                              },
-                          },
-                      ],
-            },
+    if (relationshipAdapter.isFilterableByAggregate()) {
+        withConnectionAggregateInputType({
+            relationshipAdapter,
+            entityAdapter: relationshipTarget,
+            composer: composer,
+            userDefinedDirectivesOnTargetFields,
+            features,
         });
+        if (shouldAddDeprecatedFields(features, "aggregationFiltersOutsideConnection")) {
+            const whereAggregateInput = withAggregateInputType({
+                relationshipAdapter,
+                entityAdapter: relationshipTarget,
+                composer: composer,
+                userDefinedDirectivesOnTargetFields,
+                features,
+            });
+
+            whereInput.addFields({
+                [relationshipAdapter.operations.aggregateFieldName]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives.length
+                        ? deprecatedDirectives
+                        : [
+                              {
+                                  name: DEPRECATED,
+                                  args: {
+                                      reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
+                                  },
+                              },
+                          ],
+                },
+            });
+        }
     }
 }
 

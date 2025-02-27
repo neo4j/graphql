@@ -176,13 +176,20 @@ export class RelationshipAdapter {
     public isReadable(): boolean {
         return this.annotations.selectable?.onRead !== false;
     }
+
     public isFilterableByValue(): boolean {
         return this.annotations.filterable?.byValue !== false;
     }
+
     public isFilterableByAggregate(): boolean {
-        if (!this.isAggregable()) {
+        if (!this.aggregate) {
             return false;
         }
+
+        if (this.target instanceof UnionEntityAdapter) {
+            return false;
+        }
+
         return this.annotations.filterable?.byAggregate !== false;
     }
 
@@ -191,7 +198,7 @@ export class RelationshipAdapter {
             return false;
         }
 
-        if (this.target instanceof UnionEntityAdapter || this.source instanceof InterfaceEntityAdapter) {
+        if (this.target instanceof UnionEntityAdapter) {
             return false;
         }
 

@@ -150,10 +150,16 @@ export class RelationshipDeclarationAdapter {
     }
 
     public isFilterableByAggregate(): boolean {
+        if (this.source instanceof UnionEntityAdapter || this.target instanceof UnionEntityAdapter) {
+            return false;
+        }
         return this.annotations.filterable?.byAggregate !== false;
     }
 
     public isAggregable(): boolean {
+        if (this.source instanceof UnionEntityAdapter || this.target instanceof UnionEntityAdapter) {
+            return false;
+        }
         return this.annotations.selectable?.onAggregate !== false;
     }
 
