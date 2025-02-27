@@ -257,20 +257,24 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                    })
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                        WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                        WHERE ($isAuthenticated = true AND EXISTS {
+                            MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                        })
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var5
             }
@@ -320,21 +324,25 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WHERE this1.id = $param2
-                    WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                    WHERE (this3.id = $param3 AND ($isAuthenticated = true AND EXISTS {
-                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                    }))
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                        WHERE this1.id = $param2
+                        WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                        WHERE (this3.id = $param3 AND ($isAuthenticated = true AND EXISTS {
+                            MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                        }))
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var5
             }

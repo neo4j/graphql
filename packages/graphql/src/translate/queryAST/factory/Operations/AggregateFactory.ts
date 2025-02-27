@@ -47,10 +47,12 @@ export class AggregateFactory {
         entityOrRel,
         resolveTree,
         context,
+        extraWhereArgs = {},
     }: {
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
+        extraWhereArgs?: Record<string, any>;
     }): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -59,7 +61,10 @@ export class AggregateFactory {
             entity = entityOrRel;
         }
 
-        const resolveTreeWhere = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+        const resolveTreeWhere = {
+            ...this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree),
+            ...extraWhereArgs,
+        };
 
         if (entityOrRel instanceof RelationshipAdapter) {
             if (isConcreteEntity(entity)) {
