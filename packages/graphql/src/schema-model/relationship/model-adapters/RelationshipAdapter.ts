@@ -176,12 +176,13 @@ export class RelationshipAdapter {
     public isReadable(): boolean {
         return this.annotations.selectable?.onRead !== false;
     }
-
     public isFilterableByValue(): boolean {
         return this.annotations.filterable?.byValue !== false;
     }
-
     public isFilterableByAggregate(): boolean {
+        if (!this.isAggregable()) {
+            return false;
+        }
         return this.annotations.filterable?.byAggregate !== false;
     }
 

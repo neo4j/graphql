@@ -203,6 +203,7 @@ export function withSourceWhereInputType({
         features,
     });
     // TODO: Likely this should be added only in case of relationshipAdapter.isFilterableByAggregate()
+    //if (relationshipAdapter.isFilterableByAggregate()) {
     withConnectionAggregateInputType({
         relationshipAdapter,
         entityAdapter: relationshipTarget,
@@ -210,6 +211,7 @@ export function withSourceWhereInputType({
         userDefinedDirectivesOnTargetFields,
         features,
     });
+    //}
 
     if (
         relationshipAdapter.isFilterableByAggregate() &&
