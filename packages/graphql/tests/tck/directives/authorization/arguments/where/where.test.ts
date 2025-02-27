@@ -439,15 +439,19 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                    OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                    WITH *, count(this2) AS var3
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                        OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                        WITH *, count(this2) AS var3
+                        WITH *
+                        WHERE ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)))
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
@@ -498,15 +502,19 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                    OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                    WITH *, count(this2) AS var3
-                    WITH *
-                    WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                        OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
+                        WITH *, count(this2) AS var3
+                        WITH *
+                        WHERE (this1.id = $param2 AND ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))))
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }

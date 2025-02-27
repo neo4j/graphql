@@ -140,21 +140,25 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:RELATES_TO]-(this1:Series)
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:RELATES_TO]-(this3:Season)
-                    WITH { node: { __resolveType: \\"Season\\", __id: id(this3), productTitle: this3.productTitle } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this4:RELATES_TO]-(this5:ProgrammeItem)
-                    WITH { node: { __resolveType: \\"ProgrammeItem\\", __id: id(this5), productTitle: this5.productTitle } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:RELATES_TO]-(this1:Series)
+                        WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this2:RELATES_TO]-(this3:Season)
+                        WITH { node: { __resolveType: \\"Season\\", __id: id(this3), productTitle: this3.productTitle } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this4:RELATES_TO]-(this5:ProgrammeItem)
+                        WITH { node: { __resolveType: \\"ProgrammeItem\\", __id: id(this5), productTitle: this5.productTitle } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var6
             }

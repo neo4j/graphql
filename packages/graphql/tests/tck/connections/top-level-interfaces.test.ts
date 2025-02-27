@@ -79,17 +79,20 @@ describe("Top level interface connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                MATCH (this0:Movie)
-                WHERE this0.title = $param0
-                WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
-                RETURN edge
-                UNION
-                MATCH (this1:Series)
-                WHERE this1.title = $param1
-                WITH { node: { __resolveType: \\"Series\\", __id: id(this1), title: this1.title } } AS edge
-                RETURN edge
+                CALL {
+                    MATCH (this0:Movie)
+                    WHERE this0.title = $param0
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
+                    RETURN edge
+                    UNION
+                    MATCH (this1:Series)
+                    WHERE this1.title = $param1
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this1), title: this1.title } } AS edge
+                    RETURN edge
+                }
+                RETURN collect(edge) AS edges
             }
-            WITH collect(edge) AS edges
+            WITH edges
             WITH edges, size(edges) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -121,17 +124,20 @@ describe("Top level interface connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                MATCH (this0:Movie)
-                WHERE this0.title = $param0
-                WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
-                RETURN edge
-                UNION
-                MATCH (this1:Series)
-                WHERE this1.title = $param1
-                WITH { node: { __resolveType: \\"Series\\", __id: id(this1), title: this1.title } } AS edge
-                RETURN edge
+                CALL {
+                    MATCH (this0:Movie)
+                    WHERE this0.title = $param0
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
+                    RETURN edge
+                    UNION
+                    MATCH (this1:Series)
+                    WHERE this1.title = $param1
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this1), title: this1.title } } AS edge
+                    RETURN edge
+                }
+                RETURN collect(edge) AS edges
             }
-            WITH collect(edge) AS edges
+            WITH edges
             WITH edges, size(edges) AS totalCount
             CALL {
                 WITH edges
