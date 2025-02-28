@@ -39,9 +39,13 @@ describe("Cypher Aggregations Duration", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    screenTime {
-                        min
+                moviesConnection {
+                    aggregate {
+                        node {
+                            screenTime {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -56,7 +60,20 @@ describe("Cypher Aggregations Duration", () => {
                 WITH this
                 RETURN { min: min(this.screenTime) } AS var0
             }
-            RETURN { screenTime: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { screenTime: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -65,9 +82,13 @@ describe("Cypher Aggregations Duration", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    screenTime {
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            screenTime {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -82,7 +103,20 @@ describe("Cypher Aggregations Duration", () => {
                 WITH this
                 RETURN { max: max(this.screenTime) } AS var0
             }
-            RETURN { screenTime: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { screenTime: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -91,10 +125,14 @@ describe("Cypher Aggregations Duration", () => {
     test("Min and Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    screenTime {
-                        min
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            screenTime {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -109,7 +147,20 @@ describe("Cypher Aggregations Duration", () => {
                 WITH this
                 RETURN { min: min(this.screenTime), max: max(this.screenTime) } AS var0
             }
-            RETURN { screenTime: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { screenTime: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

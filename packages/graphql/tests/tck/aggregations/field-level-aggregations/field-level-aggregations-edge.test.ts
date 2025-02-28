@@ -51,13 +51,15 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        edge {
-                            screentime {
-                                max
-                                min
-                                average
-                                sum
+                    actorsConnection {
+                        aggregate {
+                            edge {
+                                screentime {
+                                    max
+                                    min
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -72,11 +74,28 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this0
-                RETURN { min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH this0
+                    RETURN { min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime) } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Actor\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { edge: { screentime: var2 } } } AS var6
             }
-            RETURN this { actorsAggregate: { edge: { screentime: var2 } } } AS this"
+            RETURN this { actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

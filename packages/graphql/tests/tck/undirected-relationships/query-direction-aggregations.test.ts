@@ -38,8 +38,12 @@ describe("QueryDirection in relationships aggregations", () => {
         const query = /* GraphQL */ `
             query Users {
                 users {
-                    friendsAggregate {
-                        count
+                    friendsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -52,10 +56,27 @@ describe("QueryDirection in relationships aggregations", () => {
             MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)-[this3:FRIENDS_WITH]->(this4:User)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"User\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { count: var2 } } AS var6
             }
-            RETURN this { friendsAggregate: { count: var2 } } AS this"
+            RETURN this { friendsConnection: var6 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -74,8 +95,12 @@ describe("QueryDirection in relationships aggregations", () => {
         const query = /* GraphQL */ `
             query Users {
                 users {
-                    friendsAggregate {
-                        count
+                    friendsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -88,10 +113,27 @@ describe("QueryDirection in relationships aggregations", () => {
             MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)-[this3:FRIENDS_WITH]-(this4:User)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"User\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { count: var2 } } AS var6
             }
-            RETURN this { friendsAggregate: { count: var2 } } AS this"
+            RETURN this { friendsConnection: var6 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

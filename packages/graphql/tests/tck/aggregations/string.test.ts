@@ -40,9 +40,13 @@ describe("Cypher Aggregations String", () => {
     test("Shortest", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        shortest
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -59,7 +63,20 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
             }
-            RETURN { title: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -68,9 +85,13 @@ describe("Cypher Aggregations String", () => {
     test("Longest", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        longest
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -87,7 +108,20 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var0
             }
-            RETURN { title: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -96,10 +130,14 @@ describe("Cypher Aggregations String", () => {
     test("Shortest and longest", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        shortest
-                        longest
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -116,7 +154,20 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
             }
-            RETURN { title: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -125,9 +176,13 @@ describe("Cypher Aggregations String", () => {
     test("Shortest with filter", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate(where: { testId: { eq: "10" } }) {
-                    title {
-                        shortest
+                moviesConnection(where: { testId: { eq: "10" } }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -145,12 +200,27 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
             }
-            RETURN { title: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WHERE this1.testId = $param1
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\"
+                \\"param0\\": \\"10\\",
+                \\"param1\\": \\"10\\"
             }"
         `);
     });
