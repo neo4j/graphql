@@ -35,6 +35,7 @@ import { parsePopulatedByAnnotation } from "../parser/annotations-parser/populat
 import { parseQueryAnnotation } from "../parser/annotations-parser/query-annotation";
 import { parseSelectableAnnotation } from "../parser/annotations-parser/selectable-annotation";
 import { parseSettableAnnotation } from "../parser/annotations-parser/settable-annotation";
+import { parseSortableAnnotation } from "../parser/annotations-parser/sortable-annotation";
 import { parseSubscriptionAnnotation } from "../parser/annotations-parser/subscription-annotation";
 import { parseSubscriptionsAuthorizationAnnotation } from "../parser/annotations-parser/subscriptions-authorization-annotation";
 import { parseTimestampAnnotation } from "../parser/annotations-parser/timestamp-annotation";
@@ -61,6 +62,7 @@ import type { QueryAnnotation } from "./QueryAnnotation";
 import { RelayIDAnnotation } from "./RelayIDAnnotation";
 import type { SelectableAnnotation } from "./SelectableAnnotation";
 import type { SettableAnnotation } from "./SettableAnnotation";
+import type { SortableAnnotation } from "./SortableAnnotation";
 import type { SubscriptionAnnotation } from "./SubscriptionAnnotation";
 import type { SubscriptionsAuthorizationAnnotation } from "./SubscriptionsAuthorizationAnnotation";
 import type { TimestampAnnotation } from "./TimestampAnnotation";
@@ -99,6 +101,7 @@ export type Annotations = CheckAnnotationName<{
     relayId: RelayIDAnnotation;
     selectable: SelectableAnnotation;
     settable: SettableAnnotation;
+    sortable: SortableAnnotation;
     subscription: SubscriptionAnnotation;
     subscriptionsAuthorization: SubscriptionsAuthorizationAnnotation;
     timestamp: TimestampAnnotation;
@@ -131,6 +134,7 @@ export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<
     limit: parseLimitAnnotation,
     selectable: parseSelectableAnnotation,
     settable: parseSettableAnnotation,
+    sortable: parseSortableAnnotation,
     subscription: parseSubscriptionAnnotation,
     subscriptionsAuthorization: parseSubscriptionsAuthorizationAnnotation,
     timestamp: parseTimestampAnnotation,

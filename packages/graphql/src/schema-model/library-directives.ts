@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Annotations } from "./annotation/Annotation";
-import { annotationsParsers } from "./annotation/Annotation";
 import type { DEPRECATED } from "../constants";
 import { SHAREABLE } from "../constants";
 import type { ValueOf } from "../utils/value-of";
+import type { Annotations } from "./annotation/Annotation";
+import { annotationsParsers } from "./annotation/Annotation";
 
 const additionalDirectives = [
     "alias",
@@ -43,6 +43,7 @@ export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
     "selectable",
     "settable",
+    "sortable",
 ] as const satisfies readonly LibraryDirectives[];
 
 export const FIELD_DIRECTIVES = [
