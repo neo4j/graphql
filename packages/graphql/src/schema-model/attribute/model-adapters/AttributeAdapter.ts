@@ -125,6 +125,7 @@ export class AttributeAdapter {
 
     isSortableField(): boolean {
         return (
+            this.isSortable() &&
             !this.typeHelper.isList() &&
             !this.isCustomResolvable() &&
             (this.typeHelper.isScalar() || this.typeHelper.isEnum() || this.typeHelper.isSpatial()) &&
@@ -193,7 +194,7 @@ export class AttributeAdapter {
     isAggregableField(): boolean {
         return (
             !this.typeHelper.isList() &&
-         //uncomment me on 7.x   !this.typeHelper.isID() &&
+            //uncomment me on 7.x   !this.typeHelper.isID() &&
             (this.typeHelper.isScalar() || this.typeHelper.isEnum()) &&
             this.isAggregable()
         );
@@ -345,6 +346,10 @@ export class AttributeAdapter {
 
     isFilterable(): boolean {
         return this.annotations.filterable?.byValue !== false;
+    }
+
+    isSortable(): boolean {
+        return this.annotations.sortable?.byValue !== false;
     }
 
     isCustomResolvable(): boolean {
