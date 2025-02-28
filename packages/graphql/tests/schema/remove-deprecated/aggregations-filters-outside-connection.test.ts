@@ -56,6 +56,15 @@ describe("Aggregations filters outside connection filters", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -229,11 +238,11 @@ describe("Aggregations filters outside connection filters", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -262,7 +271,7 @@ describe("Aggregations filters outside connection filters", () => {
             }
 
             type PostLikesConnection {
-              aggregate: PostUserLikesAggregationSelection!
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -405,6 +414,12 @@ describe("Aggregations filters outside connection filters", () => {
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
+              edge: PostUserLikesEdgeAggregateSelection
+              node: PostUserLikesNodeAggregateSelection
+            }
+
             type PostUserLikesAggregationSelection {
               count: Int!
               edge: PostUserLikesEdgeAggregateSelection
@@ -534,11 +549,11 @@ describe("Aggregations filters outside connection filters", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               someID: IntAggregateSelection!
               someString: StringAggregateSelection!
             }
