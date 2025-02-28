@@ -361,8 +361,6 @@ export type SubscriptionEngineContext = {
 export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
 
-    publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
-
     /** To be called, if needed, in getSchema */
     init?(context: SubscriptionEngineContext): Promise<void>;
 

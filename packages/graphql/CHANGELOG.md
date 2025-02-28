@@ -1,5 +1,46 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.3
+
+### Major Changes
+
+- [#5997](https://github.com/neo4j/graphql/pull/5997) [`a716ef8`](https://github.com/neo4j/graphql/commit/a716ef8ec858aa8c6b51c285b3e2d899254c83fe) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove `publish` method from `Neo4jGraphQLSubscriptionsEngine` interface as it is no longer used with CDC-based subscriptions. Implementing this method on custom engines will no longer have an effect, and it is no longer possible to call `publish` directly on `Neo4jGraphQLSubscriptionsCDCEngine`
+
+- [#5976](https://github.com/neo4j/graphql/pull/5976) [`7ddde75`](https://github.com/neo4j/graphql/commit/7ddde75d9828c737e3849c49b6b91f4b2b9b8044) Thanks [@angrykoala](https://github.com/angrykoala)! - Sets addVersionPrefix to true by default, this will prepend the Cypher version to all queries by default, ensuring that the correct Cypher version is used in Neo4j:
+
+    ```cypher
+    CYPHER 5
+    MATCH(this:Movie)
+    ```
+
+    This may be incompatible with older versions of Neo4j and can be disabled by setting `cypherQueryOption.addVersionPrefix` in the context to false:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    For example, for an apollo server:
+
+    ```js
+    await startStandaloneServer(server, {
+        context: async ({ req }) => ({
+            req,
+            cypherQueryOptions: {
+                addVersionPrefix: false,
+            },
+        }),
+        listen: { port: 4000 },
+    });
+    ```
+
+### Patch Changes
+
+- [#6007](https://github.com/neo4j/graphql/pull/6007) [`48aec51`](https://github.com/neo4j/graphql/commit/48aec512b4707d9b9aa74f05d382eb6980e08971) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Allow `app` to be overwritten in transaction metadata
+
 ## 7.0.0-alpha.2
 
 ### Major Changes
@@ -338,6 +379,29 @@
 ### Patch Changes
 
 - [#5837](https://github.com/neo4j/graphql/pull/5837) [`721691a`](https://github.com/neo4j/graphql/commit/721691a84eaa34996c0c97edb7ede1ae4775dd2f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added a validation rule to avoid defining fields as lists of nullable elements, as Neo4j does not support this.
+
+## 6.3.1
+
+### Patch Changes
+
+- [#5952](https://github.com/neo4j/graphql/pull/5952) [`4e14680`](https://github.com/neo4j/graphql/commit/4e1468076bbd23cdd9156b039de1d03bbc68942c) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `addVersionPrefix` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    This prepends all Cypher queries with a `CYPHER [version]` statement:
+
+    ```cypher
+    CYPHER 5
+    MATCH (this:Movie)
+    WHERE this.title = $param0
+    RETURN this { .title } AS this
+    ```
 
 ## 6.3.0
 

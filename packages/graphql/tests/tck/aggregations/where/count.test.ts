@@ -53,11 +53,12 @@ describe("Cypher Aggregations where with count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) = $param0 AS var2
+                RETURN count(DISTINCT this1) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -86,11 +87,12 @@ describe("Cypher Aggregations where with count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) < $param0 AS var2
+                RETURN count(DISTINCT this1) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -119,11 +121,12 @@ describe("Cypher Aggregations where with count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) <= $param0 AS var2
+                RETURN count(DISTINCT this1) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -152,11 +155,12 @@ describe("Cypher Aggregations where with count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) > $param0 AS var2
+                RETURN count(DISTINCT this1) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -185,11 +189,12 @@ describe("Cypher Aggregations where with count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) >= $param0 AS var2
+                RETURN count(DISTINCT this1) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -218,11 +223,12 @@ describe("Cypher Aggregations where with count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(this1) IN $param0 AS var2
+                RETURN count(DISTINCT this1) IN $param0 AS var2
             }
             WITH *
             WHERE var2 = true

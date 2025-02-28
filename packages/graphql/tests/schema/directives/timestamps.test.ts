@@ -40,6 +40,10 @@ describe("Timestamps", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -105,11 +109,11 @@ describe("Timestamps", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
             }

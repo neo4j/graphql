@@ -51,7 +51,7 @@ export function withConnectionObjectType({
 
     if (relationshipAdapter.isAggregable() && !isTargetUnion && !isSourceInterface) {
         connectionObjectType.addFields({
-            aggregate: composer.getOTC(relationshipAdapter.operations.getAggregationFieldTypename()).NonNull,
+            aggregate: composer.getOTC(relationshipAdapter.operations.getAggregateFieldTypename()).NonNull,
         });
     }
 

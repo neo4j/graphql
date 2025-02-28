@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { ObjectTypeDefinitionNode } from "graphql";
+import type { TypeDefinitionNode } from "graphql";
 
 const rootTypes = ["Query", "Mutation", "Subscription"];
 
-export function isRootType(definition: ObjectTypeDefinitionNode): boolean {
+export function isRootType(definition: TypeDefinitionNode): boolean {
     return rootTypes.includes(definition.name.value);
 }

@@ -84,7 +84,7 @@ describe("LocalDateTime - deprecated filters", () => {
         "should filter based on localDT comparison, for filter %s",
         async (filter) => {
             const futureId = generate({ readable: false });
-            const future = "2025-02-18T18:10:55.462Z".split("Z")[0];
+            const future = "6025-02-18T18:10:55.462Z".split("Z")[0];
             const parsedFuture = parseLocalDateTime(future);
             const neo4jFuture = new neo4jDriver.types.LocalDateTime(
                 parsedFuture.year,

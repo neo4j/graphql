@@ -50,13 +50,13 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type AWSAccountAggregate {
+              count: Count!
               node: AWSAccountAggregateNode!
             }
 
             type AWSAccountAggregateNode {
               accountName: StringAggregateSelection!
               code: StringAggregateSelection!
-              count: Int!
             }
 
             type AWSAccountAggregateSelection {
@@ -115,6 +115,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               totalCount: Int!
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateAwsAccountsMutationResponse {
               awsAccounts: [AWSAccount!]!
               info: CreateInfo!
@@ -139,12 +143,12 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type DNSZoneAggregate {
+              count: Count!
               node: DNSZoneAggregateNode!
             }
 
             type DNSZoneAggregateNode {
               awsId: StringAggregateSelection!
-              count: Int!
               zoneType: StringAggregateSelection!
             }
 

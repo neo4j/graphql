@@ -77,7 +77,8 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Employee)
+            "CYPHER 5
+            MATCH (this:Employee)
             CALL {
                 WITH this
                 MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
@@ -93,6 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
+                WITH this6
                 RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var8 } } } AS this"

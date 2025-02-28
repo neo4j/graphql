@@ -74,7 +74,8 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
+            "CYPHER 5
+            MATCH (this:Entity)
             WHERE (this.type = $param0 AND EXISTS {
                 MATCH (this)-[this0:EDGE]->(this1:Entity)
                 WHERE (this1.type = $param1 AND EXISTS {
@@ -133,7 +134,8 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
+            "CYPHER 5
+            MATCH (this:Entity)
             WHERE (this.type = $param0 AND EXISTS {
                 MATCH (this)-[this0:EDGE]->(this1:Entity)
                 WHERE (this1.type = $param1 AND EXISTS {

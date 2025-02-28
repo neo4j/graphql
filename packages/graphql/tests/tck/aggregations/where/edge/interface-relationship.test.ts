@@ -79,12 +79,13 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1)
                 WHERE (this1:Movie OR this1:Series)
-                RETURN count(this1) < $param0 AS var2
+                RETURN count(DISTINCT this1) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -119,7 +120,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Actor)
                 CALL {
                     WITH this0
@@ -173,13 +175,14 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Actor)
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:ACTED_IN]->(this2)
                     WHERE (this2:Movie OR this2:Series)
-                    RETURN (count(this2) <= $param0 AND avg(size(this1.role)) < $param1) AS var3
+                    RETURN (count(DISTINCT this2) <= $param0 AND avg(size(this1.role)) < $param1) AS var3
                 }
                 WITH *
                 WHERE var3 = true
@@ -191,7 +194,7 @@ describe("Cypher Aggregations where edge with String", () => {
                     WITH this4
                     MATCH (this4)-[this5:APPEARED_IN]->(this6)
                     WHERE (this6:Movie OR this6:Series)
-                    RETURN count(this6) <= $param2 AS var7
+                    RETURN count(DISTINCT this6) <= $param2 AS var7
                 }
                 WITH *
                 WHERE var7 = true

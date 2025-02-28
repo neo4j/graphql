@@ -53,7 +53,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.points = [var0 IN $param0 | point(var0)]
             RETURN this { .points } AS this"
         `);
@@ -85,7 +86,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE NOT (this.points = [var0 IN $param0 | point(var0)])
             RETURN this { .points } AS this"
         `);
@@ -118,7 +120,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE point($param0) IN this.points
             RETURN this { .points } AS this"
         `);
@@ -151,7 +154,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:PointContainer)
@@ -199,7 +203,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.id = $param0
             SET this.points = [p in $this_update_points_SET | point(p)]
             RETURN collect(DISTINCT this { .points }) AS data"

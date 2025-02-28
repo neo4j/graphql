@@ -69,6 +69,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -98,11 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type CreatureAggregate {
-              node: CreatureAggregateNode!
-            }
-
-            type CreatureAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type CreatureAggregateSelection {
@@ -361,11 +361,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -574,11 +574,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type PersonAggregate {
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type PersonAggregateSelection {
@@ -740,11 +736,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type ProductionAggregate {
-              node: ProductionAggregateNode!
-            }
-
-            type ProductionAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type ProductionAggregateSelection {
@@ -981,11 +973,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episode: IntAggregateSelection!
               title: StringAggregateSelection!
             }

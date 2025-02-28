@@ -16,37 +16,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, FieldDefinitionNode } from "graphql";
-import { Kind } from "graphql";
-import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import { getInnerTypeName } from "../utils/utils";
-import { DocumentValidationError } from "../utils/document-validation-error";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 
-export function verifyId({
-    directiveNode,
-    traversedDef,
-}: {
-    directiveNode: DirectiveNode;
-    traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-}) {
-    if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-        // delegate
-        return;
-    }
-    // TODO: remove the following as the argument "autogenerate" does not exists anymore
-    const autogenerateArg = directiveNode.arguments?.find((x) => x.name.value === "autogenerate");
-    if (autogenerateArg) {
-        const autogenerate = parseValueNode(autogenerateArg.value);
-        if (!autogenerate) {
-            return;
-        }
+import { GraphQLID, Kind, type ASTVisitor, type FieldDefinitionNode, type TypeNode } from "graphql";
+import { idDirective, relationshipPropertiesDirective } from "../../../../graphql/directives";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
+import { getPathToNode } from "../utils/path-parser";
+
+export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor {
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
     }
 
-    if (traversedDef.type.kind === Kind.LIST_TYPE) {
+    return {
+        FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            if (!fieldDefinitionNode.directives?.find((directive) => directive.name.value === idDirective.name)) {
+                return;
+            }
+            const isValidLocation =
+                fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                fieldIsInRelationshipPropertiesType({ path, ancestors, typeMapWithExtensions });
+
+            const { isValid, errorMsg } = assertValid(() => {
+                if (!isValidLocation) {
+                    throw new DocumentValidationError(
+                        `Directive "${idDirective.name}" requires in a type with "@node" or within the "@${relationshipPropertiesDirective.name}" directive`,
+                        []
+                    );
+                }
+                assertTypeIsSupportedByID(fieldDefinitionNode.type);
+            });
+            const pathToNode = getPathToNode(path, ancestors);
+
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [fieldDefinitionNode],
+                        path: [...pathToNode[0], `@${idDirective.name}`],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+    };
+}
+
+function assertTypeIsSupportedByID(type: TypeNode): void {
+    if (type.kind === Kind.LIST_TYPE) {
         throw new DocumentValidationError("Cannot autogenerate an array.", ["@id"]);
     }
-    if (getInnerTypeName(traversedDef.type) !== "ID") {
+    if (type.kind === Kind.NON_NULL_TYPE) {
+        return assertTypeIsSupportedByID(type.type);
+    }
+    if (GraphQLID.name !== type.name.value) {
         throw new DocumentValidationError("Cannot autogenerate a non ID field.", ["@id"]);
     }
 }

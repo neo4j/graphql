@@ -46,6 +46,10 @@ describe("Directive-preserve", () => {
 
             directive @preservedTopLevel(boolean: Boolean, float: Float, int: Int, string: String) on OBJECT
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -86,11 +90,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -210,6 +210,15 @@ describe("Directive-preserve", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -278,11 +287,11 @@ describe("Directive-preserve", () => {
             }
 
             type GenreAggregate {
+              count: Count!
               node: GenreAggregateNode!
             }
 
             type GenreAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -317,6 +326,11 @@ describe("Directive-preserve", () => {
               node: Genre!
             }
 
+            type GenreMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: GenreMovieMoviesNodeAggregateSelection
+            }
+
             type GenreMovieMoviesAggregationSelection {
               count: Int!
               node: GenreMovieMoviesNodeAggregateSelection
@@ -347,7 +361,7 @@ describe("Directive-preserve", () => {
             }
 
             type GenreMoviesConnection {
-              aggregate: GenreMovieMoviesAggregationSelection!
+              aggregate: GenreMovieMoviesAggregateSelection!
               edges: [GenreMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -606,11 +620,11 @@ describe("Directive-preserve", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               imdbRating: FloatAggregateSelection!
               title: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -651,6 +665,11 @@ describe("Directive-preserve", () => {
               node: Movie!
             }
 
+            type MovieGenreGenresAggregateSelection {
+              count: CountConnection!
+              node: MovieGenreGenresNodeAggregateSelection
+            }
+
             type MovieGenreGenresAggregationSelection {
               count: Int!
               node: MovieGenreGenresNodeAggregateSelection
@@ -679,7 +698,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieGenresConnection {
-              aggregate: MovieGenreGenresAggregationSelection!
+              aggregate: MovieGenreGenresAggregateSelection!
               edges: [MovieGenresRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1095,7 +1114,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorProductionActedInAggregationSelection!
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1209,11 +1228,11 @@ describe("Directive-preserve", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1246,6 +1265,12 @@ describe("Directive-preserve", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
             }
 
             type ActorProductionActedInAggregationSelection {
@@ -1335,6 +1360,15 @@ describe("Directive-preserve", () => {
             input ConnectionAggregationCountFilterInput {
               edges: IntScalarFilters
               nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1523,11 +1557,11 @@ describe("Directive-preserve", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1826,11 +1860,11 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -2077,11 +2111,11 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2372,7 +2406,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorProductionActedInAggregationSelection!
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2484,11 +2518,11 @@ describe("Directive-preserve", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -2521,6 +2555,12 @@ describe("Directive-preserve", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
             }
 
             type ActorProductionActedInAggregationSelection {
@@ -2612,6 +2652,15 @@ describe("Directive-preserve", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -2685,6 +2734,12 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -2720,7 +2775,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2832,11 +2887,11 @@ describe("Directive-preserve", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2959,11 +3014,11 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -3057,6 +3112,12 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
+            type SeriesActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: SeriesActorActorsEdgeAggregateSelection
+              node: SeriesActorActorsNodeAggregateSelection
+            }
+
             type SeriesActorActorsAggregationSelection {
               count: Int!
               edge: SeriesActorActorsEdgeAggregateSelection
@@ -3092,7 +3153,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorsConnection {
-              aggregate: SeriesActorActorsAggregationSelection!
+              aggregate: SeriesActorActorsAggregateSelection!
               edges: [SeriesActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3206,11 +3267,11 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3489,7 +3550,7 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorProductionActedInAggregationSelection!
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3601,11 +3662,11 @@ describe("Directive-preserve", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -3638,6 +3699,12 @@ describe("Directive-preserve", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorProductionActedInEdgeAggregateSelection
+              node: ActorProductionActedInNodeAggregateSelection
             }
 
             type ActorProductionActedInAggregationSelection {
@@ -3729,6 +3796,15 @@ describe("Directive-preserve", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -3802,6 +3878,12 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -3837,7 +3919,7 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3949,11 +4031,11 @@ describe("Directive-preserve", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -4076,11 +4158,11 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionAggregate {
+              count: Count!
               node: ProductionAggregateNode!
             }
 
             type ProductionAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -4174,6 +4256,12 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
+            type SeriesActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: SeriesActorActorsEdgeAggregateSelection
+              node: SeriesActorActorsNodeAggregateSelection
+            }
+
             type SeriesActorActorsAggregationSelection {
               count: Int!
               edge: SeriesActorActorsEdgeAggregateSelection
@@ -4209,7 +4297,7 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorsConnection {
-              aggregate: SeriesActorActorsAggregationSelection!
+              aggregate: SeriesActorActorsAggregateSelection!
               edges: [SeriesActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4323,11 +4411,11 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesAggregate {
+              count: Count!
               node: SeriesAggregateNode!
             }
 
             type SeriesAggregateNode {
-              count: Int!
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -4523,11 +4611,11 @@ describe("Directive-preserve", () => {
             }
 
             type BlogAggregate {
+              count: Count!
               node: BlogAggregateNode!
             }
 
             type BlogAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -4562,6 +4650,11 @@ describe("Directive-preserve", () => {
               node: Blog!
             }
 
+            type BlogPostPostsAggregateSelection {
+              count: CountConnection!
+              node: BlogPostPostsNodeAggregateSelection
+            }
+
             type BlogPostPostsAggregationSelection {
               count: Int!
               node: BlogPostPostsNodeAggregateSelection
@@ -4589,7 +4682,7 @@ describe("Directive-preserve", () => {
             }
 
             type BlogPostsConnection {
-              aggregate: BlogPostPostsAggregationSelection!
+              aggregate: BlogPostPostsAggregateSelection!
               edges: [BlogPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4774,6 +4867,15 @@ describe("Directive-preserve", () => {
               Post: PostWhere
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateBlogsMutationResponse {
               blogs: [Blog!]!
               info: CreateInfo!
@@ -4850,12 +4952,12 @@ describe("Directive-preserve", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -4997,11 +5099,11 @@ describe("Directive-preserve", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 

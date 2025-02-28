@@ -66,11 +66,6 @@ export const vectorDirective = new GraphQLDirective({
                             provider: {
                                 type: VectorProviderEnum,
                             },
-                            // callback: {
-                            //     description:
-                            //         "The name of the callback function that will be used to populate the fields values.",
-                            //     type: GraphQLString,
-                            // },
                         },
                     })
                 )

@@ -48,8 +48,8 @@ describe("aggregations-top_level authorization", () => {
             {
                 ${randomType.operations.connection} {
                     aggregate {
-                        node {
-                            count
+                        count {
+                            nodes
                         }
                     }
                 }
@@ -106,8 +106,8 @@ describe("aggregations-top_level authorization", () => {
             {
                 ${Post.operations.connection} {
                     aggregate {
-                        node {
-                            count
+                        count {
+                            nodes
                         }
                     }
                 }
@@ -138,8 +138,8 @@ describe("aggregations-top_level authorization", () => {
         expect(gqlResult.data).toEqual({
             [Post.operations.connection]: {
                 aggregate: {
-                    node: {
-                        count: 2, // Now expecting 2 posts for authorized user
+                    count: {
+                        nodes: 2, // Now expecting 2 posts for authorized user
                     },
                 },
             },

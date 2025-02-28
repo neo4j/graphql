@@ -50,6 +50,10 @@ describe("String Comparators", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -76,11 +80,11 @@ describe("String Comparators", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -218,6 +222,10 @@ describe("String Comparators", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -244,11 +252,11 @@ describe("String Comparators", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -387,6 +395,10 @@ describe("String Comparators", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -413,11 +425,11 @@ describe("String Comparators", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -660,7 +672,7 @@ describe("String Comparators", () => {
             }
 
             type ActorActedInConnection {
-              aggregate: ActorMovieActedInAggregationSelection!
+              aggregate: ActorMovieActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -774,11 +786,11 @@ describe("String Comparators", () => {
             }
 
             type ActorAggregate {
+              count: Count!
               node: ActorAggregateNode!
             }
 
             type ActorAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -811,6 +823,12 @@ describe("String Comparators", () => {
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieActedInAggregateSelection {
+              count: CountConnection!
+              edge: ActorMovieActedInEdgeAggregateSelection
+              node: ActorMovieActedInNodeAggregateSelection
             }
 
             type ActorMovieActedInAggregationSelection {
@@ -906,6 +924,15 @@ describe("String Comparators", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -959,6 +986,12 @@ describe("String Comparators", () => {
               title: String
             }
 
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
+              edge: MovieActorActorsEdgeAggregateSelection
+              node: MovieActorActorsNodeAggregateSelection
+            }
+
             type MovieActorActorsAggregationSelection {
               count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
@@ -994,7 +1027,7 @@ describe("String Comparators", () => {
             }
 
             type MovieActorsConnection {
-              aggregate: MovieActorActorsAggregationSelection!
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1106,11 +1139,11 @@ describe("String Comparators", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               title: StringAggregateSelection!
             }
 

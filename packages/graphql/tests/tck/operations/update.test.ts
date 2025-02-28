@@ -61,7 +61,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -100,7 +101,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -179,7 +181,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -267,7 +270,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -323,7 +327,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -391,7 +396,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -463,7 +469,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -555,7 +562,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH this
             CREATE (this_movies0_create0_node:Movie)
@@ -604,7 +612,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH this
             CREATE (this_movies0_create0_node:Movie)
@@ -660,7 +669,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH this
             CREATE (this_movies0_create0_node:Movie)
@@ -717,7 +727,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -799,7 +810,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -885,7 +897,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -956,7 +969,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {

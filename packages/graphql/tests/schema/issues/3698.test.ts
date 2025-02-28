@@ -75,6 +75,15 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -127,11 +136,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenreAggregate {
+              count: Count!
               node: GenreAggregateNode!
             }
 
             type GenreAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -182,6 +191,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: String!
             }
 
+            type GenreIProductProductAggregateSelection {
+              count: CountConnection!
+              node: GenreIProductProductNodeAggregateSelection
+            }
+
             type GenreIProductProductAggregationSelection {
               count: Int!
               node: GenreIProductProductNodeAggregateSelection
@@ -211,7 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenreProductConnection {
-              aggregate: GenreIProductProductAggregationSelection!
+              aggregate: GenreIProductProductAggregateSelection!
               edges: [GenreProductRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -445,11 +459,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type IProductAggregate {
+              count: Count!
               node: IProductAggregateNode!
             }
 
             type IProductAggregateNode {
-              count: Int!
               id: StringAggregateSelection!
               info: StringAggregateSelection!
               name: StringAggregateSelection!
@@ -560,11 +574,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
-              count: Int!
               id: StringAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -626,7 +640,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MovieGenreConnection {
-              aggregate: MovieGenreGenreAggregationSelection!
+              aggregate: MovieGenreGenreAggregateSelection!
               edges: [MovieGenreRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -689,6 +703,11 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             input MovieGenreFieldInput {
               connect: [MovieGenreConnectFieldInput!]
               create: [MovieGenreCreateFieldInput!]
+            }
+
+            type MovieGenreGenreAggregateSelection {
+              count: CountConnection!
+              node: MovieGenreGenreNodeAggregateSelection
             }
 
             type MovieGenreGenreAggregationSelection {
