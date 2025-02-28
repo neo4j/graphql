@@ -610,7 +610,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceWhere
               OR: [ResourceWhere!]
               containedBy: ResourceRelationshipFilters
-              containedByAggregate: ResourceContainedByAggregateInput
+              containedByAggregate: ResourceContainedByAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the containedByConnection filter, please use { containedByConnection: { aggregate: {...} } } instead\\")
               containedByConnection: ResourceContainedByConnectionFilters
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter

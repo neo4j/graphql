@@ -377,7 +377,7 @@ describe("Query Direction", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               friends: UserRelationshipFilters
-              friendsAggregate: UserFriendsAggregateInput
+              friendsAggregate: UserFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
@@ -774,7 +774,7 @@ describe("Query Direction", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               friends: UserRelationshipFilters
-              friendsAggregate: UserFriendsAggregateInput
+              friendsAggregate: UserFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter

@@ -25,6 +25,7 @@ import type {
     InputTypeComposerFieldConfigMapDefinition,
     SchemaComposer,
 } from "graphql-compose";
+import { DEPRECATED } from "../../constants";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -36,6 +37,7 @@ import type { Neo4jFeaturesSettings } from "../../types";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
 import { withAggregateInputType, withConnectionAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputWithRelationshipFilters } from "./augment-where-input";
+import { shouldAddDeprecatedFields } from "./utils";
 
 function isEmptyObject(obj: Record<string, unknown>): boolean {
     return !Object.keys(obj).length;
@@ -200,7 +202,7 @@ export function withSourceWhereInputType({
         userDefinedDirectivesOnTargetFields,
         features,
     });
-
+    // TODO: Likely this should be added only in case of relationshipAdapter.isFilterableByAggregate()
     withConnectionAggregateInputType({
         relationshipAdapter,
         entityAdapter: relationshipTarget,
@@ -209,11 +211,23 @@ export function withSourceWhereInputType({
         features,
     });
 
-    if (relationshipAdapter.isFilterableByAggregate()) {
+    if (
+        relationshipAdapter.isFilterableByAggregate() &&
+        shouldAddDeprecatedFields(features, "aggregationFiltersOutsideConnection")
+    ) {
         whereInput.addFields({
             [relationshipAdapter.operations.aggregateFieldName]: {
                 type: whereAggregateInput,
-                directives: deprecatedDirectives,
+                directives: deprecatedDirectives.length
+                    ? deprecatedDirectives
+                    : [
+                          {
+                              name: DEPRECATED,
+                              args: {
+                                  reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
+                              },
+                          },
+                      ],
             },
         });
     }

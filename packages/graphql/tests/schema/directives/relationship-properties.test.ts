@@ -361,7 +361,7 @@ describe("Relationship-properties", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -740,7 +740,7 @@ describe("Relationship-properties", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -1211,7 +1211,7 @@ describe("Relationship-properties", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1596,7 +1596,7 @@ describe("Relationship-properties", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -2021,7 +2021,7 @@ describe("Relationship-properties", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -2380,7 +2380,7 @@ describe("Relationship-properties", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter

@@ -1132,7 +1132,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1513,7 +1513,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -1936,7 +1936,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -2317,7 +2317,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2740,7 +2740,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -3109,7 +3109,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -3529,7 +3529,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4321,7 +4321,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4702,7 +4702,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -5116,7 +5116,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -5467,7 +5467,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
                       title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
@@ -5867,7 +5867,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -6641,7 +6641,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -7476,7 +7476,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -7837,7 +7837,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: PersonRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -8325,7 +8325,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -9176,7 +9176,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -9477,7 +9477,7 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: AppearanceMoviesAggregateInput
+                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
@@ -10310,7 +10310,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -10611,7 +10611,7 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: AppearanceMoviesAggregateInput
+                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
@@ -11444,7 +11444,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -11745,7 +11745,7 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: AppearanceMoviesAggregateInput
+                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter

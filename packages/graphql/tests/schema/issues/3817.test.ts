@@ -386,7 +386,7 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               friends: PersonRelationshipFilters
-              friendsAggregate: PersonFriendsAggregateInput
+              friendsAggregate: PersonFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter

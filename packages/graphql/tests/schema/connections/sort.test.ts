@@ -300,7 +300,7 @@ describe("Sort", () => {
               property_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter property: { in: ... }\\")
               property_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { startsWith: ... }\\")
               relatedTo: Node2RelationshipFilters
-              relatedToAggregate: Node1RelatedToAggregateInput
+              relatedToAggregate: Node1RelatedToAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relatedToConnection filter, please use { relatedToConnection: { aggregate: {...} } } instead\\")
               relatedToConnection: Node1RelatedToConnectionFilters
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
@@ -534,7 +534,7 @@ describe("Sort", () => {
               NOT: Node2Where
               OR: [Node2Where!]
               relatedTo: Node1RelationshipFilters
-              relatedToAggregate: Node2RelatedToAggregateInput
+              relatedToAggregate: Node2RelatedToAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relatedToConnection filter, please use { relatedToConnection: { aggregate: {...} } } instead\\")
               relatedToConnection: Node2RelatedToConnectionFilters
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter

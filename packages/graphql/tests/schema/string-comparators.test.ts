@@ -874,7 +874,7 @@ describe("String Comparators", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: MovieRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -1207,7 +1207,7 @@ describe("String Comparators", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter

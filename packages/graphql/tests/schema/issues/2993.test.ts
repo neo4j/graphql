@@ -559,7 +559,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               following: ProfileRelationshipFilters
-              followingAggregate: UserFollowingAggregateInput
+              followingAggregate: UserFollowingAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the followingConnection filter, please use { followingConnection: { aggregate: {...} } } instead\\")
               followingConnection: UserFollowingConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter

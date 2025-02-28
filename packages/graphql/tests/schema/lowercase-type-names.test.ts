@@ -526,7 +526,7 @@ describe("lower case type names", () => {
               createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
               createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               movies: movieRelationshipFilters
-              moviesAggregate: actorMoviesAggregateInput
+              moviesAggregate: actorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: actorMoviesConnectionFilters
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
@@ -839,7 +839,7 @@ describe("lower case type names", () => {
               NOT: movieWhere
               OR: [movieWhere!]
               actors: actorRelationshipFilters
-              actorsAggregate: movieActorsAggregateInput
+              actorsAggregate: movieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: movieActorsConnectionFilters
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter

@@ -416,7 +416,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               product: IProductRelationshipFilters
-              productAggregate: GenreProductAggregateInput
+              productAggregate: GenreProductAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the productConnection filter, please use { productConnection: { aggregate: {...} } } instead\\")
               productConnection: GenreProductConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreProductConnections match this filter
@@ -805,7 +805,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               genre: GenreRelationshipFilters
-              genreAggregate: MovieGenreAggregateInput
+              genreAggregate: MovieGenreAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the genreConnection filter, please use { genreConnection: { aggregate: {...} } } instead\\")
               genreConnection: MovieGenreConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieGenreConnections match this filter

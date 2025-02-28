@@ -577,7 +577,7 @@ describe("162", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               tiger: TigerRelationshipFilters
-              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
+              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the tigerConnection filter, please use { tigerConnection: { aggregate: {...} } } instead\\")
               tigerConnection: TigerJawLevel2Part1TigerConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
@@ -652,7 +652,7 @@ describe("162", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               part1: TigerJawLevel2Part1RelationshipFilters
-              part1Aggregate: TigerJawLevel2Part1AggregateInput
+              part1Aggregate: TigerJawLevel2Part1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the part1Connection filter, please use { part1Connection: { aggregate: {...} } } instead\\")
               part1Connection: TigerJawLevel2Part1ConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter

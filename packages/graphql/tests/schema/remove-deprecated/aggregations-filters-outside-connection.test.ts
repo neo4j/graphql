@@ -21,8 +21,8 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Aggregate operations", () => {
-    test("should remove deprecated aggregate operations", async () => {
+describe("Aggregations filters outside connection filters", () => {
+    test("should remove deprecated aggregate filters", async () => {
         const typeDefs = /* GraphQL */ `
             type User @node {
                 someID: Int
@@ -41,7 +41,7 @@ describe("Aggregate operations", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: { excludeDeprecatedFields: { deprecatedAggregateOperations: true } },
+            features: { excludeDeprecatedFields: { aggregationFiltersOutsideConnection: true } },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -232,6 +232,7 @@ describe("Aggregate operations", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
+              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"likesConnection\\\\\\" instead\\")
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -242,6 +243,11 @@ describe("Aggregate operations", () => {
             }
 
             type PostAggregateNode {
+              title: StringAggregateSelection!
+            }
+
+            type PostAggregateSelection {
+              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -257,20 +263,6 @@ describe("Aggregate operations", () => {
             type PostEdge {
               cursor: String!
               node: Post!
-            }
-
-            input PostLikesAggregateInput {
-              AND: [PostLikesAggregateInput!]
-              NOT: PostLikesAggregateInput
-              OR: [PostLikesAggregateInput!]
-              count: IntScalarFilters
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              edge: LikesAggregationWhereInput
-              node: PostLikesNodeAggregationWhereInput
             }
 
             input PostLikesConnectFieldInput {
@@ -428,6 +420,12 @@ describe("Aggregate operations", () => {
               node: PostUserLikesNodeAggregateSelection
             }
 
+            type PostUserLikesAggregationSelection {
+              count: Int!
+              edge: PostUserLikesEdgeAggregateSelection
+              node: PostUserLikesNodeAggregateSelection
+            }
+
             type PostUserLikesEdgeAggregateSelection {
               someString: StringAggregateSelection!
             }
@@ -442,7 +440,6 @@ describe("Aggregate operations", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               likes: UserRelationshipFilters
-              likesAggregate: PostLikesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the likesConnection filter, please use { likesConnection: { aggregate: {...} } } instead\\")
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
@@ -485,8 +482,10 @@ describe("Aggregate operations", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
+              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -555,6 +554,12 @@ describe("Aggregate operations", () => {
             }
 
             type UserAggregateNode {
+              someID: IntAggregateSelection!
+              someString: StringAggregateSelection!
+            }
+
+            type UserAggregateSelection {
+              count: Int!
               someID: IntAggregateSelection!
               someString: StringAggregateSelection!
             }

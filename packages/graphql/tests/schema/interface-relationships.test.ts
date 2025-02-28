@@ -324,7 +324,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -1114,7 +1114,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -1452,7 +1452,7 @@ describe("Interface Relationships", () => {
               runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               series: SeriesRelationshipFilters
-              seriesAggregate: EpisodeSeriesAggregateInput
+              seriesAggregate: EpisodeSeriesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the seriesConnection filter, please use { seriesConnection: { aggregate: {...} } } instead\\")
               seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
@@ -1703,7 +1703,7 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
@@ -2029,7 +2029,7 @@ describe("Interface Relationships", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ProductionActorsAggregateInput
+              actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -2446,7 +2446,7 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
@@ -2480,7 +2480,7 @@ describe("Interface Relationships", () => {
               episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
               episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               episodes: EpisodeRelationshipFilters
-              episodesAggregate: SeriesEpisodesAggregateInput
+              episodesAggregate: SeriesEpisodesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the episodesConnection filter, please use { episodesConnection: { aggregate: {...} } } instead\\")
               episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
@@ -2921,7 +2921,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -3259,7 +3259,7 @@ describe("Interface Relationships", () => {
               runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               series: SeriesRelationshipFilters
-              seriesAggregate: EpisodeSeriesAggregateInput
+              seriesAggregate: EpisodeSeriesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the seriesConnection filter, please use { seriesConnection: { aggregate: {...} } } instead\\")
               seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
@@ -3510,7 +3510,7 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
@@ -3856,7 +3856,7 @@ describe("Interface Relationships", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ProductionActorsAggregateInput
+              actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -4273,7 +4273,7 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
@@ -4307,7 +4307,7 @@ describe("Interface Relationships", () => {
               episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
               episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               episodes: EpisodeRelationshipFilters
-              episodesAggregate: SeriesEpisodesAggregateInput
+              episodesAggregate: SeriesEpisodesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the episodesConnection filter, please use { episodesConnection: { aggregate: {...} } } instead\\")
               episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
@@ -4792,7 +4792,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Aggregate: Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5343,7 +5343,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Aggregate: Type1Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5468,7 +5468,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface1: Interface1RelationshipFilters
-              interface1Aggregate: Type1Interface1AggregateInput
+              interface1Aggregate: Type1Interface1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface1Connection filter, please use { interface1Connection: { aggregate: {...} } } instead\\")
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -5671,7 +5671,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Aggregate: Type2Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6217,7 +6217,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Aggregate: Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6842,7 +6842,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Aggregate: Type1Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6967,7 +6967,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface1: Interface1RelationshipFilters
-              interface1Aggregate: Type1Interface1AggregateInput
+              interface1Aggregate: Type1Interface1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface1Connection filter, please use { interface1Connection: { aggregate: {...} } } instead\\")
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -7180,7 +7180,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Aggregate: Type2Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -7752,7 +7752,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Aggregate: Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -8313,7 +8313,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Aggregate: Type1Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -8501,7 +8501,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface1: Interface1RelationshipFilters
-              interface1Aggregate: Type1Interface1AggregateInput
+              interface1Aggregate: Type1Interface1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface1Connection filter, please use { interface1Connection: { aggregate: {...} } } instead\\")
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -8714,7 +8714,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Aggregate: Type2Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -9295,7 +9295,7 @@ describe("Interface Relationships", () => {
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
               creator: UserRelationshipFilters
-              creatorAggregate: CommentCreatorAggregateInput
+              creatorAggregate: CommentCreatorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the creatorConnection filter, please use { creatorConnection: { aggregate: {...} } } instead\\")
               creatorConnection: CommentCreatorConnectionFilters
               \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
@@ -9328,7 +9328,7 @@ describe("Interface Relationships", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               post: PostRelationshipFilters
-              postAggregate: CommentPostAggregateInput
+              postAggregate: CommentPostAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the postConnection filter, please use { postConnection: { aggregate: {...} } } instead\\")
               postConnection: CommentPostConnectionFilters
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
@@ -9578,7 +9578,7 @@ describe("Interface Relationships", () => {
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
               creator: UserRelationshipFilters
-              creatorAggregate: ContentCreatorAggregateInput
+              creatorAggregate: ContentCreatorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the creatorConnection filter, please use { creatorConnection: { aggregate: {...} } } instead\\")
               creatorConnection: ContentCreatorConnectionFilters
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
@@ -10043,7 +10043,7 @@ describe("Interface Relationships", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               comments: CommentRelationshipFilters
-              commentsAggregate: PostCommentsAggregateInput
+              commentsAggregate: PostCommentsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the commentsConnection filter, please use { commentsConnection: { aggregate: {...} } } instead\\")
               commentsConnection: PostCommentsConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
@@ -10076,7 +10076,7 @@ describe("Interface Relationships", () => {
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
               creator: UserRelationshipFilters
-              creatorAggregate: PostCreatorAggregateInput
+              creatorAggregate: PostCreatorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the creatorConnection filter, please use { creatorConnection: { aggregate: {...} } } instead\\")
               creatorConnection: PostCreatorConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
@@ -10410,7 +10410,7 @@ describe("Interface Relationships", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               content: ContentRelationshipFilters
-              contentAggregate: UserContentAggregateInput
+              contentAggregate: UserContentAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the contentConnection filter, please use { contentConnection: { aggregate: {...} } } instead\\")
               contentConnection: UserContentConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
@@ -10800,7 +10800,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ShowRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -11100,7 +11100,7 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
@@ -11421,7 +11421,7 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
@@ -11735,7 +11735,7 @@ describe("Interface Relationships", () => {
               NOT: ShowWhere
               OR: [ShowWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ShowActorsAggregateInput
+              actorsAggregate: ShowActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
