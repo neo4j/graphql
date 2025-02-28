@@ -48,8 +48,6 @@ export class AggregationOperation extends Operation {
 
     protected filters: Filter[] = [];
 
-    public isInConnectionField = false; // Used for compatibility with deprecated aggregations, this will always be true in 7.x
-
     constructor({
         entity,
         directed = true,
@@ -102,21 +100,10 @@ export class AggregationOperation extends Operation {
         }
         const clauses = this.transpileAggregation(context);
 
-        const isTopLevel = !(this.entity instanceof RelationshipAdapter);
-        if (isTopLevel && !this.isInConnectionField) {
-            // This is to support deprecated aggregations
-            const clausesSubqueries = clauses.flatMap((sq) => new Cypher.Call(sq));
-
-            return {
-                clauses: clausesSubqueries,
-                projectionExpr: this.aggregationProjectionMap,
-            };
-        } else {
-            return {
-                clauses,
-                projectionExpr: this.aggregationProjectionMap,
-            };
-        }
+        return {
+            clauses,
+            projectionExpr: this.aggregationProjectionMap,
+        };
     }
 
     protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -175,12 +162,7 @@ export class AggregationOperation extends Operation {
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            // if (this.isInConnectionField) {
-            //     // Default fields are in node in connection translation
-            //     nodeMap.set(f.getProjectionField(returnVariable));
-            // } else {
-            //     this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            // }
+
             return this.createSubquery(f, pattern, returnVariable, context);
         });
 
