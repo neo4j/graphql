@@ -2,7 +2,7 @@
 "@neo4j/graphql": minor
 ---
 
-Following the changes of moving aggregations inside the connection fields, the aggregations filters are moved to the connection input field.
+Aggregations filters are moved to the connection input field.
 
 **Current aggregation filters:**
 
