@@ -48,7 +48,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             RETURN this { .name } AS this"
         `);
 
@@ -67,7 +68,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Tech)
                 RETURN count(this) AS var0
             }
@@ -91,7 +93,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Tech)
@@ -127,7 +130,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             SET this.name = $this_update_name_SET
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -152,7 +156,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             WHERE this.name = $param0
             DETACH DELETE this"
         `);
@@ -176,7 +181,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             RETURN this { .name } AS this"
         `);
 

@@ -74,6 +74,15 @@ describe("Apollo Federation", () => {
               nodes: IntScalarFilters
             }
 
+            type Count @shareable {
+              nodes: Int!
+            }
+
+            type CountConnection @shareable {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -145,12 +154,12 @@ describe("Apollo Federation", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -177,7 +186,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -332,6 +341,11 @@ describe("Apollo Federation", () => {
               content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -459,11 +473,11 @@ describe("Apollo Federation", () => {
             }
 
             type UserAggregate @shareable {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode @shareable {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -498,6 +512,11 @@ describe("Apollo Federation", () => {
               node: User!
             }
 
+            type UserPostPostsAggregateSelection {
+              count: CountConnection!
+              node: UserPostPostsNodeAggregateSelection
+            }
+
             type UserPostPostsAggregationSelection {
               count: Int!
               node: UserPostPostsNodeAggregateSelection
@@ -526,7 +545,7 @@ describe("Apollo Federation", () => {
             }
 
             type UserPostsConnection {
-              aggregate: UserPostPostsAggregationSelection!
+              aggregate: UserPostPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -774,6 +793,15 @@ describe("Apollo Federation", () => {
               nodes: IntScalarFilters
             }
 
+            type Count @federation__shareable {
+              nodes: Int!
+            }
+
+            type CountConnection @federation__shareable {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -845,12 +873,12 @@ describe("Apollo Federation", () => {
             }
 
             type PostAggregate {
+              count: Count!
               node: PostAggregateNode!
             }
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             type PostAggregateSelection {
@@ -876,7 +904,7 @@ describe("Apollo Federation", () => {
             }
 
             type PostAuthorConnection {
-              aggregate: PostUserAuthorAggregationSelection!
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1006,6 +1034,11 @@ describe("Apollo Federation", () => {
               content_SET: String @deprecated(reason: \\"Please use the generic mutation 'content: { set: ... } }' instead.\\")
             }
 
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
+              node: PostUserAuthorNodeAggregateSelection
+            }
+
             type PostUserAuthorAggregationSelection {
               count: Int!
               node: PostUserAuthorNodeAggregateSelection
@@ -1131,11 +1164,11 @@ describe("Apollo Federation", () => {
             }
 
             type UserAggregate {
+              count: Count!
               node: UserAggregateNode!
             }
 
             type UserAggregateNode {
-              count: Int!
               name: StringAggregateSelection!
             }
 

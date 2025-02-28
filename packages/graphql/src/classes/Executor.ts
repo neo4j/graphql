@@ -184,7 +184,8 @@ export class Executor {
     }
 
     private getCypherVersionStatement(): string {
-        if (this.cypherQueryOptions?.addVersionPrefix) {
+        const addVersionPrefixDefault=true
+        if (this.cypherQueryOptions?.addVersionPrefix ?? addVersionPrefixDefault) {
             return `CYPHER ${SUPPORTED_CYPHER_VERSION}\n`;
         }
         return "";
@@ -208,8 +209,8 @@ export class Executor {
     private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
         const transactionConfig: TransactionConfig = {
             metadata: {
-                ...this.transactionMetadata,
                 app: APP_ID,
+                ...this.transactionMetadata,
                 type: "user-transpiled",
             },
         };

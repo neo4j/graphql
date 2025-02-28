@@ -48,6 +48,15 @@ describe("Sort", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -111,11 +120,11 @@ describe("Sort", () => {
             }
 
             type Node1Aggregate {
+              count: Count!
               node: Node1AggregateNode!
             }
 
             type Node1AggregateNode {
-              count: Int!
               property: StringAggregateSelection!
             }
 
@@ -150,6 +159,10 @@ describe("Sort", () => {
               node: Node1!
             }
 
+            type Node1Node2RelatedToAggregateSelection {
+              count: CountConnection!
+            }
+
             type Node1Node2RelatedToAggregationSelection {
               count: Int!
             }
@@ -172,7 +185,7 @@ describe("Sort", () => {
             }
 
             type Node1RelatedToConnection {
-              aggregate: Node1Node2RelatedToAggregationSelection!
+              aggregate: Node1Node2RelatedToAggregateSelection!
               edges: [Node1RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -329,11 +342,7 @@ describe("Sort", () => {
             }
 
             type Node2Aggregate {
-              node: Node2AggregateNode!
-            }
-
-            type Node2AggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type Node2AggregateSelection {
@@ -365,6 +374,11 @@ describe("Sort", () => {
               node: Node2!
             }
 
+            type Node2Node1RelatedToAggregateSelection {
+              count: CountConnection!
+              node: Node2Node1RelatedToNodeAggregateSelection
+            }
+
             type Node2Node1RelatedToAggregationSelection {
               count: Int!
               node: Node2Node1RelatedToNodeAggregateSelection
@@ -393,7 +407,7 @@ describe("Sort", () => {
             }
 
             type Node2RelatedToConnection {
-              aggregate: Node2Node1RelatedToAggregationSelection!
+              aggregate: Node2Node1RelatedToAggregateSelection!
               edges: [Node2RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!

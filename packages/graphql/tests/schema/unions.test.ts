@@ -46,6 +46,10 @@ describe("Unions", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -77,11 +81,7 @@ describe("Unions", () => {
             }
 
             type GenreAggregate {
-              node: GenreAggregateNode!
-            }
-
-            type GenreAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type GenreAggregateSelection {
@@ -154,11 +154,7 @@ describe("Unions", () => {
             }
 
             type MovieAggregate {
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              count: Int!
+              count: Count!
             }
 
             type MovieAggregateSelection {

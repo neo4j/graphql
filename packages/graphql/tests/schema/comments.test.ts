@@ -75,6 +75,10 @@ describe("Comments", () => {
               set: Boolean
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -210,13 +214,13 @@ describe("Comments", () => {
             }
 
             type MovieAggregate {
+              count: Count!
               node: MovieAggregateNode!
             }
 
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             type MovieAggregateSelection {
@@ -385,11 +389,11 @@ describe("Comments", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -456,6 +460,15 @@ describe("Comments", () => {
                 input ConnectionAggregationCountFilterInput {
                   edges: IntScalarFilters
                   nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -526,6 +539,11 @@ describe("Comments", () => {
                   id: ID
                 }
 
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
+                  node: MovieActorActorsNodeAggregateSelection
+                }
+
                 type MovieActorActorsAggregationSelection {
                   count: Int!
                   node: MovieActorActorsNodeAggregateSelection
@@ -553,7 +571,7 @@ describe("Comments", () => {
                 }
 
                 type MovieActorsConnection {
-                  aggregate: MovieActorActorsAggregationSelection!
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -657,11 +675,7 @@ describe("Comments", () => {
                 }
 
                 type MovieAggregate {
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type MovieAggregateSelection {
@@ -949,7 +963,7 @@ describe("Comments", () => {
                 }
 
                 type ActorActedInConnection {
-                  aggregate: ActorProductionActedInAggregationSelection!
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1061,11 +1075,11 @@ describe("Comments", () => {
                 }
 
                 type ActorAggregate {
+                  count: Count!
                   node: ActorAggregateNode!
                 }
 
                 type ActorAggregateNode {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -1086,6 +1100,12 @@ describe("Comments", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
+                }
+
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  edge: ActorProductionActedInEdgeAggregateSelection
+                  node: ActorProductionActedInNodeAggregateSelection
                 }
 
                 type ActorProductionActedInAggregationSelection {
@@ -1164,6 +1184,15 @@ describe("Comments", () => {
                 input ConnectionAggregationCountFilterInput {
                   edges: IntScalarFilters
                   nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -1245,11 +1274,11 @@ describe("Comments", () => {
                 }
 
                 type MovieAggregate {
+                  count: Count!
                   node: MovieAggregateNode!
                 }
 
                 type MovieAggregateNode {
-                  count: Int!
                   runtime: IntAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1338,11 +1367,11 @@ describe("Comments", () => {
                 }
 
                 type ProductionAggregate {
+                  count: Count!
                   node: ProductionAggregateNode!
                 }
 
                 type ProductionAggregateNode {
-                  count: Int!
                   title: StringAggregateSelection!
                 }
 
@@ -1434,11 +1463,11 @@ describe("Comments", () => {
                 }
 
                 type SeriesAggregate {
+                  count: Count!
                   node: SeriesAggregateNode!
                 }
 
                 type SeriesAggregateNode {
-                  count: Int!
                   episodes: IntAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1586,6 +1615,10 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -1617,11 +1650,7 @@ describe("Comments", () => {
                 }
 
                 type GenreAggregate {
-                  node: GenreAggregateNode!
-                }
-
-                type GenreAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type GenreAggregateSelection {
@@ -1694,11 +1723,7 @@ describe("Comments", () => {
                 }
 
                 type MovieAggregate {
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  count: Int!
+                  count: Count!
                 }
 
                 type MovieAggregateSelection {

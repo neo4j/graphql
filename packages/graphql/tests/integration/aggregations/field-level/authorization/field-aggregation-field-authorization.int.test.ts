@@ -72,7 +72,7 @@ describe("Field Level Aggregations Field Authorization", () => {
             query {
                 ${Series.operations.connection} {
                     aggregate {
-                        node{
+                        node {
                             title {
                                 longest
                             }

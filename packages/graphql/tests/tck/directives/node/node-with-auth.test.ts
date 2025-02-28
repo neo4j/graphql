@@ -80,7 +80,8 @@ describe("Node Directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
@@ -112,7 +113,8 @@ describe("Node Directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Comment)
+            "CYPHER 5
+            MATCH (this:Comment)
             WHERE (EXISTS {
                 MATCH (this)<-[:HAS_POST]-(this0:Person)
                 WHERE this0.id = $param0

@@ -47,15 +47,15 @@ describe("Aggregate -> count", () => {
         );
 
         const query = /* GraphQL */ `
-            {
-                ${randomType.operations.connection} {
-                    aggregate {
-                        node {
-                            count
+                {
+                    ${randomType.operations.connection}{
+                        aggregate {
+                            count {
+                                nodes
+                            }
                         }
                     }
                 }
-            }
         `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
@@ -64,8 +64,8 @@ describe("Aggregate -> count", () => {
         expect(gqlResult.data).toEqual({
             [randomType.operations.connection]: {
                 aggregate: {
-                    node: {
-                        count: 2,
+                    count: {
+                        nodes: 2,
                     },
                 },
             },
@@ -109,8 +109,8 @@ describe("Aggregate -> count", () => {
                     }
                 ) {
                     aggregate {
-                        node {
-                            count
+                        count {
+                            nodes
                         }
                     }
                 }
@@ -124,8 +124,8 @@ describe("Aggregate -> count", () => {
         expect(gqlResult.data).toEqual({
             [randomType.operations.connection]: {
                 aggregate: {
-                    node: {
-                        count: 2,
+                    count: {
+                        nodes: 2,
                     },
                 },
             },

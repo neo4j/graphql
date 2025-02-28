@@ -67,7 +67,8 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Place)
+            "CYPHER 5
+            MATCH (this:Place)
             WITH *
             ORDER BY this.displayName ASC
             CALL {

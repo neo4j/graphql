@@ -62,6 +62,15 @@ describe("lower case type names", () => {
               nodes: IntScalarFilters
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [actor!]!
               info: CreateInfo!
@@ -256,11 +265,11 @@ describe("lower case type names", () => {
             }
 
             type actorAggregate {
+              count: Count!
               node: actorAggregateNode!
             }
 
             type actorAggregateNode {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -320,7 +329,7 @@ describe("lower case type names", () => {
             }
 
             type actorMoviesConnection {
-              aggregate: actormovieMoviesAggregationSelection!
+              aggregate: actormovieMoviesAggregateSelection!
               edges: [actorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -558,6 +567,11 @@ describe("lower case type names", () => {
               year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
+            type actormovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: actormovieMoviesNodeAggregateSelection
+            }
+
             type actormovieMoviesAggregationSelection {
               count: Int!
               node: actormovieMoviesNodeAggregateSelection
@@ -599,7 +613,7 @@ describe("lower case type names", () => {
             }
 
             type movieActorsConnection {
-              aggregate: movieactorActorsAggregationSelection!
+              aggregate: movieactorActorsAggregateSelection!
               edges: [movieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -737,11 +751,11 @@ describe("lower case type names", () => {
             }
 
             type movieAggregate {
+              count: Count!
               node: movieAggregateNode!
             }
 
             type movieAggregateNode {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               testId: StringAggregateSelection!
@@ -877,6 +891,11 @@ describe("lower case type names", () => {
               year_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter year: { in: ... }\\")
               year_LT: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lt: ... }\\")
               year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
+            }
+
+            type movieactorActorsAggregateSelection {
+              count: CountConnection!
+              node: movieactorActorsNodeAggregateSelection
             }
 
             type movieactorActorsAggregationSelection {

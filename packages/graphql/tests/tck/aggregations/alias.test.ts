@@ -64,7 +64,8 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 RETURN count(this) AS var0
             }
@@ -77,10 +78,12 @@ describe("Cypher Aggregations Many while Alias fields", () => {
             }
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
             }
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
             RETURN { _count: var0, _title: var1, _imdbRating: var2, _createdAt: var3 }"

@@ -44,7 +44,13 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("AND", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { AND: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }] } } }) {
+                posts(
+                    where: {
+                        likesConnection: {
+                            aggregate: { AND: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }] }
+                        }
+                    }
+                ) {
                     content
                 }
             }
@@ -53,11 +59,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) > $param0 AND count(this1) < $param1) AS var2
+                RETURN (count(DISTINCT this1) > $param0 AND count(DISTINCT this1) < $param1) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -81,7 +88,13 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("OR", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesConnection: { aggregate: { OR: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }] } } }) {
+                posts(
+                    where: {
+                        likesConnection: {
+                            aggregate: { OR: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }] }
+                        }
+                    }
+                ) {
                     content
                 }
             }
@@ -90,11 +103,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) > $param0 OR count(this1) < $param1) AS var2
+                RETURN (count(DISTINCT this1) > $param0 OR count(DISTINCT this1) < $param1) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -127,11 +141,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN NOT (count(this1) > $param0) AS var2
+                RETURN NOT (count(DISTINCT this1) > $param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -153,7 +168,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             {
                 posts(
                     where: {
-                        likesConnection: { 
+                        likesConnection: {
                             aggregate: {
                                 AND: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }]
                                 OR: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }]
@@ -169,11 +184,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN ((count(this1) > $param0 AND count(this1) < $param1) AND (count(this1) > $param2 OR count(this1) < $param3)) AS var2
+                RETURN ((count(DISTINCT this1) > $param0 AND count(DISTINCT this1) < $param1) AND (count(DISTINCT this1) > $param2 OR count(DISTINCT this1) < $param3)) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -210,7 +226,11 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
                         likesConnection: {
                             aggregate: {
                                 count: { nodes: { gt: 10, lt: 20 } }
-                                OR: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }, { count: { nodes: { lt: 54 } } }]
+                                OR: [
+                                    { count: { nodes: { gt: 10 } } }
+                                    { count: { nodes: { lt: 20 } } }
+                                    { count: { nodes: { lt: 54 } } }
+                                ]
                             }
                         }
                     }
@@ -223,11 +243,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) > $param0 AND count(this1) < $param1 AND (count(this1) > $param2 OR count(this1) < $param3 OR count(this1) < $param4)) AS var2
+                RETURN (count(DISTINCT this1) > $param0 AND count(DISTINCT this1) < $param1 AND (count(DISTINCT this1) > $param2 OR count(DISTINCT this1) < $param3 OR count(DISTINCT this1) < $param4)) AS var2
             }
             WITH *
             WHERE var2 = true
