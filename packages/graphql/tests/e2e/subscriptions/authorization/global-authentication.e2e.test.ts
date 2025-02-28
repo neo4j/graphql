@@ -48,7 +48,7 @@ describe("Subscription global authentication", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
-        beforeAll(async () => {
+        beforeEach(async () => {
             const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
@@ -71,9 +71,6 @@ describe("Subscription global authentication", () => {
 
         afterEach(async () => {
             await wsClient.close();
-        });
-
-        afterAll(async () => {
             await testHelper.close();
             await server.close();
         });
@@ -123,7 +120,7 @@ describe("Subscription global authentication", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
-        beforeAll(async () => {
+        beforeEach(async () => {
             const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
@@ -146,9 +143,6 @@ describe("Subscription global authentication", () => {
 
         afterEach(async () => {
             await wsClient.close();
-        });
-
-        afterAll(async () => {
             await testHelper.close();
             await server.close();
         });
@@ -198,7 +192,7 @@ describe("Subscription global authentication", () => {
         let server: TestGraphQLServer;
         let wsClient: WebSocketTestClient;
 
-        beforeAll(async () => {
+        beforeEach(async () => {
             const neoSchema = await testHelper.initNeo4jGraphQL({
                 typeDefs,
                 features: {
@@ -221,9 +215,6 @@ describe("Subscription global authentication", () => {
 
         afterEach(async () => {
             await wsClient.close();
-        });
-
-        afterAll(async () => {
             await testHelper.close();
             await server.close();
         });
