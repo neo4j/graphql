@@ -25,7 +25,6 @@ import type {
 } from "graphql-compose";
 import pluralize from "pluralize";
 import { DEPRECATED } from "../../constants";
-import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
@@ -51,27 +50,45 @@ export function augmentWhereInputWithRelationshipFilters({
     deprecatedDirectives: Directive[];
     features?: Neo4jFeaturesSettings;
 }) {
-    if (!relationshipAdapter.isFilterableByValue()) {
+    if (!relationshipAdapter.isFilterableByAggregate() && !relationshipAdapter.isFilterableByValue()) {
         return {};
     }
 
-    // Relationship filters
-    const relationshipFiltersFields = fieldConfigsToFieldConfigMap({
-        deprecatedDirectives,
-        fields: getRelationshipFilters({ relationshipAdapter }),
-    });
+    if (relationshipAdapter.isFilterableByValue()) {
+        // Relationship filters
+        const relationshipFiltersFields = fieldConfigsToFieldConfigMap({
+            deprecatedDirectives,
+            fields: getRelationshipFilters({ relationshipAdapter }),
+        });
 
-    composer.getOrCreateITC(relationshipAdapter.operations.relationshipFiltersTypeName, (itc) => {
-        itc.addFields(relationshipFiltersFields);
-    });
+        composer.getOrCreateITC(relationshipAdapter.operations.relationshipFiltersTypeName, (itc) => {
+            itc.addFields(relationshipFiltersFields);
+        });
 
-    whereInput.addFields({
-        [relationshipAdapter.name]: {
-            type: relationshipAdapter.operations.relationshipFiltersTypeName,
-        },
-    });
+        whereInput.addFields({
+            [relationshipAdapter.name]: {
+                type: relationshipAdapter.operations.relationshipFiltersTypeName,
+            },
+        });
+        if (shouldAddDeprecatedFields(features, "relationshipFilters")) {
+            // Add relationship legacy filter fields
+            const legacyRelationship = fieldConfigsToFieldConfigMap({
+                deprecatedDirectives,
+                fields: getRelationshipFiltersLegacy(relationshipAdapter),
+            });
+            whereInput.addFields(legacyRelationship);
+
+            // Add connection legacy filter fields
+            const legacyConnection = fieldConfigsToFieldConfigMap({
+                deprecatedDirectives,
+                fields: getRelationshipConnectionFiltersLegacy(relationshipAdapter),
+            });
+            whereInput.addFields(legacyConnection);
+        }
+    }
 
     // Connection filters
+    // Connection filters are generated for both aggregation filters and value filters.
     const connectionFiltersFields = fieldConfigsToFieldConfigMap({
         deprecatedDirectives,
         fields: getRelationshipConnectionFilters(relationshipAdapter),
@@ -86,22 +103,8 @@ export function augmentWhereInputWithRelationshipFilters({
             type: relationshipAdapter.operations.connectionFiltersTypeName,
         },
     });
-    if (shouldAddDeprecatedFields(features, "relationshipFilters")) {
-        // Add relationship legacy filter fields
-        const legacyRelationship = fieldConfigsToFieldConfigMap({
-            deprecatedDirectives,
-            fields: getRelationshipFiltersLegacy(relationshipAdapter),
-        });
-        whereInput.addFields(legacyRelationship);
-
-        // Add connection legacy filter fields
-        const legacyConnection = fieldConfigsToFieldConfigMap({
-            deprecatedDirectives,
-            fields: getRelationshipConnectionFiltersLegacy(relationshipAdapter),
-        });
-        whereInput.addFields(legacyConnection);
-    }
 }
+
 // exported as reused by Cypher filters
 export function getRelationshipFilters({
     relationshipInfo,
@@ -158,47 +161,50 @@ function getRelationshipFiltersUsingOptions({
 function getRelationshipConnectionFilters(
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter
 ): FieldConfig[] {
-    const quantifierFilters = [
-        {
-            name: "all",
-            typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
-            description: `Return ${pluralize(relationshipAdapter.source.name)} where all of the related ${pluralize(
-                relationshipAdapter.operations.connectionFieldTypename
-            )} match this filter`,
-        },
-        {
-            name: "none",
-            typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
-            description: `Return ${pluralize(relationshipAdapter.source.name)} where none of the related ${pluralize(
-                relationshipAdapter.operations.connectionFieldTypename
-            )} match this filter`,
-        },
-        {
-            name: "single",
-            typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
-            description: `Return ${pluralize(relationshipAdapter.source.name)} where one of the related ${pluralize(
-                relationshipAdapter.operations.connectionFieldTypename
-            )} match this filter`,
-        },
-        {
-            name: "some",
-            typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
-            description: `Return ${pluralize(relationshipAdapter.source.name)} where some of the related ${pluralize(
-                relationshipAdapter.operations.connectionFieldTypename
-            )} match this filter`,
-        },
-    ];
-    if (relationshipAdapter.target instanceof UnionEntityAdapter) {
-        return quantifierFilters;
+    const connectionFilters: FieldConfig[] = [];
+    if (relationshipAdapter.isFilterableByValue()) {
+        connectionFilters.push(
+            ...[
+                {
+                    name: "all",
+                    typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
+                    description: `Return ${pluralize(relationshipAdapter.source.name)} where all of the related ${pluralize(
+                        relationshipAdapter.operations.connectionFieldTypename
+                    )} match this filter`,
+                },
+                {
+                    name: "none",
+                    typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
+                    description: `Return ${pluralize(relationshipAdapter.source.name)} where none of the related ${pluralize(
+                        relationshipAdapter.operations.connectionFieldTypename
+                    )} match this filter`,
+                },
+                {
+                    name: "single",
+                    typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
+                    description: `Return ${pluralize(relationshipAdapter.source.name)} where one of the related ${pluralize(
+                        relationshipAdapter.operations.connectionFieldTypename
+                    )} match this filter`,
+                },
+                {
+                    name: "some",
+                    typeName: relationshipAdapter.operations.getConnectionWhereTypename(),
+                    description: `Return ${pluralize(relationshipAdapter.source.name)} where some of the related ${pluralize(
+                        relationshipAdapter.operations.connectionFieldTypename
+                    )} match this filter`,
+                },
+            ]
+        );
     }
-    return [
-        {
+
+    if (relationshipAdapter.isFilterableByAggregate()) {
+        connectionFilters.push({
             name: "aggregate",
             typeName: relationshipAdapter.operations.connectionAggregateInputTypeName,
             description: `Filter ${pluralize(relationshipAdapter.source.name)} by aggregating results on related ${pluralize(relationshipAdapter.operations.connectionFieldTypename)}`,
-        },
-        ...quantifierFilters,
-    ];
+        });
+    }
+    return connectionFilters;
 }
 
 function getRelationshipFiltersLegacy(

@@ -20,20 +20,21 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import type { GraphQLInputObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
-describe("@filterable directive", () => {
+describe("@filterable directive - deprecated", () => {
     describe("on SCALAR", () => {
         test("default arguments should disable aggregation", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
+                    password: String!
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
                 type Movie @node {
-                    releaseDate: DateTime
                     title: String @filterable
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -42,9 +43,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -53,31 +51,54 @@ describe("@filterable directive", () => {
             expect(movieWhereType).toBeDefined();
 
             const movieWhereFields = movieWhereType.getFields();
-            expect(movieWhereFields.title).toBeDefined();
-            expect(movieWhereFields.releaseDate).toBeDefined();
+
+            const title = movieWhereFields["title"];
+            const title_EQ = movieWhereFields["title_EQ"];
+            const title_IN = movieWhereFields["title_IN"];
+            const title_CONTAINS = movieWhereFields["title_CONTAINS"];
+            const title_STARTS_WITH = movieWhereFields["title_STARTS_WITH"];
+            const title_ENDS_WITH = movieWhereFields["title_ENDS_WITH"];
+
+            const titleFilters = [title, title_EQ, title_IN, title_CONTAINS, title_STARTS_WITH, title_ENDS_WITH];
+
+            for (const scalarFilter of titleFilters) {
+                expect(scalarFilter).toBeDefined();
+            }
 
             const movieSubscriptionWhereType = schema.getType("MovieSubscriptionWhere") as GraphQLInputObjectType;
 
             expect(movieSubscriptionWhereType).toBeDefined();
 
             const movieSubscriptionWhereFields = movieSubscriptionWhereType.getFields();
-            expect(movieSubscriptionWhereFields.title).toBeDefined();
-            expect(movieSubscriptionWhereFields.releaseDate).toBeDefined();
+            const subscriptionTitle = movieSubscriptionWhereFields["title"];
+            const subscriptionTitle_EQ = movieSubscriptionWhereFields["title_EQ"];
+            const subscriptionTitle_IN = movieSubscriptionWhereFields["title_IN"];
+            const subscriptionTitle_CONTAINS = movieSubscriptionWhereFields["title_CONTAINS"];
+            const subscriptionTitle_STARTS_WITH = movieSubscriptionWhereFields["title_STARTS_WITH"];
+            const subscriptionTitle_ENDS_WITH = movieSubscriptionWhereFields["title_ENDS_WITH"];
+
+            const subscriptionTitleFilters = [
+                subscriptionTitle,
+                subscriptionTitle_EQ,
+                subscriptionTitle_IN,
+                subscriptionTitle_CONTAINS,
+                subscriptionTitle_STARTS_WITH,
+                subscriptionTitle_ENDS_WITH,
+            ];
+
+            for (const scalarFilter of subscriptionTitleFilters) {
+                expect(scalarFilter).toBeDefined();
+            }
 
             const aggregationWhereInput = schema.getType(
                 "ActorMoviesNodeAggregationWhereInput"
             ) as GraphQLInputObjectType;
 
-            expect(aggregationWhereInput).toBeDefined();
-            const aggregationWhereInputFields = aggregationWhereInput.getFields();
-
-            const title_AGG = aggregationWhereInputFields["title"];
-
-            expect(title_AGG).toBeUndefined();
+            expect(aggregationWhereInput).toBeUndefined();
         });
 
         test("enable value and aggregation filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -85,7 +106,6 @@ describe("@filterable directive", () => {
                 }
 
                 type Movie @node {
-                    releaseDate: DateTime
                     title: String @filterable(byValue: true, byAggregate: true)
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -94,9 +114,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -107,8 +124,17 @@ describe("@filterable directive", () => {
             const movieWhereFields = movieWhereType.getFields();
 
             const title = movieWhereFields["title"];
+            const title_EQ = movieWhereFields["title_EQ"];
+            const title_IN = movieWhereFields["title_IN"];
+            const title_CONTAINS = movieWhereFields["title_CONTAINS"];
+            const title_STARTS_WITH = movieWhereFields["title_STARTS_WITH"];
+            const title_ENDS_WITH = movieWhereFields["title_ENDS_WITH"];
 
-            expect(title).toBeDefined();
+            const titleFilters = [title, title_EQ, title_IN, title_CONTAINS, title_STARTS_WITH, title_ENDS_WITH];
+
+            for (const scalarFilter of titleFilters) {
+                expect(scalarFilter).toBeDefined();
+            }
 
             const movieSubscriptionWhereType = schema.getType("MovieSubscriptionWhere") as GraphQLInputObjectType;
 
@@ -117,8 +143,24 @@ describe("@filterable directive", () => {
             const movieSubscriptionWhereFields = movieSubscriptionWhereType.getFields();
 
             const subscriptionTitle = movieSubscriptionWhereFields["title"];
+            const subscriptionTitle_EQ = movieSubscriptionWhereFields["title_EQ"];
+            const subscriptionTitle_IN = movieSubscriptionWhereFields["title_IN"];
+            const subscriptionTitle_CONTAINS = movieSubscriptionWhereFields["title_CONTAINS"];
+            const subscriptionTitle_STARTS_WITH = movieSubscriptionWhereFields["title_STARTS_WITH"];
+            const subscriptionTitle_ENDS_WITH = movieSubscriptionWhereFields["title_ENDS_WITH"];
 
-            expect(subscriptionTitle).toBeDefined();
+            const subscriptionTitleFilters = [
+                subscriptionTitle,
+                subscriptionTitle_EQ,
+                subscriptionTitle_IN,
+                subscriptionTitle_CONTAINS,
+                subscriptionTitle_STARTS_WITH,
+                subscriptionTitle_ENDS_WITH,
+            ];
+
+            for (const scalarFilter of subscriptionTitleFilters) {
+                expect(scalarFilter).toBeDefined();
+            }
 
             const aggregationWhereInput = schema.getType(
                 "ActorMoviesNodeAggregationWhereInput"
@@ -128,12 +170,48 @@ describe("@filterable directive", () => {
             const aggregationWhereInputFields = aggregationWhereInput.getFields();
 
             const title_AGG = aggregationWhereInputFields["title"];
+            const title_AVERAGE_LENGTH_EQUAL = aggregationWhereInputFields["title_AVERAGE_LENGTH_EQUAL"];
+            const title_LONGEST_LENGTH_EQUAL = aggregationWhereInputFields["title_LONGEST_LENGTH_EQUAL"];
+            const title_SHORTEST_LENGTH_EQUAL = aggregationWhereInputFields["title_SHORTEST_LENGTH_EQUAL"];
+            const title_AVERAGE_LENGTH_GT = aggregationWhereInputFields["title_AVERAGE_LENGTH_GT"];
+            const title_LONGEST_LENGTH_GT = aggregationWhereInputFields["title_LONGEST_LENGTH_GT"];
+            const title_SHORTEST_LENGTH_GT = aggregationWhereInputFields["title_SHORTEST_LENGTH_GT"];
+            const title_AVERAGE_LENGTH_GTE = aggregationWhereInputFields["title_AVERAGE_LENGTH_GTE"];
+            const title_LONGEST_LENGTH_GTE = aggregationWhereInputFields["title_LONGEST_LENGTH_GTE"];
+            const title_SHORTEST_LENGTH_GTE = aggregationWhereInputFields["title_SHORTEST_LENGTH_GTE"];
+            const title_AVERAGE_LENGTH_LT = aggregationWhereInputFields["title_AVERAGE_LENGTH_LT"];
+            const title_LONGEST_LENGTH_LT = aggregationWhereInputFields["title_LONGEST_LENGTH_LT"];
+            const title_SHORTEST_LENGTH_LT = aggregationWhereInputFields["title_SHORTEST_LENGTH_LT"];
+            const title_AVERAGE_LENGTH_LTE = aggregationWhereInputFields["title_AVERAGE_LENGTH_LTE"];
+            const title_LONGEST_LENGTH_LTE = aggregationWhereInputFields["title_LONGEST_LENGTH_LTE"];
+            const title_SHORTEST_LENGTH_LTE = aggregationWhereInputFields["title_SHORTEST_LENGTH_LTE"];
 
-            expect(title_AGG).toBeDefined();
+            const aggregationFilters = [
+                title_AGG,
+                title_AVERAGE_LENGTH_EQUAL,
+                title_LONGEST_LENGTH_EQUAL,
+                title_SHORTEST_LENGTH_EQUAL,
+                title_AVERAGE_LENGTH_GT,
+                title_LONGEST_LENGTH_GT,
+                title_SHORTEST_LENGTH_GT,
+                title_AVERAGE_LENGTH_GTE,
+                title_LONGEST_LENGTH_GTE,
+                title_SHORTEST_LENGTH_GTE,
+                title_AVERAGE_LENGTH_LT,
+                title_LONGEST_LENGTH_LT,
+                title_SHORTEST_LENGTH_LT,
+                title_AVERAGE_LENGTH_LTE,
+                title_LONGEST_LENGTH_LTE,
+                title_SHORTEST_LENGTH_LTE,
+            ];
+
+            for (const aggregationFilter of aggregationFilters) {
+                expect(aggregationFilter).toBeDefined();
+            }
         });
 
         test("enable only aggregation filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -149,9 +227,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -162,8 +237,16 @@ describe("@filterable directive", () => {
             const movieWhereFields = movieWhereType.getFields();
 
             const title = movieWhereFields["title"];
+            const title_IN = movieWhereFields["title_IN"];
+            const title_CONTAINS = movieWhereFields["title_CONTAINS"];
+            const title_STARTS_WITH = movieWhereFields["title_STARTS_WITH"];
+            const title_ENDS_WITH = movieWhereFields["title_ENDS_WITH"];
 
-            expect(title).toBeUndefined();
+            const titleFilters = [title, title_IN, title_CONTAINS, title_STARTS_WITH, title_ENDS_WITH];
+
+            for (const scalarFilter of titleFilters) {
+                expect(scalarFilter).toBeUndefined();
+            }
 
             const movieSubscriptionWhereType = schema.getType("MovieSubscriptionWhere") as GraphQLInputObjectType;
 
@@ -177,14 +260,50 @@ describe("@filterable directive", () => {
             const aggregationWhereInputFields = aggregationWhereInput.getFields();
 
             const title_AGG = aggregationWhereInputFields["title"];
+            const title_AVERAGE_LENGTH_EQUAL = aggregationWhereInputFields["title_AVERAGE_LENGTH_EQUAL"];
+            const title_LONGEST_LENGTH_EQUAL = aggregationWhereInputFields["title_LONGEST_LENGTH_EQUAL"];
+            const title_SHORTEST_LENGTH_EQUAL = aggregationWhereInputFields["title_SHORTEST_LENGTH_EQUAL"];
+            const title_AVERAGE_LENGTH_GT = aggregationWhereInputFields["title_AVERAGE_LENGTH_GT"];
+            const title_LONGEST_LENGTH_GT = aggregationWhereInputFields["title_LONGEST_LENGTH_GT"];
+            const title_SHORTEST_LENGTH_GT = aggregationWhereInputFields["title_SHORTEST_LENGTH_GT"];
+            const title_AVERAGE_LENGTH_GTE = aggregationWhereInputFields["title_AVERAGE_LENGTH_GTE"];
+            const title_LONGEST_LENGTH_GTE = aggregationWhereInputFields["title_LONGEST_LENGTH_GTE"];
+            const title_SHORTEST_LENGTH_GTE = aggregationWhereInputFields["title_SHORTEST_LENGTH_GTE"];
+            const title_AVERAGE_LENGTH_LT = aggregationWhereInputFields["title_AVERAGE_LENGTH_LT"];
+            const title_LONGEST_LENGTH_LT = aggregationWhereInputFields["title_LONGEST_LENGTH_LT"];
+            const title_SHORTEST_LENGTH_LT = aggregationWhereInputFields["title_SHORTEST_LENGTH_LT"];
+            const title_AVERAGE_LENGTH_LTE = aggregationWhereInputFields["title_AVERAGE_LENGTH_LTE"];
+            const title_LONGEST_LENGTH_LTE = aggregationWhereInputFields["title_LONGEST_LENGTH_LTE"];
+            const title_SHORTEST_LENGTH_LTE = aggregationWhereInputFields["title_SHORTEST_LENGTH_LTE"];
 
-            expect(title_AGG).toBeDefined();
+            const aggregationFilters = [
+                title_AGG,
+                title_AVERAGE_LENGTH_EQUAL,
+                title_LONGEST_LENGTH_EQUAL,
+                title_SHORTEST_LENGTH_EQUAL,
+                title_AVERAGE_LENGTH_GT,
+                title_LONGEST_LENGTH_GT,
+                title_SHORTEST_LENGTH_GT,
+                title_AVERAGE_LENGTH_GTE,
+                title_LONGEST_LENGTH_GTE,
+                title_SHORTEST_LENGTH_GTE,
+                title_AVERAGE_LENGTH_LT,
+                title_LONGEST_LENGTH_LT,
+                title_SHORTEST_LENGTH_LT,
+                title_AVERAGE_LENGTH_LTE,
+                title_LONGEST_LENGTH_LTE,
+                title_SHORTEST_LENGTH_LTE,
+            ];
+
+            for (const aggregationFilter of aggregationFilters) {
+                expect(aggregationFilter).toBeDefined();
+            }
         });
     });
 
     describe("on RELATIONSHIP FIELD", () => {
         test("default arguments should disable aggregation", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -200,9 +319,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -212,24 +328,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnectionField = movieWhereFields["actorsConnection"];
-            expect(actorsConnectionField).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable value and aggregation filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -247,9 +367,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -259,24 +376,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnectionField = movieWhereFields["actorsConnection"];
-            expect(actorsConnectionField).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeDefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeDefined();
         });
 
         test("enable only aggregation filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -294,9 +415,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -306,24 +424,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnectionField = movieWhereFields["actorsConnection"];
-            expect(actorsConnectionField).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeUndefined();
+            }
 
-            expect(some).toBeUndefined();
-            expect(none).toBeUndefined();
-            expect(all).toBeUndefined();
-            expect(single).toBeUndefined();
-
-            expect(aggregate).toBeDefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeDefined();
         });
 
         test("enable only value filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -341,9 +463,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -353,26 +472,30 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnectionField = movieWhereFields["actorsConnection"];
-            expect(actorsConnectionField).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
     });
 
-    describe("on INTERFACE RELATIONSHIP FIELD", () => {
+    describe("on INTERFACE RELATIONSHIP FIELD, (aggregation are not generated for abstract types)", () => {
         test("default arguments should disable aggregation", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor implements Person @node {
                     username: String!
                     password: String!
@@ -392,9 +515,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -404,24 +524,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable value and aggregation filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor implements Person @node {
                     username: String!
                     password: String!
@@ -443,9 +567,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -455,24 +576,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeDefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeDefined();
         });
 
         test("enable only value filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor implements Person @node {
                     username: String!
                     password: String!
@@ -494,9 +619,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -506,24 +628,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
 
-        test("disable value and aggregation filters", async () => {
-            const typeDefs = /* GraphQL */ `
+        test("disable value filters", async () => {
+            const typeDefs = gql`
                 type Actor implements Person @node {
                     username: String!
                     password: String!
@@ -545,9 +671,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -557,17 +680,30 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeUndefined(); // both connection and aggregate are disabled so the filter field should be removed
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeUndefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
+
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeUndefined();
+            }
+
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
     });
 
     describe("on UNION RELATIONSHIP FIELD, (aggregation are no generated for abstract types)", () => {
         test("default arguments should disable aggregation", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -591,9 +727,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -603,24 +736,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
 
-        test("enable value and aggregation filters (not generated for abstract types)", async () => {
-            const typeDefs = /* GraphQL */ `
+        test("enable value and aggregation filters", async () => {
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -646,9 +783,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -658,24 +792,28 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
 
         test("enable only value filters", async () => {
-            const typeDefs = /* GraphQL */ `
+            const typeDefs = gql`
                 type Actor @node {
                     username: String!
                     password: String!
@@ -701,9 +839,6 @@ describe("@filterable directive", () => {
                 typeDefs,
                 features: {
                     subscriptions: new TestCDCEngine(),
-                    excludeDeprecatedFields: {
-                        aggregationFiltersOutsideConnection: true,
-                    },
                 },
             });
             const schema = await neoSchema.getSchema();
@@ -713,27 +848,31 @@ describe("@filterable directive", () => {
 
             const movieWhereFields = movieWhereType.getFields();
 
-            const actorsConnection = movieWhereFields["actorsConnection"];
-            expect(actorsConnection).toBeDefined();
+            const actorsConnectionALL = movieWhereFields["actorsConnection_ALL"];
+            const actorsConnectionNONE = movieWhereFields["actorsConnection_NONE"];
+            const actorsConnectionSINGLE = movieWhereFields["actorsConnection_SINGLE"];
+            const actorsConnectionSOME = movieWhereFields["actorsConnection_SOME"];
 
-            const connectionFiltersType = schema.getType("MovieActorsConnectionFilters") as GraphQLInputObjectType;
-            expect(connectionFiltersType).toBeDefined();
+            const actorsConnectionFilters = [
+                actorsConnectionALL,
+                actorsConnectionNONE,
+                actorsConnectionSINGLE,
+                actorsConnectionSOME,
+            ];
 
-            const { aggregate, some, none, all, single } = connectionFiltersType.getFields();
+            for (const relationshipFilter of actorsConnectionFilters) {
+                expect(relationshipFilter).toBeDefined();
+            }
 
-            expect(some).toBeDefined();
-            expect(none).toBeDefined();
-            expect(all).toBeDefined();
-            expect(single).toBeDefined();
-
-            expect(aggregate).toBeUndefined();
+            const actorsAggregate = movieWhereFields["actorsAggregate"];
+            expect(actorsAggregate).toBeUndefined();
         });
     });
 
     describe("snapshot tests", () => {
         describe("on SCALAR", () => {
             test("default arguments should disable aggregation", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -749,9 +888,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -843,6 +979,18 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -990,6 +1138,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1124,6 +1273,19 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
+                    }
+
+                    input MovieActorsAggregateInput {
+                      AND: [MovieActorsAggregateInput!]
+                      NOT: MovieActorsAggregateInput
+                      OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -1357,6 +1519,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -1489,7 +1652,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable value and aggregation filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -1505,9 +1668,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -1599,6 +1759,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -1769,6 +1942,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1903,6 +2077,19 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
+                    }
+
+                    input MovieActorsAggregateInput {
+                      AND: [MovieActorsAggregateInput!]
+                      NOT: MovieActorsAggregateInput
+                      OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -2136,6 +2323,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -2268,7 +2456,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable only aggregation filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -2284,9 +2472,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -2378,6 +2563,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -2548,6 +2746,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -2682,6 +2881,19 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
+                    }
+
+                    input MovieActorsAggregateInput {
+                      AND: [MovieActorsAggregateInput!]
+                      NOT: MovieActorsAggregateInput
+                      OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -2903,6 +3115,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -3031,7 +3244,7 @@ describe("@filterable directive", () => {
 
         describe("on RELATIONSHIP FIELD", () => {
             test("default arguments should disable aggregation", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -3047,9 +3260,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3142,6 +3352,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -3312,6 +3535,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -3763,7 +3987,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable value and aggregation filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -3781,9 +4005,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -3875,6 +4096,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -4045,6 +4279,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4179,6 +4414,19 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
+                    }
+
+                    input MovieActorsAggregateInput {
+                      AND: [MovieActorsAggregateInput!]
+                      NOT: MovieActorsAggregateInput
+                      OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -4412,6 +4660,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -4544,7 +4793,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable only aggregation filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -4562,9 +4811,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -4656,6 +4902,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -4815,6 +5074,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -4949,6 +5209,19 @@ describe("@filterable directive", () => {
                     type MovieActorActorsNodeAggregateSelection {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
+                    }
+
+                    input MovieActorsAggregateInput {
+                      AND: [MovieActorsAggregateInput!]
+                      NOT: MovieActorsAggregateInput
+                      OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -5165,6 +5438,7 @@ describe("@filterable directive", () => {
                       AND: [MovieWhere!]
                       NOT: MovieWhere
                       OR: [MovieWhere!]
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       title: StringScalarFilters
                       title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
@@ -5273,7 +5547,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable only value filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -5291,9 +5565,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -5385,6 +5656,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -5555,6 +5839,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -6006,9 +6291,9 @@ describe("@filterable directive", () => {
             });
         });
 
-        describe("on INTERFACE RELATIONSHIP FIELD", () => {
+        describe("on INTERFACE RELATIONSHIP FIELD, (aggregation does not exists on abstract types)", () => {
             test("default arguments should disable aggregation", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor implements Person @node {
                         username: String!
                         password: String!
@@ -6028,9 +6313,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -6111,6 +6393,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -6270,6 +6565,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -6798,7 +7094,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable value and aggregation filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor implements Person @node {
                         username: String!
                         password: String!
@@ -6820,9 +7116,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -6903,6 +7196,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -7062,6 +7368,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -7181,6 +7488,19 @@ describe("@filterable directive", () => {
                       actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    input MovieActorsAggregateInput {
+                      AND: [MovieActorsAggregateInput!]
+                      NOT: MovieActorsAggregateInput
+                      OR: [MovieActorsAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: MovieActorsNodeAggregationWhereInput
                     }
 
                     input MovieActorsConnectFieldInput {
@@ -7409,6 +7729,7 @@ describe("@filterable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: PersonRelationshipFilters
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -7622,7 +7943,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable only value filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor implements Person @node {
                         username: String!
                         password: String!
@@ -7644,9 +7965,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -7727,6 +8045,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -7886,6 +8217,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -8414,9 +8746,9 @@ describe("@filterable directive", () => {
             });
         });
 
-        describe("on UNION RELATIONSHIP FIELD, (aggregation does not exists on union types)", () => {
+        describe("on UNION RELATIONSHIP FIELD, (aggregation does not exists on abstract types)", () => {
             test("default arguments should disable aggregation", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -8440,9 +8772,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -8535,6 +8864,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -8694,6 +9036,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -8820,6 +9163,19 @@ describe("@filterable directive", () => {
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input AppearanceMoviesAggregateInput {
+                      AND: [AppearanceMoviesAggregateInput!]
+                      NOT: AppearanceMoviesAggregateInput
+                      OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: AppearanceMoviesNodeAggregationWhereInput
                     }
 
                     input AppearanceMoviesConnectFieldInput {
@@ -8981,6 +9337,7 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
@@ -9523,7 +9880,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable value and aggregation filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -9549,9 +9906,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -9644,6 +9998,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -9803,6 +10170,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -9929,6 +10297,19 @@ describe("@filterable directive", () => {
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input AppearanceMoviesAggregateInput {
+                      AND: [AppearanceMoviesAggregateInput!]
+                      NOT: AppearanceMoviesAggregateInput
+                      OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: AppearanceMoviesNodeAggregationWhereInput
                     }
 
                     input AppearanceMoviesConnectFieldInput {
@@ -10090,6 +10471,7 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
@@ -10632,7 +11014,7 @@ describe("@filterable directive", () => {
             });
 
             test("enable only value filters", async () => {
-                const typeDefs = /* GraphQL */ `
+                const typeDefs = gql`
                     type Actor @node {
                         username: String!
                         password: String!
@@ -10658,9 +11040,6 @@ describe("@filterable directive", () => {
                     typeDefs,
                     features: {
                         subscriptions: new TestCDCEngine(),
-                        excludeDeprecatedFields: {
-                            aggregationFiltersOutsideConnection: true,
-                        },
                     },
                 });
                 const schema = await neoSchema.getSchema();
@@ -10753,6 +11132,19 @@ describe("@filterable directive", () => {
 
                     type ActorMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input ActorMoviesAggregateInput {
+                      AND: [ActorMoviesAggregateInput!]
+                      NOT: ActorMoviesAggregateInput
+                      OR: [ActorMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: ActorMoviesNodeAggregationWhereInput
                     }
 
                     input ActorMoviesConnectFieldInput {
@@ -10912,6 +11304,7 @@ describe("@filterable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -11038,6 +11431,19 @@ describe("@filterable directive", () => {
 
                     type AppearanceMovieMoviesNodeAggregateSelection {
                       title: StringAggregateSelection!
+                    }
+
+                    input AppearanceMoviesAggregateInput {
+                      AND: [AppearanceMoviesAggregateInput!]
+                      NOT: AppearanceMoviesAggregateInput
+                      OR: [AppearanceMoviesAggregateInput!]
+                      count: IntScalarFilters
+                      count_EQ: Int
+                      count_GT: Int
+                      count_GTE: Int
+                      count_LT: Int
+                      count_LTE: Int
+                      node: AppearanceMoviesNodeAggregationWhereInput
                     }
 
                     input AppearanceMoviesConnectFieldInput {
@@ -11199,6 +11605,7 @@ describe("@filterable directive", () => {
                       NOT: AppearanceWhere
                       OR: [AppearanceWhere!]
                       movies: MovieRelationshipFilters
+                      moviesAggregate: AppearanceMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: AppearanceMoviesConnectionFilters
                       \\"\\"\\"
                       Return Appearances where all of the related AppearanceMoviesConnections match this filter
