@@ -70,11 +70,6 @@ describe("Unions", () => {
               name: StringAggregateSelection!
             }
 
-            type AuthorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input AuthorConnectInput {
               publications: AuthorPublicationsConnectInput
             }
@@ -337,7 +332,6 @@ describe("Unions", () => {
 
             type Book {
               author(limit: Int, offset: Int, sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorAggregate(where: AuthorWhere): BookAuthorAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
             }
@@ -348,11 +342,6 @@ describe("Unions", () => {
             }
 
             type BookAggregateNode {
-              title: StringAggregateSelection!
-            }
-
-            type BookAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -372,12 +361,6 @@ describe("Unions", () => {
 
             type BookAuthorAuthorAggregateSelection {
               count: CountConnection!
-              edge: BookAuthorAuthorEdgeAggregateSelection
-              node: BookAuthorAuthorNodeAggregateSelection
-            }
-
-            type BookAuthorAuthorAggregationSelection {
-              count: Int!
               edge: BookAuthorAuthorEdgeAggregateSelection
               node: BookAuthorAuthorNodeAggregateSelection
             }
@@ -682,7 +665,6 @@ describe("Unions", () => {
 
             type Journal {
               author(limit: Int, offset: Int, sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorAggregate(where: AuthorWhere): JournalAuthorAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
             }
@@ -693,11 +675,6 @@ describe("Unions", () => {
             }
 
             type JournalAggregateNode {
-              subject: StringAggregateSelection!
-            }
-
-            type JournalAggregateSelection {
-              count: Int!
               subject: StringAggregateSelection!
             }
 
@@ -717,12 +694,6 @@ describe("Unions", () => {
 
             type JournalAuthorAuthorAggregateSelection {
               count: CountConnection!
-              edge: JournalAuthorAuthorEdgeAggregateSelection
-              node: JournalAuthorAuthorNodeAggregateSelection
-            }
-
-            type JournalAuthorAuthorAggregationSelection {
-              count: Int!
               edge: JournalAuthorAuthorEdgeAggregateSelection
               node: JournalAuthorAuthorNodeAggregateSelection
             }
@@ -980,13 +951,10 @@ describe("Unions", () => {
 
             type Query {
               authors(limit: Int, offset: Int, sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorsConnection\\\\\\" instead\\")
               authorsConnection(after: String, first: Int, sort: [AuthorSort!], where: AuthorWhere): AuthorsConnection!
               books(limit: Int, offset: Int, sort: [BookSort!], where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"booksConnection\\\\\\" instead\\")
               booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
               journals(limit: Int, offset: Int, sort: [JournalSort!], where: JournalWhere): [Journal!]!
-              journalsAggregate(where: JournalWhere): JournalAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"journalsConnection\\\\\\" instead\\")
               journalsConnection(after: String, first: Int, sort: [JournalSort!], where: JournalWhere): JournalsConnection!
               publications(limit: Int, offset: Int, where: PublicationWhere): [Publication!]!
             }

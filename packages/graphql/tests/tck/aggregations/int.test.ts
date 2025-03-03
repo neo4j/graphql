@@ -39,9 +39,13 @@ describe("Cypher Aggregations Int", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    imdbRating {
-                        min
+                moviesConnection {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -56,7 +60,20 @@ describe("Cypher Aggregations Int", () => {
                 WITH this
                 RETURN { min: min(this.imdbRating) } AS var0
             }
-            RETURN { imdbRating: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRating: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -65,9 +82,13 @@ describe("Cypher Aggregations Int", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    imdbRating {
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -82,7 +103,20 @@ describe("Cypher Aggregations Int", () => {
                 WITH this
                 RETURN { max: max(this.imdbRating) } AS var0
             }
-            RETURN { imdbRating: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRating: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -91,9 +125,13 @@ describe("Cypher Aggregations Int", () => {
     test("Average", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    imdbRating {
-                        average
+                moviesConnection {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                average
+                            }
+                        }
                     }
                 }
             }
@@ -108,7 +146,20 @@ describe("Cypher Aggregations Int", () => {
                 WITH this
                 RETURN { average: avg(this.imdbRating) } AS var0
             }
-            RETURN { imdbRating: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRating: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,9 +168,13 @@ describe("Cypher Aggregations Int", () => {
     test("Sum", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    imdbRating {
-                        sum
+                moviesConnection {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -134,7 +189,20 @@ describe("Cypher Aggregations Int", () => {
                 WITH this
                 RETURN { sum: sum(this.imdbRating) } AS var0
             }
-            RETURN { imdbRating: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRating: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -143,12 +211,16 @@ describe("Cypher Aggregations Int", () => {
     test("Min, Max, Sum and Average", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    imdbRating {
-                        min
-                        max
-                        average
-                        sum
+                moviesConnection {
+                    aggregate {
+                        node {
+                            imdbRating {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -163,7 +235,20 @@ describe("Cypher Aggregations Int", () => {
                 WITH this
                 RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } AS var0
             }
-            RETURN { imdbRating: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRating: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

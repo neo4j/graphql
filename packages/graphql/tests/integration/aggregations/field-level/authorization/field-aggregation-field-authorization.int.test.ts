@@ -94,10 +94,12 @@ describe("Field Level Aggregations Field Authorization", () => {
         const query = `
             query {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            title {
-                                longest
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                title {
+                                    longest
+                                }
                             }
                         }
                     }

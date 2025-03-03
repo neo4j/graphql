@@ -118,12 +118,6 @@ describe("Timestamps", () => {
               updatedAt: DateTimeAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              createdAt: DateTimeAggregateSelection!
-              updatedAt: DateTimeAggregateSelection!
-            }
-
             input MovieCreateInput {
               id: ID
               updatedAt: DateTime!
@@ -199,7 +193,6 @@ describe("Timestamps", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

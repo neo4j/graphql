@@ -39,9 +39,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        min
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -56,7 +60,20 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH this
                 RETURN { min: min(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:File)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -65,9 +82,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        max
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -82,7 +103,20 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH this
                 RETURN { max: max(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:File)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -91,9 +125,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Average", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        average
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                average
+                            }
+                        }
                     }
                 }
             }
@@ -108,7 +146,20 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH this
                 RETURN { average: avg(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:File)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,9 +168,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Sum", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        sum
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -134,7 +189,20 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH this
                 RETURN { sum: sum(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:File)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -143,12 +211,16 @@ describe("Cypher Aggregations BigInt", () => {
     test("Min, Max, Sum and Average", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        min
-                        max
-                        average
-                        sum
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -163,7 +235,20 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH this
                 RETURN { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:File)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

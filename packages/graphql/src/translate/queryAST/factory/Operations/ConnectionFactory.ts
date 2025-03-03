@@ -266,8 +266,6 @@ export class ConnectionFactory {
                     context,
                     extraWhereArgs: whereArgs,
                 });
-                // NOTE: This will always be true on 7.x and this attribute should be removed
-                aggregationOperation.isInConnectionField = true;
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
                     nodeAlias: "node",
@@ -288,8 +286,6 @@ export class ConnectionFactory {
                     extraWhereArgs: whereArgs,
                 });
 
-                // NOTE: This will always be true on 7.x and this attribute should be removed
-                aggregationOperation.isInConnectionField = true;
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
                     nodeAlias: "node",

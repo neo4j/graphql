@@ -71,10 +71,6 @@ describe("Point", () => {
               count: Count!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
-
             input MovieCreateInput {
               filmedAt: PointInput!
             }
@@ -180,7 +176,6 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -302,10 +297,6 @@ describe("Point", () => {
               count: Count!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
-
             input MachineCreateInput {
               partLocation: CartesianPointInput!
             }
@@ -364,7 +355,6 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, sort: [MachineSort!], where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\" instead\\")
               machinesConnection(after: String, first: Int, sort: [MachineSort!], where: MachineWhere): MachinesConnection!
             }
 
@@ -448,10 +438,6 @@ describe("Point", () => {
               count: Count!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
-
             input MovieCreateInput {
               filmedAt: [PointInput!]!
             }
@@ -524,7 +510,6 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -624,10 +609,6 @@ describe("Point", () => {
               count: Count!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
-            }
-
             input MachineCreateInput {
               partLocations: [CartesianPointInput!]!
             }
@@ -676,7 +657,6 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\" instead\\")
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 

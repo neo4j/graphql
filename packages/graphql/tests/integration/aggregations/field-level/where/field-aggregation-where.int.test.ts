@@ -64,8 +64,12 @@ describe("Field Level Aggregations Where", () => {
         const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {name: { eq: "Linda" }}) {
-                  count
+                actorsConnection(where: { node: {name: { eq: "Linda" } }}) {
+                  aggregate {
+                    count {
+                        nodes
+                    }
+                  }
                 }
               }
             }
@@ -74,8 +78,12 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            count: 1,
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsConnection).toEqual({
+            aggregate: {
+                count: {
+                    nodes: 1,
+                },
+            },
         });
     });
 
@@ -83,8 +91,12 @@ describe("Field Level Aggregations Where", () => {
         const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {OR: [{name: { eq: "Linda" }}, {name: { eq: "Arnold" }}]}) {
-                  count
+                actorsConnection(where: {node: {OR: [{name: { eq: "Linda" }}, {name: { eq: "Arnold" }}]}}) {
+                  aggregate {
+                    count {
+                        nodes
+                    }
+                  }
                 }
               }
             }
@@ -93,8 +105,12 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            count: 2,
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsConnection).toEqual({
+            aggregate: {
+                count: {
+                    nodes: 2,
+                },
+            },
         });
     });
 
@@ -102,16 +118,24 @@ describe("Field Level Aggregations Where", () => {
         const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: { moviesConnection: { aggregate: { count: { nodes: { eq: 1 } }  } }}) {
-                  count
+                actorsConnection(where: { node: {moviesConnection: { aggregate: { count: { nodes: { eq: 1 } }  } }}}) {
+                  aggregate {
+                    count {
+                        nodes
+                    }
+                  }
                 }
               }
           }`;
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            count: 2,
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsConnection).toEqual({
+            aggregate: {
+                count: {
+                    nodes: 2,
+                },
+            },
         });
     });
 
@@ -120,16 +144,24 @@ describe("Field Level Aggregations Where", () => {
             const query = /* GraphQL */ `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where: { actorsConnection: { some: { node: { name: { eq: "Linda" } } } }}){
-                        count
+                    moviesConnection(where: { node: { actorsConnection: { some: { node: { name: { eq: "Linda" } } } } }}){
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }`;
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typePerson.plural][0].moviesAggregate).toEqual({
-                count: 1,
+            expect((gqlResult as any).data[typePerson.plural][0].moviesConnection).toEqual({
+                aggregate: {
+                    count: {
+                        nodes: 1,
+                    },
+                },
             });
         });
 
@@ -137,16 +169,24 @@ describe("Field Level Aggregations Where", () => {
             const query = /* GraphQL */ `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where: { actorsConnection: { some: { edge: { screentime: { gt: 10 } } } }}){
-                        count
+                    moviesConnection(where: { node: { actorsConnection: { some: { edge: { screentime: { gt: 10 } } }} }}){
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }`;
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typePerson.plural][0].moviesAggregate).toEqual({
-                count: 1,
+            expect((gqlResult as any).data[typePerson.plural][0].moviesConnection).toEqual({
+                aggregate: {
+                    count: {
+                        nodes: 1,
+                    },
+                },
             });
         });
 
@@ -154,16 +194,24 @@ describe("Field Level Aggregations Where", () => {
             const query = /* GraphQL */ `
             query {
                 ${typePerson.plural} {
-                    moviesAggregate(where: { actorsConnection: { some: { node: { OR: [{ name: { eq: "Linda" } },{ name: { eq: "Arnold" } } ] } } }}){
-                        count
+                    moviesConnection(where: { node: { actorsConnection: { some: { node: { OR: [{ name: { eq: "Linda" } },{ name: { eq: "Arnold" } } ] } }} }}){
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }`;
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult as any).data[typePerson.plural][0].moviesAggregate).toEqual({
-                count: 1,
+            expect((gqlResult as any).data[typePerson.plural][0].moviesConnection).toEqual({
+                aggregate: {
+                    count: {
+                        nodes: 1,
+                    },
+                },
             });
         });
     });
@@ -172,8 +220,12 @@ describe("Field Level Aggregations Where", () => {
         const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {name: { in: ["Linda", "Arnold"] }}) {
-                  count
+                actorsConnection(where: {node: {name: { in: ["Linda", "Arnold"] }}}) {
+                  aggregate {
+                    count {
+                        nodes
+                    }
+                  }
                 }
               }
             }
@@ -182,8 +234,12 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            count: 2,
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsConnection).toEqual({
+            aggregate: {
+                count: {
+                    nodes: 2,
+                },
+            },
         });
     });
 
@@ -191,8 +247,12 @@ describe("Field Level Aggregations Where", () => {
         const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {age: { in: [40, 60, 37] }}) {
-                  count
+                actorsConnection(where: {node: {age: { in: [40, 60, 37] }}}) {
+                  aggregate {
+                    count {
+                        nodes
+                    }
+                  }
                 }
               }
             }
@@ -201,8 +261,12 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            count: 1,
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsConnection).toEqual({
+            aggregate: {
+                count: {
+                    nodes: 1,
+                },
+            },
         });
     });
 
@@ -210,8 +274,12 @@ describe("Field Level Aggregations Where", () => {
         const query = /* GraphQL */ `
             query {
               ${typeMovie.plural} {
-                actorsAggregate(where: {born: { gt: "2000-01-01" }}) {
-                  count
+                actorsConnection(where: {node: {born: { gt: "2000-01-01" }}}) {
+                  aggregate {
+                    count {
+                        nodes
+                    }
+                  }
                 }
               }
             }
@@ -220,8 +288,12 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0].actorsAggregate).toEqual({
-            count: 1,
+        expect((gqlResult as any).data[typeMovie.plural][0].actorsConnection).toEqual({
+            aggregate: {
+                count: {
+                    nodes: 1,
+                },
+            },
         });
     });
 });

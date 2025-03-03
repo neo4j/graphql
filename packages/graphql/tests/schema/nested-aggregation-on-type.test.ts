@@ -95,7 +95,6 @@ describe("nested aggregation on interface", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -282,11 +281,6 @@ describe("nested aggregation on interface", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInFieldInput
               name: String!
@@ -303,12 +297,6 @@ describe("nested aggregation on interface", () => {
 
             type ActorMovieActedInAggregateSelection {
               count: CountConnection!
-              edge: ActorMovieActedInEdgeAggregateSelection
-              node: ActorMovieActedInNodeAggregateSelection
-            }
-
-            type ActorMovieActedInAggregationSelection {
-              count: Int!
               edge: ActorMovieActedInEdgeAggregateSelection
               node: ActorMovieActedInNodeAggregateSelection
             }
@@ -505,13 +493,6 @@ describe("nested aggregation on interface", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              cost: FloatAggregateSelection!
-              count: Int!
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieConnectWhere {
               node: MovieWhere!
             }
@@ -614,10 +595,8 @@ describe("nested aggregation on interface", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

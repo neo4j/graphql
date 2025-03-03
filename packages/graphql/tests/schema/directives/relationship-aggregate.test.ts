@@ -18,40 +18,12 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
+import type { GraphQLObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@relationship directive, aggregate argument", () => {
-    test("the default behavior should enable nested aggregation (this will change in 4.0)", async () => {
-        const typeDefs = gql`
-            type Actor @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeDefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeDefined();
-    });
-
     test("should disable nested aggregation", async () => {
         const typeDefs = gql`
             type Actor @node {
@@ -73,130 +45,6 @@ describe("@relationship directive, aggregate argument", () => {
         const movieFields = movieType.getFields();
         const movieActorsAggregate = movieFields["actorsAggregate"];
         expect(movieActorsAggregate).toBeUndefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeUndefined();
-    });
-
-    test("should enable nested aggregation", async () => {
-        const typeDefs = gql`
-            type Actor @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeDefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeDefined();
-    });
-
-    test("should work in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
-        const typeDefs = gql`
-            type Actor @query(aggregate: false) @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeDefined();
-
-        const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-        const movies = queryFields["movies"];
-        const actors = queryFields["actors"];
-
-        expect(movies).toBeDefined();
-        expect(actors).toBeDefined();
-
-        const moviesConnection = queryFields["moviesConnection"];
-        const actorsConnection = queryFields["actorsConnection"];
-
-        expect(moviesConnection).toBeDefined();
-        expect(actorsConnection).toBeDefined();
-
-        const moviesAggregate = queryFields["moviesAggregate"];
-        const actorsAggregate = queryFields["actorsAggregate"];
-
-        expect(moviesAggregate).toBeDefined();
-        expect(actorsAggregate).toBeUndefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeDefined();
-    });
-
-    test("should work in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
-        const typeDefs = gql`
-            type Actor @query(aggregate: true) @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeUndefined();
-
-        const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-        const movies = queryFields["movies"];
-        const actors = queryFields["actors"];
-
-        expect(movies).toBeDefined();
-        expect(actors).toBeDefined();
-
-        const moviesConnection = queryFields["moviesConnection"];
-        const actorsConnection = queryFields["actorsConnection"];
-
-        expect(moviesConnection).toBeDefined();
-        expect(actorsConnection).toBeDefined();
-
-        const moviesAggregate = queryFields["moviesAggregate"];
-        const actorsAggregate = queryFields["actorsAggregate"];
-
-        expect(moviesAggregate).toBeDefined();
-        expect(actorsAggregate).toBeDefined();
 
         const movieActorActorsAggregationSelection = schema.getType(
             "MovieActorActorsAggregationSelection"
@@ -238,12 +86,6 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type ActorAggregateNode {
-                  password: StringAggregateSelection!
-                  username: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   password: StringAggregateSelection!
                   username: StringAggregateSelection!
                 }
@@ -519,11 +361,6 @@ describe("@relationship directive, aggregate argument", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   title: String
@@ -616,10 +453,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -712,12 +547,6 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type ActorAggregateNode {
-                  password: StringAggregateSelection!
-                  username: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   password: StringAggregateSelection!
                   username: StringAggregateSelection!
                 }
@@ -849,18 +678,12 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   title: String
                 }
 
                 type MovieActorActorsAggregateSelection {
                   count: CountConnection!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -1015,11 +838,6 @@ describe("@relationship directive, aggregate argument", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   title: String
@@ -1112,10 +930,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1214,12 +1030,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorAggregateNode {
-                      password: StringAggregateSelection!
-                      username: StringAggregateSelection!
-                    }
-
-                    type ActorAggregateSelection {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -1480,11 +1290,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
-                      title: StringAggregateSelection!
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsFieldInput
                       title: String
@@ -1597,12 +1402,6 @@ describe("@relationship directive, aggregate argument", () => {
                       username: StringAggregateSelection!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
-                      password: StringAggregateSelection!
-                      username: StringAggregateSelection!
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -1667,13 +1466,10 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -1770,12 +1566,6 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorAggregateNode {
-                      password: StringAggregateSelection!
-                      username: StringAggregateSelection!
-                    }
-
-                    type ActorAggregateSelection {
-                      count: Int!
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -1892,7 +1682,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -2043,11 +1832,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
-                      title: StringAggregateSelection!
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsFieldInput
                       title: String
@@ -2064,11 +1848,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type MoviePersonActorsAggregateSelection {
                       count: CountConnection!
-                      node: MoviePersonActorsNodeAggregateSelection
-                    }
-
-                    type MoviePersonActorsAggregationSelection {
-                      count: Int!
                       node: MoviePersonActorsNodeAggregateSelection
                     }
 
@@ -2175,12 +1954,6 @@ describe("@relationship directive, aggregate argument", () => {
                       username: StringAggregateSelection!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
-                      password: StringAggregateSelection!
-                      username: StringAggregateSelection!
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -2245,13 +2018,10 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -2356,12 +2126,6 @@ describe("@relationship directive, aggregate argument", () => {
                       username: StringAggregateSelection!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
-                      password: StringAggregateSelection!
-                      username: StringAggregateSelection!
-                    }
-
                     input ActorConnectWhere {
                       node: ActorWhere!
                     }
@@ -2616,11 +2380,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
-                      title: StringAggregateSelection!
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsCreateInput
                       title: String
@@ -2733,11 +2492,6 @@ describe("@relationship directive, aggregate argument", () => {
                       name: StringAggregateSelection!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
-                      name: StringAggregateSelection!
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -2777,14 +2531,11 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       castMembers(limit: Int, offset: Int, where: CastMemberWhere): [CastMember!]!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -2884,12 +2635,6 @@ describe("@relationship directive, aggregate argument", () => {
                       username: StringAggregateSelection!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
-                      password: StringAggregateSelection!
-                      username: StringAggregateSelection!
-                    }
-
                     input ActorConnectWhere {
                       node: ActorWhere!
                     }
@@ -3144,11 +2889,6 @@ describe("@relationship directive, aggregate argument", () => {
                       title: StringAggregateSelection!
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
-                      title: StringAggregateSelection!
-                    }
-
                     input MovieCreateInput {
                       actors: MovieActorsCreateInput
                       title: String
@@ -3261,11 +3001,6 @@ describe("@relationship directive, aggregate argument", () => {
                       name: StringAggregateSelection!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
-                      name: StringAggregateSelection!
-                    }
-
                     input PersonConnectWhere {
                       node: PersonWhere!
                     }
@@ -3305,14 +3040,11 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       castMembers(limit: Int, offset: Int, where: CastMemberWhere): [CastMember!]!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 

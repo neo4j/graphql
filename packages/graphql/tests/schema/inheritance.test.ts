@@ -60,7 +60,6 @@ describe("inheritance", () => {
 
             type Actor implements Person @customDirectiveObj {
               friends(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              friendsAggregate(where: PersonWhere): ActorPersonFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String
             }
@@ -71,11 +70,6 @@ describe("inheritance", () => {
             }
 
             type ActorAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -199,20 +193,6 @@ describe("inheritance", () => {
               disconnect: [ActorFriendsDisconnectFieldInput!]
               update: ActorFriendsUpdateConnectionInput
               where: PersonFriendsConnectionWhere
-            }
-
-            type ActorPersonFriendsAggregationSelection {
-              count: Int!
-              edge: ActorPersonFriendsEdgeAggregateSelection
-              node: ActorPersonFriendsNodeAggregateSelection
-            }
-
-            type ActorPersonFriendsEdgeAggregateSelection {
-              since: IntAggregateSelection!
-            }
-
-            type ActorPersonFriendsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             \\"\\"\\"
@@ -377,13 +357,6 @@ describe("inheritance", () => {
               since_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter since: { lte: ... }\\")
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
             input IntScalarAggregationFilters {
               average: FloatScalarFilters
@@ -442,11 +415,6 @@ describe("inheritance", () => {
             }
 
             type PersonAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -715,10 +683,8 @@ describe("inheritance", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 

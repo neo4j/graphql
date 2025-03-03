@@ -148,7 +148,6 @@ describe("Apollo Federation", () => {
 
             type Post {
               author(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              authorAggregate(where: UserWhere): PostUserAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
             }
@@ -160,11 +159,6 @@ describe("Apollo Federation", () => {
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
             }
 
             input PostAuthorAggregateInput {
@@ -346,11 +340,6 @@ describe("Apollo Federation", () => {
               node: PostUserAuthorNodeAggregateSelection
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
             type PostUserAuthorNodeAggregateSelection {
               name: StringAggregateSelection!
             }
@@ -404,10 +393,8 @@ describe("Apollo Federation", () => {
             type Query {
               _service: _Service!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]! @shareable
-              usersAggregate(where: UserWhere): UserAggregateSelection! @shareable @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection! @shareable
             }
 
@@ -468,7 +455,6 @@ describe("Apollo Federation", () => {
             type User @shareable {
               name: String!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): UserPostPostsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
@@ -478,11 +464,6 @@ describe("Apollo Federation", () => {
             }
 
             type UserAggregateNode @shareable {
-              name: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection @shareable {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -514,11 +495,6 @@ describe("Apollo Federation", () => {
 
             type UserPostPostsAggregateSelection {
               count: CountConnection!
-              node: UserPostPostsNodeAggregateSelection
-            }
-
-            type UserPostPostsAggregationSelection {
-              count: Int!
               node: UserPostPostsNodeAggregateSelection
             }
 
@@ -867,7 +843,6 @@ describe("Apollo Federation", () => {
 
             type Post {
               author(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              authorAggregate(where: UserWhere): PostUserAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               content: String!
             }
@@ -879,11 +854,6 @@ describe("Apollo Federation", () => {
 
             type PostAggregateNode {
               content: StringAggregateSelection!
-            }
-
-            type PostAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
             }
 
             input PostAuthorAggregateInput {
@@ -1039,11 +1009,6 @@ describe("Apollo Federation", () => {
               node: PostUserAuthorNodeAggregateSelection
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
             type PostUserAuthorNodeAggregateSelection {
               name: StringAggregateSelection!
             }
@@ -1098,10 +1063,8 @@ describe("Apollo Federation", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -1169,11 +1132,6 @@ describe("Apollo Federation", () => {
             }
 
             type UserAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 

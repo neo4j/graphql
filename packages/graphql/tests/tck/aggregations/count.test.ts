@@ -39,8 +39,12 @@ describe("Cypher Aggregations Count", () => {
     test("Simple Count", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    count
+                moviesConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -51,9 +55,22 @@ describe("Cypher Aggregations Count", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -62,8 +79,12 @@ describe("Cypher Aggregations Count", () => {
     test("Count with WHERE", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate(where: { title: { eq: "some-title" } }) {
-                    count
+                moviesConnection(where: { title: { eq: "some-title" } }) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -75,14 +96,29 @@ describe("Cypher Aggregations Count", () => {
             CALL {
                 MATCH (this:Movie)
                 WHERE this.title = $param0
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WHERE this1.title = $param1
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some-title\\"
+                \\"param0\\": \\"some-title\\",
+                \\"param1\\": \\"some-title\\"
             }"
         `);
     });

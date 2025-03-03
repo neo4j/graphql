@@ -109,10 +109,8 @@ describe("@customResolver directive", () => {
 
             type Query {
               userInterfaces(limit: Int, offset: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
-              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"userInterfacesConnection\\\\\\" instead\\")
               userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): UserInterfacesConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -176,12 +174,6 @@ describe("@customResolver directive", () => {
               username: StringAggregateSelection!
             }
 
-            type UserAggregateSelection {
-              count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
             input UserCreateInput {
               id: ID!
               password: String!
@@ -203,11 +195,6 @@ describe("@customResolver directive", () => {
             }
 
             type UserInterfaceAggregateNode {
-              customResolver: StringAggregateSelection!
-            }
-
-            type UserInterfaceAggregateSelection {
-              count: Int!
               customResolver: StringAggregateSelection!
             }
 

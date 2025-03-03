@@ -105,10 +105,6 @@ describe("Date", () => {
               count: Count!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-            }
-
             input MovieCreateInput {
               date: Date
               id: ID
@@ -176,7 +172,6 @@ describe("Date", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

@@ -230,10 +230,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type Query {
               resourceEntities(limit: Int, offset: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): [ResourceEntity!]!
-              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourceEntitiesConnection\\\\\\" instead\\")
               resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): ResourceEntitiesConnection!
               resources(limit: Int, offset: Int, sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourcesConnection\\\\\\" instead\\")
               resourcesConnection(after: String, first: Int, sort: [ResourceSort!], where: ResourceWhere): ResourcesConnection!
             }
 
@@ -242,7 +240,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Resources encapsulating the given resource (e.g., a github org contains a repo)
               \\"\\"\\"
               containedBy(limit: Int, offset: Int, sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              containedByAggregate(where: ResourceWhere): ResourceResourceContainedByAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"containedByConnection\\\\\\" instead\\")
               containedByConnection(after: String, first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
               createdAt: DateTime!
               externalIds: [ID!]
@@ -261,13 +258,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceAggregateNode {
-              createdAt: DateTimeAggregateSelection!
-              name: StringAggregateSelection!
-              updatedAt: DateTimeAggregateSelection!
-            }
-
-            type ResourceAggregateSelection {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
@@ -479,11 +469,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               name: StringAggregateSelection!
             }
 
-            type ResourceEntityAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             type ResourceEntityEdge {
               cursor: String!
               node: ResourceEntity!
@@ -543,11 +528,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type ResourceResourceContainedByAggregateSelection {
               count: CountConnection!
-              node: ResourceResourceContainedByNodeAggregateSelection
-            }
-
-            type ResourceResourceContainedByAggregationSelection {
-              count: Int!
               node: ResourceResourceContainedByNodeAggregateSelection
             }
 

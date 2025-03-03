@@ -49,19 +49,23 @@ describe("Cypher Aggregations Many while Alias fields", () => {
     test("Custom Label Aggregations", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    _title: title {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _imdbRating: imdbRating {
-                        _min: min
-                        _max: max
-                        _average: average
-                    }
-                    _createdAt: createdAt {
-                        _min: min
-                        _max: max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            _title: title {
+                                _shortest: shortest
+                                _longest: longest
+                            }
+                            _imdbRating: imdbRating {
+                                _min: min
+                                _max: max
+                                _average: average
+                            }
+                            _createdAt: createdAt {
+                                _min: min
+                                _max: max
+                            }
+                        }
                     }
                 }
             }
@@ -88,7 +92,20 @@ describe("Cypher Aggregations Many while Alias fields", () => {
                 WITH this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
-            RETURN { _title: var0, _imdbRating: var1, _createdAt: var2 }"
+            CALL {
+                WITH *
+                MATCH (this3:Film)
+                WITH collect({ node: this3 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this3
+                    RETURN collect({ node: { __id: id(this3), __resolveType: \\"Movie\\" } }) AS var4
+                }
+                RETURN var4, totalCount
+            }
+            RETURN { edges: var4, totalCount: totalCount, aggregate: { node: { _title: var0, _imdbRating: var1, _createdAt: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -97,19 +114,23 @@ describe("Cypher Aggregations Many while Alias fields", () => {
     test("Additional Labels Aggregations", async () => {
         const query = /* GraphQL */ `
             {
-                actorsAggregate {
-                    _name: name {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _imdbRating: imdbRating {
-                        _min: min
-                        _max: max
-                        _average: average
-                    }
-                    _createdAt: createdAt {
-                        _min: min
-                        _max: max
+                actorsConnection {
+                    aggregate {
+                        node {
+                            _name: name {
+                                _shortest: shortest
+                                _longest: longest
+                            }
+                            _imdbRating: imdbRating {
+                                _min: min
+                                _max: max
+                                _average: average
+                            }
+                            _createdAt: createdAt {
+                                _min: min
+                                _max: max
+                            }
+                        }
                     }
                 }
             }
@@ -136,7 +157,20 @@ describe("Cypher Aggregations Many while Alias fields", () => {
                 WITH this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
-            RETURN { _name: var0, _imdbRating: var1, _createdAt: var2 }"
+            CALL {
+                WITH *
+                MATCH (this3:Actor:Person:Alien)
+                WITH collect({ node: this3 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this3
+                    RETURN collect({ node: { __id: id(this3), __resolveType: \\"Actor\\" } }) AS var4
+                }
+                RETURN var4, totalCount
+            }
+            RETURN { edges: var4, totalCount: totalCount, aggregate: { node: { _name: var0, _imdbRating: var1, _createdAt: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

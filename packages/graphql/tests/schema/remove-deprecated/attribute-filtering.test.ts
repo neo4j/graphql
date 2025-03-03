@@ -449,13 +449,10 @@ describe("Exclude attribute suffix based filtering", () => {
             type Query {
               ds(limit: Int, offset: Int, where: dWhere): [d!]!
               interfaceCS(limit: Int, offset: Int, sort: [interfaceCSort!], where: interfaceCWhere): [interfaceC!]!
-              interfaceCSAggregate(where: interfaceCWhere): interfaceCAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interfaceCSConnection\\\\\\" instead\\")
               interfaceCSConnection(after: String, first: Int, sort: [interfaceCSort!], where: interfaceCWhere): InterfaceCSConnection!
               typeAS(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              typeASAggregate(where: typeAWhere): typeAAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeASConnection\\\\\\" instead\\")
               typeASConnection(after: String, first: Int, sort: [typeASort!], where: typeAWhere): TypeASConnection!
               typeBS(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              typeBSAggregate(where: typeBWhere): typeBAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"typeBSConnection\\\\\\" instead\\")
               typeBSConnection(after: String, first: Int, sort: [typeBSort!], where: typeBWhere): TypeBSConnection!
             }
 
@@ -589,16 +586,6 @@ describe("Exclude attribute suffix based filtering", () => {
 
             type interfaceCAggregateNode {
               averageRating: FloatAggregateSelection!
-              createdAt: DateTimeAggregateSelection!
-              duration: DurationAggregateSelection!
-              localDateTime: LocalDateTimeAggregateSelection!
-              localTime: LocalTimeAggregateSelection!
-              time: TimeAggregateSelection!
-            }
-
-            type interfaceCAggregateSelection {
-              averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
@@ -825,7 +812,6 @@ describe("Exclude attribute suffix based filtering", () => {
 
             type typeA {
               actedIn(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              actedInAggregate(where: typeBWhere): typeAtypeBActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [typeAActedInConnectionSort!], where: typeAActedInConnectionWhere): typeAActedInConnection!
               name: String
             }
@@ -1038,11 +1024,6 @@ describe("Exclude attribute suffix based filtering", () => {
               name: StringAggregateSelection!
             }
 
-            type typeAAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input typeAConnectInput {
               actedIn: [typeAActedInConnectFieldInput!]
             }
@@ -1133,12 +1114,6 @@ describe("Exclude attribute suffix based filtering", () => {
               node: typeAtypeBActedInNodeAggregateSelection
             }
 
-            type typeAtypeBActedInAggregationSelection {
-              count: Int!
-              edge: typeAtypeBActedInEdgeAggregateSelection
-              node: typeAtypeBActedInNodeAggregateSelection
-            }
-
             type typeAtypeBActedInEdgeAggregateSelection {
               averageRating: FloatAggregateSelection!
               createdAt: DateTimeAggregateSelection!
@@ -1170,7 +1145,6 @@ describe("Exclude attribute suffix based filtering", () => {
               point: Point
               ratings: [Float!]!
               rels(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              relsAggregate(where: typeAWhere): typeBtypeARelsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"relsConnection\\\\\\" instead\\")
               relsConnection(after: String, first: Int, sort: [typeBRelsConnectionSort!], where: typeBRelsConnectionWhere): typeBRelsConnection!
               time: Time
             }
@@ -1182,16 +1156,6 @@ describe("Exclude attribute suffix based filtering", () => {
 
             type typeBAggregateNode {
               averageRating: FloatAggregateSelection!
-              createdAt: DateTimeAggregateSelection!
-              duration: DurationAggregateSelection!
-              localDateTime: LocalDateTimeAggregateSelection!
-              localTime: LocalTimeAggregateSelection!
-              time: TimeAggregateSelection!
-            }
-
-            type typeBAggregateSelection {
-              averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
@@ -1478,12 +1442,6 @@ describe("Exclude attribute suffix based filtering", () => {
 
             type typeBtypeARelsAggregateSelection {
               count: CountConnection!
-              edge: typeBtypeARelsEdgeAggregateSelection
-              node: typeBtypeARelsNodeAggregateSelection
-            }
-
-            type typeBtypeARelsAggregationSelection {
-              count: Int!
               edge: typeBtypeARelsEdgeAggregateSelection
               node: typeBtypeARelsNodeAggregateSelection
             }

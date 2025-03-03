@@ -219,13 +219,6 @@ describe("@populatedBy tests", () => {
                   callback3: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  callback1: StringAggregateSelection!
-                  callback2: StringAggregateSelection!
-                  callback3: StringAggregateSelection!
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   callback2: String!
                   id: ID
@@ -306,7 +299,6 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -470,13 +462,6 @@ describe("@populatedBy tests", () => {
                   callback3: IntAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  callback1: IntAggregateSelection!
-                  callback2: IntAggregateSelection!
-                  callback3: IntAggregateSelection!
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   callback2: Int!
                   id: ID
@@ -562,7 +547,6 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -828,10 +812,6 @@ describe("@populatedBy tests", () => {
                   count: Count!
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
-                }
-
                 input GenreConnectWhere {
                   node: GenreWhere!
                 }
@@ -913,17 +893,12 @@ describe("@populatedBy tests", () => {
 
                 type Movie {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
                 }
 
                 type MovieAggregate {
                   count: Count!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
                 }
 
                 input MovieCreateInput {
@@ -942,11 +917,6 @@ describe("@populatedBy tests", () => {
 
                 type MovieGenreGenresAggregateSelection {
                   count: CountConnection!
-                  edge: MovieGenreGenresEdgeAggregateSelection
-                }
-
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
                   edge: MovieGenreGenresEdgeAggregateSelection
                 }
 
@@ -1139,10 +1109,8 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1418,10 +1386,6 @@ describe("@populatedBy tests", () => {
                   count: Count!
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
-                }
-
                 input GenreConnectWhere {
                   node: GenreWhere!
                 }
@@ -1525,17 +1489,12 @@ describe("@populatedBy tests", () => {
 
                 type Movie {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
                 }
 
                 type MovieAggregate {
                   count: Count!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
                 }
 
                 input MovieCreateInput {
@@ -1554,11 +1513,6 @@ describe("@populatedBy tests", () => {
 
                 type MovieGenreGenresAggregateSelection {
                   count: CountConnection!
-                  edge: MovieGenreGenresEdgeAggregateSelection
-                }
-
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
                   edge: MovieGenreGenresEdgeAggregateSelection
                 }
 
@@ -1751,10 +1705,8 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 

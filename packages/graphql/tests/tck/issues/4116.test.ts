@@ -77,8 +77,12 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
             query Family {
                 families {
                     id
-                    membersAggregate {
-                        count
+                    membersConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -91,23 +95,48 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
             MATCH (this:Family)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                WHERE ($isAuthenticated = true AND EXISTS {
-                    MATCH (this1)-[:MEMBER_OF]->(this2:Family)
-                    WHERE EXISTS {
-                        MATCH (this2)<-[:CREATOR_OF]-(this3:User)
-                        WHERE ($param1 IS NOT NULL AND $param1 IN this3.roles)
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)-[:MEMBER_OF]->(this2:Family)
+                        WHERE EXISTS {
+                            MATCH (this2)<-[:CREATOR_OF]-(this3:User)
+                            WHERE ($param1 IS NOT NULL AND $param1 IN this3.roles)
+                        }
+                    })
+                    RETURN { nodes: count(DISTINCT this1) } AS var4
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this5:MEMBER_OF]-(this6:Person)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this6)-[:MEMBER_OF]->(this7:Family)
+                        WHERE EXISTS {
+                            MATCH (this7)<-[:CREATOR_OF]-(this8:User)
+                            WHERE ($param2 IS NOT NULL AND $param2 IN this8.roles)
+                        }
+                    })
+                    WITH collect({ node: this6, relationship: this5 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this6, edge.relationship AS this5
+                        RETURN collect({ node: { __id: id(this6), __resolveType: \\"Person\\" } }) AS var9
                     }
-                })
-                RETURN count(this1) AS var4
+                    RETURN var9, totalCount
+                }
+                RETURN { edges: var9, totalCount: totalCount, aggregate: { count: var4 } } AS var10
             }
-            RETURN this { .id, membersAggregate: { count: var4 } } AS this"
+            RETURN this { .id, membersConnection: var10 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"isAuthenticated\\": true,
-                \\"param1\\": \\"plan:paid\\"
+                \\"param1\\": \\"plan:paid\\",
+                \\"param2\\": \\"plan:paid\\"
             }"
         `);
     });

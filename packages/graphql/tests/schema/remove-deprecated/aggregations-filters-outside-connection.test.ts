@@ -232,7 +232,6 @@ describe("Aggregations filters outside connection filters", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"likesConnection\\\\\\" instead\\")
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -243,11 +242,6 @@ describe("Aggregations filters outside connection filters", () => {
             }
 
             type PostAggregateNode {
-              title: StringAggregateSelection!
-            }
-
-            type PostAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -420,12 +414,6 @@ describe("Aggregations filters outside connection filters", () => {
               node: PostUserLikesNodeAggregateSelection
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
-              edge: PostUserLikesEdgeAggregateSelection
-              node: PostUserLikesNodeAggregateSelection
-            }
-
             type PostUserLikesEdgeAggregateSelection {
               someString: StringAggregateSelection!
             }
@@ -482,10 +470,8 @@ describe("Aggregations filters outside connection filters", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -554,12 +540,6 @@ describe("Aggregations filters outside connection filters", () => {
             }
 
             type UserAggregateNode {
-              someID: IntAggregateSelection!
-              someString: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
               someID: IntAggregateSelection!
               someString: StringAggregateSelection!
             }

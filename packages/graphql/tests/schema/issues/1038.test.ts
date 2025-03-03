@@ -59,12 +59,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code: StringAggregateSelection!
             }
 
-            type AWSAccountAggregateSelection {
-              accountName: StringAggregateSelection!
-              code: StringAggregateSelection!
-              count: Int!
-            }
-
             input AWSAccountCreateInput {
               accountName: String
               code: String
@@ -152,12 +146,6 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               zoneType: StringAggregateSelection!
             }
 
-            type DNSZoneAggregateSelection {
-              awsId: StringAggregateSelection!
-              count: Int!
-              zoneType: StringAggregateSelection!
-            }
-
             input DNSZoneCreateInput {
               awsId: String
               zoneType: String
@@ -235,10 +223,8 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             type Query {
               awsAccounts(limit: Int, offset: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): [AWSAccount!]!
-              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"awsAccountsConnection\\\\\\" instead\\")
               awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): AwsAccountsConnection!
               dnsZones(limit: Int, offset: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): [DNSZone!]!
-              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"dnsZonesConnection\\\\\\" instead\\")
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): DnsZonesConnection!
             }
 

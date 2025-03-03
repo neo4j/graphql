@@ -71,8 +71,12 @@ describe("Cypher Aggregations with Auth", () => {
     test("Simple Count", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate {
-                    count
+                usersConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -85,9 +89,22 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -104,8 +121,12 @@ describe("Cypher Aggregations with Auth", () => {
     test("Count with WHERE", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate(where: { name: { eq: "some-name" } }) {
-                    count
+                usersConnection(where: { name: { eq: "some-name" } }) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -118,9 +139,23 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WHERE this1.name = $param3
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -130,7 +165,8 @@ describe("Cypher Aggregations with Auth", () => {
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"super_admin\\"
-                }
+                },
+                \\"param3\\": \\"some-name\\"
             }"
         `);
     });
@@ -138,10 +174,14 @@ describe("Cypher Aggregations with Auth", () => {
     test("Field Int with auth", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate {
-                    imdbRatingInt {
-                        min
-                        max
+                usersConnection {
+                    aggregate {
+                        node {
+                            imdbRatingInt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -158,7 +198,20 @@ describe("Cypher Aggregations with Auth", () => {
                 WITH this
                 RETURN { min: min(this.imdbRatingInt), max: max(this.imdbRatingInt) } AS var0
             }
-            RETURN { imdbRatingInt: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRatingInt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -175,10 +228,14 @@ describe("Cypher Aggregations with Auth", () => {
     test("Field Float with auth", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate {
-                    imdbRatingFloat {
-                        min
-                        max
+                usersConnection {
+                    aggregate {
+                        node {
+                            imdbRatingFloat {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -195,7 +252,20 @@ describe("Cypher Aggregations with Auth", () => {
                 WITH this
                 RETURN { min: min(this.imdbRatingFloat), max: max(this.imdbRatingFloat) } AS var0
             }
-            RETURN { imdbRatingFloat: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRatingFloat: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -212,10 +282,14 @@ describe("Cypher Aggregations with Auth", () => {
     test("Field BigInt with auth", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate {
-                    imdbRatingBigInt {
-                        min
-                        max
+                usersConnection {
+                    aggregate {
+                        node {
+                            imdbRatingBigInt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -232,7 +306,20 @@ describe("Cypher Aggregations with Auth", () => {
                 WITH this
                 RETURN { min: min(this.imdbRatingBigInt), max: max(this.imdbRatingBigInt) } AS var0
             }
-            RETURN { imdbRatingBigInt: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { imdbRatingBigInt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -249,10 +336,14 @@ describe("Cypher Aggregations with Auth", () => {
     test("Field String with auth", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate {
-                    name {
-                        shortest
-                        longest
+                usersConnection {
+                    aggregate {
+                        node {
+                            name {
+                                shortest
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -271,7 +362,20 @@ describe("Cypher Aggregations with Auth", () => {
                 WITH collect(this.name) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
             }
-            RETURN { name: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { name: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -288,10 +392,14 @@ describe("Cypher Aggregations with Auth", () => {
     test("Field DateTime with auth", async () => {
         const query = /* GraphQL */ `
             {
-                usersAggregate {
-                    createdAt {
-                        min
-                        max
+                usersConnection {
+                    aggregate {
+                        node {
+                            createdAt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -308,7 +416,20 @@ describe("Cypher Aggregations with Auth", () => {
                 WITH this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
             }
-            RETURN { createdAt: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:User)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

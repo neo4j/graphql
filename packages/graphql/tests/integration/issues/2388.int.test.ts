@@ -92,8 +92,12 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         const query = `
         query PartByNumber {
             ${Part.plural} {
-                partUsagesAggregate(where: { partAddress_SOME: { id_EQ: "123" } }) {
-                    count
+                partUsagesConnection(where: { node: { partAddress: { some: { id: {eq: "123" } } } } }) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
           }
@@ -106,8 +110,12 @@ describe("https://github.com/neo4j/graphql/issues/2388", () => {
         expect(result.data).toEqual({
             [Part.plural]: [
                 {
-                    partUsagesAggregate: {
-                        count: 1,
+                    partUsagesConnection: {
+                        aggregate: {
+                            count: {
+                                nodes: 1,
+                            },
+                        },
                     },
                 },
             ],

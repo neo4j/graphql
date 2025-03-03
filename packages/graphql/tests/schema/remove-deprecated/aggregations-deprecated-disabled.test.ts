@@ -295,20 +295,6 @@ describe("Deprecated Aggregations disabled", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              createdAt: DateTimeAggregateSelection!
-              imdbRating: FloatAggregateSelection!
-              isbn: StringAggregateSelection!
-              screenTime: DurationAggregateSelection!
-              someBigInt: BigIntAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someTime: TimeAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               createdAt: DateTime
               id: ID
@@ -481,7 +467,6 @@ describe("Deprecated Aggregations disabled", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -1055,7 +1040,6 @@ describe("Deprecated Aggregations disabled", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"likesConnection\\\\\\" instead\\")
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -1066,11 +1050,6 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type PostAggregateNode {
-              title: StringAggregateSelection!
-            }
-
-            type PostAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -1229,12 +1208,6 @@ describe("Deprecated Aggregations disabled", () => {
               node: PostUserLikesNodeAggregateSelection
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
-              edge: PostUserLikesEdgeAggregateSelection
-              node: PostUserLikesNodeAggregateSelection
-            }
-
             type PostUserLikesEdgeAggregateSelection {
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
@@ -1307,10 +1280,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -1416,19 +1387,6 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type UserAggregateNode {
-              someBigInt: BigIntAggregateSelection!
-              someDateTime: DateTimeAggregateSelection!
-              someDuration: DurationAggregateSelection!
-              someFloat: FloatAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someString: StringAggregateSelection!
-              someTime: TimeAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
@@ -2183,7 +2141,6 @@ describe("Deprecated Aggregations disabled", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"likesConnection\\\\\\" instead\\")
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
@@ -2194,11 +2151,6 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type PostAggregateNode {
-              title: StringAggregateSelection!
-            }
-
-            type PostAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 
@@ -2354,11 +2306,6 @@ describe("Deprecated Aggregations disabled", () => {
               node: PostUserLikesNodeAggregateSelection
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
-              node: PostUserLikesNodeAggregateSelection
-            }
-
             type PostUserLikesNodeAggregateSelection {
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
@@ -2419,10 +2366,8 @@ describe("Deprecated Aggregations disabled", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -2540,19 +2485,6 @@ describe("Deprecated Aggregations disabled", () => {
             }
 
             type UserAggregateNode {
-              someBigInt: BigIntAggregateSelection!
-              someDateTime: DateTimeAggregateSelection!
-              someDuration: DurationAggregateSelection!
-              someFloat: FloatAggregateSelection!
-              someInt: IntAggregateSelection!
-              someLocalDateTime: LocalDateTimeAggregateSelection!
-              someLocalTime: LocalTimeAggregateSelection!
-              someString: StringAggregateSelection!
-              someTime: TimeAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!

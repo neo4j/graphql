@@ -70,8 +70,12 @@ describe("Nested Field Level Aggregations", () => {
             name
             movies: ${typeMovie.plural} {
               title
-              actorAggregate: ${typeActor.plural}Aggregate {
-                count
+              actorAggregate: ${typeActor.plural}Connection {
+                aggregate {
+                    count {
+                        nodes
+                    }
+                }
               }
             }
           }
@@ -84,11 +88,11 @@ describe("Nested Field Level Aggregations", () => {
         expect(movies).toHaveLength(2);
         expect(movies).toContainEqual({
             title: "Terminator",
-            actorAggregate: { count: 2 },
+            actorAggregate: { aggregate: { count: { nodes: 2 } } },
         });
         expect(movies).toContainEqual({
             title: "Total Recall",
-            actorAggregate: { count: 1 },
+            actorAggregate: { aggregate: { count: { nodes: 1 } } },
         });
     });
 });

@@ -115,7 +115,6 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"relatedToConnection\\\\\\" instead\\")
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
@@ -125,11 +124,6 @@ describe("Sort", () => {
             }
 
             type Node1AggregateNode {
-              property: StringAggregateSelection!
-            }
-
-            type Node1AggregateSelection {
-              count: Int!
               property: StringAggregateSelection!
             }
 
@@ -161,10 +155,6 @@ describe("Sort", () => {
 
             type Node1Node2RelatedToAggregateSelection {
               count: CountConnection!
-            }
-
-            type Node1Node2RelatedToAggregationSelection {
-              count: Int!
             }
 
             input Node1RelatedToAggregateInput {
@@ -337,16 +327,11 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"relatedToConnection\\\\\\" instead\\")
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
             type Node2Aggregate {
               count: Count!
-            }
-
-            type Node2AggregateSelection {
-              count: Int!
             }
 
             input Node2ConnectInput {
@@ -376,11 +361,6 @@ describe("Sort", () => {
 
             type Node2Node1RelatedToAggregateSelection {
               count: CountConnection!
-              node: Node2Node1RelatedToNodeAggregateSelection
-            }
-
-            type Node2Node1RelatedToAggregationSelection {
-              count: Int!
               node: Node2Node1RelatedToNodeAggregateSelection
             }
 
@@ -579,10 +559,8 @@ describe("Sort", () => {
 
             type Query {
               node1s(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              node1sAggregate(where: Node1Where): Node1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"node1sConnection\\\\\\" instead\\")
               node1sConnection(after: String, first: Int, sort: [Node1Sort!], where: Node1Where): Node1sConnection!
               node2s(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              node2sAggregate(where: Node2Where): Node2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"node2sConnection\\\\\\" instead\\")
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 

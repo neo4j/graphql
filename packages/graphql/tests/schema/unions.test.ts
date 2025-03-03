@@ -84,10 +84,6 @@ describe("Unions", () => {
               count: Count!
             }
 
-            type GenreAggregateSelection {
-              count: Int!
-            }
-
             input GenreConnectWhere {
               node: GenreWhere!
             }
@@ -155,10 +151,6 @@ describe("Unions", () => {
 
             type MovieAggregate {
               count: Count!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
             }
 
             input MovieConnectInput {
@@ -409,10 +401,8 @@ describe("Unions", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               searches(limit: Int, offset: Int, where: SearchWhere): [Search!]!
             }
