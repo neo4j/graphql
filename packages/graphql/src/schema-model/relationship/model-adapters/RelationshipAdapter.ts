@@ -181,7 +181,12 @@ export class RelationshipAdapter {
         return this.annotations.filterable?.byValue !== false;
     }
 
+    // this.aggregate refers to the @relationship.aggregate argument and does not have effect on the aggregation filters
     public isFilterableByAggregate(): boolean {
+        if (this.target instanceof UnionEntityAdapter) {
+            return false;
+        }
+
         return this.annotations.filterable?.byAggregate !== false;
     }
 
@@ -190,7 +195,7 @@ export class RelationshipAdapter {
             return false;
         }
 
-        if (this.target instanceof UnionEntityAdapter || this.source instanceof InterfaceEntityAdapter) {
+        if (this.target instanceof UnionEntityAdapter) {
             return false;
         }
 

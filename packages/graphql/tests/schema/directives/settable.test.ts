@@ -792,7 +792,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: MovieRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -1253,7 +1253,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: MovieRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -1743,7 +1743,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: MovieRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -2053,7 +2053,7 @@ describe("@settable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -2417,7 +2417,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: MovieRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -2727,7 +2727,7 @@ describe("@settable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -4359,7 +4359,7 @@ describe("@settable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -5114,7 +5114,7 @@ describe("@settable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -5563,7 +5563,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -6187,7 +6187,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -6835,7 +6835,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -7087,7 +7087,7 @@ describe("@settable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related ProductionActorsConnections match this filter
@@ -7329,7 +7329,7 @@ describe("@settable", () => {
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: ProductionActorsAggregateInput
+                  actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: ProductionActorsConnectionFilters
                   \\"\\"\\"
                   Return Productions where all of the related ProductionActorsConnections match this filter
@@ -7541,7 +7541,7 @@ describe("@settable", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: SeriesActorsAggregateInput
+                  actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: SeriesActorsConnectionFilters
                   \\"\\"\\"
                   Return Series where all of the related ProductionActorsConnections match this filter
@@ -7891,7 +7891,7 @@ describe("@settable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -8143,7 +8143,7 @@ describe("@settable", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related ProductionActorsConnections match this filter
@@ -8410,7 +8410,7 @@ describe("@settable", () => {
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: ProductionActorsAggregateInput
+                  actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: ProductionActorsConnectionFilters
                   \\"\\"\\"
                   Return Productions where all of the related ProductionActorsConnections match this filter
@@ -8622,7 +8622,7 @@ describe("@settable", () => {
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: SeriesActorsAggregateInput
+                  actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: SeriesActorsConnectionFilters
                   \\"\\"\\"
                   Return Series where all of the related ProductionActorsConnections match this filter

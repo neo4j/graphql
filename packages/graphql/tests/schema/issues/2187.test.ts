@@ -369,7 +369,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               NOT: GenreWhere
               OR: [GenreWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: GenreMoviesAggregateInput
+              moviesAggregate: GenreMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter

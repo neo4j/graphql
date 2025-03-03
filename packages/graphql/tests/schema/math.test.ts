@@ -871,7 +871,7 @@ describe("Algebraic", () => {
               NOT: DirectorWhere
               OR: [DirectorWhere!]
               directs: MovieRelationshipFilters
-              directsAggregate: DirectorDirectsAggregateInput
+              directsAggregate: DirectorDirectsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directsConnection filter, please use { directsConnection: { aggregate: {...} } } instead\\")
               directsConnection: DirectorDirectsConnectionFilters
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
@@ -1180,7 +1180,7 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               directedBy: DirectorRelationshipFilters
-              directedByAggregate: MovieDirectedByAggregateInput
+              directedByAggregate: MovieDirectedByAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directedByConnection filter, please use { directedByConnection: { aggregate: {...} } } instead\\")
               directedByConnection: MovieDirectedByConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectedByConnections match this filter
@@ -1505,7 +1505,7 @@ describe("Algebraic", () => {
               viewers_LT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { lt: ... }\\")
               viewers_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { lte: ... }\\")
               workers: PersonRelationshipFilters
-              workersAggregate: MovieWorkersAggregateInput
+              workersAggregate: MovieWorkersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the workersConnection filter, please use { workersConnection: { aggregate: {...} } } instead\\")
               workersConnection: MovieWorkersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
@@ -1775,7 +1775,7 @@ describe("Algebraic", () => {
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               worksInProduction: ProductionRelationshipFilters
-              worksInProductionAggregate: PersonWorksInProductionAggregateInput
+              worksInProductionAggregate: PersonWorksInProductionAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the worksInProductionConnection filter, please use { worksInProductionConnection: { aggregate: {...} } } instead\\")
               worksInProductionConnection: PersonWorksInProductionConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
@@ -2481,7 +2481,7 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: PersonRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -2764,7 +2764,7 @@ describe("Algebraic", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               actedInMovies: MovieRelationshipFilters
-              actedInMoviesAggregate: PersonActedInMoviesAggregateInput
+              actedInMoviesAggregate: PersonActedInMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInMoviesConnection filter, please use { actedInMoviesConnection: { aggregate: {...} } } instead\\")
               actedInMoviesConnection: PersonActedInMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter

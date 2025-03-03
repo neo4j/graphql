@@ -1079,7 +1079,7 @@ describe("Exclude attribute suffix based filtering", () => {
               NOT: typeAWhere
               OR: [typeAWhere!]
               actedIn: typeBRelationshipFilters
-              actedInAggregate: typeAActedInAggregateInput
+              actedInAggregate: typeAActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: typeAActedInConnectionFilters
               \\"\\"\\"
               Return typeAS where all of the related typeAActedInConnections match this filter
@@ -1411,7 +1411,7 @@ describe("Exclude attribute suffix based filtering", () => {
               point: PointFilters
               ratings: FloatListFilters
               rels: typeARelationshipFilters
-              relsAggregate: typeBRelsAggregateInput
+              relsAggregate: typeBRelsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relsConnection filter, please use { relsConnection: { aggregate: {...} } } instead\\")
               relsConnection: typeBRelsConnectionFilters
               \\"\\"\\"
               Return typeBS where all of the related typeBRelsConnections match this filter

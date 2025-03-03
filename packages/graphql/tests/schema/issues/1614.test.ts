@@ -254,7 +254,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: CrewMemberWhere
               OR: [CrewMemberWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: CrewMemberMoviesAggregateInput
+              moviesAggregate: CrewMemberMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: CrewMemberMoviesConnectionFilters
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter

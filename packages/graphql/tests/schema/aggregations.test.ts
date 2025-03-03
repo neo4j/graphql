@@ -1496,7 +1496,7 @@ describe("Aggregations", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               likes: UserRelationshipFilters
-              likesAggregate: PostLikesAggregateInput
+              likesAggregate: PostLikesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the likesConnection filter, please use { likesConnection: { aggregate: {...} } } instead\\")
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
@@ -2715,7 +2715,7 @@ describe("Aggregations", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               likes: UserRelationshipFilters
-              likesAggregate: PostLikesAggregateInput
+              likesAggregate: PostLikesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the likesConnection filter, please use { likesConnection: { aggregate: {...} } } instead\\")
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter

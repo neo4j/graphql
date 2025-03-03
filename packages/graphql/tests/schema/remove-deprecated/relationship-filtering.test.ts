@@ -1208,7 +1208,7 @@ describe("Exclude suffix based filtering", () => {
               NOT: typeAWhere
               OR: [typeAWhere!]
               actedIn: typeBRelationshipFilters
-              actedInAggregate: typeAActedInAggregateInput
+              actedInAggregate: typeAActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: typeAActedInConnectionFilters
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
@@ -1580,7 +1580,7 @@ describe("Exclude suffix based filtering", () => {
               ratings_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter ratings: { eq: ... }\\")
               ratings_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter ratings: { includes: ... }\\")
               rels: typeARelationshipFilters
-              relsAggregate: typeBRelsAggregateInput
+              relsAggregate: typeBRelsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relsConnection filter, please use { relsConnection: { aggregate: {...} } } instead\\")
               relsConnection: typeBRelsConnectionFilters
               time: TimeScalarFilters
               time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
