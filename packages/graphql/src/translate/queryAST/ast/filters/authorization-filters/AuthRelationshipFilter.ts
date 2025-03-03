@@ -60,7 +60,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
         switch (this.operator) {
             case "ALL": {
                 if (!useExist) {
-                    const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
+                    const patternComprehension = new Cypher.PatternComprehension(pattern).map(new Cypher.Literal(1));
                     const sizeFunction = Cypher.size(patternComprehension.where(Cypher.not(innerPredicate)));
                     return Cypher.eq(sizeFunction, new Cypher.Literal(0));
                 }
@@ -86,7 +86,7 @@ export class AuthRelationshipFilter extends RelationshipFilter {
                     });
                 }
                 if (!useExist) {
-                    const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1));
+                    const patternComprehension = new Cypher.PatternComprehension(pattern).map(new Cypher.Literal(1));
                     const sizeFunction = Cypher.size(patternComprehension.where(innerPredicate));
                     return Cypher.gt(sizeFunction, new Cypher.Literal(0));
                 }

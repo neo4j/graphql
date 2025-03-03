@@ -19,10 +19,10 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { filterTruthy } from "../../../../utils/utils";
-import type { LogicalOperators } from "./Filter";
-import { Filter } from "./Filter";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { LogicalOperators } from "./Filter";
+import { Filter } from "./Filter";
 
 export class LogicalFilter extends Filter {
     private operation: LogicalOperators;
@@ -56,7 +56,9 @@ export class LogicalFilter extends Filter {
         switch (this.operation) {
             case "NOT": {
                 if (predicates.length === 0) return undefined;
-                return Cypher.not(Cypher.and(...predicates));
+                const andPredicates = Cypher.and(...predicates);
+                if (!andPredicates) return undefined;
+                return Cypher.not(andPredicates);
             }
             case "AND": {
                 return Cypher.and(...predicates);

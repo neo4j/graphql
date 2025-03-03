@@ -59,7 +59,7 @@ export const addCallbackAndSetParamCypher = (
     }
 
     const propRef = node.property(field.dbPropertyName as string);
-    const rawCypherStatement = new Cypher.Raw((env: Cypher.Environment) => {
+    const rawCypherStatement = new Cypher.Raw((env: Cypher.RawCypherContext) => {
         const variableCypher = compileCypher(variable, env);
         const paramName = `${variableCypher}_${field.fieldName}_${field.callback?.callbackName}`;
 

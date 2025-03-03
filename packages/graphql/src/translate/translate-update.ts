@@ -472,7 +472,7 @@ export default async function translateUpdate({
 
     const relationshipValidationStr = createRelationshipValidationString({ node, context, varName });
 
-    const updateQuery = new Cypher.Raw((env: Cypher.Environment) => {
+    const updateQuery = new Cypher.Raw((env: Cypher.RawCypherContext) => {
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
             matchAndWhereStr,
@@ -514,7 +514,7 @@ export default async function translateUpdate({
         ];
     });
 
-    const cypherResult = updateQuery.build("update_");
+    const cypherResult = updateQuery.build({ prefix: "update_" });
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: cypherResult.cypher,
     });

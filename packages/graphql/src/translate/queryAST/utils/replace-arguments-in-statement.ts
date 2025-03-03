@@ -25,7 +25,7 @@ export function replaceArgumentsInStatement({
     rawArguments,
     statement,
 }: {
-    env: Cypher.Environment;
+    env: Cypher.RawCypherContext;
     definedArguments: Argument[];
     rawArguments: Record<string, any>;
     statement: string;
@@ -46,7 +46,7 @@ export function replaceArgumentsInStatement({
             if (storedParamName) {
                 return storedParamName;
             }
-            const paramName = new Cypher.Param(value).getCypher(env);
+            const paramName = env.compile(new Cypher.Param(value));
             paramsRecord.set(value, paramName);
             return paramName;
         }

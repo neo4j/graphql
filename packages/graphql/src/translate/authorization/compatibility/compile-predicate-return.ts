@@ -52,7 +52,7 @@ export function compilePredicateReturn(
             }
             return predicateStr;
         });
-        const { cypher, params } = predicateCypher.build(`authorization_${indexPrefix || ""}`);
+        const { cypher, params } = predicateCypher.build({ prefix: `authorization_${indexPrefix || ""}` });
         result.cypher = cypher;
         result.params = params;
         result.subqueries = subqueries;

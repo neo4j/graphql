@@ -24,7 +24,7 @@ describe("caseWhere", () => {
     test("should translate a WHERE filter using the CASE operator", () => {
         const outputVariables = [new Cypher.Variable(), new Cypher.Variable()];
         const clause = caseWhere(Cypher.eq(new Cypher.Literal(true), new Cypher.Literal(true)), outputVariables);
-        const { cypher } = clause.build("myPrefix");
+        const { cypher } = clause.build({ prefix: "myPrefix" });
         expect(cypher).toMatchInlineSnapshot(`
             "WITH *, CASE true = true
                 WHEN true THEN [myPrefixvar0, myPrefixvar1]

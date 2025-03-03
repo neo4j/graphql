@@ -18,8 +18,8 @@
  */
 
 import { Neo4jGraphQL } from "../../src";
-import { formatCypher, translateQuery, formatParams } from "./utils/tck-test-utils";
 import { createBearerToken } from "../utils/create-bearer-token";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
 describe("Cypher Union", () => {
     const secret = "secret";

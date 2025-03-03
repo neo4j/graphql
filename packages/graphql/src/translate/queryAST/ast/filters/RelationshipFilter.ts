@@ -344,9 +344,9 @@ export class RelationshipFilter extends Filter {
         if (!queryASTContext.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
-            innerPredicate
-        );
+        const patternComprehension = new Cypher.PatternComprehension(pattern)
+            .map(new Cypher.Literal(1))
+            .where(innerPredicate);
         return Cypher.single(queryASTContext.target, patternComprehension, new Cypher.Literal(true));
     }
 
