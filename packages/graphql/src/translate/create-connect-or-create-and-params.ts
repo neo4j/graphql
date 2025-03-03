@@ -117,7 +117,7 @@ export function createConnectOrCreateAndParams({
     });
 
     const query = Cypher.utils.concat(...wrappedQueries);
-    return query.build(`${varName}_`);
+    return query.build({ prefix: `${varName}_` });
 }
 
 function createConnectOrCreatePartialStatement({
@@ -290,7 +290,7 @@ function mergeStatement({
             return [relationship.property(key), param];
         }
     );
-    const relationshipMerge = new Cypher.Merge(relationshipPattern).onCreate(...onCreateRelationshipParams);
+    const relationshipMerge = new Cypher.Merge(relationshipPattern).onCreateSet(...onCreateRelationshipParams);
 
     let withClause: Cypher.Clause | undefined;
     if (context.subscriptionsEnabled) {
@@ -298,7 +298,7 @@ function mergeStatement({
             relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
         const [fromNode, toNode] = relationField.direction === "IN" ? [node, parentNode] : [parentNode, node];
 
-        withClause = new Cypher.Raw((env: Cypher.Environment) => {
+        withClause = new Cypher.Raw((env: Cypher.RawCypherContext) => {
             const eventWithMetaStr = createConnectionEventMeta({
                 event: "create_relationship",
                 relVariable: compileCypher(relationship, env),

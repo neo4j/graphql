@@ -181,9 +181,9 @@ export class ConnectionFilter extends Filter {
         innerPredicate: Cypher.Predicate
     ) {
         if (!hasTarget(context)) throw new Error("No parent node found!");
-        const patternComprehension = new Cypher.PatternComprehension(pattern, new Cypher.Literal(1)).where(
-            innerPredicate
-        );
+        const patternComprehension = new Cypher.PatternComprehension(pattern)
+            .map(new Cypher.Literal(1))
+            .where(innerPredicate);
         return Cypher.single(context.target, patternComprehension, new Cypher.Literal(true));
     }
 

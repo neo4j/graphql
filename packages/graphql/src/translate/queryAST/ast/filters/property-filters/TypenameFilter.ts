@@ -18,11 +18,11 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { hasTarget } from "../../../utils/context-has-target";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
-import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { hasTarget } from "../../../utils/context-has-target";
 
 export class TypenameFilter extends Filter {
     private readonly acceptedEntities: ConcreteEntityAdapter[];
@@ -41,7 +41,7 @@ export class TypenameFilter extends Filter {
         return `${super.print()} [${acceptedEntities.join(", ")}]`;
     }
 
-    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
+    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
         const labelPredicate = this.acceptedEntities.map((e) => {
             return queryASTContext.target.hasLabels(e.name);

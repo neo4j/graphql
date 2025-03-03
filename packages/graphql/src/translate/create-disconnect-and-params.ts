@@ -87,32 +87,28 @@ function createDisconnectAndParams({
         const whereStrs: string[] = [];
         let aggregationWhere = false;
         if (disconnect.where) {
-            try {
-                const {
-                    cypher: whereCypher,
-                    subquery: preComputedSubqueries,
-                    params: whereParams,
-                } = createConnectionWhereAndParams({
-                    nodeVariable: variableName,
-                    whereInput: disconnect.where,
-                    node: relatedNode,
-                    context,
-                    relationshipVariable: relVarName,
-                    relationship,
-                    parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
-                        relatedNode.name
-                    }`,
-                });
-                if (whereCypher) {
-                    whereStrs.push(whereCypher);
-                    params = { ...params, ...whereParams };
-                    if (preComputedSubqueries) {
-                        subquery.push(preComputedSubqueries);
-                        aggregationWhere = true;
-                    }
+            const {
+                cypher: whereCypher,
+                subquery: preComputedSubqueries,
+                params: whereParams,
+            } = createConnectionWhereAndParams({
+                nodeVariable: variableName,
+                whereInput: disconnect.where,
+                node: relatedNode,
+                context,
+                relationshipVariable: relVarName,
+                relationship,
+                parameterPrefix: `${parameterPrefix}${relationField.typeMeta.array ? `[${index}]` : ""}.where.${
+                    relatedNode.name
+                }`,
+            });
+            if (whereCypher) {
+                whereStrs.push(whereCypher);
+                params = { ...params, ...whereParams };
+                if (preComputedSubqueries) {
+                    subquery.push(preComputedSubqueries);
+                    aggregationWhere = true;
                 }
-            } catch {
-                return { subquery: "", params: {} };
             }
         }
 
@@ -144,7 +140,7 @@ function createDisconnectAndParams({
             if (aggregationWhere) {
                 const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
                 subquery.push(cypher);
             } else {
                 subquery.push(`WHERE ${predicate}`);

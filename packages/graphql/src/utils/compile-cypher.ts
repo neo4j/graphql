@@ -22,14 +22,14 @@ import type Cypher from "@neo4j/cypher-builder";
 /** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
 export function compileCypherIfExists(
     element: Cypher.Expr | Cypher.Clause | undefined,
-    env: Cypher.Environment
+    env: Cypher.RawCypherContext
 ): string {
     if (!element) return "";
     return compileCypher(element, env);
 }
 
 /** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
-export function compileCypher(element: Cypher.Expr | Cypher.Clause, env: Cypher.Environment): string {
+export function compileCypher(element: Cypher.Expr | Cypher.Clause, env: Cypher.RawCypherContext): string {
     if (!element) throw new Error("Cypher element is not defined");
-    return (element as any).getCypher(env);
+    return env.compile(element);
 }

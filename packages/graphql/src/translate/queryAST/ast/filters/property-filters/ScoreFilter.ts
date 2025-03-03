@@ -39,7 +39,7 @@ export class ScoreFilter extends Filter {
         return [];
     }
 
-    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate {
+    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const predicates: Cypher.Predicate[] = [];
 
         if (this.max || this.max === 0) {

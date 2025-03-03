@@ -164,7 +164,7 @@ export default async function translateCreate({
         ];
     });
 
-    const createQueryCypher = createQuery.build("create_");
+    const createQueryCypher = createQuery.build({ prefix: "create_" });
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
