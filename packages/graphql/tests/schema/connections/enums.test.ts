@@ -86,7 +86,6 @@ describe("Enums", () => {
 
             type Actor {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -97,11 +96,6 @@ describe("Enums", () => {
             }
 
             type ActorAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -133,11 +127,6 @@ describe("Enums", () => {
 
             type ActorMovieMoviesAggregateSelection {
               count: CountConnection!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
             }
 
@@ -407,18 +396,12 @@ describe("Enums", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               node: MovieActorActorsNodeAggregateSelection
             }
 
@@ -565,11 +548,6 @@ describe("Enums", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -685,10 +663,8 @@ describe("Enums", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

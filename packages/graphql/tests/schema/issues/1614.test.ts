@@ -87,16 +87,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type CrewMember {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): CrewMemberMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [CrewMemberMoviesConnectionSort!], where: CrewMemberMoviesConnectionWhere): CrewMemberMoviesConnection!
             }
 
             type CrewMemberAggregate {
               count: Count!
-            }
-
-            type CrewMemberAggregateSelection {
-              count: Int!
             }
 
             input CrewMemberCreateInput {
@@ -114,11 +109,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type CrewMemberMovieMoviesAggregateSelection {
               count: CountConnection!
-              node: CrewMemberMovieMoviesNodeAggregateSelection
-            }
-
-            type CrewMemberMovieMoviesAggregationSelection {
-              count: Int!
               node: CrewMemberMovieMoviesNodeAggregateSelection
             }
 
@@ -387,11 +377,6 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input MovieConnectWhere {
               node: MovieWhere!
             }
@@ -466,10 +451,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type Query {
               crewMembers(limit: Int, offset: Int, where: CrewMemberWhere): [CrewMember!]!
-              crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"crewMembersConnection\\\\\\" instead\\")
               crewMembersConnection(after: String, first: Int, where: CrewMemberWhere): CrewMembersConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

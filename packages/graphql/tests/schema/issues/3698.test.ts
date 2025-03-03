@@ -131,7 +131,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type Genre {
               name: String!
               product(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
-              productAggregate(where: IProductWhere): GenreIProductProductAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"productConnection\\\\\\" instead\\")
               productConnection(after: String, first: Int, sort: [GenreProductConnectionSort!], where: GenreProductConnectionWhere): GenreProductConnection!
             }
 
@@ -141,11 +140,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type GenreAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -193,11 +187,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type GenreIProductProductAggregateSelection {
               count: CountConnection!
-              node: GenreIProductProductNodeAggregateSelection
-            }
-
-            type GenreIProductProductAggregationSelection {
-              count: Int!
               node: GenreIProductProductNodeAggregateSelection
             }
 
@@ -469,13 +458,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: StringAggregateSelection!
             }
 
-            type IProductAggregateSelection {
-              count: Int!
-              id: StringAggregateSelection!
-              info: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
             input IProductConnectWhere {
               node: IProductWhere!
             }
@@ -566,7 +548,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Movie implements IProduct {
               genre(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genreAggregate(where: GenreWhere): MovieGenreGenreAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"genreConnection\\\\\\" instead\\")
               genreConnection(after: String, first: Int, sort: [MovieGenreConnectionSort!], where: MovieGenreConnectionWhere): MovieGenreConnection!
               id: String!
               info: String!
@@ -579,12 +560,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             }
 
             type MovieAggregateNode {
-              id: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               id: StringAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -707,11 +682,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type MovieGenreGenreAggregateSelection {
               count: CountConnection!
-              node: MovieGenreGenreNodeAggregateSelection
-            }
-
-            type MovieGenreGenreAggregationSelection {
-              count: Int!
               node: MovieGenreGenreNodeAggregateSelection
             }
 
@@ -871,13 +841,10 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               iProducts(limit: Int, offset: Int, sort: [IProductSort!], where: IProductWhere): [IProduct!]!
-              iProductsAggregate(where: IProductWhere): IProductAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"iProductsConnection\\\\\\" instead\\")
               iProductsConnection(after: String, first: Int, sort: [IProductSort!], where: IProductWhere): IProductsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

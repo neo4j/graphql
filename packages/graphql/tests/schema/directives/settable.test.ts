@@ -79,12 +79,6 @@ describe("@settable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               title: String!
             }
@@ -150,7 +144,6 @@ describe("@settable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -253,12 +246,6 @@ describe("@settable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               description: String
               title: String!
@@ -323,7 +310,6 @@ describe("@settable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -435,12 +421,6 @@ describe("@settable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               title: String!
             }
@@ -546,7 +526,6 @@ describe("@settable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -625,7 +604,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -773,11 +751,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorCreateInput {
                   name: String!
                 }
@@ -793,11 +766,6 @@ describe("@settable", () => {
 
                 type ActorMovieActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
@@ -940,12 +908,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectWhere {
                   node: MovieWhere!
                 }
@@ -1030,10 +992,8 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1117,7 +1077,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -1253,11 +1212,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorCreateInput {
                   actedIn: ActorActedInFieldInput
                   name: String!
@@ -1274,11 +1228,6 @@ describe("@settable", () => {
 
                 type ActorMovieActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
@@ -1420,12 +1369,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectWhere {
                   node: MovieWhere!
                 }
@@ -1510,10 +1453,8 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1596,7 +1537,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -1739,11 +1679,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorConnectInput {
                   actedIn: [ActorActedInConnectFieldInput!]
                 }
@@ -1772,11 +1707,6 @@ describe("@settable", () => {
 
                 type ActorMovieActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
@@ -1916,7 +1846,6 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
@@ -1924,11 +1853,6 @@ describe("@settable", () => {
 
                 type MovieActorActorsAggregateSelection {
                   count: CountConnection!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -2070,12 +1994,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectInput {
                   actors: [MovieActorsConnectFieldInput!]
                 }
@@ -2201,10 +2119,8 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -2287,7 +2203,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -2438,11 +2353,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorConnectInput {
                   actedIn: [ActorActedInConnectFieldInput!]
                 }
@@ -2470,11 +2380,6 @@ describe("@settable", () => {
 
                 type ActorMovieActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
@@ -2615,7 +2520,6 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
@@ -2623,11 +2527,6 @@ describe("@settable", () => {
 
                 type MovieActorActorsAggregateSelection {
                   count: CountConnection!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -2769,12 +2668,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectInput {
                   actors: [MovieActorsConnectFieldInput!]
                 }
@@ -2900,10 +2793,8 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -3125,11 +3016,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorCreateInput {
                   name: String!
                 }
@@ -3251,12 +3137,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectWhere {
                   node: MovieWhere!
                 }
@@ -3351,14 +3231,11 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -3373,12 +3250,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  name: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -3628,11 +3499,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorCreateInput {
                   actedIn: ActorActedInCreateInput
                   name: String!
@@ -3754,12 +3620,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectWhere {
                   node: MovieWhere!
                 }
@@ -3854,14 +3714,11 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -3876,12 +3733,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  name: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -4151,11 +4002,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorConnectInput {
                   actedIn: ActorActedInConnectInput
                 }
@@ -4317,7 +4163,6 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
@@ -4325,11 +4170,6 @@ describe("@settable", () => {
 
                 type MovieActorActorsAggregateSelection {
                   count: CountConnection!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -4471,12 +4311,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectInput {
                   actors: [MovieActorsConnectFieldInput!]
                 }
@@ -4612,14 +4446,11 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -4634,12 +4465,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  name: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -4932,11 +4757,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorConnectInput {
                   actedIn: ActorActedInConnectInput
                 }
@@ -5098,7 +4918,6 @@ describe("@settable", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   description: String
                   title: String!
@@ -5106,11 +4925,6 @@ describe("@settable", () => {
 
                 type MovieActorActorsAggregateSelection {
                   count: CountConnection!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -5252,12 +5066,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectInput {
                   actors: [MovieActorsConnectFieldInput!]
                 }
@@ -5393,14 +5201,11 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -5415,12 +5220,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  name: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -5576,7 +5375,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -5724,11 +5522,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorCreateInput {
                   name: String!
                 }
@@ -5744,11 +5537,6 @@ describe("@settable", () => {
 
                 type ActorProductionActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
                   node: ActorProductionActedInNodeAggregateSelection
                 }
 
@@ -5896,12 +5684,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieCreateInput {
                   description: String
                   title: String!
@@ -5987,12 +5769,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -6066,16 +5842,12 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -6090,12 +5862,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -6245,7 +6011,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -6381,11 +6146,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorCreateInput {
                   actedIn: ActorActedInFieldInput
                   name: String!
@@ -6402,11 +6162,6 @@ describe("@settable", () => {
 
                 type ActorProductionActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
                   node: ActorProductionActedInNodeAggregateSelection
                 }
 
@@ -6553,12 +6308,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieCreateInput {
                   description: String
                   title: String!
@@ -6644,12 +6393,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -6716,16 +6459,12 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -6740,12 +6479,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -6896,7 +6629,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -7039,11 +6771,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorConnectInput {
                   actedIn: [ActorActedInConnectFieldInput!]
                 }
@@ -7072,11 +6799,6 @@ describe("@settable", () => {
 
                 type ActorProductionActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
                   node: ActorProductionActedInNodeAggregateSelection
                 }
 
@@ -7221,19 +6943,9 @@ describe("@settable", () => {
 
                 type Movie implements Production {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -7335,12 +7047,6 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -7568,12 +7274,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input ProductionConnectInput {
                   actors: [ProductionActorsConnectFieldInput!]
                 }
@@ -7679,34 +7379,20 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
                 type Series implements Production {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type SeriesActorActorsAggregationSelection {
-                  count: Int!
-                  node: SeriesActorActorsNodeAggregateSelection
-                }
-
-                type SeriesActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelection!
                 }
 
                 input SeriesActorsAggregateInput {
@@ -7808,12 +7494,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -7997,7 +7677,6 @@ describe("@settable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -8148,11 +7827,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input ActorConnectInput {
                   actedIn: [ActorActedInConnectFieldInput!]
                 }
@@ -8180,11 +7854,6 @@ describe("@settable", () => {
 
                 type ActorProductionActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
                   node: ActorProductionActedInNodeAggregateSelection
                 }
 
@@ -8330,19 +7999,9 @@ describe("@settable", () => {
 
                 type Movie implements Production {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
-                  node: MovieActorActorsNodeAggregateSelection
-                }
-
-                type MovieActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelection!
                 }
 
                 input MovieActorsAggregateInput {
@@ -8444,12 +8103,6 @@ describe("@settable", () => {
                 }
 
                 type MovieAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -8694,12 +8347,6 @@ describe("@settable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input ProductionConnectInput {
                   actors: [ProductionActorsConnectFieldInput!]
                 }
@@ -8813,34 +8460,20 @@ describe("@settable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
                 type Series implements Production {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
                   description: String
                   title: String!
-                }
-
-                type SeriesActorActorsAggregationSelection {
-                  count: Int!
-                  node: SeriesActorActorsNodeAggregateSelection
-                }
-
-                type SeriesActorActorsNodeAggregateSelection {
-                  name: StringAggregateSelection!
                 }
 
                 input SeriesActorsAggregateInput {
@@ -8942,12 +8575,6 @@ describe("@settable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }

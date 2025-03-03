@@ -133,11 +133,6 @@ describe("Arrays", () => {
               averageRating: FloatAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              averageRating: FloatAggregateSelection!
-              count: Int!
-            }
-
             input MovieCreateInput {
               averageRating: Float!
               id: ID!
@@ -217,7 +212,6 @@ describe("Arrays", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

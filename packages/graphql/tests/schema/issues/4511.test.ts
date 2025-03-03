@@ -105,10 +105,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               count: Count!
             }
 
-            type CreatureAggregateSelection {
-              count: Int!
-            }
-
             input CreatureConnectInput {
               movies: [CreatureMoviesConnectFieldInput!]
             }
@@ -354,7 +350,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type Movie implements Production {
               director(limit: Int, offset: Int, where: CreatureWhere): [Creature!]!
-              directorAggregate(where: CreatureWhere): MovieCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
@@ -369,19 +364,10 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               director: MovieDirectorFieldInput
               id: ID
               title: String!
-            }
-
-            type MovieCreatureDirectorAggregationSelection {
-              count: Int!
             }
 
             input MovieDeleteInput {
@@ -569,16 +555,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type Person implements Creature {
               movies(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              moviesAggregate(where: ProductionWhere): PersonProductionMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             type PersonAggregate {
               count: Count!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonCreateInput {
@@ -683,10 +664,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: CreatureMoviesConnectionWhere
             }
 
-            type PersonProductionMoviesAggregationSelection {
-              count: Int!
-            }
-
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
             }
@@ -737,10 +714,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type ProductionAggregate {
               count: Count!
-            }
-
-            type ProductionAggregateSelection {
-              count: Int!
             }
 
             input ProductionConnectInput {
@@ -947,25 +920,19 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type Query {
               creatures(limit: Int, offset: Int, where: CreatureWhere): [Creature!]!
-              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"creaturesConnection\\\\\\" instead\\")
               creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               director(limit: Int, offset: Int, where: CreatureWhere): [Creature!]!
-              directorAggregate(where: CreatureWhere): SeriesCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
@@ -978,12 +945,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type SeriesAggregateNode {
-              episode: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
               episode: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1006,10 +967,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               createdSeries: SeriesEventPayload!
               event: EventType!
               timestamp: Float!
-            }
-
-            type SeriesCreatureDirectorAggregationSelection {
-              count: Int!
             }
 
             input SeriesDeleteInput {

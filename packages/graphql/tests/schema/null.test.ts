@@ -268,14 +268,6 @@ describe("Null", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              createdAt: DateTimeAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               actorCount: Int!
               actorCounts: [Int!]!
@@ -501,7 +493,6 @@ describe("Null", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

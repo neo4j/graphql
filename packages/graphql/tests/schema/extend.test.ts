@@ -95,11 +95,6 @@ describe("Extend", () => {
               name: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               id: ID
               name: String
@@ -166,7 +161,6 @@ describe("Extend", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

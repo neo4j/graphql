@@ -122,10 +122,8 @@ describe("Pluralize consistency", () => {
 
             type Query {
               superFriends(limit: Int, offset: Int, sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
-              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"superFriendsConnection\\\\\\" instead\\")
               superFriendsConnection(after: String, first: Int, sort: [super_friendSort!], where: super_friendWhere): SuperFriendsConnection!
               superUsers(limit: Int, offset: Int, sort: [super_userSort!], where: super_userWhere): [super_user!]!
-              superUsersAggregate(where: super_userWhere): super_userAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"superUsersConnection\\\\\\" instead\\")
               superUsersConnection(after: String, first: Int, sort: [super_userSort!], where: super_userWhere): SuperUsersConnection!
             }
 
@@ -210,11 +208,6 @@ describe("Pluralize consistency", () => {
               name: StringAggregateSelection!
             }
 
-            type super_friendAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input super_friendConnectWhere {
               node: super_friendWhere!
             }
@@ -265,7 +258,6 @@ describe("Pluralize consistency", () => {
 
             type super_user {
               my_friend(limit: Int, offset: Int, sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"my_friendConnection\\\\\\" instead\\")
               my_friendConnection(after: String, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
             }
@@ -276,11 +268,6 @@ describe("Pluralize consistency", () => {
             }
 
             type super_userAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type super_userAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -483,11 +470,6 @@ describe("Pluralize consistency", () => {
 
             type super_usersuper_friendMy_friendAggregateSelection {
               count: CountConnection!
-              node: super_usersuper_friendMy_friendNodeAggregateSelection
-            }
-
-            type super_usersuper_friendMy_friendAggregationSelection {
-              count: Int!
               node: super_usersuper_friendMy_friendNodeAggregateSelection
             }
 

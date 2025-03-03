@@ -212,10 +212,8 @@ describe("@default directive", () => {
 
             type Query {
               userInterfaces(limit: Int, offset: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
-              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"userInterfacesConnection\\\\\\" instead\\")
               userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): UserInterfacesConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -287,16 +285,6 @@ describe("@default directive", () => {
               verifiedDate: DateTimeAggregateSelection!
             }
 
-            type UserAggregateSelection {
-              count: Int!
-              fromInterface: StringAggregateSelection!
-              name: StringAggregateSelection!
-              numberOfFriends: IntAggregateSelection!
-              rating: FloatAggregateSelection!
-              toBeOverridden: StringAggregateSelection!
-              verifiedDate: DateTimeAggregateSelection!
-            }
-
             input UserCreateInput {
               fromInterface: String! = \\"Interface default value\\"
               id: ID! = \\"00000000-00000000-00000000-00000000\\"
@@ -325,12 +313,6 @@ describe("@default directive", () => {
             }
 
             type UserInterfaceAggregateNode {
-              fromInterface: StringAggregateSelection!
-              toBeOverridden: StringAggregateSelection!
-            }
-
-            type UserInterfaceAggregateSelection {
-              count: Int!
               fromInterface: StringAggregateSelection!
               toBeOverridden: StringAggregateSelection!
             }

@@ -147,7 +147,6 @@ describe("Union Interface Relationships", () => {
             type Actor {
               id: Int
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -158,12 +157,6 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorAggregateNode {
-              id: IntAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
               id: IntAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -197,12 +190,6 @@ describe("Union Interface Relationships", () => {
 
             type ActorMovieMoviesAggregateSelection {
               count: CountConnection!
-              edge: ActorMovieMoviesEdgeAggregateSelection
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
               edge: ActorMovieMoviesEdgeAggregateSelection
               node: ActorMovieMoviesNodeAggregateSelection
             }
@@ -582,13 +569,6 @@ describe("Union Interface Relationships", () => {
               url: StringAggregateSelection!
             }
 
-            type InfluencerAggregateSelection {
-              count: Int!
-              reputation: IntAggregateSelection!
-              reviewerId: IntAggregateSelection!
-              url: StringAggregateSelection!
-            }
-
             input InfluencerCreateInput {
               reputation: Int!
               reviewerId: Int
@@ -689,25 +669,17 @@ describe("Union Interface Relationships", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               directors(limit: Int, offset: Int, where: DirectorWhere): [Director!]!
               directorsConnection(after: String, first: Int, sort: [MovieDirectorsConnectionSort!], where: MovieDirectorsConnectionWhere): MovieDirectorsConnection!
               imdbId: Int
               reviewers(limit: Int, offset: Int, sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): MovieReviewerReviewersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"reviewersConnection\\\\\\" instead\\")
               reviewersConnection(after: String, first: Int, sort: [MovieReviewersConnectionSort!], where: MovieReviewersConnectionWhere): MovieReviewersConnection!
               title: String!
             }
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
             }
@@ -880,12 +852,6 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieAggregateNode {
-              imdbId: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               imdbId: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1099,12 +1065,6 @@ describe("Union Interface Relationships", () => {
 
             type MovieReviewerReviewersAggregateSelection {
               count: CountConnection!
-              edge: MovieReviewerReviewersEdgeAggregateSelection
-              node: MovieReviewerReviewersNodeAggregateSelection
-            }
-
-            type MovieReviewerReviewersAggregationSelection {
-              count: Int!
               edge: MovieReviewerReviewersEdgeAggregateSelection
               node: MovieReviewerReviewersNodeAggregateSelection
             }
@@ -1434,7 +1394,6 @@ describe("Union Interface Relationships", () => {
             type Person implements Reviewer {
               id: Int
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): PersonMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
               name: String!
               reputation: Int!
@@ -1447,14 +1406,6 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonAggregateNode {
-              id: IntAggregateSelection!
-              name: StringAggregateSelection!
-              reputation: IntAggregateSelection!
-              reviewerId: IntAggregateSelection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
               id: IntAggregateSelection!
               name: StringAggregateSelection!
               reputation: IntAggregateSelection!
@@ -1492,12 +1443,6 @@ describe("Union Interface Relationships", () => {
 
             type PersonMovieMoviesAggregateSelection {
               count: CountConnection!
-              edge: PersonMovieMoviesEdgeAggregateSelection
-              node: PersonMovieMoviesNodeAggregateSelection
-            }
-
-            type PersonMovieMoviesAggregationSelection {
-              count: Int!
               edge: PersonMovieMoviesEdgeAggregateSelection
               node: PersonMovieMoviesNodeAggregateSelection
             }
@@ -1756,20 +1701,15 @@ describe("Union Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               directors(limit: Int, offset: Int, where: DirectorWhere): [Director!]!
               influencers(limit: Int, offset: Int, sort: [InfluencerSort!], where: InfluencerWhere): [Influencer!]!
-              influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"influencersConnection\\\\\\" instead\\")
               influencersConnection(after: String, first: Int, sort: [InfluencerSort!], where: InfluencerWhere): InfluencersConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               reviewers(limit: Int, offset: Int, sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"reviewersConnection\\\\\\" instead\\")
               reviewersConnection(after: String, first: Int, sort: [ReviewerSort!], where: ReviewerWhere): ReviewersConnection!
             }
 
@@ -1848,12 +1788,6 @@ describe("Union Interface Relationships", () => {
             }
 
             type ReviewerAggregateNode {
-              reputation: IntAggregateSelection!
-              reviewerId: IntAggregateSelection!
-            }
-
-            type ReviewerAggregateSelection {
-              count: Int!
               reputation: IntAggregateSelection!
               reviewerId: IntAggregateSelection!
             }

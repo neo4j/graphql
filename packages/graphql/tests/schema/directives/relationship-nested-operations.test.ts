@@ -126,7 +126,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -222,10 +221,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -237,11 +232,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -344,11 +334,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -395,10 +380,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -554,7 +537,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -663,10 +645,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -679,11 +657,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -787,11 +760,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -838,10 +806,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -997,7 +963,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -1106,10 +1071,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -1122,11 +1083,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1230,11 +1186,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -1285,10 +1236,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1444,7 +1393,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -1549,10 +1497,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -1564,11 +1508,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1672,11 +1611,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -1723,10 +1657,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1882,7 +1814,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -1987,10 +1918,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -2006,11 +1933,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2114,11 +2036,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -2165,10 +2082,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -2324,7 +2239,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -2429,10 +2343,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -2444,11 +2354,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2552,11 +2457,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -2603,10 +2503,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -2763,7 +2661,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -2859,10 +2756,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -2874,11 +2767,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2981,11 +2869,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -3032,10 +2915,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -3193,7 +3074,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -3289,10 +3169,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -3304,11 +3180,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -3412,11 +3283,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -3470,10 +3336,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -3630,11 +3494,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -3763,10 +3625,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -3786,22 +3644,12 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
                 type MoviePersonActorsNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -4031,11 +3879,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -4086,10 +3929,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -4246,11 +4087,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -4358,10 +4197,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -4377,22 +4212,12 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
                 type MoviePersonActorsNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -4622,11 +4447,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -4673,10 +4493,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -4877,10 +4695,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -4982,11 +4796,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -5051,11 +4860,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -5103,14 +4907,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -5338,10 +5139,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsCreateInput
                   id: ID
@@ -5445,11 +5242,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -5514,11 +5306,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -5566,14 +5353,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -5801,10 +5585,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsCreateInput
                   id: ID
@@ -5908,11 +5688,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneConnectWhere {
                   node: PersonOneWhere!
                 }
@@ -5981,11 +5756,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoConnectWhere {
                   node: PersonTwoWhere!
                 }
@@ -6037,14 +5807,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -6259,10 +6026,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -6365,11 +6128,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -6434,11 +6192,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -6486,14 +6239,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -6713,10 +6463,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -6823,11 +6569,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -6892,11 +6633,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -6944,14 +6680,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -7166,10 +6899,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -7272,11 +7001,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -7341,11 +7065,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -7393,14 +7112,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -7593,10 +7309,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -7698,11 +7410,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -7767,11 +7474,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -7819,14 +7521,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -8021,10 +7720,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -8127,11 +7822,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -8204,11 +7894,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -8263,14 +7948,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -8548,10 +8230,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsCreateInput
                   id: ID
@@ -8758,11 +8436,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneConnectWhere {
                   node: PersonOneWhere!
                 }
@@ -8831,11 +8504,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoConnectWhere {
                   node: PersonTwoWhere!
                 }
@@ -8887,14 +8555,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -9125,10 +8790,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsCreateInput
                   id: ID
@@ -9331,11 +8992,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -9400,11 +9056,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -9452,14 +9103,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -9647,7 +9295,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -9743,10 +9390,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -9758,11 +9401,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -9868,11 +9506,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -9894,11 +9527,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -9981,11 +9609,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -10041,16 +9664,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -10238,7 +9857,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -10347,10 +9965,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -10363,11 +9977,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -10474,11 +10083,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
@@ -10505,11 +10109,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -10592,11 +10191,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -10652,16 +10246,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -10849,7 +10439,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -10958,10 +10547,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -10974,11 +10559,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -11085,11 +10665,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -11115,11 +10690,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -11202,11 +10772,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -11262,16 +10827,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -11459,7 +11020,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -11564,10 +11124,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -11579,11 +11135,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -11690,11 +11241,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -11716,11 +11262,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -11803,11 +11344,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -11868,16 +11404,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -12065,7 +11597,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -12170,10 +11701,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -12189,11 +11716,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -12300,11 +11822,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -12326,11 +11843,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -12413,11 +11925,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -12473,16 +11980,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -12670,7 +12173,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -12775,10 +12277,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   id: ID
                 }
@@ -12790,11 +12288,6 @@ describe("Relationship nested operations", () => {
 
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -12901,11 +12394,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -12927,11 +12415,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -13014,11 +12497,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -13074,16 +12552,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -13272,11 +12746,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -13405,10 +12877,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -13428,22 +12896,12 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
                 type MoviePersonActorsNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -13676,11 +13134,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -13711,11 +13164,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -13798,11 +13246,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -13863,16 +13306,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -14062,11 +13501,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -14179,10 +13616,6 @@ describe("Relationship nested operations", () => {
                   count: Count!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                }
-
                 input MovieCreateInput {
                   actors: MovieActorsFieldInput
                   id: ID
@@ -14202,22 +13635,12 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
                 type MoviePersonActorsNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
 
                 type MoviePersonProducersAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -14450,11 +13873,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
@@ -14481,11 +13899,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -14568,11 +13981,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -14628,16 +14036,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 

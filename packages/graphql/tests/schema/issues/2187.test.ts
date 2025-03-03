@@ -124,7 +124,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Genre {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): GenreMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
             }
@@ -135,11 +134,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type GenreAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type GenreAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -171,11 +165,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type GenreMovieMoviesAggregateSelection {
               count: CountConnection!
-              node: GenreMovieMoviesNodeAggregateSelection
-            }
-
-            type GenreMovieMoviesAggregationSelection {
-              count: Int!
               node: GenreMovieMoviesNodeAggregateSelection
             }
 
@@ -455,7 +444,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Movie {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use genre\\")
-              genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use genre\\")
               genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
               title: String @deprecated(reason: \\"Do not use title\\")
@@ -468,13 +456,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type MovieAggregateNode {
-              imdbRating: FloatAggregateSelection!
-              title: StringAggregateSelection!
-              year: IntAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               imdbRating: FloatAggregateSelection!
               title: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -510,11 +491,6 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type MovieGenreGenresAggregateSelection {
               count: CountConnection!
-              node: MovieGenreGenresNodeAggregateSelection
-            }
-
-            type MovieGenreGenresAggregationSelection {
-              count: Int!
               node: MovieGenreGenresNodeAggregateSelection
             }
 
@@ -761,10 +737,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"genresConnection\\\\\\" instead\\")
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

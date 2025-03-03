@@ -199,17 +199,12 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
 
             type Person {
               friends(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              friendsAggregate(where: PersonWhere): PersonPersonFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               id: ID!
             }
 
             type PersonAggregate {
               count: Count!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonConnectInput {
@@ -350,11 +345,6 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
               edge: PersonPersonFriendsEdgeAggregateSelection
             }
 
-            type PersonPersonFriendsAggregationSelection {
-              count: Int!
-              edge: PersonPersonFriendsEdgeAggregateSelection
-            }
-
             type PersonPersonFriendsEdgeAggregateSelection {
               id: StringAggregateSelection!
             }
@@ -422,7 +412,6 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
 
             type Query {
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 

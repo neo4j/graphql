@@ -122,7 +122,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -267,11 +266,6 @@ describe("Interface Relationships", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorCreateInput {
               actedIn: ActorActedInFieldInput
               name: String!
@@ -288,12 +282,6 @@ describe("Interface Relationships", () => {
 
             type ActorProductionActedInAggregateSelection {
               count: CountConnection!
-              edge: ActorProductionActedInEdgeAggregateSelection
-              node: ActorProductionActedInNodeAggregateSelection
-            }
-
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -467,12 +455,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               runtime: Int!
               title: String!
@@ -559,11 +541,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -628,16 +605,12 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -652,12 +625,6 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesAggregateNode {
-              episodes: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -886,7 +853,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -1034,11 +1000,6 @@ describe("Interface Relationships", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -1067,12 +1028,6 @@ describe("Interface Relationships", () => {
 
             type ActorProductionActedInAggregateSelection {
               count: CountConnection!
-              edge: ActorProductionActedInEdgeAggregateSelection
-              node: ActorProductionActedInNodeAggregateSelection
-            }
-
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -1208,7 +1163,6 @@ describe("Interface Relationships", () => {
             type Episode {
               runtime: Int!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
@@ -1218,11 +1172,6 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeAggregateNode {
-              runtime: IntAggregateSelection!
-            }
-
-            type EpisodeAggregateSelection {
-              count: Int!
               runtime: IntAggregateSelection!
             }
 
@@ -1402,11 +1351,6 @@ describe("Interface Relationships", () => {
               node: EpisodeSeriesSeriesNodeAggregateSelection
             }
 
-            type EpisodeSeriesSeriesAggregationSelection {
-              count: Int!
-              node: EpisodeSeriesSeriesNodeAggregateSelection
-            }
-
             type EpisodeSeriesSeriesNodeAggregateSelection {
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
@@ -1531,24 +1475,9 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1655,12 +1584,6 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregateNode {
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1964,11 +1887,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input ProductionConnectInput {
               actors: [ProductionActorsConnectFieldInput!]
             }
@@ -2073,45 +1991,24 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"episodesConnection\\\\\\" instead\\")
               episodesConnection(after: String, first: Int, sort: [EpisodeSort!], where: EpisodeWhere): EpisodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"episodesConnection\\\\\\" instead\\")
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -2222,12 +2119,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
-              episodeCount: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input SeriesConnectInput {
               actors: [SeriesActorsConnectFieldInput!]
               episodes: [SeriesEpisodesConnectFieldInput!]
@@ -2268,11 +2159,6 @@ describe("Interface Relationships", () => {
 
             type SeriesEpisodeEpisodesAggregateSelection {
               count: CountConnection!
-              node: SeriesEpisodeEpisodesNodeAggregateSelection
-            }
-
-            type SeriesEpisodeEpisodesAggregationSelection {
-              count: Int!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
             }
 
@@ -2693,7 +2579,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -2841,11 +2726,6 @@ describe("Interface Relationships", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -2874,12 +2754,6 @@ describe("Interface Relationships", () => {
 
             type ActorProductionActedInAggregateSelection {
               count: CountConnection!
-              edge: ActorProductionActedInEdgeAggregateSelection
-              node: ActorProductionActedInNodeAggregateSelection
-            }
-
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -3015,7 +2889,6 @@ describe("Interface Relationships", () => {
             type Episode {
               runtime: Int!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
@@ -3025,11 +2898,6 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeAggregateNode {
-              runtime: IntAggregateSelection!
-            }
-
-            type EpisodeAggregateSelection {
-              count: Int!
               runtime: IntAggregateSelection!
             }
 
@@ -3209,11 +3077,6 @@ describe("Interface Relationships", () => {
               node: EpisodeSeriesSeriesNodeAggregateSelection
             }
 
-            type EpisodeSeriesSeriesAggregationSelection {
-              count: Int!
-              node: EpisodeSeriesSeriesNodeAggregateSelection
-            }
-
             type EpisodeSeriesSeriesNodeAggregateSelection {
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
@@ -3338,24 +3201,9 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3462,12 +3310,6 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregateNode {
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3791,11 +3633,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input ProductionConnectInput {
               actors: [ProductionActorsConnectFieldInput!]
             }
@@ -3900,45 +3737,24 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"episodesConnection\\\\\\" instead\\")
               episodesConnection(after: String, first: Int, sort: [EpisodeSort!], where: EpisodeWhere): EpisodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"episodesConnection\\\\\\" instead\\")
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              seasons: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -4049,12 +3865,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
-              episodeCount: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input SeriesConnectInput {
               actors: [SeriesActorsConnectFieldInput!]
               episodes: [SeriesEpisodesConnectFieldInput!]
@@ -4095,11 +3905,6 @@ describe("Interface Relationships", () => {
 
             type SeriesEpisodeEpisodesAggregateSelection {
               count: CountConnection!
-              node: SeriesEpisodeEpisodesNodeAggregateSelection
-            }
-
-            type SeriesEpisodeEpisodesAggregationSelection {
-              count: Int!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
             }
 
@@ -4604,11 +4409,6 @@ describe("Interface Relationships", () => {
               field1: StringAggregateSelection!
             }
 
-            type Interface1AggregateSelection {
-              count: Int!
-              field1: StringAggregateSelection!
-            }
-
             input Interface1ConnectInput {
               interface2: [Interface1Interface2ConnectFieldInput!]
             }
@@ -4849,11 +4649,6 @@ describe("Interface Relationships", () => {
               field2: StringAggregateSelection!
             }
 
-            type Interface2AggregateSelection {
-              count: Int!
-              field2: StringAggregateSelection!
-            }
-
             input Interface2ConnectWhere {
               node: Interface2Where!
             }
@@ -4944,25 +4739,18 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1sConnection\\\\\\" instead\\")
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2sConnection\\\\\\" instead\\")
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface1sConnection\\\\\\" instead\\")
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface2sConnection\\\\\\" instead\\")
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1sConnection\\\\\\" instead\\")
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface1sConnection\\\\\\" instead\\")
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface2sConnection\\\\\\" instead\\")
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -5003,7 +4791,6 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1Aggregate(where: Interface1Where): Type1Interface1Interface1AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1Connection\\\\\\" instead\\")
               interface1Connection(after: String, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
@@ -5013,11 +4800,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -5038,7 +4820,6 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2Connection\\\\\\" instead\\")
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -5061,11 +4842,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type1Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -5161,11 +4937,6 @@ describe("Interface Relationships", () => {
               node: Type1Interface1Interface1NodeAggregateSelection
             }
 
-            type Type1Interface1Interface1AggregationSelection {
-              count: Int!
-              node: Type1Interface1Interface1NodeAggregateSelection
-            }
-
             type Type1Interface1Interface1NodeAggregateSelection {
               field1: StringAggregateSelection!
             }
@@ -5233,15 +5004,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2FieldInput {
               connect: [Type1Interface1Interface2ConnectFieldInput!]
               create: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type1Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              node: Type1Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type1Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2NodeAggregationWhereInput {
@@ -5399,11 +5161,6 @@ describe("Interface Relationships", () => {
               field2: StringAggregateSelection!
             }
 
-            type Type1Interface2AggregateSelection {
-              count: Int!
-              field2: StringAggregateSelection!
-            }
-
             input Type1Interface2CreateInput {
               field2: String!
             }
@@ -5506,7 +5263,6 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2Connection\\\\\\" instead\\")
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -5516,11 +5272,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type2Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -5601,15 +5352,6 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2FieldInput {
               connect: [Type2Interface1Interface2ConnectFieldInput!]
               create: [Type2Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type2Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              node: Type2Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type2Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2NodeAggregationWhereInput {
@@ -5724,11 +5466,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2AggregateNode {
-              field2: StringAggregateSelection!
-            }
-
-            type Type2Interface2AggregateSelection {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -5927,13 +5664,6 @@ describe("Interface Relationships", () => {
               lte: Float
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
             input IntScalarAggregationFilters {
               average: FloatScalarFilters
@@ -5971,11 +5701,6 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6274,11 +5999,6 @@ describe("Interface Relationships", () => {
               field2: StringAggregateSelection!
             }
 
-            type Interface2AggregateSelection {
-              count: Int!
-              field2: StringAggregateSelection!
-            }
-
             input Interface2ConnectWhere {
               node: Interface2Where!
             }
@@ -6433,25 +6153,18 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1sConnection\\\\\\" instead\\")
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2sConnection\\\\\\" instead\\")
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface1sConnection\\\\\\" instead\\")
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface2sConnection\\\\\\" instead\\")
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1sConnection\\\\\\" instead\\")
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface1sConnection\\\\\\" instead\\")
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface2sConnection\\\\\\" instead\\")
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -6492,7 +6205,6 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1Aggregate(where: Interface1Where): Type1Interface1Interface1AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1Connection\\\\\\" instead\\")
               interface1Connection(after: String, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
@@ -6502,11 +6214,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6527,7 +6234,6 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2Connection\\\\\\" instead\\")
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -6550,11 +6256,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type1Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -6650,11 +6351,6 @@ describe("Interface Relationships", () => {
               node: Type1Interface1Interface1NodeAggregateSelection
             }
 
-            type Type1Interface1Interface1AggregationSelection {
-              count: Int!
-              node: Type1Interface1Interface1NodeAggregateSelection
-            }
-
             type Type1Interface1Interface1NodeAggregateSelection {
               field1: StringAggregateSelection!
             }
@@ -6726,20 +6422,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2FieldInput {
               connect: [Type1Interface1Interface2ConnectFieldInput!]
               create: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type1Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type1Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type1Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type1Interface1Interface2Interface2EdgeAggregateSelection {
-              propsField: IntAggregateSelection!
-            }
-
-            type Type1Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2NodeAggregationWhereInput {
@@ -6898,11 +6580,6 @@ describe("Interface Relationships", () => {
               field2: StringAggregateSelection!
             }
 
-            type Type1Interface2AggregateSelection {
-              count: Int!
-              field2: StringAggregateSelection!
-            }
-
             input Type1Interface2CreateInput {
               field2: String!
             }
@@ -7005,7 +6682,6 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2Connection\\\\\\" instead\\")
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -7015,11 +6691,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type2Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -7104,20 +6775,6 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2FieldInput {
               connect: [Type2Interface1Interface2ConnectFieldInput!]
               create: [Type2Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type2Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type2Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type2Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type2Interface1Interface2Interface2EdgeAggregateSelection {
-              propsField: IntAggregateSelection!
-            }
-
-            type Type2Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2NodeAggregationWhereInput {
@@ -7233,11 +6890,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2AggregateNode {
-              field2: StringAggregateSelection!
-            }
-
-            type Type2Interface2AggregateSelection {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -7442,13 +7094,6 @@ describe("Interface Relationships", () => {
               lte: Float
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
             input IntScalarAggregationFilters {
               average: FloatScalarFilters
@@ -7486,11 +7131,6 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -7809,11 +7449,6 @@ describe("Interface Relationships", () => {
               field2: StringAggregateSelection!
             }
 
-            type Interface2AggregateSelection {
-              count: Int!
-              field2: StringAggregateSelection!
-            }
-
             input Interface2ConnectWhere {
               node: Interface2Where!
             }
@@ -7904,25 +7539,18 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1sConnection\\\\\\" instead\\")
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2sConnection\\\\\\" instead\\")
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface1sConnection\\\\\\" instead\\")
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1Interface2sConnection\\\\\\" instead\\")
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type1sConnection\\\\\\" instead\\")
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface1sConnection\\\\\\" instead\\")
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"type2Interface2sConnection\\\\\\" instead\\")
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -7963,7 +7591,6 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1Aggregate(where: Interface1Where): Type1Interface1Interface1AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface1Connection\\\\\\" instead\\")
               interface1Connection(after: String, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
@@ -7973,11 +7600,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -7998,7 +7620,6 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2Connection\\\\\\" instead\\")
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -8021,11 +7642,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type1Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -8121,11 +7737,6 @@ describe("Interface Relationships", () => {
               node: Type1Interface1Interface1NodeAggregateSelection
             }
 
-            type Type1Interface1Interface1AggregationSelection {
-              count: Int!
-              node: Type1Interface1Interface1NodeAggregateSelection
-            }
-
             type Type1Interface1Interface1NodeAggregateSelection {
               field1: StringAggregateSelection!
             }
@@ -8197,20 +7808,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2FieldInput {
               connect: [Type1Interface1Interface2ConnectFieldInput!]
               create: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type1Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type1Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type1Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type1Interface1Interface2Interface2EdgeAggregateSelection {
-              type1Field: IntAggregateSelection!
-            }
-
-            type Type1Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2NodeAggregationWhereInput {
@@ -8366,11 +7963,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2AggregateNode {
-              field2: StringAggregateSelection!
-            }
-
-            type Type1Interface2AggregateSelection {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -8539,7 +8131,6 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"interface2Connection\\\\\\" instead\\")
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
@@ -8549,11 +8140,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1AggregateNode {
-              field1: StringAggregateSelection!
-            }
-
-            type Type2Interface1AggregateSelection {
-              count: Int!
               field1: StringAggregateSelection!
             }
 
@@ -8638,20 +8224,6 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2FieldInput {
               connect: [Type2Interface1Interface2ConnectFieldInput!]
               create: [Type2Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type2Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type2Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type2Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type2Interface1Interface2Interface2EdgeAggregateSelection {
-              type2Field: IntAggregateSelection!
-            }
-
-            type Type2Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2NodeAggregationWhereInput {
@@ -8767,11 +8339,6 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2AggregateNode {
-              field2: StringAggregateSelection!
-            }
-
-            type Type2Interface2AggregateSelection {
-              count: Int!
               field2: StringAggregateSelection!
             }
 
@@ -8961,11 +8528,9 @@ describe("Interface Relationships", () => {
             type Comment implements Content {
               content: String
               creator(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"creatorConnection\\\\\\" instead\\")
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
               post(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postAggregate(where: PostWhere): CommentPostPostAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"postConnection\\\\\\" instead\\")
               postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
 
@@ -8976,11 +8541,6 @@ describe("Interface Relationships", () => {
 
             type CommentAggregateNode {
               content: StringAggregateSelection!
-            }
-
-            type CommentAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
             }
 
             input CommentConnectInput {
@@ -9220,11 +8780,6 @@ describe("Interface Relationships", () => {
               node: CommentPostPostNodeAggregateSelection
             }
 
-            type CommentPostPostAggregationSelection {
-              count: Int!
-              node: CommentPostPostNodeAggregateSelection
-            }
-
             type CommentPostPostNodeAggregateSelection {
               content: StringAggregateSelection!
             }
@@ -9273,15 +8828,6 @@ describe("Interface Relationships", () => {
               id: IDScalarMutations
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               post: [CommentPostUpdateFieldInput!]
-            }
-
-            type CommentUserCreatorAggregationSelection {
-              count: Int!
-              node: CommentUserCreatorNodeAggregateSelection
-            }
-
-            type CommentUserCreatorNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input CommentWhere {
@@ -9382,11 +8928,6 @@ describe("Interface Relationships", () => {
 
             type ContentAggregateNode {
               content: StringAggregateSelection!
-            }
-
-            type ContentAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
             }
 
             input ContentConnectInput {
@@ -9716,11 +9257,9 @@ describe("Interface Relationships", () => {
 
             type Post implements Content {
               comments(limit: Int, offset: Int, sort: [CommentSort!], where: CommentWhere): [Comment!]!
-              commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"commentsConnection\\\\\\" instead\\")
               commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
               creator(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"creatorConnection\\\\\\" instead\\")
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
@@ -9734,18 +9273,8 @@ describe("Interface Relationships", () => {
               content: StringAggregateSelection!
             }
 
-            type PostAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
-            }
-
             type PostCommentCommentsAggregateSelection {
               count: CountConnection!
-              node: PostCommentCommentsNodeAggregateSelection
-            }
-
-            type PostCommentCommentsAggregationSelection {
-              count: Int!
               node: PostCommentCommentsNodeAggregateSelection
             }
 
@@ -10029,15 +9558,6 @@ describe("Interface Relationships", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
-            type PostUserCreatorAggregationSelection {
-              count: Int!
-              node: PostUserCreatorNodeAggregateSelection
-            }
-
-            type PostUserCreatorNodeAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
@@ -10119,16 +9639,12 @@ describe("Interface Relationships", () => {
 
             type Query {
               comments(limit: Int, offset: Int, sort: [CommentSort!], where: CommentWhere): [Comment!]!
-              commentsAggregate(where: CommentWhere): CommentAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"commentsConnection\\\\\\" instead\\")
               commentsConnection(after: String, first: Int, sort: [CommentSort!], where: CommentWhere): CommentsConnection!
               contents(limit: Int, offset: Int, sort: [ContentSort!], where: ContentWhere): [Content!]!
-              contentsAggregate(where: ContentWhere): ContentAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"contentsConnection\\\\\\" instead\\")
               contentsConnection(after: String, first: Int, sort: [ContentSort!], where: ContentWhere): ContentsConnection!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -10193,7 +9709,6 @@ describe("Interface Relationships", () => {
 
             type User {
               content(limit: Int, offset: Int, sort: [ContentSort!], where: ContentWhere): [Content!]!
-              contentAggregate(where: ContentWhere): UserContentContentAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"contentConnection\\\\\\" instead\\")
               contentConnection(after: String, first: Int, sort: [UserContentConnectionSort!], where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
@@ -10205,11 +9720,6 @@ describe("Interface Relationships", () => {
             }
 
             type UserAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -10288,11 +9798,6 @@ describe("Interface Relationships", () => {
 
             type UserContentContentAggregateSelection {
               count: CountConnection!
-              node: UserContentContentNodeAggregateSelection
-            }
-
-            type UserContentContentAggregationSelection {
-              count: Int!
               node: UserContentContentNodeAggregateSelection
             }
 
@@ -10572,7 +10077,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ShowSort!], where: ShowWhere): [Show!]!
-              actedInAggregate(where: ShowWhere): ActorShowActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -10720,11 +10224,6 @@ describe("Interface Relationships", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorConnectInput {
               actedIn: [ActorActedInConnectFieldInput!]
             }
@@ -10764,12 +10263,6 @@ describe("Interface Relationships", () => {
 
             type ActorShowActedInAggregateSelection {
               count: CountConnection!
-              edge: ActorShowActedInEdgeAggregateSelection
-              node: ActorShowActedInNodeAggregateSelection
-            }
-
-            type ActorShowActedInAggregationSelection {
-              count: Int!
               edge: ActorShowActedInEdgeAggregateSelection
               node: ActorShowActedInNodeAggregateSelection
             }
@@ -10930,24 +10423,9 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production & Show {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -11052,12 +10530,6 @@ describe("Interface Relationships", () => {
             }
 
             type MovieAggregateNode {
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -11182,11 +10654,6 @@ describe("Interface Relationships", () => {
               title: StringAggregateSelection!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             type ProductionEdge {
               cursor: String!
               node: Production!
@@ -11226,42 +10693,22 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
               shows(limit: Int, offset: Int, sort: [ShowSort!], where: ShowWhere): [Show!]!
-              showsAggregate(where: ShowWhere): ShowAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"showsConnection\\\\\\" instead\\")
               showsConnection(after: String, first: Int, sort: [ShowSort!], where: ShowWhere): ShowsConnection!
             }
 
             type Series implements Production & Show {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               episodeCount: Int!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              episodeNr: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -11366,12 +10813,6 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesAggregateNode {
-              episodeCount: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -11667,11 +11108,6 @@ describe("Interface Relationships", () => {
             }
 
             type ShowAggregateNode {
-              title: StringAggregateSelection!
-            }
-
-            type ShowAggregateSelection {
-              count: Int!
               title: StringAggregateSelection!
             }
 

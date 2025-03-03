@@ -78,11 +78,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
@@ -161,18 +156,12 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Movie @key(fields: \\"title\\") @shareable {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               node: MovieActorActorsNodeAggregateSelection
             }
 
@@ -276,11 +265,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection @shareable {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             type MovieEdge @shareable {
               cursor: String!
               node: Movie!
@@ -351,10 +335,8 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]! @shareable
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @shareable @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection! @shareable
             }
 
@@ -466,11 +448,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             type ActorAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -605,7 +582,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Movie @key(fields: \\"title\\") @key(fields: \\"id\\") @shareable {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID!
               title: String!
@@ -613,11 +589,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               node: MovieActorActorsNodeAggregateSelection
             }
 
@@ -830,7 +801,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               _entities(representations: [_Any!]!): [_Entity]!
               _service: _Service!
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
             }
 

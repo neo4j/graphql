@@ -194,10 +194,8 @@ describe("lower case type names", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): actorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [actorSort!], where: actorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): movieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [movieSort!], where: movieWhere): MoviesConnection!
             }
 
@@ -258,7 +256,6 @@ describe("lower case type names", () => {
             type actor {
               createdAt: DateTime
               movies(limit: Int, offset: Int, sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): actormovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
               year: Int
@@ -270,13 +267,6 @@ describe("lower case type names", () => {
             }
 
             type actorAggregateNode {
-              createdAt: DateTimeAggregateSelection!
-              name: StringAggregateSelection!
-              year: IntAggregateSelection!
-            }
-
-            type actorAggregateSelection {
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -572,11 +562,6 @@ describe("lower case type names", () => {
               node: actormovieMoviesNodeAggregateSelection
             }
 
-            type actormovieMoviesAggregationSelection {
-              count: Int!
-              node: actormovieMoviesNodeAggregateSelection
-            }
-
             type actormovieMoviesNodeAggregateSelection {
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
@@ -586,7 +571,6 @@ describe("lower case type names", () => {
 
             type movie {
               actors(limit: Int, offset: Int, sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): movieactorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [movieActorsConnectionSort!], where: movieActorsConnectionWhere): movieActorsConnection!
               createdAt: DateTime
               name: String
@@ -762,14 +746,6 @@ describe("lower case type names", () => {
               year: IntAggregateSelection!
             }
 
-            type movieAggregateSelection {
-              count: Int!
-              createdAt: DateTimeAggregateSelection!
-              name: StringAggregateSelection!
-              testId: StringAggregateSelection!
-              year: IntAggregateSelection!
-            }
-
             input movieConnectInput {
               actors: [movieActorsConnectFieldInput!]
             }
@@ -895,11 +871,6 @@ describe("lower case type names", () => {
 
             type movieactorActorsAggregateSelection {
               count: CountConnection!
-              node: movieactorActorsNodeAggregateSelection
-            }
-
-            type movieactorActorsAggregationSelection {
-              count: Int!
               node: movieactorActorsNodeAggregateSelection
             }
 

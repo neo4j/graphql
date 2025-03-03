@@ -108,12 +108,6 @@ describe("Bigint", () => {
               size: BigIntAggregateSelection!
             }
 
-            type FileAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-              size: BigIntAggregateSelection!
-            }
-
             input FileCreateInput {
               name: String!
               size: BigInt!
@@ -183,7 +177,6 @@ describe("Bigint", () => {
 
             type Query {
               files(limit: Int, offset: Int, sort: [FileSort!], where: FileWhere): [File!]!
-              filesAggregate(where: FileWhere): FileAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"filesConnection\\\\\\" instead\\")
               filesConnection(after: String, first: Int, sort: [FileSort!], where: FileWhere): FilesConnection!
             }
 

@@ -65,12 +65,6 @@ describe("200", () => {
               name: StringAggregateSelection!
             }
 
-            type CategoryAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
             input CategoryCreateInput {
               description: String! = \\"\\"
               exampleImageLocations: [String!]
@@ -186,7 +180,6 @@ describe("200", () => {
 
             type Query {
               categories(limit: Int, offset: Int, sort: [CategorySort!], where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"categoriesConnection\\\\\\" instead\\")
               categoriesConnection(after: String, first: Int, sort: [CategorySort!], where: CategoryWhere): CategoriesConnection!
             }
 

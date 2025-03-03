@@ -83,7 +83,6 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, sort: [TechSort!], where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\" instead\\")
               techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
@@ -125,12 +124,6 @@ describe("Plural option", () => {
             }
 
             type TechAggregateNode {
-              name: StringAggregateSelection!
-              value: StringAggregateSelection!
-            }
-
-            type TechAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -262,7 +255,6 @@ describe("Plural option", () => {
 
             type Query {
               techs(limit: Int, offset: Int, sort: [TechSort!], where: TechWhere): [Tech!]!
-              techsAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"techsConnection\\\\\\" instead\\")
               techsConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechsConnection!
             }
 
@@ -304,12 +296,6 @@ describe("Plural option", () => {
             }
 
             type TechAggregateNode {
-              name: StringAggregateSelection!
-              value: StringAggregateSelection!
-            }
-
-            type TechAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }
@@ -441,7 +427,6 @@ describe("Plural option", () => {
 
             type Query {
               technologies(limit: Int, offset: Int, sort: [TechSort!], where: TechWhere): [Tech!]!
-              technologiesAggregate(where: TechWhere): TechAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"technologiesConnection\\\\\\" instead\\")
               technologiesConnection(after: String, first: Int, sort: [TechSort!], where: TechWhere): TechnologiesConnection!
             }
 
@@ -483,12 +468,6 @@ describe("Plural option", () => {
             }
 
             type TechAggregateNode {
-              name: StringAggregateSelection!
-              value: StringAggregateSelection!
-            }
-
-            type TechAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
               value: StringAggregateSelection!
             }

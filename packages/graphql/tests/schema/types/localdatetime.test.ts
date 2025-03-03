@@ -115,11 +115,6 @@ describe("Localdatetime", () => {
               localDT: LocalDateTimeAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              localDT: LocalDateTimeAggregateSelection!
-            }
-
             input MovieCreateInput {
               id: ID
               localDT: LocalDateTime
@@ -187,7 +182,6 @@ describe("Localdatetime", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

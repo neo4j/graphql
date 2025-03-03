@@ -104,10 +104,6 @@ describe("Connection with interfaces", () => {
               count: Count!
             }
 
-            type CreatureAggregateSelection {
-              count: Int!
-            }
-
             input CreatureConnectInput {
               movies: [CreatureMoviesConnectFieldInput!]
             }
@@ -360,7 +356,6 @@ describe("Connection with interfaces", () => {
 
             type Movie implements Production {
               director(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
-              directorAggregate(where: CreatureWhere): MovieCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
               directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
@@ -375,19 +370,10 @@ describe("Connection with interfaces", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               director: MovieDirectorFieldInput
               id: ID
               title: String!
-            }
-
-            type MovieCreatureDirectorAggregationSelection {
-              count: Int!
             }
 
             input MovieDeleteInput {
@@ -576,16 +562,11 @@ describe("Connection with interfaces", () => {
             type Person implements Creature {
               id: ID
               movies(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              moviesAggregate(where: ProductionWhere): PersonProductionMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             type PersonAggregate {
               count: Count!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonCreateInput {
@@ -681,10 +662,6 @@ describe("Connection with interfaces", () => {
               where: CreatureMoviesConnectionWhere
             }
 
-            type PersonProductionMoviesAggregationSelection {
-              count: Int!
-            }
-
             \\"\\"\\"
             Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
             \\"\\"\\"
@@ -745,10 +722,6 @@ describe("Connection with interfaces", () => {
 
             type ProductionAggregate {
               count: Count!
-            }
-
-            type ProductionAggregateSelection {
-              count: Int!
             }
 
             input ProductionConnectInput {
@@ -959,25 +932,19 @@ describe("Connection with interfaces", () => {
 
             type Query {
               creatures(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
-              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"creaturesConnection\\\\\\" instead\\")
               creaturesConnection(after: String, first: Int, sort: [CreatureSort!], where: CreatureWhere): CreaturesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               director(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
-              directorAggregate(where: CreatureWhere): SeriesCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
               directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
@@ -994,12 +961,6 @@ describe("Connection with interfaces", () => {
               title: StringAggregateSelection!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
-              episode: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             type SeriesConnection {
               aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
@@ -1012,10 +973,6 @@ describe("Connection with interfaces", () => {
               episode: Int!
               id: ID
               title: String!
-            }
-
-            type SeriesCreatureDirectorAggregationSelection {
-              count: Int!
             }
 
             input SeriesDeleteInput {

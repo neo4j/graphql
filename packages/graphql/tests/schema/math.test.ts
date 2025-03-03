@@ -115,11 +115,6 @@ describe("Algebraic", () => {
               viewers: IntAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              viewers: IntAggregateSelection!
-            }
-
             input MovieCreateInput {
               id: ID
               viewers: Int!
@@ -189,7 +184,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -315,11 +309,6 @@ describe("Algebraic", () => {
               viewers: BigIntAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              viewers: BigIntAggregateSelection!
-            }
-
             input MovieCreateInput {
               id: ID
               viewers: BigInt!
@@ -389,7 +378,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -513,11 +501,6 @@ describe("Algebraic", () => {
               viewers: FloatAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              viewers: FloatAggregateSelection!
-            }
-
             input MovieCreateInput {
               id: ID
               viewers: Float!
@@ -589,7 +572,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -681,7 +663,6 @@ describe("Algebraic", () => {
 
             type Director {
               directs(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              directsAggregate(where: MovieWhere): DirectorMovieDirectsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directsConnection\\\\\\" instead\\")
               directsConnection(after: String, first: Int, sort: [DirectorDirectsConnectionSort!], where: DirectorDirectsConnectionWhere): DirectorDirectsConnection!
               lastName: String!
             }
@@ -692,11 +673,6 @@ describe("Algebraic", () => {
             }
 
             type DirectorAggregateNode {
-              lastName: StringAggregateSelection!
-            }
-
-            type DirectorAggregateSelection {
-              count: Int!
               lastName: StringAggregateSelection!
             }
 
@@ -862,11 +838,6 @@ describe("Algebraic", () => {
               node: DirectorMovieDirectsNodeAggregateSelection
             }
 
-            type DirectorMovieDirectsAggregationSelection {
-              count: Int!
-              node: DirectorMovieDirectsNodeAggregateSelection
-            }
-
             type DirectorMovieDirectsNodeAggregateSelection {
               viewers: IntAggregateSelection!
             }
@@ -999,7 +970,6 @@ describe("Algebraic", () => {
 
             type Movie {
               directedBy(limit: Int, offset: Int, sort: [DirectorSort!], where: DirectorWhere): [Director!]!
-              directedByAggregate(where: DirectorWhere): MovieDirectorDirectedByAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directedByConnection\\\\\\" instead\\")
               directedByConnection(after: String, first: Int, sort: [MovieDirectedByConnectionSort!], where: MovieDirectedByConnectionWhere): MovieDirectedByConnection!
               id: ID
               viewers: Int!
@@ -1011,11 +981,6 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregateNode {
-              viewers: IntAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               viewers: IntAggregateSelection!
             }
 
@@ -1168,11 +1133,6 @@ describe("Algebraic", () => {
               node: MovieDirectorDirectedByNodeAggregateSelection
             }
 
-            type MovieDirectorDirectedByAggregationSelection {
-              count: Int!
-              node: MovieDirectorDirectedByNodeAggregateSelection
-            }
-
             type MovieDirectorDirectedByNodeAggregateSelection {
               lastName: StringAggregateSelection!
             }
@@ -1287,10 +1247,8 @@ describe("Algebraic", () => {
 
             type Query {
               directors(limit: Int, offset: Int, sort: [DirectorSort!], where: DirectorWhere): [Director!]!
-              directorsAggregate(where: DirectorWhere): DirectorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorsConnection\\\\\\" instead\\")
               directorsConnection(after: String, first: Int, sort: [DirectorSort!], where: DirectorWhere): DirectorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -1475,7 +1433,6 @@ describe("Algebraic", () => {
               id: ID
               viewers: Int!
               workers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              workersAggregate(where: PersonWhere): MoviePersonWorkersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"workersConnection\\\\\\" instead\\")
               workersConnection(after: String, first: Int, sort: [MovieWorkersConnectionSort!], where: MovieWorkersConnectionWhere): MovieWorkersConnection!
             }
 
@@ -1485,11 +1442,6 @@ describe("Algebraic", () => {
             }
 
             type MovieAggregateNode {
-              viewers: IntAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
               viewers: IntAggregateSelection!
             }
 
@@ -1510,11 +1462,6 @@ describe("Algebraic", () => {
 
             type MoviePersonWorkersAggregateSelection {
               count: CountConnection!
-              node: MoviePersonWorkersNodeAggregateSelection
-            }
-
-            type MoviePersonWorkersAggregationSelection {
-              count: Int!
               node: MoviePersonWorkersNodeAggregateSelection
             }
 
@@ -1746,7 +1693,6 @@ describe("Algebraic", () => {
             type Person {
               name: String!
               worksInProduction(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              worksInProductionAggregate(where: ProductionWhere): PersonProductionWorksInProductionAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"worksInProductionConnection\\\\\\" instead\\")
               worksInProductionConnection(after: String, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
             }
 
@@ -1756,11 +1702,6 @@ describe("Algebraic", () => {
             }
 
             type PersonAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -1792,11 +1733,6 @@ describe("Algebraic", () => {
 
             type PersonProductionWorksInProductionAggregateSelection {
               count: CountConnection!
-              node: PersonProductionWorksInProductionNodeAggregateSelection
-            }
-
-            type PersonProductionWorksInProductionAggregationSelection {
-              count: Int!
               node: PersonProductionWorksInProductionNodeAggregateSelection
             }
 
@@ -2008,11 +1944,6 @@ describe("Algebraic", () => {
               viewers: IntAggregateSelection!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
-              viewers: IntAggregateSelection!
-            }
-
             input ProductionConnectWhere {
               node: ProductionWhere!
             }
@@ -2078,13 +2009,10 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
             }
 
@@ -2339,7 +2267,6 @@ describe("Algebraic", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
@@ -2485,11 +2412,6 @@ describe("Algebraic", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
             }
@@ -2518,12 +2440,6 @@ describe("Algebraic", () => {
 
             type MoviePersonActorsAggregateSelection {
               count: CountConnection!
-              edge: MoviePersonActorsEdgeAggregateSelection
-              node: MoviePersonActorsNodeAggregateSelection
-            }
-
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
               edge: MoviePersonActorsEdgeAggregateSelection
               node: MoviePersonActorsNodeAggregateSelection
             }
@@ -2632,7 +2548,6 @@ describe("Algebraic", () => {
 
             type Person {
               actedInMovies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              actedInMoviesAggregate(where: MovieWhere): PersonMovieActedInMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInMoviesConnection\\\\\\" instead\\")
               actedInMoviesConnection(after: String, first: Int, sort: [PersonActedInMoviesConnectionSort!], where: PersonActedInMoviesConnectionWhere): PersonActedInMoviesConnection!
               name: String!
             }
@@ -2780,11 +2695,6 @@ describe("Algebraic", () => {
               name: StringAggregateSelection!
             }
 
-            type PersonAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input PersonConnectInput {
               actedInMovies: [PersonActedInMoviesConnectFieldInput!]
             }
@@ -2813,12 +2723,6 @@ describe("Algebraic", () => {
 
             type PersonMovieActedInMoviesAggregateSelection {
               count: CountConnection!
-              edge: PersonMovieActedInMoviesEdgeAggregateSelection
-              node: PersonMovieActedInMoviesNodeAggregateSelection
-            }
-
-            type PersonMovieActedInMoviesAggregationSelection {
-              count: Int!
               edge: PersonMovieActedInMoviesEdgeAggregateSelection
               node: PersonMovieActedInMoviesNodeAggregateSelection
             }
@@ -2896,10 +2800,8 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 
