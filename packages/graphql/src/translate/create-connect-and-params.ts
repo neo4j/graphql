@@ -154,7 +154,7 @@ function createConnectAndParams({
             if (filters?.preComputedSubqueries?.length) {
                 const columns = [new Cypher.NamedVariable(nodeName)];
                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                const { cypher } = caseWhereClause.build("aggregateWhereFilter");
+                const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
                 subquery.push(cypher);
             } else {
                 subquery.push(`\tWHERE ${predicate}`);
@@ -462,13 +462,13 @@ function getFilters({
     });
     let preComputedWhereFieldsResult = "";
 
-    const whereCypher = new Cypher.Raw((env: Cypher.Environment) => {
+    const whereCypher = new Cypher.Raw((env: Cypher.RawCypherContext) => {
         preComputedWhereFieldsResult = compileCypherIfExists(preComputedSubqueries, env);
-        const cypher = (wherePredicate as any)?.getCypher(env) || "";
+        const cypher = wherePredicate ? env.compile(wherePredicate) : "";
         return [cypher, {}];
     });
 
-    const result = whereCypher.build(`${nodeName}_`);
+    const result = whereCypher.build({ prefix: `${nodeName}_` });
 
     if (result.cypher) {
         return {

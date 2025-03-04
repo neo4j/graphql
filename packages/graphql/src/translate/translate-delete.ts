@@ -143,7 +143,7 @@ export function translateDelete({
         return [cypher.filter(Boolean).join("\n"), cypherParams];
     });
 
-    const result = deleteQuery.build(varName);
+    const result = deleteQuery.build({ prefix: varName });
     return result;
 }
 

@@ -27,7 +27,7 @@ export function stringifyObject(fields: Record<string, Cypher.Raw | string | und
                 .filter(([, value]) => Boolean(value))
                 .map(([key, value]): string | undefined => {
                     if (value instanceof Cypher.Raw) {
-                        return `${key}: ${value?.getCypher(env)}`;
+                        return `${key}: ${env.compile(value)}`;
                     } else {
                         return `${key}: ${value}`;
                     }
