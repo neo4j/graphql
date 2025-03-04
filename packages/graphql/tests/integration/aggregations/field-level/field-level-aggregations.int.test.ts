@@ -205,8 +205,8 @@ describe("Field Level Aggregations", () => {
                                     age: {
                                         max: 54,
                                         min: 37,
-                                        average: expect.closeTo(48.33),
-                                        sum: 145,
+                                        average: expect.closeTo(45.5),
+                                        sum: 91,
                                     },
                                 },
                             },

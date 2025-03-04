@@ -267,6 +267,7 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
+                    isInConnection: true,
                 });
                 // NOTE: This will always be true on 7.x and this attribute should be removed
                 aggregationOperation.isInConnectionField = true;
@@ -288,6 +289,7 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
+                    isInConnection: true,
                 });
                 // NOTE: This will always be true on 7.x and this attribute should be removed
                 aggregationOperation.isInConnectionField = true;
