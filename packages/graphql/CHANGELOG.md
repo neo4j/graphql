@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 6.4.0
+
+### Minor Changes
+
+- [#6029](https://github.com/neo4j/graphql/pull/6029) [`f792a02`](https://github.com/neo4j/graphql/commit/f792a0259ad489b95e6241c20be6d27525712f3b) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add a new field directive `@sortable` which can be used to configure whether results can be sorted by field values or not.
+
+### Patch Changes
+
+- [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
+
 ## 6.3.1
 
 ### Patch Changes
