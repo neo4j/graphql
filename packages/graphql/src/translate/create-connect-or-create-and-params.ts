@@ -32,6 +32,7 @@ import { createAuthorizationAfterPredicate } from "./authorization/create-author
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { buildClause } from "./utils/build-clause";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 
 type CreateOrConnectInput = {
@@ -117,7 +118,7 @@ export function createConnectOrCreateAndParams({
     });
 
     const query = Cypher.utils.concat(...wrappedQueries);
-    return query.build({ prefix: `${varName}_` });
+    return buildClause(query, { context, prefix: `${varName}_` });
 }
 
 function createConnectOrCreatePartialStatement({

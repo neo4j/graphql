@@ -30,6 +30,7 @@ import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { isUnwindCreateSupported } from "./queryAST/factory/parsers/is-unwind-create-supported";
 import unwindCreate from "./unwind-create";
+import { buildClause } from "./utils/build-clause";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 const debug = Debug(DEBUG_TRANSLATE);
@@ -164,7 +165,7 @@ export default async function translateCreate({
         ];
     });
 
-    const createQueryCypher = createQuery.build({ prefix: "create_" });
+    const createQueryCypher = buildClause(createQuery, { context, prefix: "create_" });
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });

@@ -27,6 +27,7 @@ import { createAuthorizationBeforeAndParams } from "./authorization/compatibilit
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { createEventMetaObject } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { buildClause } from "./utils/build-clause";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
@@ -183,7 +184,10 @@ function createDeleteAndParams({
                                 new Cypher.NamedVariable(variableName),
                             ];
                             const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                            const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
+                            const { cypher } = buildClause(caseWhereClause, {
+                                context,
+                                prefix: "aggregateWhereFilter",
+                            });
                             innerStrs.push(cypher);
                         } else {
                             innerStrs.push(`WHERE ${predicate}`);
