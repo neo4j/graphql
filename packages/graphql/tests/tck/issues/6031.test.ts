@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
     test("Top-level connection typename filtering", async () => {
         const query = /* GraphQL */ `
             query {
-                productionsConnection(where: { typename_IN: [Movie] }) {
+                productionsConnection(where: { typename: [Movie] }) {
                     edges {
                         node {
                             title
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
                     edges {
                         node {
                             name
-                            productionsConnection(where: { node: { typename_IN: [Movie] } }) {
+                            productionsConnection(where: { node: { typename: [Movie] } }) {
                                 edges {
                                     node {
                                         title

@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
     test("typename should be supported on top-level connection where", async () => {
         const query = /* GraphQL */ `
             query TopLevelCount {
-                productionsConnection(where: { typename_IN: [${Movie}] }) {
+                productionsConnection(where: { typename: [${Movie}] }) {
                     edges {
                         node {
                             title
@@ -108,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
                     edges {
                         node {
                             name
-                            productionsConnection(where: { node: { typename_IN: [${Movie}] } }) {
+                            productionsConnection(where: { node: { typename: [${Movie}] } }) {
                                 edges {
                                     node {
                                         title
