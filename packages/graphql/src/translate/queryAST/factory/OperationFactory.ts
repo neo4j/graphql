@@ -278,6 +278,7 @@ export class OperationsFactory {
         operation: T;
         whereArgs: Record<string, any>;
         resolveTreeEdgeFields: Record<string, ResolveTree>;
+        partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
         return this.connectionFactory.hydrateConnectionOperationAST(arg);
     }
