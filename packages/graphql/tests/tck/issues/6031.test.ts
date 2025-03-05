@@ -73,17 +73,20 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-                MATCH (this0:Series)
-                WHERE this0:Movie
-                WITH { node: { __resolveType: \\"Series\\", __id: id(this0), title: this0.title } } AS edge
-                RETURN edge
-                UNION
-                MATCH (this1:Movie)
-                WHERE this1:Movie
-                WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
-                RETURN edge
+                CALL {
+                    MATCH (this0:Series)
+                    WHERE this0:Movie
+                    WITH { node: { __resolveType: \\"Series\\", __id: id(this0), title: this0.title } } AS edge
+                    RETURN edge
+                    UNION
+                    MATCH (this1:Movie)
+                    WHERE this1:Movie
+                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
+                    RETURN edge
+                }
+                RETURN collect(edge) AS edges
             }
-            WITH collect(edge) AS edges
+            WITH edges
             WITH edges, size(edges) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
@@ -125,18 +128,22 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
                     WITH this0
                     CALL {
                         WITH this0
-                        MATCH (this0)-[this1:ACTED_IN]->(this2:Series)
-                        WHERE this2:Movie
-                        WITH { node: { __resolveType: \\"Series\\", __id: id(this2), title: this2.title } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this0
-                        MATCH (this0)-[this3:ACTED_IN]->(this4:Movie)
-                        WHERE this4:Movie
-                        WITH { node: { __resolveType: \\"Movie\\", __id: id(this4), title: this4.title } } AS edge
-                        RETURN edge
+                        CALL {
+                            WITH this0
+                            MATCH (this0)-[this1:ACTED_IN]->(this2:Series)
+                            WHERE this2:Movie
+                            WITH { node: { __resolveType: \\"Series\\", __id: id(this2), title: this2.title } } AS edge
+                            RETURN edge
+                            UNION
+                            WITH this0
+                            MATCH (this0)-[this3:ACTED_IN]->(this4:Movie)
+                            WHERE this4:Movie
+                            WITH { node: { __resolveType: \\"Movie\\", __id: id(this4), title: this4.title } } AS edge
+                            RETURN edge
+                        }
+                        RETURN collect(edge) AS edges
                     }
-                    WITH collect(edge) AS edges
+                    WITH edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS var5
                 }
