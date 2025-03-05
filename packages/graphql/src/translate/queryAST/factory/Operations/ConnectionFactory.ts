@@ -123,6 +123,7 @@ export class ConnectionFactory {
                 operation: connectionPartial,
                 whereArgs: resolveTreeWhere,
                 resolveTreeEdgeFields,
+                partialOf: target,
             });
         });
 
@@ -431,6 +432,7 @@ export class ConnectionFactory {
         operation,
         whereArgs,
         resolveTreeEdgeFields,
+        partialOf,
     }: {
         relationship?: RelationshipAdapter;
         target: ConcreteEntityAdapter;
@@ -439,6 +441,7 @@ export class ConnectionFactory {
         operation: T;
         whereArgs: Record<string, any>;
         resolveTreeEdgeFields: Record<string, ResolveTree>;
+        partialOf?: InterfaceEntityAdapter | UnionEntityAdapter,
     }): T {
         const entityOrRel = relationship ?? target;
 
@@ -485,6 +488,7 @@ export class ConnectionFactory {
             rel: relationship,
             entity: target,
             where: whereArgs,
+            partialOf,
         });
 
         operation.setNodeFields(nodeFields);
