@@ -23,7 +23,7 @@ import { filterFields, renameFields } from "../../../../../utils/utils";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { AggregationField } from "./AggregationField";
 
-export class AggregationAttributeField extends AggregationField {
+export class DeprecatedAggregationAttributeField extends AggregationField {
     private attribute: AttributeAdapter;
     private aggregationProjection: Record<string, string>;
 
@@ -62,13 +62,12 @@ export class AggregationAttributeField extends AggregationField {
             const projection = new Cypher.Return([this.createAggregationExpr(listVar), returnVar]);
 
             return new Cypher.With(target)
-                .distinct()
                 .orderBy([Cypher.size(aggrProp), "DESC"])
                 .with([Cypher.collect(aggrProp), listVar])
                 .return(projection);
         }
 
-        return new Cypher.With(target).distinct().return([this.getAggregationExpr(target), returnVar]);
+        return new Cypher.With(target).return([this.getAggregationExpr(target), returnVar]);
     }
 
     private createAggregationExpr(target: Cypher.Variable | Cypher.Property): Cypher.Expr {

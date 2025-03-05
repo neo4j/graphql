@@ -35,6 +35,7 @@ import { OperationField } from "../ast/fields/OperationField";
 import { AggregationAttributeField } from "../ast/fields/aggregation-fields/AggregationAttributeField";
 import type { AggregationField } from "../ast/fields/aggregation-fields/AggregationField";
 import { CountField } from "../ast/fields/aggregation-fields/CountField";
+import { DeprecatedAggregationAttributeField } from "../ast/fields/aggregation-fields/DeprecatedAggregationAttributeField";
 import { DeprecatedCountField } from "../ast/fields/aggregation-fields/DeprecatedCountField";
 import { AttributeField } from "../ast/fields/attribute-fields/AttributeField";
 import { DateTimeField } from "../ast/fields/attribute-fields/DateTimeField";
@@ -134,7 +135,8 @@ export class FieldFactory {
 
     public createAggregationFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        rawFields: Record<string, ResolveTree>
+        rawFields: Record<string, ResolveTree>,
+        useDeprecatedAttribute = false
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
@@ -169,11 +171,19 @@ export class FieldFactory {
                         return acc;
                     }, {});
 
-                    return new AggregationAttributeField({
-                        attribute,
-                        alias: field.alias,
-                        aggregationProjection,
-                    });
+                    if (useDeprecatedAttribute) {
+                        return new DeprecatedAggregationAttributeField({
+                            attribute,
+                            alias: field.alias,
+                            aggregationProjection,
+                        });
+                    } else {
+                        return new AggregationAttributeField({
+                            attribute,
+                            alias: field.alias,
+                            aggregationProjection,
+                        });
+                    }
                 }
             })
         );
