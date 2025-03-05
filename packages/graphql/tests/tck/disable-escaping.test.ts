@@ -30,9 +30,9 @@ describe("Disable escaping", () => {
                 name: String!
             }
 
-            type Movie @node(labels: ["A Movie"]) {
+            type Movie @node(labels: ["Movie:Film"]) {
                 title: String!
-                actors: [Actor!]! @relationship(type: "ACTED IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN|PATICIPATED", direction: IN)
             }
         `;
     });
@@ -59,10 +59,10 @@ describe("Disable escaping", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`A Movie\`)
+            "MATCH (this:\`Movie:Film\`)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED IN]-(this1:Actor)
+                MATCH (this)<-[this0:ACTED_IN|PATICIPATED]-(this1:Actor)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -94,10 +94,10 @@ describe("Disable escaping", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:A Movie)
+            "MATCH (this:Movie:Film)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:\`ACTED IN\`]-(this1:Actor)
+                MATCH (this)<-[this0:\`ACTED_IN|PATICIPATED\`]-(this1:Actor)
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
