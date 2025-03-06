@@ -72,12 +72,12 @@ describe("Disable escaping", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
-    test("disableLabelEscaping", async () => {
+    test("disableNodeLabelEscaping", async () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             features: {
                 unsafeEscapeOptions: {
-                    disableLabelEscaping: true,
+                    disableNodeLabelEscaping: true,
                 },
             },
         });

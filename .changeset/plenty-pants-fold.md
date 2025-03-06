@@ -5,7 +5,7 @@
 Add `unsafeEscapeOptions` to `Neo4jGraphQL` features with the following flags:
 
 - `disableRelationshipTypeEscaping` (default to `false`)
-- `disableLabelEscaping` (defaults to `false`)
+- `disableNodeLabelEscaping` (defaults to `false`)
 
 These flags remove the automatic escaping of node labels and relationship types in the generated Cypher.
 

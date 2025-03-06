@@ -496,7 +496,7 @@ export type Neo4jFeaturesSettings = {
          *
          * **WARNING**: Disabling label escaping may lead to code injection and unsafe Cypher.
          */
-        disableLabelEscaping?: boolean;
+        disableNodeLabelEscaping?: boolean;
         /** Disables automatic escaping of relationship types.
          *
          * **WARNING**: Disabling type escaping may lead to code injection and unsafe Cypher.

@@ -27,7 +27,7 @@ export function buildClause(
     return clause.build({
         prefix,
         unsafeEscapeOptions: {
-            disableLabelEscaping: Boolean(context.features.unsafeEscapeOptions?.disableLabelEscaping),
+            disableNodeLabelEscaping: Boolean(context.features.unsafeEscapeOptions?.disableNodeLabelEscaping),
             disableRelationshipTypeEscaping: Boolean(
                 context.features.unsafeEscapeOptions?.disableRelationshipTypeEscaping
             ),
