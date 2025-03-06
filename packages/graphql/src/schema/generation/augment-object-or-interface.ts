@@ -150,7 +150,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
         composeNodeArgs.sort = connectionSortITC.NonNull.List;
     }
 
-    if (relationshipAdapter.isReadable()) {
+    if (relationshipAdapter.isReadable() || relationshipAdapter.isAggregable()) {
         fields[relationshipAdapter.operations.connectionFieldName] = {
             type: withConnectionObjectType({
                 relationshipAdapter,

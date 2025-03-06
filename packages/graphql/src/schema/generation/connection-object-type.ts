@@ -40,11 +40,16 @@ export function withConnectionObjectType({
     const connectionObjectType = composer.createObjectTC({
         name: typeName,
         fields: {
-            edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
         },
     });
+
+    if (relationshipAdapter.isReadable()) {
+        connectionObjectType.addFields({
+            edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
+        });
+    }
 
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;

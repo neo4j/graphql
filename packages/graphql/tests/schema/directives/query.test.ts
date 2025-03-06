@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import type { GraphQLFieldMap } from "graphql";
+import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
 import { GraphQLError } from "graphql";
-import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@query directive", () => {
     describe("on OBJECT", () => {
         test("default arguments should disable aggregation", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @node {
                     username: String!
                     password: String!
@@ -38,65 +37,64 @@ describe("@query directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeDefined();
             expect(actors).toBeDefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
 
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
-
             expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeDefined();
+
+            const moviesConnectionType = schema.getType("MoviesConnection") as GraphQLObjectType;
+            expect(moviesConnectionType).toBeDefined();
+            const { aggregate, edges } = moviesConnectionType.getFields();
+
+            expect(aggregate).toBeUndefined();
+            expect(edges).toBeDefined();
         });
 
         test("should enable aggregation", async () => {
-            const typeDefs = gql`
-                type Actor @query(aggregate: true) @node {
+            const typeDefs = /* GraphQL */ `
+                type Actor @node {
                     username: String!
                     password: String!
                 }
 
-                type Movie @node {
+                type Movie @query(aggregate: true) @node {
                     title: String
                 }
             `;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeDefined();
             expect(actors).toBeDefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
 
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
-
             expect(moviesAggregate).toBeDefined();
             expect(actorsAggregate).toBeDefined();
+
+            const moviesConnectionType = schema.getType("MoviesConnection") as GraphQLObjectType;
+            expect(moviesConnectionType).toBeDefined();
+            const { aggregate, edges } = moviesConnectionType.getFields();
+
+            expect(aggregate).toBeDefined();
+            expect(edges).toBeDefined();
         });
 
         test("should disable read and aggregate for Actor", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @query(read: false, aggregate: false) @node {
                     name: String
                 }
@@ -108,29 +106,25 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeDefined();
             expect(actors).toBeUndefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeUndefined();
 
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
-
             expect(moviesAggregate).toBeDefined();
             expect(actorsAggregate).toBeUndefined();
+
+            const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
+            expect(actorsConnectionType).toBeUndefined();
         });
 
         test("should disable read and enable aggregate for Actor", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @query(read: false, aggregate: true) @node {
                     name: String
                 }
@@ -142,31 +136,31 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeDefined();
             expect(actors).toBeUndefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeDefined();
-            expect(actorsConnection).toBeUndefined();
-
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
+            expect(actorsConnection).toBeDefined();
 
             expect(moviesAggregate).toBeDefined();
             expect(actorsAggregate).toBeDefined();
+            // fixme: this should be fixed.
+            const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
+            expect(actorsConnectionType).toBeDefined();
+            const { aggregate, edges } = actorsConnectionType.getFields();
+
+            expect(aggregate).toBeDefined();
+            expect(edges).toBeUndefined();
         });
     });
 
     describe("on SCHEMA", () => {
         test("default arguments should disable aggregation", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @node {
                     username: String!
                     password: String!
@@ -180,29 +174,29 @@ describe("@query directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeDefined();
             expect(actors).toBeDefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
 
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
-
             expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeUndefined();
+            // TODO: weird that this is working, considering that the above test is failing.
+            const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
+            expect(actorsConnectionType).toBeDefined();
+            const { aggregate, edges } = actorsConnectionType.getFields();
+
+            expect(aggregate).toBeUndefined();
+            expect(edges).toBeDefined();
         });
 
         test("should enable aggregation", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @node {
                     username: String!
                     password: String!
@@ -217,30 +211,29 @@ describe("@query directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeDefined();
             expect(actors).toBeDefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
 
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
-
             expect(moviesAggregate).toBeDefined();
             expect(actorsAggregate).toBeDefined();
+
+            const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
+            expect(actorsConnectionType).toBeDefined();
+            const { aggregate, edges } = actorsConnectionType.getFields();
+
+            expect(aggregate).toBeDefined();
+            expect(edges).toBeDefined();
         });
 
         test("should disable read and aggregate", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @node {
                     name: String
                 }
@@ -253,29 +246,25 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeUndefined();
             expect(actors).toBeUndefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
             expect(moviesConnection).toBeUndefined();
             expect(actorsConnection).toBeUndefined();
 
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
-
             expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeUndefined();
+
+            const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
+            expect(actorsConnectionType).toBeUndefined();
         });
 
         test("should disable read and enable aggregate", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @node {
                     name: String
                 }
@@ -289,29 +278,29 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-            const movies = queryFields["movies"];
-            const actors = queryFields["actors"];
+            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
 
             expect(movies).toBeUndefined();
             expect(actors).toBeUndefined();
 
-            const moviesConnection = queryFields["moviesConnection"];
-            const actorsConnection = queryFields["actorsConnection"];
-
-            expect(moviesConnection).toBeUndefined();
-            expect(actorsConnection).toBeUndefined();
-
-            const moviesAggregate = queryFields["moviesAggregate"];
-            const actorsAggregate = queryFields["actorsAggregate"];
+            expect(moviesConnection).toBeDefined();
+            expect(actorsConnection).toBeDefined();
 
             expect(moviesAggregate).toBeDefined();
             expect(actorsAggregate).toBeDefined();
+
+            const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
+            expect(actorsConnectionType).toBeDefined();
+            const { aggregate, edges } = actorsConnectionType.getFields();
+
+            expect(aggregate).toBeDefined();
+            expect(edges).toBeUndefined();
         });
 
         test("should throw an Error when is used in both schema on object", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Actor @query(read: true, aggregate: true) @node {
                     name: String
                 }

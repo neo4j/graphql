@@ -548,6 +548,15 @@ function generateObjectType({
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
 
+    if (concreteEntityAdapter.isReadable || concreteEntityAdapter.isAggregable) {
+        composer.Query.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: concreteEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+    }
     if (concreteEntityAdapter.isReadable) {
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -561,13 +570,6 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        composer.Query.addFields({
-            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
-                entityAdapter: concreteEntityAdapter,
-                propagatedDirectives,
-            }),
-        });
         composer.Query.setFieldDirectives(
             concreteEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
@@ -689,6 +691,15 @@ function generateInterfaceObjectType({
     });
 
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+    if (interfaceEntityAdapter.isReadable || interfaceEntityAdapter.isAggregable) {
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: interfaceEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+    }
     if (interfaceEntityAdapter.isReadable) {
         composer.Query.addFields({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -703,13 +714,6 @@ function generateInterfaceObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
-                entityAdapter: interfaceEntityAdapter,
-                propagatedDirectives,
-            }),
-        });
         composer.Query.setFieldDirectives(
             interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)

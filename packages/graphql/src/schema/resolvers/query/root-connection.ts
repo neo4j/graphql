@@ -97,8 +97,11 @@ export function rootConnectionResolver({
     const rootFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {
         totalCount: new GraphQLNonNull(GraphQLInt),
         pageInfo: new GraphQLNonNull(PageInfo),
-        edges: rootEdge.NonNull.List.NonNull,
     };
+
+    if (entityAdapter.isReadable) {
+        rootFields["edges"] = rootEdge.NonNull.List.NonNull;
+    }
 
     if (entityAdapter.isAggregable) {
         rootFields["aggregate"] = `${entityAdapter.operations.aggregateTypeNames.connection}!`;
