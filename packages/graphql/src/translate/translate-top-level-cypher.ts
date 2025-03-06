@@ -27,6 +27,7 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { buildClause } from "./utils/build-clause";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -84,5 +85,5 @@ export function translateTopLevelCypher({
     const projectionStatements = queryASTResult.clauses.length
         ? Cypher.utils.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
-    return projectionStatements.build();
+    return buildClause(projectionStatements, { context });
 }

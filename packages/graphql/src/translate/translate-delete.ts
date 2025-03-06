@@ -25,6 +25,7 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { buildClause } from "./utils/build-clause";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -52,7 +53,7 @@ function translateUsingQueryAST({
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);
-    return clause.build();
+    return buildClause(clause, { context });
 }
 export function translateDelete({
     context,

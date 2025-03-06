@@ -23,6 +23,7 @@ import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { buildClause } from "./utils/build-clause";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -46,5 +47,5 @@ export function translateResolveReference({
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, "this");
-    return clause.build();
+    return buildClause(clause, { context });
 }
