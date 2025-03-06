@@ -457,6 +457,23 @@ export type Neo4jFeaturesSettings = {
         idAggregations?: boolean;
         typename_IN?: boolean;
     };
+
+    /** Options for disabling automatic escaping of potentially unsafe strings.
+     *
+     * **WARNING**: Changing these options may lead to code injection and unsafe Cypher.
+     */
+    unsafeEscapeOptions?: {
+        /** Disables automatic escaping of node labels.
+         *
+         * **WARNING**: Disabling label escaping may lead to code injection and unsafe Cypher.
+         */
+        disableNodeLabelEscaping?: boolean;
+        /** Disables automatic escaping of relationship types.
+         *
+         * **WARNING**: Disabling type escaping may lead to code injection and unsafe Cypher.
+         */
+        disableRelationshipTypeEscaping?: boolean;
+    };
     vector?: Neo4jVectorSettings;
 };
 

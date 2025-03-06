@@ -19,7 +19,9 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { PredicateReturn } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../../../utils/compile-cypher";
+import { buildClause } from "../../utils/build-clause";
 
 type CompiledPredicateReturn = {
     cypher: string;
@@ -33,10 +35,15 @@ type CompiledPredicateReturn = {
  * The subqueries contain variables required by the predicate, and if they are not compiled with the same
  * environment, the predicate will be referring to non-existent variables and will re-assign variable from the subqueries.
  */
-export function compilePredicateReturn(
-    predicateReturn: PredicateReturn,
-    indexPrefix?: string
-): CompiledPredicateReturn {
+export function compilePredicateReturn({
+    predicateReturn,
+    indexPrefix,
+    context,
+}: {
+    predicateReturn: PredicateReturn;
+    indexPrefix: string | undefined;
+    context: Neo4jGraphQLTranslationContext;
+}): CompiledPredicateReturn {
     const result: CompiledPredicateReturn = { cypher: "", params: {} };
 
     const { predicate, preComputedSubqueries } = predicateReturn;
@@ -52,7 +59,10 @@ export function compilePredicateReturn(
             }
             return predicateStr;
         });
-        const { cypher, params } = predicateCypher.build({ prefix: `authorization_${indexPrefix || ""}` });
+        const { cypher, params } = buildClause(predicateCypher, {
+            context,
+            prefix: `authorization_${indexPrefix || ""}`,
+        });
         result.cypher = cypher;
         result.params = params;
         result.subqueries = subqueries;

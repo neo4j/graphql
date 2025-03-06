@@ -25,6 +25,7 @@ import type { GraphQLWhereArg } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
+import { buildClause } from "./utils/build-clause";
 import { createWhereNodePredicate } from "./where/create-where-predicate";
 
 export function translateTopLevelMatch({
@@ -51,7 +52,7 @@ export function translateTopLevelMatch({
         where,
     });
 
-    return Cypher.utils.concat(matchClause, preComputedWhereFieldSubqueries, whereClause).build();
+    return buildClause(Cypher.utils.concat(matchClause, preComputedWhereFieldSubqueries, whereClause), { context });
 }
 
 type CreateMatchClauseReturn = {
