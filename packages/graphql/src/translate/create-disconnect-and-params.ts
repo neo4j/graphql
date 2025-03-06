@@ -27,6 +27,7 @@ import { createAuthorizationAfterAndParams } from "./authorization/compatibility
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { buildClause } from "./utils/build-clause";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
@@ -140,7 +141,7 @@ function createDisconnectAndParams({
             if (aggregationWhere) {
                 const columns = [new Cypher.NamedVariable(relVarName), new Cypher.NamedVariable(variableName)];
                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
+                const { cypher } = buildClause(caseWhereClause, { context, prefix: "aggregateWhereFilter" });
                 subquery.push(cypher);
             } else {
                 subquery.push(`WHERE ${predicate}`);

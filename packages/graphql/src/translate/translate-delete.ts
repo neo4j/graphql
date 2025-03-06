@@ -32,6 +32,7 @@ import { createEventMeta } from "./subscriptions/create-event-meta";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { buildClause } from "./utils/build-clause";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -59,7 +60,7 @@ function translateUsingQueryAST({
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);
-    return clause.build();
+    return buildClause(clause, { context });
 }
 export function translateDelete({
     context,
@@ -143,8 +144,7 @@ export function translateDelete({
         return [cypher.filter(Boolean).join("\n"), cypherParams];
     });
 
-    const result = deleteQuery.build({ prefix: varName });
-    return result;
+    return buildClause(deleteQuery, { context, prefix: varName });
 }
 
 function getDeleteReturn(context: Neo4jGraphQLTranslationContext): Array<string> {

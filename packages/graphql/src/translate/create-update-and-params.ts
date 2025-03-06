@@ -48,6 +48,7 @@ import createSetRelationshipProperties from "./create-set-relationship-propertie
 import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { buildClause } from "./utils/build-clause";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import { indentBlock } from "./utils/indent-block";
@@ -268,7 +269,10 @@ export default function createUpdateAndParams({
                                     new Cypher.NamedVariable(variableName),
                                 ];
                                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                                const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
+                                const { cypher } = buildClause(caseWhereClause, {
+                                    context,
+                                    prefix: "aggregateWhereFilter",
+                                });
                                 innerUpdate.push(cypher);
                             } else {
                                 innerUpdate.push(`WHERE ${predicate}`);
