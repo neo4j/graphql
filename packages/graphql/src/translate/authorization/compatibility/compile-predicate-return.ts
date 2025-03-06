@@ -35,11 +35,15 @@ type CompiledPredicateReturn = {
  * The subqueries contain variables required by the predicate, and if they are not compiled with the same
  * environment, the predicate will be referring to non-existent variables and will re-assign variable from the subqueries.
  */
-export function compilePredicateReturn(
-    predicateReturn: PredicateReturn,
-    indexPrefix: string | undefined,
-    context: Neo4jGraphQLTranslationContext
-): CompiledPredicateReturn {
+export function compilePredicateReturn({
+    predicateReturn,
+    indexPrefix,
+    context,
+}: {
+    predicateReturn: PredicateReturn;
+    indexPrefix: string | undefined;
+    context: Neo4jGraphQLTranslationContext;
+}): CompiledPredicateReturn {
     const result: CompiledPredicateReturn = { cypher: "", params: {} };
 
     const { predicate, preComputedSubqueries } = predicateReturn;

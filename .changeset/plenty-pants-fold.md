@@ -4,8 +4,8 @@
 
 Add `unsafeEscapeOptions` to `Neo4jGraphQL` features with the following flags:
 
--   `disableRelationshipTypeEscaping` (default to `false`)
--   `disableLabelEscaping` (defaults to `false`)
+- `disableRelationshipTypeEscaping` (default to `false`)
+- `disableLabelEscaping` (defaults to `false`)
 
 These flags remove the automatic escaping of node labels and relationship types in the generated Cypher.
 
@@ -18,7 +18,7 @@ type Actor {
 
 type Movie {
     title: String!
-    actors: [${Actor}!]! @relationship(type: "FROM_PRODUCTION]->(:Production)-[:ACTED_IN", direction: OUT)
+    actors: [Actor!]! @relationship(type: "ACTED IN", direction: OUT)
 }
 ```
 
@@ -38,10 +38,10 @@ query {
 Will normally generate the following Cypher for the relationship:
 
 ```cypher
-MATCH (this:Movie)-[this0:`FROM_PRODUCTION]->(:Production)-[:ACTED_IN`]->(this1:Actor)
+MATCH (this:Movie)-[this0:`ACTED IN`]->(this1:Actor)
 ```
 
-The label `FROM_PRODUCTION]->(:Production)-[:ACTED_IN` is escaped by placing it inside backticks (`\``), as some characters in it are susceptible of code injection.
+The label `ACTED IN` is escaped by placing it inside backticks (`\``), as some characters in it are susceptible of code injection.
 
 If the option `disableRelationshipTypeEscaping` is set in `Neo4jGraphQL`, this safety mechanism will be disabled:
 
@@ -56,10 +56,10 @@ new Neo4jGraphQL({
 });
 ```
 
-Generating the following Cypher instead:
+Generating the following (incorrect) Cypher instead:
 
 ```cypher
-MATCH (this:Movie)-[this0:FROM_PRODUCTION]->(:Production)-[:ACTED_IN]->(this1:Actor)
+MATCH (this:Movie)-[this0:ACTED IN]->(this1:Actor)
 ```
 
 This can be useful in very custom scenarios where the Cypher needs to be tweaked or if the labels and types have already been escaped.

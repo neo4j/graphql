@@ -68,7 +68,7 @@ export function createAuthorizationAfterAndParams({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}after_`, context);
+        return compilePredicateReturn({ predicateReturn, indexPrefix: `${indexPrefix || "_"}after_`, context });
     }
 
     return undefined;
@@ -94,7 +94,7 @@ export function createAuthorizationAfterAndParamsField({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}after_`, context);
+        return compilePredicateReturn({ predicateReturn, indexPrefix: `${indexPrefix || "_"}after_`, context });
     }
 
     return undefined;
