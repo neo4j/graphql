@@ -148,7 +148,7 @@ describe("@query directive", () => {
 
             expect(moviesAggregate).toBeDefined();
             expect(actorsAggregate).toBeDefined();
-            // fixme: this should be fixed.
+            
             const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
             expect(actorsConnectionType).toBeDefined();
             const { aggregate, edges } = actorsConnectionType.getFields();
@@ -186,7 +186,7 @@ describe("@query directive", () => {
 
             expect(moviesAggregate).toBeUndefined();
             expect(actorsAggregate).toBeUndefined();
-            // TODO: weird that this is working, considering that the above test is failing.
+            
             const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
             expect(actorsConnectionType).toBeDefined();
             const { aggregate, edges } = actorsConnectionType.getFields();
