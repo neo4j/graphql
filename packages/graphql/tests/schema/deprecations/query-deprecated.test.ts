@@ -154,7 +154,7 @@ describe("@query directive - deprecated", () => {
             const actorsConnection = queryFields["actorsConnection"];
 
             expect(moviesConnection).toBeDefined();
-            expect(actorsConnection).toBeUndefined();
+            expect(actorsConnection).toBeDefined();
 
             const moviesAggregate = queryFields["moviesAggregate"];
             const actorsAggregate = queryFields["actorsAggregate"];
@@ -300,8 +300,8 @@ describe("@query directive - deprecated", () => {
             const moviesConnection = queryFields["moviesConnection"];
             const actorsConnection = queryFields["actorsConnection"];
 
-            expect(moviesConnection).toBeUndefined();
-            expect(actorsConnection).toBeUndefined();
+            expect(moviesConnection).toBeDefined();
+            expect(actorsConnection).toBeDefined();
 
             const moviesAggregate = queryFields["moviesAggregate"];
             const actorsAggregate = queryFields["actorsAggregate"];

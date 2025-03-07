@@ -140,9 +140,8 @@ describe("RelationshipAdapter", () => {
         expect(relationshipAdapter?.operations.relationshipFieldTypename).toBe("UserAccountsRelationship");
     });
 
-    test("should parse selectable", () => {
+    test("should parse selectable, selectable.onAggregate is no-op therefore is not exposed", () => {
         const relationshipAdapter = userAdapter.relationships.get("accounts");
-        expect(relationshipAdapter?.isAggregable()).toBeFalse();
         expect(relationshipAdapter?.isReadable()).toBeFalse();
     });
 });
