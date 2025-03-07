@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/5787", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} @node @subscription {
              title: String
          }
 
@@ -137,7 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/5787", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} @node @subscription {
              title: String
          }
 

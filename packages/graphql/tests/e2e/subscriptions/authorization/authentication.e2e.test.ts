@@ -45,7 +45,7 @@ describe("Subscription authentication", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 
@@ -171,7 +171,7 @@ describe("Subscription authentication", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 
@@ -266,7 +266,7 @@ describe("Subscription authentication", () => {
                 permissions: [String!]!
             }
 
-            type ${typeMovie} @authentication(operations: [SUBSCRIBE]) @node {
+            type ${typeMovie} @authentication(operations: [SUBSCRIBE]) @node @subscription {
                 title: String! @authentication(operations: [READ], jwt: { permissions_INCLUDES: "r" })
             }
             `;
@@ -377,7 +377,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String! 
                 name: String @authentication(operations: [READ])
             }
@@ -488,7 +488,7 @@ describe("Subscription authentication", () => {
             beforeAll(async () => {
                 typeMovie = testHelper.createUniqueType("Movie");
                 const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} @node @subscription {
                     title: String! 
                     name: String 
                 }
@@ -579,7 +579,7 @@ describe("Subscription authentication", () => {
                 typeMovie = testHelper.createUniqueType("Movie");
 
                 const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} @node @subscription {
                     title: String!
                 }
     
@@ -724,8 +724,9 @@ describe("Subscription authentication", () => {
             interface Reviewer {
                 reputation: Int! 
                 reviewerId: Int
-
             }
+
+            extend schema @subscription
         `;
 
             const neoSchema = await testHelper.initNeo4jGraphQL({
@@ -2820,7 +2821,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 
@@ -2912,7 +2913,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 

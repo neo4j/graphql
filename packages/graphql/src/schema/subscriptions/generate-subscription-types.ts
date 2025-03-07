@@ -76,7 +76,7 @@ export function generateSubscriptionTypes({
 
     allNodes.forEach((entityAdapter) => generateSubscriptionWhere(entityAdapter));
 
-    const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable);
+    const nodesWithSubscriptionOperation = allNodes.filter((e) => e.isSubscribable(schemaModel));
     nodesWithSubscriptionOperation.forEach((entityAdapter) => {
         const eventPayload = nodeNameToEventPayloadTypes[entityAdapter.name] as ObjectTypeComposer;
         const where = generateSubscriptionWhere(entityAdapter);
@@ -129,7 +129,7 @@ export function generateSubscriptionTypes({
 
         const whereArgument = where && { args: { where } };
 
-        if (entityAdapter.isSubscribableOnCreate) {
+        if (entityAdapter.isSubscribableOnCreate(schemaModel)) {
             subscriptionComposer.addFields({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.created]: {
                     ...whereArgument,
@@ -139,7 +139,7 @@ export function generateSubscriptionTypes({
                 },
             });
         }
-        if (entityAdapter.isSubscribableOnUpdate) {
+        if (entityAdapter.isSubscribableOnUpdate(schemaModel)) {
             subscriptionComposer.addFields({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.updated]: {
                     ...whereArgument,
@@ -150,7 +150,7 @@ export function generateSubscriptionTypes({
             });
         }
 
-        if (entityAdapter.isSubscribableOnDelete) {
+        if (entityAdapter.isSubscribableOnDelete(schemaModel)) {
             subscriptionComposer.addFields({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.deleted]: {
                     ...whereArgument,

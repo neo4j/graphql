@@ -32,7 +32,7 @@ describe("Subscription global authentication", () => {
     const secret = "secret";
     const typeMovie = testHelper.createUniqueType("Movie");
     const typeDefs = /* GraphQL */ `
-        type ${typeMovie} @node {
+        type ${typeMovie} @node @subscription {
             title: String!
         }
         extend type ${typeMovie} @authentication

@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             info: String!
         }
 
-        type ${typeMovie} implements IProduct @node {
+        type ${typeMovie} implements IProduct @node @subscription {
             id: String!
             title: String!
             genre: [${typeGenre}!]! @relationship(type: "HAS_GENRE", direction: OUT)

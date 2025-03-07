@@ -39,6 +39,7 @@ import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import type { ContextFeatures, Neo4jFeaturesSettings, Neo4jGraphQLSubscriptionsEngine } from "../types";
 import { asArray } from "../utils/utils";
+import { ComplexityEstimatorHelper } from "./ComplexityEstimatorHelper";
 import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
 import { Executor } from "./Executor";
 import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
@@ -50,7 +51,6 @@ import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLS
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
-import { ComplexityEstimatorHelper } from "./ComplexityEstimatorHelper";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -131,7 +131,7 @@ class Neo4jGraphQL {
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
-            await this.subgraphSchema;
+
             await this.subscriptionMechanismSetup();
         }
 
@@ -503,7 +503,7 @@ class Neo4jGraphQL {
 
         const setup = async () => {
             const subscriptionsEngine = this.features?.subscriptionsEngine;
-            if (subscriptionsEngine) {
+            if (subscriptionsEngine && (await this.executableSchema)?.getSubscriptionType()) {
                 subscriptionsEngine.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
                 if (subscriptionsEngine.init) {
                     if (!this.schemaModel) throw new Error("SchemaModel not available on subscription mechanism");
