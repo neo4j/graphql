@@ -43,6 +43,7 @@ export const invalidFieldCombinations: InvalidFieldCombinations = {
         "filterable",
         "settable",
         "selectable",
+        "sortable",
     ],
     cypher: ["alias", "id", "relationship"],
     default: ["jwtClaim", "populatedBy", "relationship"],
@@ -68,6 +69,7 @@ export const invalidFieldCombinations: InvalidFieldCombinations = {
     selectable: ["jwtClaim", "customResolver"],
     settable: ["jwtClaim", "customResolver"],
     filterable: ["jwtClaim", "customResolver"],
+    sortable: ["jwtClaim", "customResolver"],
     declareRelationship: ["jwtClaim"],
 };
 

@@ -22,6 +22,7 @@ import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { buildClause } from "./utils/build-clause";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -44,5 +45,5 @@ export default function unwindCreate({
 
     const clauses = queryAST.build(context);
 
-    return clauses.build({ prefix: "create_" });
+    return buildClause(clauses, { context, prefix: "create_" });
 }
