@@ -107,7 +107,7 @@ jobs:
           NEO_URL: neo4j://localhost:7687
       - if: ${{ !inputs.disable-coverage-archival && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly-${{ matrix.graphql-version.coverage_path }}/
@@ -123,7 +123,7 @@ jobs:
     steps:
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Merge Artifacts
-        uses: actions/upload-artifact/merge@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
+        uses: actions/upload-artifact/merge@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4
         with:
           name: integration-nightly-coverage
           pattern: integration-nightly-coverage-*
