@@ -1,5 +1,79 @@
 # @neo4j/graphql
 
+## 6.4.0
+
+### Minor Changes
+
+- [#6029](https://github.com/neo4j/graphql/pull/6029) [`f792a02`](https://github.com/neo4j/graphql/commit/f792a0259ad489b95e6241c20be6d27525712f3b) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add a new field directive `@sortable` which can be used to configure whether results can be sorted by field values or not.
+
+### Patch Changes
+
+- [#6046](https://github.com/neo4j/graphql/pull/6046) [`dcf4c76`](https://github.com/neo4j/graphql/commit/dcf4c761b21e8dbce8436e4000eae53f9780923c) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `unsafeEscapeOptions` to `Neo4jGraphQL` features with the following flags:
+
+    - `disableRelationshipTypeEscaping` (default to `false`)
+    - `disableNodeLabelEscaping` (defaults to `false`)
+
+    These flags remove the automatic escaping of node labels and relationship types in the generated Cypher.
+
+    For example, given the following schema:
+
+    ```graphql
+    type Actor {
+        name: String!
+    }
+
+    type Movie {
+        title: String!
+        actors: [Actor!]! @relationship(type: "ACTED IN", direction: OUT)
+    }
+    ```
+
+    A GraphQL query going through the `actors` relationship:
+
+    ```graphql
+    query {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+    ```
+
+    Will normally generate the following Cypher for the relationship:
+
+    ```cypher
+    MATCH (this:Movie)-[this0:`ACTED IN`]->(this1:Actor)
+    ```
+
+    The label `ACTED IN` is escaped by placing it inside backticks (`\``), as some characters in it are susceptible of code injection.
+
+    If the option `disableRelationshipTypeEscaping` is set in `Neo4jGraphQL`, this safety mechanism will be disabled:
+
+    ```js
+    new Neo4jGraphQL({
+        typeDefs,
+        features: {
+            unsafeEscapeOptions: {
+                disableRelationshipTypeEscaping: true,
+            },
+        },
+    });
+    ```
+
+    Generating the following (incorrect) Cypher instead:
+
+    ```cypher
+    MATCH (this:Movie)-[this0:ACTED IN]->(this1:Actor)
+    ```
+
+    This can be useful in very custom scenarios where the Cypher needs to be tweaked or if the labels and types have already been escaped.
+
+    > Warning: This is a safety mechanism to avoid Cypher injection. Changing these options may lead to code injection and an unsafe server.
+
+- [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
+
 ## 6.3.1
 
 ### Patch Changes
