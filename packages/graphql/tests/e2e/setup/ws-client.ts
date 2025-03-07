@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { asArray } from "@graphql-tools/utils";
 import type { Client } from "graphql-ws";
 import { createClient } from "graphql-ws";
 import { EventEmitter } from "stream";
 import ws from "ws";
+import { asArray } from "../../../src/utils/utils";
 
 const NEW_EVENT = "NEW_EVENT";
 
@@ -65,7 +65,8 @@ export class WebSocketTestClient {
             };
             const timeout = setTimeout(() => {
                 this.eventsEmitter.removeListener(NEW_EVENT, newEventListener);
-                reject("Timed out.");
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+                reject("[waitForEvents] Timed out.");
             }, 500);
             this.eventsEmitter.on(NEW_EVENT, newEventListener);
         });
@@ -91,6 +92,7 @@ export class WebSocketTestClient {
                             // bc. resolve() happens before below reject()
                             callback();
                         }
+                        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                         reject(err);
                     },
                     complete: () => true,

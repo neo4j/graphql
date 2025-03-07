@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { mergeDeep } from "@graphql-tools/utils";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { CypherAnnotation } from "../../../schema-model/annotation/CypherAnnotation";
 import type { ListType } from "../../../schema-model/attribute/AttributeType";
@@ -28,6 +27,7 @@ import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { deepMerge } from "../../../utils/deep-merge";
 import { filterTruthy } from "../../../utils/utils";
 import { checkEntityAuthentication } from "../../authorization/check-authentication";
 import type { Field } from "../ast/fields/Field";
@@ -65,7 +65,7 @@ export class FieldFactory {
             })
         );
 
-        const mergedFields: Record<string, ResolveTree> = mergeDeep([rawFields, ...fieldsToMerge]);
+        const mergedFields: Record<string, ResolveTree> = deepMerge([rawFields, ...fieldsToMerge]);
 
         const fields = Object.values(mergedFields).flatMap((field: ResolveTree): Field[] | Field | undefined => {
             const { fieldName, isConnection, isAggregation } = parseSelectionSetField(field.name);

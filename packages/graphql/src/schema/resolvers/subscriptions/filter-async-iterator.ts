@@ -60,10 +60,12 @@ function getNextPromise<T>(asyncIterator: AsyncIterator<T>, filterFn: FilterFn<T
                             }
                         })
                         .catch((err) => {
+                            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                             reject(err);
                         });
                 })
                 .catch((err) => {
+                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     reject(err);
                 });
         };

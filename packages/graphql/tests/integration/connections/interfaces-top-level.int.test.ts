@@ -117,6 +117,7 @@ describe("Interfaces top level connections", () => {
             }
         `;
         const queryResults = await testHelper.executeGraphQL(query);
+        console.log(queryResults.errors);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data).toEqual({
             showsConnection: {
