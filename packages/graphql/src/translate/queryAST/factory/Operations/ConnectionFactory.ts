@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { mergeDeep } from "@graphql-tools/utils";
 import { isObject, isString } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
@@ -30,6 +29,7 @@ import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-a
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { ConnectionQueryArgs } from "../../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
+import { deepMerge } from "../../../../utils/deep-merge";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { Field } from "../../ast/fields/Field";
 import { ConnectionReadOperation } from "../../ast/operations/ConnectionReadOperation";
@@ -200,9 +200,8 @@ export class ConnectionFactory {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/comma-dangle
     private hydrateConnectionOperationsASTWithSort<
-        T extends ConnectionReadOperation | CompositeConnectionReadOperation
+        T extends ConnectionReadOperation | CompositeConnectionReadOperation,
     >({
         entityOrRel,
         resolveTree,
@@ -337,7 +336,7 @@ export class ConnectionFactory {
         operation: T;
         whereArgs: Record<string, any>;
         resolveTreeEdgeFields: Record<string, ResolveTree>;
-        partialOf?: InterfaceEntityAdapter | UnionEntityAdapter,
+        partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
         const entityOrRel = relationship ?? target;
 
@@ -418,7 +417,7 @@ export class ConnectionFactory {
                 ]),
         };
 
-        const resolveTreeConnectionFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
+        const resolveTreeConnectionFields: Record<string, ResolveTree> = deepMerge([
             ...interfacesFields,
             concreteProjectionFields,
         ]);
@@ -431,6 +430,7 @@ export class ConnectionFactory {
 
         const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
 
-        return mergeDeep([...interfacesEdgeFields, concreteEdgeFields]);
+        const result = deepMerge([...interfacesEdgeFields, concreteEdgeFields]);
+        return result;
     }
 }
