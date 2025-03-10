@@ -1,5 +1,5 @@
 ---
-"@neo4j/graphql": patch
+"@neo4j/graphql": minor
 ---
 
 Add count fields in aggregations with support for nodes and edges count:

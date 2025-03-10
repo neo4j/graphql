@@ -2,7 +2,7 @@
 "@neo4j/graphql": patch
 ---
 
-Deprecated old aggregate operations:
+Deprecate old aggregate operations:
 
 ```graphql
 query {
