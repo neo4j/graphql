@@ -1,5 +1,81 @@
 # @neo4j/graphql
 
+## 6.5.0
+
+### Minor Changes
+
+- [#6003](https://github.com/neo4j/graphql/pull/6003) [`2952820`](https://github.com/neo4j/graphql/commit/2952820ff891c3c3405158247d191b7dedba3e9e) Thanks [@angrykoala](https://github.com/angrykoala)! - Add count fields in aggregations with support for nodes and edges count:
+
+    ```graphql
+    query {
+        moviesConnection {
+            aggregate {
+                count {
+                    nodes
+                }
+            }
+        }
+    }
+    ```
+
+    ```graphql
+    query {
+        movies {
+            actorsConnection {
+                aggregate {
+                    count {
+                        nodes
+                        edges
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+- [#5944](https://github.com/neo4j/graphql/pull/5944) [`a6e9486`](https://github.com/neo4j/graphql/commit/a6e94867da3c7989fb4162bbb738506485859be6) Thanks [@angrykoala](https://github.com/angrykoala)! - Add aggregate field in connection:
+
+    ```graphql
+    query {
+        moviesConnection {
+            aggregate {
+                node {
+                    count
+                    int {
+                        longest
+                    }
+                }
+            }
+        }
+    }
+    ```
+
+### Patch Changes
+
+- [#5999](https://github.com/neo4j/graphql/pull/5999) [`47f915e`](https://github.com/neo4j/graphql/commit/47f915e6e2a93c3eba23232adad6fa165b13b8fa) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate aggregation fields (e.g `actedInAggregate`) in favor of the field `aggregate` inside the connection (e.g `actedInConnection -> aggregate`)
+
+- [#5944](https://github.com/neo4j/graphql/pull/5944) [`a6e9486`](https://github.com/neo4j/graphql/commit/a6e94867da3c7989fb4162bbb738506485859be6) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate old aggregate operations:
+
+    ```graphql
+    query {
+        moviesAggregate {
+            count
+            rating {
+                min
+            }
+        }
+    }
+    ```
+
+    These fields can be completely removed from the schema with the new flag `deprecatedAggregateOperations`:
+
+    ```js
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        features: { excludeDeprecatedFields: { deprecatedAggregateOperations: true } },
+    });
+    ```
+
 ## 6.4.0
 
 ### Minor Changes
