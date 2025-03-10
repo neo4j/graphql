@@ -147,7 +147,7 @@ describe("typename_IN", () => {
     });
 
     // TODO: unrelated issue, to be fixed separately
-    test.skip("aggregation", async () => {
+    test("aggregation", async () => {
         const query = `
         {
             productionsAggregate(where: { OR: [ { typename: [${Movie.name}, ${Series.name}] } { typename: [${Cartoon.name}] } ] }) {
@@ -165,7 +165,7 @@ describe("typename_IN", () => {
         });
     });
 
-    test.skip("nested aggregation", async () => {
+    test("nested aggregation", async () => {
         const query = `
         {
             ${Actor.plural} {
