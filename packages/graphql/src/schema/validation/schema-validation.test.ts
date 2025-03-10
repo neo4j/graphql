@@ -21,11 +21,11 @@ import type { ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import { gql } from "graphql-tag";
 import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
+import { ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 import { Subgraph } from "../../classes/Subgraph";
 import { generateModel } from "../../schema-model/generate-model";
 import makeAugmentedSchema from "../make-augmented-schema";
 import { validateUserDefinition } from "./schema-validation";
-import { ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 
 describe("schema validation", () => {
     describe("JWT", () => {
@@ -692,7 +692,10 @@ describe("schema validation", () => {
         describe("on OBJECT", () => {
             test("should not returns errors when is correctly used", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -711,7 +714,10 @@ describe("schema validation", () => {
 
             test("should not returns errors when is correctly used, with specifiedDirective", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String! @deprecated(reason: "name is deprecated")
                     }
@@ -730,12 +736,18 @@ describe("schema validation", () => {
 
             test("should not returns errors when used correctly in several place", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type Post
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -756,6 +768,7 @@ describe("schema validation", () => {
                 const userDocument = gql`
                     type User
                         @node
+                        @subscription
                         @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -790,6 +803,7 @@ describe("schema validation", () => {
                     type User
                         @node
                         @plural(value: "Users")
+                        @subscription
                         @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -813,6 +827,7 @@ describe("schema validation", () => {
                     type User
                         @node
                         @plural(value: "Users")
+                        @subscription
                         @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -846,7 +861,7 @@ describe("schema validation", () => {
         describe("on FIELD", () => {
             test("should not returns errors with a correct usage", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID! @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                         name: String!
                     }
@@ -866,7 +881,7 @@ describe("schema validation", () => {
 
             test("should validate directive argument name", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID! @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                         name: String!
                     }
@@ -897,7 +912,7 @@ describe("schema validation", () => {
 
             test("validation should works when used with other directives", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                         posts: [Post!]!
@@ -923,7 +938,7 @@ describe("schema validation", () => {
 
             test("should validate directive argument name, when used with other directives", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                         posts: [Post!]!
@@ -994,7 +1009,7 @@ describe("schema validation", () => {
         describe("on OBJECT_EXTENSION", () => {
             test("should not returns errors when is correctly used", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                     }
@@ -1014,7 +1029,10 @@ describe("schema validation", () => {
 
             test("should returns errors when used correctly in both type and extension", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -1046,7 +1064,7 @@ describe("schema validation", () => {
 
             test("should returns errors when used correctly in both a type field and an extension for the same field", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                     }
@@ -1080,7 +1098,10 @@ describe("schema validation", () => {
 
             test("should not returns errors when used correctly in both type and an extension field", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -1107,7 +1128,10 @@ describe("schema validation", () => {
 
             test("should not returns errors when used correctly in multiple extension fields", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -1135,7 +1159,10 @@ describe("schema validation", () => {
 
             test("should not returns errors when used correctly in different type and field across several extensions", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
@@ -1167,7 +1194,7 @@ describe("schema validation", () => {
 
             test("should returns error when used correctly in more than one extension", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                         author: [User!]! @relationship(type: "HAS_AUTHOR", direction: IN)
@@ -1201,7 +1228,7 @@ describe("schema validation", () => {
 
             test("should validate directive argument name", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                     }
@@ -1234,7 +1261,7 @@ describe("schema validation", () => {
 
             test("validation should works when used with other directives", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                     }
@@ -1256,7 +1283,7 @@ describe("schema validation", () => {
 
             test("should validate directive argument name, when used with other directives", () => {
                 const userDocument = gql`
-                    type User @node {
+                    type User @node @subscription {
                         id: ID!
                         name: String!
                     }
@@ -1325,12 +1352,18 @@ describe("schema validation", () => {
         describe("mixed usage", () => {
             test("should not returns errors when used correctly in several place", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type Post
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String! @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                         author: [User!]!
@@ -1338,7 +1371,7 @@ describe("schema validation", () => {
                             @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                     }
 
-                    type Document implements File @node {
+                    type Document implements File @node @subscription {
                         name: String
                         length: Int
                     }
@@ -1363,12 +1396,18 @@ describe("schema validation", () => {
             });
             test("should returns errors when incorrectly used in several place", () => {
                 const userDocument = gql`
-                    type User @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type User
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                     }
 
-                    type Post @node @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
+                    type Post
+                        @node
+                        @subscription
+                        @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
                             @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
@@ -1377,7 +1416,7 @@ describe("schema validation", () => {
                             @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }])
                     }
 
-                    type Document implements File @node {
+                    type Document implements File @node @subscription {
                         name: String
                         length: Int
                     }
@@ -1422,6 +1461,7 @@ describe("schema validation", () => {
                     type User
                         @node
                         @shareable
+                        @subscription
                         @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -1458,6 +1498,7 @@ describe("schema validation", () => {
                     type User
                         @node
                         @shareable
+                        @subscription
                         @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String! @deprecated(reason: "name is deprecated")
@@ -1494,6 +1535,7 @@ describe("schema validation", () => {
                     type User
                         @node
                         @shareable
+                        @subscription
                         @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -1501,6 +1543,7 @@ describe("schema validation", () => {
 
                     type Post
                         @node
+                        @subscription
                         @subscriptionsAuthorization(filter: [{ where: { node: { content_EQ: "$jwt.sub" } } }]) {
                         content: String!
                         author: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
@@ -1532,6 +1575,7 @@ describe("schema validation", () => {
                     type User
                         @node
                         @shareable
+                        @subscription
                         @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -1581,6 +1625,7 @@ describe("schema validation", () => {
                         @node
                         @plural(value: "Users")
                         @shareable
+                        @subscription
                         @subscriptionsAuthorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!
@@ -1618,6 +1663,7 @@ describe("schema validation", () => {
                         @node
                         @plural(value: "Users")
                         @shareable
+                        @subscription
                         @subscriptionsAuthorization(wrongFilter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) {
                         id: ID!
                         name: String!

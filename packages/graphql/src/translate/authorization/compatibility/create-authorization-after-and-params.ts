@@ -18,15 +18,15 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Node } from "../../../types";
 import type { AuthorizationOperation } from "../../../schema-model/annotation/AuthorizationAnnotation";
+import type { Node } from "../../../types";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import {
-    createAuthorizationAfterPredicateField,
     createAuthorizationAfterPredicate,
+    createAuthorizationAfterPredicateField,
 } from "../create-authorization-after-predicate";
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 type AuthorizationAfterAndParams = {
     cypher: string;
@@ -68,7 +68,7 @@ export function createAuthorizationAfterAndParams({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}after_`);
+        return compilePredicateReturn({ predicateReturn, indexPrefix: `${indexPrefix || "_"}after_`, context });
     }
 
     return undefined;
@@ -94,7 +94,7 @@ export function createAuthorizationAfterAndParamsField({
     });
 
     if (predicateReturn) {
-        return compilePredicateReturn(predicateReturn, `${indexPrefix || "_"}after_`);
+        return compilePredicateReturn({ predicateReturn, indexPrefix: `${indexPrefix || "_"}after_`, context });
     }
 
     return undefined;

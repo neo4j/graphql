@@ -49,19 +49,19 @@ describe("@subscription directive", () => {
             const actorCreated = subscriptionFields["actorCreated"];
             const movieCreated = subscriptionFields["movieCreated"];
 
-            expect(actorCreated).toBeDefined();
+            expect(actorCreated).toBeUndefined();
             expect(movieCreated).toBeDefined();
 
             const actorUpdated = subscriptionFields["actorUpdated"];
             const movieUpdated = subscriptionFields["movieUpdated"];
 
-            expect(actorUpdated).toBeDefined();
+            expect(actorUpdated).toBeUndefined();
             expect(movieUpdated).toBeDefined();
 
             const actorDeleted = subscriptionFields["actorDeleted"];
             const movieDeleted = subscriptionFields["movieDeleted"];
 
-            expect(actorDeleted).toBeDefined();
+            expect(actorDeleted).toBeUndefined();
             expect(movieDeleted).toBeDefined();
         });
 
@@ -86,19 +86,19 @@ describe("@subscription directive", () => {
             const actorCreated = subscriptionFields["actorCreated"];
             const movieCreated = subscriptionFields["movieCreated"];
 
-            expect(actorCreated).toBeDefined();
+            expect(actorCreated).toBeUndefined();
             expect(movieCreated).toBeUndefined();
 
             const actorUpdated = subscriptionFields["actorUpdated"];
             const movieUpdated = subscriptionFields["movieUpdated"];
 
-            expect(actorUpdated).toBeDefined();
+            expect(actorUpdated).toBeUndefined();
             expect(movieUpdated).toBeDefined();
 
             const actorDeleted = subscriptionFields["actorDeleted"];
             const movieDeleted = subscriptionFields["movieDeleted"];
 
-            expect(actorDeleted).toBeDefined();
+            expect(actorDeleted).toBeUndefined();
             expect(movieDeleted).toBeDefined();
         });
 
@@ -123,19 +123,19 @@ describe("@subscription directive", () => {
             const actorCreated = subscriptionFields["actorCreated"];
             const movieCreated = subscriptionFields["movieCreated"];
 
-            expect(actorCreated).toBeDefined();
+            expect(actorCreated).toBeUndefined();
             expect(movieCreated).toBeDefined();
 
             const actorUpdated = subscriptionFields["actorUpdated"];
             const movieUpdated = subscriptionFields["movieUpdated"];
 
-            expect(actorUpdated).toBeDefined();
+            expect(actorUpdated).toBeUndefined();
             expect(movieUpdated).toBeUndefined();
 
             const actorDeleted = subscriptionFields["actorDeleted"];
             const movieDeleted = subscriptionFields["movieDeleted"];
 
-            expect(actorDeleted).toBeDefined();
+            expect(actorDeleted).toBeUndefined();
             expect(movieDeleted).toBeDefined();
         });
 
@@ -160,19 +160,19 @@ describe("@subscription directive", () => {
             const actorCreated = subscriptionFields["actorCreated"];
             const movieCreated = subscriptionFields["movieCreated"];
 
-            expect(actorCreated).toBeDefined();
+            expect(actorCreated).toBeUndefined();
             expect(movieCreated).toBeDefined();
 
             const actorUpdated = subscriptionFields["actorUpdated"];
             const movieUpdated = subscriptionFields["movieUpdated"];
 
-            expect(actorUpdated).toBeDefined();
+            expect(actorUpdated).toBeUndefined();
             expect(movieUpdated).toBeDefined();
 
             const actorDeleted = subscriptionFields["actorDeleted"];
             const movieDeleted = subscriptionFields["movieDeleted"];
 
-            expect(actorDeleted).toBeDefined();
+            expect(actorDeleted).toBeUndefined();
             expect(movieDeleted).toBeUndefined();
         });
 
@@ -209,6 +209,7 @@ describe("@subscription directive", () => {
                     title: String
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
+
                 extend schema @subscription
             `;
 
@@ -368,6 +369,60 @@ describe("@subscription directive", () => {
 
             const schema = await neoSchema.getSchema();
             expect(schema).toBeDefined();
+        });
+    });
+
+    describe("on both SCHEMA and OBJECT", () => {
+        test("@subscription on OBJECT overrides SCHEMA if present", async () => {
+            const typeDefs = gql`
+                type Actor @node {
+                    username: String!
+                    password: String!
+                    actedInMovies: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actedInSeries: [Series!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+
+                type Movie @subscription(events: [CREATED]) @node {
+                    title: String
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type Series @subscription(events: []) @node {
+                    title: String
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                extend schema @subscription
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs, features: { subscriptions: new TestCDCEngine() } });
+            const schema = await neoSchema.getSchema();
+
+            const subscriptionFields = schema.getSubscriptionType()?.getFields() as GraphQLFieldMap<any, any>;
+
+            const actorCreated = subscriptionFields["actorCreated"];
+            const movieCreated = subscriptionFields["movieCreated"];
+            const seriesCreated = subscriptionFields["seriesCreated"];
+
+            expect(actorCreated).toBeDefined();
+            expect(movieCreated).toBeDefined();
+            expect(seriesCreated).toBeUndefined();
+
+            const actorUpdated = subscriptionFields["actorUpdated"];
+            const movieUpdated = subscriptionFields["movieUpdated"];
+            const seriesUpdated = subscriptionFields["seriesUpdated"];
+
+            expect(actorUpdated).toBeDefined();
+            expect(movieUpdated).toBeUndefined();
+            expect(seriesUpdated).toBeUndefined();
+
+            const actorDeleted = subscriptionFields["actorDeleted"];
+            const movieDeleted = subscriptionFields["movieDeleted"];
+            const seriesDeleted = subscriptionFields["seriesDeleted"];
+
+            expect(actorDeleted).toBeDefined();
+            expect(movieDeleted).toBeUndefined();
+            expect(seriesDeleted).toBeUndefined();
         });
     });
 });

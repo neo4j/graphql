@@ -2270,7 +2270,6 @@ describe("Cypher", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Count {
@@ -2298,14 +2297,6 @@ describe("Cypher", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type Movie {
               custom_title: String
               title: String
@@ -2324,26 +2315,9 @@ describe("Cypher", () => {
               title: String
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              custom_title: String
-              title: String
             }
 
             \\"\\"\\"
@@ -2354,28 +2328,9 @@ describe("Cypher", () => {
               title: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              title: StringScalarFilters
-              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-            }
-
             input MovieUpdateInput {
               title: StringScalarMutations
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -2447,12 +2402,6 @@ describe("Cypher", () => {
             \\"\\"\\"String mutations\\"\\"\\"
             input StringScalarMutations {
               set: String
-            }
-
-            type Subscription {
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
             \\"\\"\\"

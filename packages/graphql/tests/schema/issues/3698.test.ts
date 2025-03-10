@@ -67,7 +67,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             input ConnectionAggregationCountFilterInput {
@@ -110,14 +109,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             \\"\\"\\"Float filters\\"\\"\\"
             input FloatScalarFilters {
               eq: Float
@@ -156,20 +147,8 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               product: GenreProductFieldInput
             }
 
-            type GenreCreatedEvent {
-              createdGenre: GenreEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input GenreDeleteInput {
               product: [GenreProductDeleteFieldInput!]
-            }
-
-            type GenreDeletedEvent {
-              deletedGenre: GenreEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input GenreDisconnectInput {
@@ -179,10 +158,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             type GenreEdge {
               cursor: String!
               node: Genre!
-            }
-
-            type GenreEventPayload {
-              name: String!
             }
 
             type GenreIProductProductAggregateSelection {
@@ -369,29 +344,10 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: SortDirection
             }
 
-            input GenreSubscriptionWhere {
-              AND: [GenreSubscriptionWhere!]
-              NOT: GenreSubscriptionWhere
-              OR: [GenreSubscriptionWhere!]
-              name: StringScalarFilters
-              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
-              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
-              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-            }
-
             input GenreUpdateInput {
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               product: [GenreProductUpdateFieldInput!]
-            }
-
-            type GenreUpdatedEvent {
-              event: EventType!
-              previousState: GenreEventPayload!
-              timestamp: Float!
-              updatedGenre: GenreEventPayload!
             }
 
             input GenreWhere {
@@ -570,30 +526,13 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: String!
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               genre: [MovieGenreDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              id: String!
-              name: String!
             }
 
             input MovieGenreAggregateInput {
@@ -737,37 +676,12 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               name: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              id: StringScalarFilters
-              id_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: String @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              name: StringScalarFilters
-              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
-              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
-              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-            }
-
             input MovieUpdateInput {
               genre: [MovieGenreUpdateFieldInput!]
               id: StringScalarMutations
               id_SET: String @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -880,15 +794,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
             \\"\\"\\"String mutations\\"\\"\\"
             input StringScalarMutations {
               set: String
-            }
-
-            type Subscription {
-              genreCreated(where: GenreSubscriptionWhere): GenreCreatedEvent!
-              genreDeleted(where: GenreSubscriptionWhere): GenreDeletedEvent!
-              genreUpdated(where: GenreSubscriptionWhere): GenreUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
             type UpdateGenresMutationResponse {

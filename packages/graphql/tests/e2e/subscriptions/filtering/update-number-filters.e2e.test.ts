@@ -38,7 +38,7 @@ describe("Update Subscriptions", () => {
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} @node @subscription {
             id: ID
             title: String
             similarTitles: [String!]

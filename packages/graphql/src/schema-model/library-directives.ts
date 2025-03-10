@@ -43,6 +43,7 @@ export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
     "selectable",
     "settable",
+    "sortable",
 ] as const satisfies readonly LibraryDirectives[];
 
 export const FIELD_DIRECTIVES = [

@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/5586", () => {
         Entity = testHelper.createUniqueType("Entity");
 
         typeDefs = /* GraphQL */ `
-            type ${Entity} @node {
+            type ${Entity} @node @subscription {
                 id: ID! @id
                 name: String
             }

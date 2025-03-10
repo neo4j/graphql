@@ -86,8 +86,9 @@ describe("Delete Subscriptions - with interfaces, unions and nested operations",
             
             interface Reviewer {
                 reputation: Int!
-
             }
+
+            extend schema @subscription
         `;
 
         const neoSchema = await testHelper.initNeo4jGraphQL({

@@ -61,7 +61,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             input ConnectionAggregationCountFilterInput {
@@ -300,14 +299,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             \\"\\"\\"ID filters\\"\\"\\"
@@ -566,18 +557,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               movies: PersonMoviesFieldInput
             }
 
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonDeleteInput {
               movies: [PersonMoviesDeleteFieldInput!]
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             type PersonEdge {
@@ -666,11 +647,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
-            }
-
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonWhere {
@@ -963,20 +939,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               title: String!
             }
 
-            type SeriesCreatedEvent {
-              createdSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input SeriesDeleteInput {
               director: [SeriesDirectorDeleteFieldInput!]
-            }
-
-            type SeriesDeletedEvent {
-              deletedSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input SeriesDirectorAggregateInput {
@@ -1063,12 +1027,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               node: Series!
             }
 
-            type SeriesEventPayload {
-              episode: Int!
-              id: ID
-              title: String!
-            }
-
             \\"\\"\\"
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
@@ -1076,31 +1034,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               episode: SortDirection
               id: SortDirection
               title: SortDirection
-            }
-
-            input SeriesSubscriptionWhere {
-              AND: [SeriesSubscriptionWhere!]
-              NOT: SeriesSubscriptionWhere
-              OR: [SeriesSubscriptionWhere!]
-              episode: IntScalarFilters
-              episode_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { eq: ... }\\")
-              episode_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { gt: ... }\\")
-              episode_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { gte: ... }\\")
-              episode_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episode: { in: ... }\\")
-              episode_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { lt: ... }\\")
-              episode_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { lte: ... }\\")
-              id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              title: StringScalarFilters
-              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             input SeriesUpdateInput {
@@ -1113,13 +1046,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               title: StringScalarMutations
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-            }
-
-            type SeriesUpdatedEvent {
-              event: EventType!
-              previousState: SeriesEventPayload!
-              timestamp: Float!
-              updatedSeries: SeriesEventPayload!
             }
 
             input SeriesWhere {
@@ -1199,15 +1125,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             \\"\\"\\"String mutations\\"\\"\\"
             input StringScalarMutations {
               set: String
-            }
-
-            type Subscription {
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
-              seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
-              seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
-              seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
             }
 
             \\"\\"\\"

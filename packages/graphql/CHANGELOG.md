@@ -70,101 +70,7 @@
         updateMovies(update: { name: { set: "The Matrix" } }) {
             movies {
                 id
-                name
-            }
-        }
-    }
-    ```
 
-- [#5873](https://github.com/neo4j/graphql/pull/5873) [`17911fc`](https://github.com/neo4j/graphql/commit/17911fc197105f5fafc06ce851669af6fc07b18a) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduce a new style for filtering relationships and connections.
-  The quantifiers `SOME` | `NONE` | `SINGLE` | `ALL` are now available as a nested input object.
-
-    **Relationship**
-
-    ```graphql
-    {
-        movies(where: { genres: { some: { name: { equals: "some genre" } } } }) {
-            actorCount
-        }
-    }
-    ```
-
-    **Connection**
-
-    ```graphql
-    {
-        movies(where: { genresConnection: { some: { node: { name: { equals: "some genre" } } } } }) {
-            actorCount
-        }
-    }
-    ```
-
-### Patch Changes
-
-- [#5871](https://github.com/neo4j/graphql/pull/5871) [`722c650`](https://github.com/neo4j/graphql/commit/722c6507977072122041e985b94a84a707179f39) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate individual mutations in favor of generic mutations
-
-    - `_SET`
-    - `_POP`
-    - `_PUSH`
-    - `_INCREMENT`
-    - `_ADD`
-    - `_DECREMENT`
-    - `_SUBTRACT`
-    - `_MULTIPLY`
-    - `_DIVIDE`
-
-- [#5882](https://github.com/neo4j/graphql/pull/5882) [`7254acf`](https://github.com/neo4j/graphql/commit/7254acf1b7bb83a35cea580143a6012355bc02d8) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecates old aggregation filters for relationships in favor of more generic filters:
-
-    Before:
-
-    ```js
-    query Movies {
-      movies(
-        where: { actorsAggregate: { node: { lastRating_AVERAGE_GT: 6 } } }
-      ) {
-        title
-      }
-    }
-    ```
-
-    Now:
-
-    ```js
-    query Movies {
-      movies(
-        where: {
-          actorsAggregate: { node: { lastRating: { average: { gt: 6 } } } }
-        }
-      ) {
-        title
-      }
-    }
-    ```
-
-- [#5897](https://github.com/neo4j/graphql/pull/5897) [`4f3b068`](https://github.com/neo4j/graphql/commit/4f3b068cfe4123109bb8a27bacef775fb897a87e) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecate relationship filtering using the non-generic version such as `actors_SOME: { title_EQ: "The Matrix" }` in favor of the generic input `actors: { some: { title: { eq: "The Matrix" } } }`.
-  The setting `excludeDeprecatedFields` now contains the option `relationshipFilters` to remove these deprecated filters.
-
-- [#5897](https://github.com/neo4j/graphql/pull/5897) [`917482b`](https://github.com/neo4j/graphql/commit/917482b675ec3de7dc06ca110e2fccf93024115f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecate attribute filtering using the non-generic version such as `title_EQ: "The Matrix"` in favor of the generic input `title: { eq: "The Matrix" }`.
-  The setting `excludeDeprecatedFields` now contains the option `attributeFilters` to remove these deprecated filters.
-
-- [#5879](https://github.com/neo4j/graphql/pull/5879) [`5c7ba22`](https://github.com/neo4j/graphql/commit/5c7ba22afc8fc0df86a148f31ce61691586f8cf3) Thanks [@angrykoala](https://github.com/angrykoala)! - Add generic filters for aggregations:
-
-    ```graphql
-    {
-        posts(where: { likesAggregate: { node: { rating: { average: { eq: 3.2 } } } } }) {
-            title
-        }
-    }
-    ```
-
-- [#5882](https://github.com/neo4j/graphql/pull/5882) [`7254acf`](https://github.com/neo4j/graphql/commit/7254acf1b7bb83a35cea580143a6012355bc02d8) Thanks [@angrykoala](https://github.com/angrykoala)! - Introduce the flag "aggregationFilters" to remove deprecated aggregation filters:
-
-    ```js
-    const neoSchema = new Neo4jGraphQL({
-        typeDefs,
-        features: { excludeDeprecatedFields: { aggregationFilters: true } },
-    });
-    ```
 
 ## 7.0.0-alpha.0
 
@@ -379,6 +285,171 @@
 ### Patch Changes
 
 - [#5837](https://github.com/neo4j/graphql/pull/5837) [`721691a`](https://github.com/neo4j/graphql/commit/721691a84eaa34996c0c97edb7ede1ae4775dd2f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added a validation rule to avoid defining fields as lists of nullable elements, as Neo4j does not support this.
+    Will normally generate the following Cypher for the relationship:
+
+    ```cypher
+    MATCH (this:Movie)-[this0:`ACTED IN`]->(this1:Actor)
+    ```
+
+    The label `ACTED IN` is escaped by placing it inside backticks (`\``), as some characters in it are susceptible of code injection.
+
+    If the option `disableRelationshipTypeEscaping` is set in `Neo4jGraphQL`, this safety mechanism will be disabled:
+
+    ```js
+    new Neo4jGraphQL({
+        typeDefs,
+        features: {
+            unsafeEscapeOptions: {
+                disableRelationshipTypeEscaping: true,
+            },
+        },
+    });
+    ```
+
+    Generating the following (incorrect) Cypher instead:
+
+    ```cypher
+    MATCH (this:Movie)-[this0:ACTED IN]->(this1:Actor)
+    ```
+
+    This can be useful in very custom scenarios where the Cypher needs to be tweaked or if the labels and types have already been escaped.
+
+    > Warning: This is a safety mechanism to avoid Cypher injection. Changing these options may lead to code injection and an unsafe server.
+
+- [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
+
+
+## 6.4.0
+
+### Minor Changes
+
+- [#6029](https://github.com/neo4j/graphql/pull/6029) [`f792a02`](https://github.com/neo4j/graphql/commit/f792a0259ad489b95e6241c20be6d27525712f3b) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Add a new field directive `@sortable` which can be used to configure whether results can be sorted by field values or not.
+
+### Patch Changes
+
+- [#6046](https://github.com/neo4j/graphql/pull/6046) [`dcf4c76`](https://github.com/neo4j/graphql/commit/dcf4c761b21e8dbce8436e4000eae53f9780923c) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `unsafeEscapeOptions` to `Neo4jGraphQL` features with the following flags:
+
+    - `disableRelationshipTypeEscaping` (default to `false`)
+    - `disableNodeLabelEscaping` (defaults to `false`)
+
+    These flags remove the automatic escaping of node labels and relationship types in the generated Cypher.
+
+    For example, given the following schema:
+
+    ```graphql
+    type Actor {
+        name: String!
+    }
+
+    type Movie {
+        title: String!
+        actors: [Actor!]! @relationship(type: "ACTED IN", direction: OUT)
+    }
+    ```
+
+    A GraphQL query going through the `actors` relationship:
+
+    ```graphql
+    query {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
+    }
+    ```
+
+- [#5873](https://github.com/neo4j/graphql/pull/5873) [`17911fc`](https://github.com/neo4j/graphql/commit/17911fc197105f5fafc06ce851669af6fc07b18a) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduce a new style for filtering relationships and connections.
+  The quantifiers `SOME` | `NONE` | `SINGLE` | `ALL` are now available as a nested input object.
+
+    **Relationship**
+
+    ```graphql
+    {
+        movies(where: { genres: { some: { name: { equals: "some genre" } } } }) {
+            actorCount
+        }
+    }
+    ```
+
+    **Connection**
+
+    ```graphql
+    {
+        movies(where: { genresConnection: { some: { node: { name: { equals: "some genre" } } } } }) {
+            actorCount
+        }
+    }
+    ```
+
+### Patch Changes
+
+- [#5871](https://github.com/neo4j/graphql/pull/5871) [`722c650`](https://github.com/neo4j/graphql/commit/722c6507977072122041e985b94a84a707179f39) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate individual mutations in favor of generic mutations
+
+    - `_SET`
+    - `_POP`
+    - `_PUSH`
+    - `_INCREMENT`
+    - `_ADD`
+    - `_DECREMENT`
+    - `_SUBTRACT`
+    - `_MULTIPLY`
+    - `_DIVIDE`
+
+- [#5882](https://github.com/neo4j/graphql/pull/5882) [`7254acf`](https://github.com/neo4j/graphql/commit/7254acf1b7bb83a35cea580143a6012355bc02d8) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecates old aggregation filters for relationships in favor of more generic filters:
+
+    Before:
+
+    ```js
+    query Movies {
+      movies(
+        where: { actorsAggregate: { node: { lastRating_AVERAGE_GT: 6 } } }
+      ) {
+        title
+      }
+    }
+    ```
+
+    Now:
+
+    ```js
+    query Movies {
+      movies(
+        where: {
+          actorsAggregate: { node: { lastRating: { average: { gt: 6 } } } }
+        }
+      ) {
+        title
+      }
+    }
+    ```
+
+- [#5897](https://github.com/neo4j/graphql/pull/5897) [`4f3b068`](https://github.com/neo4j/graphql/commit/4f3b068cfe4123109bb8a27bacef775fb897a87e) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecate relationship filtering using the non-generic version such as `actors_SOME: { title_EQ: "The Matrix" }` in favor of the generic input `actors: { some: { title: { eq: "The Matrix" } } }`.
+  The setting `excludeDeprecatedFields` now contains the option `relationshipFilters` to remove these deprecated filters.
+
+- [#5897](https://github.com/neo4j/graphql/pull/5897) [`917482b`](https://github.com/neo4j/graphql/commit/917482b675ec3de7dc06ca110e2fccf93024115f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecate attribute filtering using the non-generic version such as `title_EQ: "The Matrix"` in favor of the generic input `title: { eq: "The Matrix" }`.
+  The setting `excludeDeprecatedFields` now contains the option `attributeFilters` to remove these deprecated filters.
+
+- [#5879](https://github.com/neo4j/graphql/pull/5879) [`5c7ba22`](https://github.com/neo4j/graphql/commit/5c7ba22afc8fc0df86a148f31ce61691586f8cf3) Thanks [@angrykoala](https://github.com/angrykoala)! - Add generic filters for aggregations:
+
+    ```graphql
+    {
+        posts(where: { likesAggregate: { node: { rating: { average: { eq: 3.2 } } } } }) {
+            title
+        }
+    }
+    ```
+
+- [#5882](https://github.com/neo4j/graphql/pull/5882) [`7254acf`](https://github.com/neo4j/graphql/commit/7254acf1b7bb83a35cea580143a6012355bc02d8) Thanks [@angrykoala](https://github.com/angrykoala)! - Introduce the flag "aggregationFilters" to remove deprecated aggregation filters:
+
+    ```js
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        features: { excludeDeprecatedFields: { aggregationFilters: true } },
+    });
+    ```
+
 
 ## 6.3.1
 

@@ -397,7 +397,7 @@ function makeAugmentedSchema({
         }
     });
 
-    if (features?.subscriptions && nodes.length) {
+    if (nodes.length) {
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,
