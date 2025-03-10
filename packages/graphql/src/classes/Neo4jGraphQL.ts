@@ -503,7 +503,8 @@ class Neo4jGraphQL {
 
         const setup = async () => {
             const subscriptionsEngine = this.features?.subscriptionsEngine;
-            if (subscriptionsEngine && (await this.executableSchema)?.getSubscriptionType()) {
+            const schema = await this.executableSchema;
+            if (subscriptionsEngine && schema?.getSubscriptionType()) {
                 subscriptionsEngine.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
                 if (subscriptionsEngine.init) {
                     if (!this.schemaModel) throw new Error("SchemaModel not available on subscription mechanism");
