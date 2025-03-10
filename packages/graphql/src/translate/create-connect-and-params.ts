@@ -36,6 +36,7 @@ import { createAuthorizationBeforeAndParams } from "./authorization/compatibilit
 import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { buildClause } from "./utils/build-clause";
 import { createWhereNodePredicate } from "./where/create-where-predicate";
 
 interface Res {
@@ -148,7 +149,7 @@ function createConnectAndParams({
             if (filters?.preComputedSubqueries?.length) {
                 const columns = [new Cypher.NamedVariable(nodeName)];
                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
+                const { cypher } = buildClause(caseWhereClause, { context, prefix: "aggregateWhereFilter" });
                 subquery.push(cypher);
             } else {
                 subquery.push(`\tWHERE ${predicate}`);
@@ -429,7 +430,7 @@ function getFilters({
         return [cypher, {}];
     });
 
-    const result = whereCypher.build({ prefix: `${nodeName}_` });
+    const result = buildClause(whereCypher, { context, prefix: `${nodeName}_` });
 
     if (result.cypher) {
         return {

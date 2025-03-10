@@ -29,6 +29,7 @@ import { createAuthorizationAfterPredicate } from "./authorization/create-author
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
 import { parseWhereField } from "./queryAST/factory/parsers/parse-where-field";
 import { assertNonAmbiguousUpdate } from "./utils/assert-non-ambiguous-update";
+import { buildClause } from "./utils/build-clause";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 
 type CreateOrConnectInput = {
@@ -99,7 +100,7 @@ export function createConnectOrCreateAndParams({
     });
 
     const query = Cypher.utils.concat(...wrappedQueries);
-    return query.build({ prefix: `${varName}_` });
+    return buildClause(query, { context, prefix: `${varName}_` });
 }
 
 function createConnectOrCreatePartialStatement({

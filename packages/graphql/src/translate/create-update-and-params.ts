@@ -42,6 +42,7 @@ import createDisconnectAndParams from "./create-disconnect-and-params";
 import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import { assertNonAmbiguousUpdate } from "./utils/assert-non-ambiguous-update";
+import { buildClause } from "./utils/build-clause";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 import { getMutationFieldStatements } from "./utils/get-mutation-field-statements";
@@ -252,7 +253,10 @@ export default function createUpdateAndParams({
                                     new Cypher.NamedVariable(variableName),
                                 ];
                                 const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                                const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
+                                const { cypher } = buildClause(caseWhereClause, {
+                                    context,
+                                    prefix: "aggregateWhereFilter",
+                                });
                                 innerUpdate.push(cypher);
                             } else {
                                 innerUpdate.push(`WHERE ${predicate}`);

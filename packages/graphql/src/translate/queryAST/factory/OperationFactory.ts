@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { mergeDeep } from "@graphql-tools/utils";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { Integer } from "neo4j-driver";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
@@ -28,6 +27,7 @@ import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adap
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { GraphQLOptionsArg } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
+import { deepMerge } from "../../../utils/deep-merge";
 import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
 import type { AggregationOperation } from "../ast/operations/AggregationOperation";
@@ -319,10 +319,7 @@ export class OperationsFactory {
 
         const interfacesFields = filterTruthy(entityInterfaces.map((i) => fieldsByTypeName[i.name]));
 
-        const projectionFields = mergeDeep<Record<string, ResolveTree>[]>([
-            ...interfacesFields,
-            concreteProjectionFields,
-        ]);
+        const projectionFields = deepMerge([...interfacesFields, concreteProjectionFields]);
         const fields = this.fieldFactory.createFields(entity, projectionFields, context);
 
         if (partialOf && isInterfaceEntity(partialOf)) {

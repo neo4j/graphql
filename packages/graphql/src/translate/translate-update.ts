@@ -36,6 +36,7 @@ import createUpdateAndParams from "./create-update-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { translateTopLevelMatch } from "./translate-top-level-match";
+import { buildClause } from "./utils/build-clause";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 const debug = Debug(DEBUG_TRANSLATE);
@@ -485,7 +486,7 @@ export default async function translateUpdate({
         ];
     });
 
-    const cypherResult = updateQuery.build({ prefix: "update_" });
+    const cypherResult = buildClause(updateQuery, { context, prefix: "update_" });
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: cypherResult.cypher,
     });
