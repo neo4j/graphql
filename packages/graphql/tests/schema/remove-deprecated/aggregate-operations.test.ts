@@ -21,16 +21,15 @@ import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
-describe("Aggregations", () => {
-    test("should remove ID Aggregations", async () => {
+describe("Aggregate operations", () => {
+    test("should remove deprecated aggregate operations", async () => {
         const typeDefs = /* GraphQL */ `
             type User @node {
-                someID: ID
+                someID: Int
                 someString: String
             }
 
             type Post @node {
-                someID: ID
                 title: String
                 likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
             }
@@ -42,7 +41,7 @@ describe("Aggregations", () => {
         `;
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: { excludeDeprecatedFields: { idAggregations: true } },
+            features: { excludeDeprecatedFields: { deprecatedAggregateOperations: true } },
         });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
@@ -50,6 +49,15 @@ describe("Aggregations", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -78,6 +86,18 @@ describe("Aggregations", () => {
               relationshipsDeleted: Int!
             }
 
+            type IDAggregateSelection {
+              longest: ID
+              shortest: ID
+            }
+
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
             \\"\\"\\"
             The edge properties for the following fields:
             * Post.likes
@@ -91,6 +111,16 @@ describe("Aggregations", () => {
               AND: [LikesAggregationWhereInput!]
               NOT: LikesAggregationWhereInput
               OR: [LikesAggregationWhereInput!]
+              someID_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              someID_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               someString_AVERAGE_LENGTH_EQUAL: Float
               someString_AVERAGE_LENGTH_GT: Float
               someString_AVERAGE_LENGTH_GTE: Float
@@ -162,20 +192,21 @@ describe("Aggregations", () => {
 
             type Post {
               likes(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
-              someID: ID
               title: String
             }
 
-            type PostAggregateSelection {
-              count: Int!
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
               title: StringAggregateSelection!
             }
 
             input PostCreateInput {
               likes: PostLikesFieldInput
-              someID: ID
               title: String
             }
 
@@ -212,6 +243,7 @@ describe("Aggregations", () => {
             }
 
             type PostLikesConnection {
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -252,6 +284,26 @@ describe("Aggregations", () => {
               AND: [PostLikesNodeAggregationWhereInput!]
               NOT: PostLikesNodeAggregationWhereInput
               OR: [PostLikesNodeAggregationWhereInput!]
+              someID_AVERAGE_EQUAL: Float
+              someID_AVERAGE_GT: Float
+              someID_AVERAGE_GTE: Float
+              someID_AVERAGE_LT: Float
+              someID_AVERAGE_LTE: Float
+              someID_MAX_EQUAL: Int
+              someID_MAX_GT: Int
+              someID_MAX_GTE: Int
+              someID_MAX_LT: Int
+              someID_MAX_LTE: Int
+              someID_MIN_EQUAL: Int
+              someID_MIN_GT: Int
+              someID_MIN_GTE: Int
+              someID_MIN_LT: Int
+              someID_MIN_LTE: Int
+              someID_SUM_EQUAL: Int
+              someID_SUM_GT: Int
+              someID_SUM_GTE: Int
+              someID_SUM_LT: Int
+              someID_SUM_LTE: Int
               someString_AVERAGE_LENGTH_EQUAL: Float
               someString_AVERAGE_LENGTH_GT: Float
               someString_AVERAGE_LENGTH_GTE: Float
@@ -302,29 +354,28 @@ describe("Aggregations", () => {
             Fields to sort Posts by. The order in which sorts are applied is not guaranteed when specifying many fields in one PostSort object.
             \\"\\"\\"
             input PostSort {
-              someID: SortDirection
               title: SortDirection
             }
 
             input PostUpdateInput {
               likes: [PostLikesUpdateFieldInput!]
-              someID: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              someID_SET: ID
               title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               title_SET: String
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
               edge: PostUserLikesEdgeAggregateSelection
               node: PostUserLikesNodeAggregateSelection
             }
 
             type PostUserLikesEdgeAggregateSelection {
+              someID: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               someString: StringAggregateSelection!
             }
 
             type PostUserLikesNodeAggregateSelection {
+              someID: IntAggregateSelection!
               someString: StringAggregateSelection!
             }
 
@@ -357,12 +408,6 @@ describe("Aggregations", () => {
               likes_SINGLE: UserWhere
               \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
               likes_SOME: UserWhere
-              someID: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someID_CONTAINS: ID
-              someID_ENDS_WITH: ID
-              someID_EQ: ID
-              someID_IN: [ID]
-              someID_STARTS_WITH: ID
               title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               title_CONTAINS: String
               title_ENDS_WITH: String
@@ -372,6 +417,7 @@ describe("Aggregations", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -379,10 +425,8 @@ describe("Aggregations", () => {
 
             type Query {
               posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -420,12 +464,17 @@ describe("Aggregations", () => {
             }
 
             type User {
-              someID: ID
+              someID: Int
               someString: String
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              someID: IntAggregateSelection!
               someString: StringAggregateSelection!
             }
 
@@ -434,7 +483,7 @@ describe("Aggregations", () => {
             }
 
             input UserCreateInput {
-              someID: ID
+              someID: Int
               someString: String
             }
 
@@ -461,8 +510,10 @@ describe("Aggregations", () => {
             }
 
             input UserUpdateInput {
-              someID: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              someID_SET: ID
+              someID: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
+              someID_DECREMENT: Int
+              someID_INCREMENT: Int
+              someID_SET: Int
               someString: String @deprecated(reason: \\"Please use the explicit _SET field\\")
               someString_SET: String
             }
@@ -471,12 +522,13 @@ describe("Aggregations", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              someID: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              someID_CONTAINS: ID
-              someID_ENDS_WITH: ID
-              someID_EQ: ID
-              someID_IN: [ID]
-              someID_STARTS_WITH: ID
+              someID: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              someID_EQ: Int
+              someID_GT: Int
+              someID_GTE: Int
+              someID_IN: [Int]
+              someID_LT: Int
+              someID_LTE: Int
               someString: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
               someString_CONTAINS: String
               someString_ENDS_WITH: String
@@ -486,6 +538,7 @@ describe("Aggregations", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

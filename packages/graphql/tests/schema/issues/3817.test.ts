@@ -66,6 +66,15 @@ describe("3817", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -157,6 +166,7 @@ describe("3817", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -164,9 +174,18 @@ describe("3817", () => {
 
             type Person {
               friends(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-              friendsAggregate(where: PersonWhere): PersonPersonFriendsAggregationSelection
+              friendsAggregate(where: PersonWhere): PersonPersonFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               id: ID!
+            }
+
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type PersonAggregateSelection {
@@ -236,6 +255,7 @@ describe("3817", () => {
             }
 
             type PersonFriendsConnection {
+              aggregate: PersonPersonFriendsAggregateSelection!
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -327,6 +347,12 @@ describe("3817", () => {
               sort: [PersonSort!]
             }
 
+            type PersonPersonFriendsAggregateSelection {
+              count: CountConnection!
+              edge: PersonPersonFriendsEdgeAggregateSelection
+              node: PersonPersonFriendsNodeAggregateSelection
+            }
+
             type PersonPersonFriendsAggregationSelection {
               count: Int!
               edge: PersonPersonFriendsEdgeAggregateSelection
@@ -396,7 +422,7 @@ describe("3817", () => {
 
             type Query {
               people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 

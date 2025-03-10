@@ -102,6 +102,7 @@ describe("Field Level Aggregations Alias", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH this0
                 RETURN { max: max(this0.screentime) } AS var2
             }
             RETURN this { actorsAggregate: { edge: { time: var2 } } } AS this"

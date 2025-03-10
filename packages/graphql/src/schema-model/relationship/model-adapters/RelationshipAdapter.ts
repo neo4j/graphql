@@ -201,10 +201,6 @@ export class RelationshipAdapter {
         return this.annotations.filterable?.byAggregate !== false;
     }
 
-    public isAggregable(): boolean {
-        return this.annotations.selectable?.onAggregate !== false;
-    }
-
     public isCreatable(): boolean {
         return this.annotations.settable?.onCreate !== false;
     }

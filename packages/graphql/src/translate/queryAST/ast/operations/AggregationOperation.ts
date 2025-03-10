@@ -25,6 +25,7 @@ import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls"
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { AggregationField } from "../fields/aggregation-fields/AggregationField";
+import { CountField } from "../fields/aggregation-fields/CountField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { EntitySelection } from "../selection/EntitySelection";
@@ -46,6 +47,8 @@ export class AggregationOperation extends Operation {
     public aggregationProjectionMap = new Cypher.Map();
 
     protected filters: Filter[] = [];
+
+    public isInConnectionField = false; // Used for compatibility with deprecated aggregations, this will always be true in 7.x
 
     constructor({
         entity,
@@ -100,7 +103,8 @@ export class AggregationOperation extends Operation {
         const clauses = this.transpileAggregation(context);
 
         const isTopLevel = !(this.entity instanceof RelationshipAdapter);
-        if (isTopLevel) {
+        if (isTopLevel && !this.isInConnectionField) {
+            // This is to support deprecated aggregations
             const clausesSubqueries = clauses.flatMap((sq) => new Cypher.Call(sq));
 
             return {
@@ -138,7 +142,7 @@ export class AggregationOperation extends Operation {
         }
         if (context.relationship) {
             if (!context.direction || !context.source) {
-                throw new Error("No valid relationship");
+                throw new Error("No valid relationship in aggregation pattern");
             }
             return new Cypher.Pattern(context.source)
                 .related(context.relationship, { direction: context.direction })
@@ -167,13 +171,13 @@ export class AggregationOperation extends Operation {
         const operationContext = this.createContext(context);
         const pattern = this.getPattern(operationContext);
 
+        const nodeMap = new Cypher.Map();
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
             return this.createSubquery(f, pattern, returnVariable, context);
         });
 
-        const nodeMap = new Cypher.Map();
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
@@ -229,6 +233,10 @@ export class AggregationOperation extends Operation {
             } else {
                 matchClause.where(filterPredicates);
             }
+        }
+
+        if (field instanceof CountField) {
+            field.edgeVar = nestedContext.relationship;
         }
 
         const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);

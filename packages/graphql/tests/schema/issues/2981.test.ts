@@ -59,6 +59,16 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               translatedTitleConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: BookTranslatedTitleConnectionWhere): BookTranslatedTitleConnection!
             }
 
+            type BookAggregate {
+              count: Count!
+              node: BookAggregateNode!
+            }
+
+            type BookAggregateNode {
+              isbn: StringAggregateSelection!
+              originalTitle: StringAggregateSelection!
+            }
+
             type BookAggregateSelection {
               count: Int!
               isbn: StringAggregateSelection!
@@ -112,12 +122,14 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             union BookTitle = BookTitle_EN | BookTitle_SV
 
             type BookTitleEnsConnection {
+              aggregate: BookTitle_ENAggregate!
               edges: [BookTitle_ENEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
             type BookTitleSvsConnection {
+              aggregate: BookTitle_SVAggregate!
               edges: [BookTitle_SVEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -130,9 +142,18 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_EN {
               book(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): Book!
-              bookAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: BookWhere): BookTitle_ENBookBookAggregationSelection
+              bookAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: BookWhere): BookTitle_ENBookBookAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"bookConnection\\\\\\" instead\\")
               bookConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [BookTitle_ENBookConnectionSort!], where: BookTitle_ENBookConnectionWhere): BookTitle_ENBookConnection!
               value: String!
+            }
+
+            type BookTitle_ENAggregate {
+              count: Count!
+              node: BookTitle_ENAggregateNode!
+            }
+
+            type BookTitle_ENAggregateNode {
+              value: StringAggregateSelection!
             }
 
             type BookTitle_ENAggregateSelection {
@@ -151,6 +172,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               count_LT: Int
               count_LTE: Int
               node: BookTitle_ENBookNodeAggregationWhereInput
+            }
+
+            type BookTitle_ENBookBookAggregateSelection {
+              count: CountConnection!
+              node: BookTitle_ENBookBookNodeAggregateSelection
             }
 
             type BookTitle_ENBookBookAggregationSelection {
@@ -173,6 +199,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_ENBookConnection {
+              aggregate: BookTitle_ENBookBookAggregateSelection!
               edges: [BookTitle_ENBookRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -327,9 +354,18 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type BookTitle_SV {
               book(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): Book!
-              bookAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: BookWhere): BookTitle_SVBookBookAggregationSelection
+              bookAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: BookWhere): BookTitle_SVBookBookAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"bookConnection\\\\\\" instead\\")
               bookConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [BookTitle_SVBookConnectionSort!], where: BookTitle_SVBookConnectionWhere): BookTitle_SVBookConnection!
               value: String!
+            }
+
+            type BookTitle_SVAggregate {
+              count: Count!
+              node: BookTitle_SVAggregateNode!
+            }
+
+            type BookTitle_SVAggregateNode {
+              value: StringAggregateSelection!
             }
 
             type BookTitle_SVAggregateSelection {
@@ -348,6 +384,11 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               count_LT: Int
               count_LTE: Int
               node: BookTitle_SVBookNodeAggregationWhereInput
+            }
+
+            type BookTitle_SVBookBookAggregateSelection {
+              count: CountConnection!
+              node: BookTitle_SVBookBookNodeAggregateSelection
             }
 
             type BookTitle_SVBookBookAggregationSelection {
@@ -370,6 +411,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BookTitle_SVBookConnection {
+              aggregate: BookTitle_SVBookBookAggregateSelection!
               edges: [BookTitle_SVBookRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -680,9 +722,19 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
             }
 
             type BooksConnection {
+              aggregate: BookAggregate!
               edges: [BookEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateBookTitleEnsMutationResponse {
@@ -738,14 +790,14 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             type Query {
               bookTitleEns(limit: Int, offset: Int, options: BookTitle_ENOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookTitle_ENSort!], where: BookTitle_ENWhere): [BookTitle_EN!]!
-              bookTitleEnsAggregate(where: BookTitle_ENWhere): BookTitle_ENAggregateSelection!
+              bookTitleEnsAggregate(where: BookTitle_ENWhere): BookTitle_ENAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"bookTitleEnsConnection\\\\\\" instead\\")
               bookTitleEnsConnection(after: String, first: Int, sort: [BookTitle_ENSort!], where: BookTitle_ENWhere): BookTitleEnsConnection!
               bookTitleSvs(limit: Int, offset: Int, options: BookTitle_SVOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookTitle_SVSort!], where: BookTitle_SVWhere): [BookTitle_SV!]!
-              bookTitleSvsAggregate(where: BookTitle_SVWhere): BookTitle_SVAggregateSelection!
+              bookTitleSvsAggregate(where: BookTitle_SVWhere): BookTitle_SVAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"bookTitleSvsConnection\\\\\\" instead\\")
               bookTitleSvsConnection(after: String, first: Int, sort: [BookTitle_SVSort!], where: BookTitle_SVWhere): BookTitleSvsConnection!
               bookTitles(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: BookTitleWhere): [BookTitle!]!
               books(limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksAggregate(where: BookWhere): BookAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"booksConnection\\\\\\" instead\\")
               booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
             }
 

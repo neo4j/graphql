@@ -42,6 +42,7 @@ describe("200", () => {
             }
 
             type CategoriesConnection {
+              aggregate: CategoryAggregate!
               edges: [CategoryEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -52,6 +53,17 @@ describe("200", () => {
               description: String!
               exampleImageLocations: [String!]
               name: String!
+            }
+
+            type CategoryAggregate {
+              count: Count!
+              node: CategoryAggregateNode!
+            }
+
+            type CategoryAggregateNode {
+              categoryId: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              description: StringAggregateSelection!
+              name: StringAggregateSelection!
             }
 
             type CategoryAggregateSelection {
@@ -128,6 +140,10 @@ describe("200", () => {
               name_STARTS_WITH: String
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateCategoriesMutationResponse {
               categories: [Category!]!
               info: CreateInfo!
@@ -170,7 +186,7 @@ describe("200", () => {
 
             type Query {
               categories(limit: Int, offset: Int, options: CategoryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CategorySort!], where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
+              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"categoriesConnection\\\\\\" instead\\")
               categoriesConnection(after: String, first: Int, sort: [CategorySort!], where: CategoryWhere): CategoriesConnection!
             }
 

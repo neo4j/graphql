@@ -39,26 +39,26 @@ describe(`Field Level Authorization Where Requests`, () => {
             name: String
             year: Int
             createdAt: DateTime
-            ${typeActor.plural}: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
     
-        type ${typeActor.name} @node {
+        type ${typeActor} @node {
             name: String
             year: Int
             createdAt: DateTime
             testStr: String
-            ${typeMovie.plural}: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", direction: OUT)
         }`;
 
         await testHelper.executeCypher(`
-            CREATE (m:${typeMovie.name}
+            CREATE (m:${typeMovie}
                 {name: "Terminator",year:1990,createdAt: datetime()})
                 <-[:ACTED_IN]-
-                (:${typeActor.name} { name: "Arnold", year: 1970, createdAt: datetime(), testStr: "1234"})
-                CREATE (m)<-[:ACTED_IN]-(:${typeActor.name} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
+                (:${typeActor} { name: "Arnold", year: 1970, createdAt: datetime(), testStr: "1234"})
+                CREATE (m)<-[:ACTED_IN]-(:${typeActor} {name: "Linda", year:1985, createdAt: datetime(), testStr: "1235"})`);
 
         const extendedTypeDefs = `${typeDefs}
-        extend type ${typeActor.name} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr_EQ: "$jwt.sub" } } }])`;
+        extend type ${typeActor} @authorization(filter: [{ operations: [AGGREGATE], where: { node: { testStr_EQ: "$jwt.sub" } } }])`;
 
         await testHelper.initNeo4jGraphQL({
             typeDefs: extendedTypeDefs,
@@ -80,36 +80,46 @@ describe(`Field Level Authorization Where Requests`, () => {
     });
 
     test("authenticated query", async () => {
-        const query = `query {
-            ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate(where: {year_GT: 10}) {
-                    count
-                    node {
-                        year {
-                            max
-                        },
-                        name {
-                            longest,
-                            shortest
+        const query = /* GraphQL */ `
+            query {
+                ${typeMovie.plural} {
+                    actorsConnection(where: { node: { year_GT: 10 } }) {
+                        aggregate {
+                            node {
+                                year {
+                                    max
+                                }
+                                name {
+                                    longest
+                                    shortest
+                                }
+                            }
                         }
-                    },
                     }
                 }
-            }`;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-            count: 1,
-            node: {
-                year: {
-                    max: 1970,
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [
+                {
+                    actorsConnection: {
+                        aggregate: {
+                            node: {
+                                year: {
+                                    max: 1970,
+                                },
+                                name: {
+                                    longest: "Arnold",
+                                    shortest: "Arnold",
+                                },
+                            },
+                        },
+                    },
                 },
-                name: {
-                    longest: "Arnold",
-                    shortest: "Arnold",
-                },
-            },
+            ],
         });
     });
 });

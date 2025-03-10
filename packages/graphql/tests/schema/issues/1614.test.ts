@@ -53,6 +53,15 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateCrewMembersMutationResponse {
               crewMembers: [CrewMember!]!
               info: CreateInfo!
@@ -73,8 +82,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type CrewMember {
               movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): Movie!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): CrewMemberMovieMoviesAggregationSelection
+              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): CrewMemberMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CrewMemberMoviesConnectionSort!], where: CrewMemberMoviesConnectionWhere): CrewMemberMoviesConnection!
+            }
+
+            type CrewMemberAggregate {
+              count: Count!
             }
 
             type CrewMemberAggregateSelection {
@@ -92,6 +105,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             type CrewMemberEdge {
               cursor: String!
               node: CrewMember!
+            }
+
+            type CrewMemberMovieMoviesAggregateSelection {
+              count: CountConnection!
+              node: CrewMemberMovieMoviesNodeAggregateSelection
             }
 
             type CrewMemberMovieMoviesAggregationSelection {
@@ -126,6 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMemberMoviesConnection {
+              aggregate: CrewMemberMovieMoviesAggregateSelection!
               edges: [CrewMemberMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -222,6 +241,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMembersConnection {
+              aggregate: CrewMemberAggregate!
               edges: [CrewMemberEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -273,6 +293,15 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type Movie {
               name: String!
+            }
+
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              name: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -327,6 +356,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -351,10 +381,10 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type Query {
               crewMembers(limit: Int, offset: Int, options: CrewMemberOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CrewMemberWhere): [CrewMember!]!
-              crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection!
+              crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"crewMembersConnection\\\\\\" instead\\")
               crewMembersConnection(after: String, first: Int, where: CrewMemberWhere): CrewMembersConnection!
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

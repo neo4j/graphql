@@ -43,6 +43,15 @@ describe("Pluralize consistency", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -88,10 +97,10 @@ describe("Pluralize consistency", () => {
 
             type Query {
               superFriends(limit: Int, offset: Int, options: super_friendOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
-              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
+              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"superFriendsConnection\\\\\\" instead\\")
               superFriendsConnection(after: String, first: Int, sort: [super_friendSort!], where: super_friendWhere): SuperFriendsConnection!
               superUsers(limit: Int, offset: Int, options: super_userOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_userSort!], where: super_userWhere): [super_user!]!
-              superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
+              superUsersAggregate(where: super_userWhere): super_userAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"superUsersConnection\\\\\\" instead\\")
               superUsersConnection(after: String, first: Int, sort: [super_userSort!], where: super_userWhere): SuperUsersConnection!
             }
 
@@ -109,12 +118,14 @@ describe("Pluralize consistency", () => {
             }
 
             type SuperFriendsConnection {
+              aggregate: super_friendAggregate!
               edges: [super_friendEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
             type SuperUsersConnection {
+              aggregate: super_userAggregate!
               edges: [super_userEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -142,6 +153,15 @@ describe("Pluralize consistency", () => {
 
             type super_friend {
               name: String!
+            }
+
+            type super_friendAggregate {
+              count: Count!
+              node: super_friendAggregateNode!
+            }
+
+            type super_friendAggregateNode {
+              name: StringAggregateSelection!
             }
 
             type super_friendAggregateSelection {
@@ -197,9 +217,18 @@ describe("Pluralize consistency", () => {
 
             type super_user {
               my_friend(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: super_friendOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
+              my_friendAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"my_friendConnection\\\\\\" instead\\")
               my_friendConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
+            }
+
+            type super_userAggregate {
+              count: Count!
+              node: super_userAggregateNode!
+            }
+
+            type super_userAggregateNode {
+              name: StringAggregateSelection!
             }
 
             type super_userAggregateSelection {
@@ -243,6 +272,7 @@ describe("Pluralize consistency", () => {
             }
 
             type super_userMy_friendConnection {
+              aggregate: super_usersuper_friendMy_friendAggregateSelection!
               edges: [super_userMy_friendRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -380,6 +410,11 @@ describe("Pluralize consistency", () => {
               name_EQ: String
               name_IN: [String!]
               name_STARTS_WITH: String
+            }
+
+            type super_usersuper_friendMy_friendAggregateSelection {
+              count: CountConnection!
+              node: super_usersuper_friendMy_friendNodeAggregateSelection
             }
 
             type super_usersuper_friendMy_friendAggregationSelection {

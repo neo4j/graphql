@@ -72,7 +72,7 @@ export function rootConnectionResolver({
 
         const connection = createConnectionWithEdgeProperties({
             selectionSet: resolveTree as unknown as SelectionSetNode,
-            source: { edges: record.edges },
+            source: { edges: record.edges, aggregate: record.aggregate },
             args: { first: args.first, after: args.after },
             totalCount,
         });
@@ -81,6 +81,7 @@ export function rootConnectionResolver({
             totalCount,
             edges: connection.edges,
             pageInfo: connection.pageInfo,
+            aggregate: connection.aggregate,
         };
     }
 
@@ -95,13 +96,22 @@ export function rootConnectionResolver({
 
     const rootConnection = composer.createObjectTC({
         name: `${entityAdapter.upperFirstPlural}Connection`,
-        fields: {
-            totalCount: new GraphQLNonNull(GraphQLInt),
-            pageInfo: new GraphQLNonNull(PageInfo),
-            edges: rootEdge.NonNull.List.NonNull,
-        },
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
+
+    if (entityAdapter.isReadable) {
+        rootConnection.addFields({
+            edges: rootEdge.NonNull.List.NonNull,
+            totalCount: new GraphQLNonNull(GraphQLInt),
+            pageInfo: new GraphQLNonNull(PageInfo),
+        });
+    }
+
+    if (entityAdapter.isAggregable) {
+        rootConnection.addFields({
+            aggregate: `${entityAdapter.operations.aggregateTypeNames.connection}!`,
+        });
+    }
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer | undefined;

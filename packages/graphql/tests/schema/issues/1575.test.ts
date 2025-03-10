@@ -38,6 +38,10 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateFoosMutationResponse {
               foos: [Foo!]!
               info: CreateInfo!
@@ -62,6 +66,10 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             type Foo {
               geo_point: Point
               point: Point
+            }
+
+            type FooAggregate {
+              count: Count!
             }
 
             type FooAggregateSelection {
@@ -125,6 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             type FoosConnection {
+              aggregate: FooAggregate!
               edges: [FooEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -171,7 +180,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
 
             type Query {
               foos(limit: Int, offset: Int, options: FooOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [FooSort!], where: FooWhere): [Foo!]!
-              foosAggregate(where: FooWhere): FooAggregateSelection!
+              foosAggregate(where: FooWhere): FooAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"foosConnection\\\\\\" instead\\")
               foosConnection(after: String, first: Int, sort: [FooSort!], where: FooWhere): FoosConnection!
             }
 

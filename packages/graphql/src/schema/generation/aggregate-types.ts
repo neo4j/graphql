@@ -63,7 +63,58 @@ export function withAggregateSelectionType({
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
     aggregateSelection.addFields(makeAggregableFields({ entityAdapter, aggregationTypesMapper, features }));
+
+    createConnectionAggregate({
+        entityAdapter,
+        aggregationTypesMapper,
+        propagatedDirectives,
+        composer,
+        features,
+    });
     return aggregateSelection;
+}
+
+/** Create aggregate field inside connections */
+function createConnectionAggregate({
+    entityAdapter,
+    aggregationTypesMapper,
+    propagatedDirectives,
+    composer,
+    features,
+}: {
+    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
+    aggregationTypesMapper: AggregationTypesMapper;
+    propagatedDirectives: DirectiveNode[];
+    composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
+}): ObjectTypeComposer {
+    const aggregableFields = makeAggregableFields({ entityAdapter, aggregationTypesMapper, features });
+    let aggregateNode: ObjectTypeComposer | undefined;
+    const hasNodeAggregateFields = Object.keys(aggregableFields).length > 0;
+    if (hasNodeAggregateFields) {
+        aggregateNode = composer.createObjectTC({
+            name: entityAdapter.operations.aggregateTypeNames.node,
+            fields: {},
+            directives: graphqlDirectivesToCompose(propagatedDirectives),
+        });
+        aggregateNode.addFields(aggregableFields);
+    }
+
+    const connectionAggregate = composer.createObjectTC({
+        name: entityAdapter.operations.aggregateTypeNames.connection,
+        fields: {
+            count: aggregationTypesMapper.getCountType().NonNull,
+        },
+        directives: graphqlDirectivesToCompose(propagatedDirectives),
+    });
+
+    if (aggregateNode) {
+        connectionAggregate.addFields({
+            node: aggregateNode.NonNull,
+        });
+    }
+
+    return connectionAggregate;
 }
 
 function makeAggregableFields({

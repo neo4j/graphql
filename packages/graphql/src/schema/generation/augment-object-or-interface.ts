@@ -22,6 +22,7 @@ import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaCo
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
 import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
@@ -30,11 +31,8 @@ import { DEPRECATE_OPTIONS_ARGUMENT } from "../constants";
 import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
-import {
-    makeConnectionWhereInputType,
-    withConnectionObjectType,
-    withConnectionSortInputType,
-} from "./connection-where-input";
+import { withConnectionObjectType } from "./connection-object-type";
+import { makeConnectionWhereInputType, withConnectionSortInputType } from "./connection-where-input";
 import { makeSortInput } from "./sort-and-options-input";
 import { shouldAddDeprecatedFields } from "./utils";
 
@@ -152,8 +150,10 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
     if (connectionSortITC) {
         composeNodeArgs.sort = connectionSortITC.NonNull.List;
     }
+    const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
+    const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
 
-    if (relationshipAdapter.isReadable()) {
+    if (relationshipAdapter.isReadable() || (relationshipAdapter.aggregate && !isTargetUnion && !isSourceInterface)) {
         fields[relationshipAdapter.operations.connectionFieldName] = {
             type: withConnectionObjectType({
                 relationshipAdapter,

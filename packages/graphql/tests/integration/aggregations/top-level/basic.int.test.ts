@@ -22,9 +22,7 @@ import { TestHelper } from "../../../utils/tests-helper";
 describe("aggregations-top_level-basic", () => {
     const testHelper = new TestHelper();
 
-    beforeAll(() => {});
-
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
@@ -40,14 +38,23 @@ describe("aggregations-top_level-basic", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${randomType.name} {id: randomUUID()})
-            CREATE (:${randomType.name} {id: randomUUID()})
+            CREATE (:${randomType.name} {id: "asd"})
+            CREATE (:${randomType.name} {id: "asd3"})
         `);
 
         const query = `
                 {
-                    ${randomType.operations.aggregate} {
-                        count
+                    ${randomType.operations.connection} {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                id {
+                                    longest 
+                                }
+                            }
+                        }
                     }
                 }
             `;
@@ -56,8 +63,57 @@ describe("aggregations-top_level-basic", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[randomType.operations.aggregate]).toEqual({
-            count: 2,
+        expect(gqlResult.data).toEqual({
+            [randomType.operations.connection]: {
+                aggregate: {
+                    count: {
+                        nodes: 2,
+                    },
+                    node: {
+                        id: {
+                            longest: "asd3",
+                        },
+                    },
+                },
+            },
+        });
+    });
+
+    test("should return 0 if no nodes exist", async () => {
+        const randomType = testHelper.createUniqueType("Movie");
+
+        const typeDefs = `
+            type ${randomType.name} @node {
+                id: ID
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const query = `
+                {
+                    ${randomType.operations.connection} {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
+                    }
+                }
+            `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data).toEqual({
+            [randomType.operations.connection]: {
+                aggregate: {
+                    count: {
+                        nodes: 0,
+                    },
+                },
+            },
         });
     });
 });

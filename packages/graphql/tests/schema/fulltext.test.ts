@@ -47,6 +47,10 @@ describe("@fulltext schema", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -77,6 +81,16 @@ describe("@fulltext schema", () => {
             type Movie {
               description: String
               title: String
+            }
+
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              description: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type MovieAggregateSelection {
@@ -169,6 +183,7 @@ describe("@fulltext schema", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -206,7 +221,7 @@ describe("@fulltext schema", () => {
                 \\"\\"\\"
                 fulltext: MovieFulltext
                 where: MovieWhere
-              ): MovieAggregateSelection!
+              ): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(
                 after: String
                 first: Int

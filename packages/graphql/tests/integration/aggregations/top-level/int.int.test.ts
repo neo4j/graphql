@@ -61,10 +61,14 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRating {
-                            min
-                        }
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                imdbRating {
+                                        min
+                                    }
+                            }
+                        }   
                     }
                 }
             `;
@@ -77,9 +81,15 @@ describe("aggregations-top_level-int", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            imdbRating: {
-                min: 1,
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRating: {
+                            min: 1,
+                        },
+                    },
+                },
             },
         });
     });
@@ -104,10 +114,14 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRating {
-                            max
-                        }
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                imdbRating {
+                                        max
+                                    }
+                            }
+                        }   
                     }
                 }
             `;
@@ -120,9 +134,15 @@ describe("aggregations-top_level-int", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            imdbRating: {
-                max: 4,
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRating: {
+                            max: 4,
+                        },
+                    },
+                },
             },
         });
     });
@@ -147,10 +167,14 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRating {
-                            average
-                        }
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                imdbRating {
+                                        average
+                                    }
+                            }
+                        }   
                     }
                 }
             `;
@@ -163,9 +187,15 @@ describe("aggregations-top_level-int", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            imdbRating: {
-                average: 2.5,
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRating: {
+                            average: 2.5,
+                        },
+                    },
+                },
             },
         });
     });
@@ -190,10 +220,14 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRating {
-                            sum
-                        }
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                imdbRating {
+                                        sum
+                                    }
+                            }
+                        }   
                     }
                 }
             `;
@@ -206,9 +240,15 @@ describe("aggregations-top_level-int", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            imdbRating: {
-                sum: 10,
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRating: {
+                            sum: 10,
+                        },
+                    },
+                },
             },
         });
     });
@@ -233,12 +273,16 @@ describe("aggregations-top_level-int", () => {
 
         const query = `
                 {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRating {
-                            min
-                            max
-                            average
-                            sum
+                    ${Movie.operations.connection}(where: {testString_EQ: "${testString}"}) {
+                        aggregate {
+                            node {
+                                imdbRating {
+                                        min
+                                        max
+                                        average
+                                        sum
+                                }
+                            }   
                         }
                     }
                 }
@@ -252,12 +296,18 @@ describe("aggregations-top_level-int", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            imdbRating: {
-                min: 1,
-                max: 4,
-                average: 2.5,
-                sum: 10,
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRating: {
+                            min: 1,
+                            max: 4,
+                            average: 2.5,
+                            sum: 10,
+                        },
+                    },
+                },
             },
         });
     });

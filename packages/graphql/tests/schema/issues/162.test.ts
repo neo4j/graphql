@@ -48,6 +48,15 @@ describe("162", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -113,13 +122,13 @@ describe("162", () => {
 
             type Query {
               tigerJawLevel2Part1s(limit: Int, offset: Int, options: TigerJawLevel2Part1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
+              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerJawLevel2Part1sConnection\\\\\\" instead\\")
               tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
               tigerJawLevel2s(limit: Int, offset: Int, options: TigerJawLevel2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): [TigerJawLevel2!]!
-              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
+              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerJawLevel2sConnection\\\\\\" instead\\")
               tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
               tigers(limit: Int, offset: Int, options: TigerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerSort!], where: TigerWhere): [Tiger!]!
-              tigersAggregate(where: TigerWhere): TigerAggregateSelection!
+              tigersAggregate(where: TigerWhere): TigerAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigersConnection\\\\\\" instead\\")
               tigersConnection(after: String, first: Int, sort: [TigerSort!], where: TigerWhere): TigersConnection!
             }
 
@@ -133,6 +142,15 @@ describe("162", () => {
 
             type Tiger {
               x: Int
+            }
+
+            type TigerAggregate {
+              count: Count!
+              node: TigerAggregateNode!
+            }
+
+            type TigerAggregateNode {
+              x: IntAggregateSelection!
             }
 
             type TigerAggregateSelection {
@@ -156,8 +174,17 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: TigerJawLevel2Part1Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1!
-              part1Aggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
+              part1Aggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"part1Connection\\\\\\" instead\\")
               part1Connection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
+            }
+
+            type TigerJawLevel2Aggregate {
+              count: Count!
+              node: TigerJawLevel2AggregateNode!
+            }
+
+            type TigerJawLevel2AggregateNode {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type TigerJawLevel2AggregateSelection {
@@ -191,8 +218,13 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: TigerOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TigerSort!], where: TigerWhere): Tiger!
-              tigerAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
+              tigerAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"tigerConnection\\\\\\" instead\\")
               tigerConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+            }
+
+            type TigerJawLevel2Part1Aggregate {
+              count: Count!
+              node: TigerJawLevel2Part1AggregateNode!
             }
 
             input TigerJawLevel2Part1AggregateInput {
@@ -206,6 +238,10 @@ describe("162", () => {
               count_LT: Int
               count_LTE: Int
               node: TigerJawLevel2Part1NodeAggregationWhereInput
+            }
+
+            type TigerJawLevel2Part1AggregateNode {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type TigerJawLevel2Part1AggregateSelection {
@@ -231,6 +267,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1Connection {
+              aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregateSelection!
               edges: [TigerJawLevel2Part1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -343,6 +380,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigerConnection {
+              aggregate: TigerJawLevel2Part1TigerTigerAggregateSelection!
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -407,6 +445,11 @@ describe("162", () => {
               node: Tiger!
             }
 
+            type TigerJawLevel2Part1TigerTigerAggregateSelection {
+              count: CountConnection!
+              node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
+            }
+
             type TigerJawLevel2Part1TigerTigerAggregationSelection {
               count: Int!
               node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
@@ -464,6 +507,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1sConnection {
+              aggregate: TigerJawLevel2Part1Aggregate!
               edges: [TigerJawLevel2Part1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -474,6 +518,11 @@ describe("162", () => {
             \\"\\"\\"
             input TigerJawLevel2Sort {
               id: SortDirection
+            }
+
+            type TigerJawLevel2TigerJawLevel2Part1Part1AggregateSelection {
+              count: CountConnection!
+              node: TigerJawLevel2TigerJawLevel2Part1Part1NodeAggregateSelection
             }
 
             type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
@@ -507,6 +556,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2sConnection {
+              aggregate: TigerJawLevel2Aggregate!
               edges: [TigerJawLevel2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -549,6 +599,7 @@ describe("162", () => {
             }
 
             type TigersConnection {
+              aggregate: TigerAggregate!
               edges: [TigerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

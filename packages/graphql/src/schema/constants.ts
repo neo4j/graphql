@@ -18,6 +18,10 @@
  */
 
 import { DEPRECATED } from "../constants";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
 export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
     name: DEPRECATED,
@@ -61,7 +65,6 @@ export const DEPRECATE_OVERWRITE = {
     },
 };
 
-
 export const DEPRECATE_ID_AGGREGATION = {
     name: DEPRECATED,
     args: {
@@ -75,3 +78,21 @@ export const DEPRECATE_TYPENAME_IN = {
         reason: "The typename_IN filter is deprecated, please use the typename filter instead",
     },
 };
+
+export function DEPRECATE_AGGREGATION(entity: ConcreteEntityAdapter | InterfaceEntityAdapter) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the explicit field "aggregate" inside "${entity.operations.rootTypeFieldNames.connection}" instead`,
+        },
+    };
+}
+
+export function DEPRECATE_NESTED_AGGREGATION(relationship: RelationshipAdapter | RelationshipDeclarationAdapter) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use field "aggregate" inside "${relationship.operations.connectionFieldName}" instead`,
+        },
+    };
+}

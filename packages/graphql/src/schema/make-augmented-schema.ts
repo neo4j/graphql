@@ -72,6 +72,7 @@ import { RelationshipDeclarationAdapter } from "../schema-model/relationship/mod
 import type { CypherField, Neo4jFeaturesSettings } from "../types";
 import { filterTruthy } from "../utils/utils";
 import { augmentVectorSchema } from "./augment/vector";
+import { DEPRECATE_AGGREGATION } from "./constants";
 import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
@@ -83,6 +84,7 @@ import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withOptionsInputType } from "./generation/sort-and-options-input";
 import { withUpdateInputType } from "./generation/update-input";
+import { shouldAddDeprecatedFields } from "./generation/utils";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
 import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
@@ -546,6 +548,15 @@ function generateObjectType({
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
 
+    if (concreteEntityAdapter.isReadable || concreteEntityAdapter.isAggregable) {
+        composer.Query.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: concreteEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+    }
     if (concreteEntityAdapter.isReadable) {
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -559,13 +570,6 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        composer.Query.addFields({
-            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
-                entityAdapter: concreteEntityAdapter,
-                propagatedDirectives,
-            }),
-        });
         composer.Query.setFieldDirectives(
             concreteEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
@@ -580,15 +584,17 @@ function generateObjectType({
             features,
         });
 
-        composer.Query.addFields({
-            [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                entityAdapter: concreteEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(
-            concreteEntityAdapter.operations.rootTypeFieldNames.aggregate,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
+        if (shouldAddDeprecatedFields(features, "deprecatedAggregateOperations")) {
+            composer.Query.addFields({
+                [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                    entityAdapter: concreteEntityAdapter,
+                }),
+            });
+            composer.Query.setFieldDirectives(concreteEntityAdapter.operations.rootTypeFieldNames.aggregate, [
+                ...graphqlDirectivesToCompose(propagatedDirectives),
+                DEPRECATE_AGGREGATION(concreteEntityAdapter),
+            ]);
+        }
     }
 
     if (concreteEntityAdapter.isCreatable) {
@@ -685,6 +691,15 @@ function generateInterfaceObjectType({
     });
 
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+    if (interfaceEntityAdapter.isReadable || interfaceEntityAdapter.isAggregable) {
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: interfaceEntityAdapter,
+                propagatedDirectives,
+            }),
+        });
+    }
     if (interfaceEntityAdapter.isReadable) {
         composer.Query.addFields({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -699,13 +714,6 @@ function generateInterfaceObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
-                entityAdapter: interfaceEntityAdapter,
-                propagatedDirectives,
-            }),
-        });
         composer.Query.setFieldDirectives(
             interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
@@ -720,14 +728,17 @@ function generateInterfaceObjectType({
             features,
         });
 
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                entityAdapter: interfaceEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(
-            interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
+        if (shouldAddDeprecatedFields(features, "deprecatedAggregateOperations")) {
+            composer.Query.addFields({
+                [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
+                    entityAdapter: interfaceEntityAdapter,
+                }),
+            });
+
+            composer.Query.setFieldDirectives(interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate, [
+                ...graphqlDirectivesToCompose(propagatedDirectives),
+                DEPRECATE_AGGREGATION(interfaceEntityAdapter),
+            ]);
+        }
     }
 }

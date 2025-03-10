@@ -895,10 +895,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -951,6 +961,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -982,6 +997,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1129,9 +1145,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -1170,9 +1196,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -1208,6 +1239,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1295,6 +1327,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -1423,6 +1464,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1447,10 +1489,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -1528,10 +1570,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -1584,6 +1636,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -1616,6 +1673,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1784,9 +1842,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -1825,9 +1893,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -1863,6 +1936,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1950,6 +2024,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -2078,6 +2161,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2102,10 +2186,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -2183,10 +2267,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -2239,6 +2333,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -2271,6 +2370,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2439,9 +2539,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -2480,9 +2590,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -2518,6 +2633,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2605,6 +2721,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -2715,6 +2840,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2739,10 +2865,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -2823,10 +2949,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -2879,6 +3015,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -2911,6 +3052,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3079,9 +3221,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -3120,9 +3272,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -3145,6 +3302,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3196,6 +3354,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -3323,6 +3490,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3347,10 +3515,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -3430,10 +3598,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -3486,6 +3664,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -3518,6 +3701,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3686,9 +3870,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -3727,9 +3921,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -3765,6 +3964,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -3852,6 +4052,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -3980,6 +4189,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4004,10 +4214,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -4087,10 +4297,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -4143,6 +4363,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -4175,6 +4400,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4343,9 +4569,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -4384,9 +4620,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -4422,6 +4663,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4509,6 +4751,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -4613,6 +4864,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4637,10 +4889,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -4720,10 +4972,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -4776,6 +5038,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -4808,6 +5075,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -4976,9 +5244,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -5017,9 +5295,14 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
+                    }
+
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MovieActorActorsNodeAggregateSelection
                     }
 
                     type MovieActorActorsAggregationSelection {
@@ -5042,6 +5325,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5093,6 +5377,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -5220,6 +5513,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5244,10 +5538,10 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -5332,10 +5626,20 @@ describe("@filterable directive", () => {
 
                     type Actor implements Person {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -5376,6 +5680,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -5408,6 +5717,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5576,9 +5886,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -5617,7 +5937,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -5627,6 +5947,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5676,6 +5997,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -5732,6 +6062,11 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MoviePersonActorsNodeAggregateSelection
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -5812,6 +6147,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5835,6 +6171,7 @@ describe("@filterable directive", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -5842,6 +6179,15 @@ describe("@filterable directive", () => {
 
                     interface Person {
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -5903,13 +6249,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -5994,10 +6340,20 @@ describe("@filterable directive", () => {
 
                     type Actor implements Person {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -6038,6 +6394,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -6070,6 +6431,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6238,9 +6600,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -6279,7 +6651,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -6302,6 +6674,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6374,6 +6747,15 @@ describe("@filterable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -6428,6 +6810,11 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MoviePersonActorsNodeAggregateSelection
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -6509,6 +6896,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6532,6 +6920,7 @@ describe("@filterable directive", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6539,6 +6928,15 @@ describe("@filterable directive", () => {
 
                     interface Person {
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -6600,13 +6998,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -6691,10 +7089,20 @@ describe("@filterable directive", () => {
 
                     type Actor implements Person {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -6735,6 +7143,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -6767,6 +7180,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -6935,9 +7349,19 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -6976,7 +7400,7 @@ describe("@filterable directive", () => {
 
                     type Movie {
                       actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection
+                      actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -6986,6 +7410,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7035,6 +7460,15 @@ describe("@filterable directive", () => {
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
                       where: MovieActorsConnectionWhere
+                    }
+
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
                     }
 
                     type MovieAggregateSelection {
@@ -7091,6 +7525,11 @@ describe("@filterable directive", () => {
                       Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
                       \\"\\"\\"
                       sort: [MovieSort!]
+                    }
+
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
+                      node: MoviePersonActorsNodeAggregateSelection
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -7171,6 +7610,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7194,6 +7634,7 @@ describe("@filterable directive", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7201,6 +7642,15 @@ describe("@filterable directive", () => {
 
                     interface Person {
                       username: String!
+                    }
+
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
+                      username: StringAggregateSelection!
                     }
 
                     type PersonAggregateSelection {
@@ -7262,13 +7712,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
+                      peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -7357,10 +7807,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -7413,6 +7873,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -7445,6 +7910,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7613,6 +8079,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7620,10 +8087,20 @@ describe("@filterable directive", () => {
 
                     type Appearance {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): AppearanceMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): AppearanceMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type AppearanceAggregate {
+                      count: Count!
+                      node: AppearanceAggregateNode!
+                    }
+
+                    type AppearanceAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type AppearanceAggregateSelection {
@@ -7676,6 +8153,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type AppearanceMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: AppearanceMovieMoviesNodeAggregateSelection
+                    }
+
                     type AppearanceMovieMoviesAggregationSelection {
                       count: Int!
                       node: AppearanceMovieMoviesNodeAggregateSelection
@@ -7708,6 +8190,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregateSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -7876,9 +8359,19 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearancesConnection {
+                      aggregate: AppearanceAggregate!
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -8055,6 +8548,15 @@ describe("@filterable directive", () => {
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -8180,6 +8682,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8214,13 +8717,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       appearances(limit: Int, offset: Int, options: AppearanceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
-                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection!
+                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\" instead\\")
                       appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                     }
@@ -8324,10 +8827,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -8380,6 +8893,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -8412,6 +8930,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8580,6 +9099,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8587,10 +9107,20 @@ describe("@filterable directive", () => {
 
                     type Appearance {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): AppearanceMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): AppearanceMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type AppearanceAggregate {
+                      count: Count!
+                      node: AppearanceAggregateNode!
+                    }
+
+                    type AppearanceAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type AppearanceAggregateSelection {
@@ -8643,6 +9173,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type AppearanceMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: AppearanceMovieMoviesNodeAggregateSelection
+                    }
+
                     type AppearanceMovieMoviesAggregationSelection {
                       count: Int!
                       node: AppearanceMovieMoviesNodeAggregateSelection
@@ -8675,6 +9210,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregateSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -8843,9 +9379,19 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearancesConnection {
+                      aggregate: AppearanceAggregate!
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -9022,6 +9568,15 @@ describe("@filterable directive", () => {
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -9147,6 +9702,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9181,13 +9737,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       appearances(limit: Int, offset: Int, options: AppearanceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
-                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection!
+                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\" instead\\")
                       appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                     }
@@ -9291,10 +9847,20 @@ describe("@filterable directive", () => {
 
                     type Actor {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type ActorAggregateSelection {
@@ -9347,6 +9913,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: ActorMovieMoviesNodeAggregateSelection
+                    }
+
                     type ActorMovieMoviesAggregationSelection {
                       count: Int!
                       node: ActorMovieMoviesNodeAggregateSelection
@@ -9379,6 +9950,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9547,6 +10119,7 @@ describe("@filterable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9554,10 +10127,20 @@ describe("@filterable directive", () => {
 
                     type Appearance {
                       movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): AppearanceMovieMoviesAggregationSelection
+                      moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): AppearanceMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AppearanceMoviesConnectionSort!], where: AppearanceMoviesConnectionWhere): AppearanceMoviesConnection!
                       password: String!
                       username: String!
+                    }
+
+                    type AppearanceAggregate {
+                      count: Count!
+                      node: AppearanceAggregateNode!
+                    }
+
+                    type AppearanceAggregateNode {
+                      password: StringAggregateSelection!
+                      username: StringAggregateSelection!
                     }
 
                     type AppearanceAggregateSelection {
@@ -9610,6 +10193,11 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
+                    type AppearanceMovieMoviesAggregateSelection {
+                      count: CountConnection!
+                      node: AppearanceMovieMoviesNodeAggregateSelection
+                    }
+
                     type AppearanceMovieMoviesAggregationSelection {
                       count: Int!
                       node: AppearanceMovieMoviesNodeAggregateSelection
@@ -9642,6 +10230,7 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearanceMoviesConnection {
+                      aggregate: AppearanceMovieMoviesAggregateSelection!
                       edges: [AppearanceMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -9810,9 +10399,19 @@ describe("@filterable directive", () => {
                     }
 
                     type AppearancesConnection {
+                      aggregate: AppearanceAggregate!
                       edges: [AppearanceEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -9989,6 +10588,15 @@ describe("@filterable directive", () => {
                       Appearance: [MovieActorsAppearanceUpdateFieldInput!]
                     }
 
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
+                      title: StringAggregateSelection!
+                    }
+
                     type MovieAggregateSelection {
                       count: Int!
                       title: StringAggregateSelection!
@@ -10114,6 +10722,7 @@ describe("@filterable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -10148,13 +10757,13 @@ describe("@filterable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+                      actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       appearances(limit: Int, offset: Int, options: AppearanceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AppearanceSort!], where: AppearanceWhere): [Appearance!]!
-                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection!
+                      appearancesAggregate(where: AppearanceWhere): AppearanceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"appearancesConnection\\\\\\" instead\\")
                       appearancesConnection(after: String, first: Int, sort: [AppearanceSort!], where: AppearanceWhere): AppearancesConnection!
                       movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+                      moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
                     }

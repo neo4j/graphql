@@ -84,6 +84,15 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -140,10 +149,10 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type Query {
               resourceEntities(limit: Int, offset: Int, options: ResourceEntityOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceEntitySort!], where: ResourceEntityWhere): [ResourceEntity!]!
-              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
+              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourceEntitiesConnection\\\\\\" instead\\")
               resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): ResourceEntitiesConnection!
               resources(limit: Int, offset: Int, options: ResourceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
+              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"resourcesConnection\\\\\\" instead\\")
               resourcesConnection(after: String, first: Int, sort: [ResourceSort!], where: ResourceWhere): ResourcesConnection!
             }
 
@@ -152,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Resources encapsulating the given resource (e.g., a github org contains a repo)
               \\"\\"\\"
               containedBy(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ResourceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              containedByAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ResourceWhere): ResourceResourceContainedByAggregationSelection
+              containedByAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ResourceWhere): ResourceResourceContainedByAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"containedByConnection\\\\\\" instead\\")
               containedByConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
               createdAt: DateTime!
               externalIds: [ID!]
@@ -163,6 +172,18 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               tags: [Tag!]
               type: ResourceType!
               updatedAt: DateTime!
+            }
+
+            type ResourceAggregate {
+              count: Count!
+              node: ResourceAggregateNode!
+            }
+
+            type ResourceAggregateNode {
+              createdAt: DateTimeAggregateSelection!
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
+              updatedAt: DateTimeAggregateSelection!
             }
 
             type ResourceAggregateSelection {
@@ -217,6 +238,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceContainedByConnection {
+              aggregate: ResourceResourceContainedByAggregateSelection!
               edges: [ResourceContainedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -348,6 +370,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceEntitiesConnection {
+              aggregate: ResourceEntityAggregate!
               edges: [ResourceEntityEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -361,6 +384,16 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               tags: [Tag!]
               \\"\\"\\"Allowed resource types (enums)\\"\\"\\"
               type: ResourceType!
+            }
+
+            type ResourceEntityAggregate {
+              count: Count!
+              node: ResourceEntityAggregateNode!
+            }
+
+            type ResourceEntityAggregateNode {
+              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              name: StringAggregateSelection!
             }
 
             type ResourceEntityAggregateSelection {
@@ -442,6 +475,11 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Specify one or more ResourceSort objects to sort Resources by. The sorts will be applied in the order in which they are arranged in the array.
               \\"\\"\\"
               sort: [ResourceSort!]
+            }
+
+            type ResourceResourceContainedByAggregateSelection {
+              count: CountConnection!
+              node: ResourceResourceContainedByNodeAggregateSelection
             }
 
             type ResourceResourceContainedByAggregationSelection {
@@ -568,6 +606,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourcesConnection {
+              aggregate: ResourceAggregate!
               edges: [ResourceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

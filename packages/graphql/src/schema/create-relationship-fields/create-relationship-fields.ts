@@ -29,6 +29,7 @@ import { RelationshipAdapter } from "../../schema-model/relationship/model-adapt
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { FieldAggregationComposer } from "../aggregations/field-aggregation-composer";
+import { DEPRECATE_NESTED_AGGREGATION } from "../constants";
 import { addDirectedArgument } from "../directed-argument";
 import {
     augmentObjectOrInterfaceTypeWithConnectionField,
@@ -48,6 +49,7 @@ import { getRelationshipPropertiesTypeDescription, withObjectType } from "../gen
 import { withRelationInputType } from "../generation/relation-input";
 import { withSortInputType } from "../generation/sort-and-options-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput, withUpdateInputType } from "../generation/update-input";
+import { shouldAddDeprecatedFields } from "../generation/utils";
 import { withSourceWhereInputType, withWhereInputType } from "../generation/where-input";
 import { graphqlDirectivesToCompose } from "../to-compose";
 
@@ -254,7 +256,6 @@ export function createRelationshipFields({
             return;
         }
 
-        // TODO: new way
         if (composeNode instanceof ObjectTypeComposer) {
             // make a new fn augmentObjectTypeWithAggregationField
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
@@ -271,13 +272,18 @@ export function createRelationshipFields({
             const aggregationFieldsArgs = addDirectedArgument(aggregationFieldsBaseArgs, relationshipAdapter, features);
 
             if (relationshipAdapter.aggregate) {
-                composeNode.addFields({
-                    [relationshipAdapter.operations.aggregateTypeName]: {
-                        type: aggregationTypeObject,
-                        args: aggregationFieldsArgs,
-                        directives: deprecatedDirectives,
-                    },
-                });
+                if (shouldAddDeprecatedFields(features, "deprecatedAggregateOperations")) {
+                    composeNode.addFields({
+                        [relationshipAdapter.operations.aggregateTypeName]: {
+                            type: aggregationTypeObject,
+                            args: aggregationFieldsArgs,
+                            directives:
+                                deprecatedDirectives.length > 0
+                                    ? deprecatedDirectives
+                                    : [DEPRECATE_NESTED_AGGREGATION(relationshipAdapter)],
+                        },
+                    });
+                }
             }
         }
 

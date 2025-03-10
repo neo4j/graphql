@@ -38,6 +38,10 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -61,6 +65,10 @@ describe("Point", () => {
 
             type Movie {
               filmedAt: Point!
+            }
+
+            type MovieAggregate {
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -112,6 +120,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -158,7 +167,7 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -226,6 +235,10 @@ describe("Point", () => {
               z: Float
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -249,6 +262,10 @@ describe("Point", () => {
 
             type Machine {
               partLocation: CartesianPoint!
+            }
+
+            type MachineAggregate {
+              count: Count!
             }
 
             type MachineAggregateSelection {
@@ -300,6 +317,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -321,7 +339,7 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, options: MachineOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MachineSort!], where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\" instead\\")
               machinesConnection(after: String, first: Int, sort: [MachineSort!], where: MachineWhere): MachinesConnection!
             }
 
@@ -365,6 +383,10 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -388,6 +410,10 @@ describe("Point", () => {
 
             type Movie {
               filmedAt: [Point!]!
+            }
+
+            type MovieAggregate {
+              count: Count!
             }
 
             type MovieAggregateSelection {
@@ -425,6 +451,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -464,7 +491,7 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -518,6 +545,10 @@ describe("Point", () => {
               z: Float
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -541,6 +572,10 @@ describe("Point", () => {
 
             type Machine {
               partLocations: [CartesianPoint!]!
+            }
+
+            type MachineAggregate {
+              count: Count!
             }
 
             type MachineAggregateSelection {
@@ -578,6 +613,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -599,7 +635,7 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, options: MachineOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
+              machinesAggregate(where: MachineWhere): MachineAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"machinesConnection\\\\\\" instead\\")
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 

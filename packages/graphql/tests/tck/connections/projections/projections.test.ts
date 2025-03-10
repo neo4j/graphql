@@ -201,16 +201,20 @@ describe("Relay Cursor Connection projections", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                        WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                        WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }
@@ -250,16 +254,20 @@ describe("Relay Cursor Connection projections", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                        WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                        WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }

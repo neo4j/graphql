@@ -61,6 +61,15 @@ describe("Unions", () => {
               publicationsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AuthorPublicationsConnectionSort!], where: AuthorPublicationsConnectionWhere): AuthorPublicationsConnection!
             }
 
+            type AuthorAggregate {
+              count: Count!
+              node: AuthorAggregateNode!
+            }
+
+            type AuthorAggregateNode {
+              name: StringAggregateSelection!
+            }
+
             type AuthorAggregateSelection {
               count: Int!
               name: StringAggregateSelection!
@@ -297,6 +306,7 @@ describe("Unions", () => {
             }
 
             type AuthorsConnection {
+              aggregate: AuthorAggregate!
               edges: [AuthorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -304,9 +314,18 @@ describe("Unions", () => {
 
             type Book {
               author(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: AuthorWhere): BookAuthorAuthorAggregationSelection
+              authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: AuthorWhere): BookAuthorAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [BookAuthorConnectionSort!], where: BookAuthorConnectionWhere): BookAuthorConnection!
               title: String!
+            }
+
+            type BookAggregate {
+              count: Count!
+              node: BookAggregateNode!
+            }
+
+            type BookAggregateNode {
+              title: StringAggregateSelection!
             }
 
             type BookAggregateSelection {
@@ -326,6 +345,12 @@ describe("Unions", () => {
               count_LTE: Int
               edge: WroteAggregationWhereInput
               node: BookAuthorNodeAggregationWhereInput
+            }
+
+            type BookAuthorAuthorAggregateSelection {
+              count: CountConnection!
+              edge: BookAuthorAuthorEdgeAggregateSelection
+              node: BookAuthorAuthorNodeAggregateSelection
             }
 
             type BookAuthorAuthorAggregationSelection {
@@ -353,6 +378,7 @@ describe("Unions", () => {
             }
 
             type BookAuthorConnection {
+              aggregate: BookAuthorAuthorAggregateSelection!
               edges: [BookAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -518,9 +544,19 @@ describe("Unions", () => {
             }
 
             type BooksConnection {
+              aggregate: BookAggregate!
               edges: [BookEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateAuthorsMutationResponse {
@@ -563,9 +599,18 @@ describe("Unions", () => {
 
             type Journal {
               author(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: AuthorWhere): JournalAuthorAuthorAggregationSelection
+              authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: AuthorWhere): JournalAuthorAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
               authorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [JournalAuthorConnectionSort!], where: JournalAuthorConnectionWhere): JournalAuthorConnection!
               subject: String!
+            }
+
+            type JournalAggregate {
+              count: Count!
+              node: JournalAggregateNode!
+            }
+
+            type JournalAggregateNode {
+              subject: StringAggregateSelection!
             }
 
             type JournalAggregateSelection {
@@ -585,6 +630,12 @@ describe("Unions", () => {
               count_LTE: Int
               edge: WroteAggregationWhereInput
               node: JournalAuthorNodeAggregationWhereInput
+            }
+
+            type JournalAuthorAuthorAggregateSelection {
+              count: CountConnection!
+              edge: JournalAuthorAuthorEdgeAggregateSelection
+              node: JournalAuthorAuthorNodeAggregateSelection
             }
 
             type JournalAuthorAuthorAggregationSelection {
@@ -612,6 +663,7 @@ describe("Unions", () => {
             }
 
             type JournalAuthorConnection {
+              aggregate: JournalAuthorAuthorAggregateSelection!
               edges: [JournalAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -777,6 +829,7 @@ describe("Unions", () => {
             }
 
             type JournalsConnection {
+              aggregate: JournalAggregate!
               edges: [JournalEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -811,13 +864,13 @@ describe("Unions", () => {
 
             type Query {
               authors(limit: Int, offset: Int, options: AuthorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AuthorSort!], where: AuthorWhere): [Author!]!
-              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection!
+              authorsAggregate(where: AuthorWhere): AuthorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorsConnection\\\\\\" instead\\")
               authorsConnection(after: String, first: Int, sort: [AuthorSort!], where: AuthorWhere): AuthorsConnection!
               books(limit: Int, offset: Int, options: BookOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [BookSort!], where: BookWhere): [Book!]!
-              booksAggregate(where: BookWhere): BookAggregateSelection!
+              booksAggregate(where: BookWhere): BookAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"booksConnection\\\\\\" instead\\")
               booksConnection(after: String, first: Int, sort: [BookSort!], where: BookWhere): BooksConnection!
               journals(limit: Int, offset: Int, options: JournalOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [JournalSort!], where: JournalWhere): [Journal!]!
-              journalsAggregate(where: JournalWhere): JournalAggregateSelection!
+              journalsAggregate(where: JournalWhere): JournalAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"journalsConnection\\\\\\" instead\\")
               journalsConnection(after: String, first: Int, sort: [JournalSort!], where: JournalWhere): JournalsConnection!
               publications(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PublicationWhere): [Publication!]!
             }

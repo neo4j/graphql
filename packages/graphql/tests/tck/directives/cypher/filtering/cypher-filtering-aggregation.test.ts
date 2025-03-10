@@ -130,6 +130,7 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE var1 > $param0
+                WITH this
                 RETURN { min: min(this.released) } AS var2
             }
             RETURN { released: var2 }"

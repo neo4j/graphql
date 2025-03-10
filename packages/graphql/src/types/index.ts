@@ -456,6 +456,7 @@ export type Neo4jFeaturesSettings = {
         connectOrCreate?: boolean;
         idAggregations?: boolean;
         typename_IN?: boolean;
+        deprecatedAggregateOperations?: boolean;
     };
 
     /** Options for disabling automatic escaping of potentially unsafe strings.

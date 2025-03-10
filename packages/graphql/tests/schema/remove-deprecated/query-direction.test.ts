@@ -40,6 +40,15 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -77,7 +86,7 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -111,9 +120,18 @@ describe("Query Direction", () => {
 
             type User {
               friends(directed: Boolean = false @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(directed: Boolean = false @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): UserUserFriendsAggregationSelection
+              friendsAggregate(directed: Boolean = false @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): UserUserFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, directed: Boolean = false @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
+            }
+
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              name: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -170,6 +188,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -266,6 +285,11 @@ describe("Query Direction", () => {
               name_SET: String
             }
 
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
+            }
+
             type UserUserFriendsAggregationSelection {
               count: Int!
               node: UserUserFriendsNodeAggregateSelection
@@ -313,6 +337,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -336,6 +361,15 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -373,7 +407,7 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -407,9 +441,18 @@ describe("Query Direction", () => {
 
             type User {
               friends(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
+              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
+            }
+
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              name: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -466,6 +509,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -562,6 +606,11 @@ describe("Query Direction", () => {
               name_SET: String
             }
 
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
+            }
+
             type UserUserFriendsAggregationSelection {
               count: Int!
               node: UserUserFriendsNodeAggregateSelection
@@ -609,6 +658,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -632,6 +682,15 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -669,7 +728,7 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -703,9 +762,18 @@ describe("Query Direction", () => {
 
             type User {
               friends(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
+              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"friendsConnection\\\\\\" instead\\")
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
+            }
+
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
+              name: StringAggregateSelection!
             }
 
             type UserAggregateSelection {
@@ -762,6 +830,7 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -858,6 +927,11 @@ describe("Query Direction", () => {
               name_SET: String
             }
 
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
+              node: UserUserFriendsNodeAggregateSelection
+            }
+
             type UserUserFriendsAggregationSelection {
               count: Int!
               node: UserUserFriendsNodeAggregateSelection
@@ -905,6 +979,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

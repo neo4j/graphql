@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
@@ -33,6 +33,7 @@ import { getConcreteEntities } from "../../utils/get-concrete-entities";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import type { QueryASTFactory } from "../QueryASTFactory";
+import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
 
 export class AggregateFactory {
     private queryASTFactory: QueryASTFactory;
@@ -42,11 +43,19 @@ export class AggregateFactory {
     }
 
     // TODO: dupe from read operation
-    public createAggregationOperation(
-        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
-    ): AggregationOperation | CompositeAggregationOperation {
+    public createAggregationOperation({
+        entityOrRel,
+        resolveTree,
+        context,
+        extraWhereArgs = {},
+        isInConnection = false,
+    }: {
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        extraWhereArgs?: Record<string, any>;
+        isInConnection?: boolean;
+    }): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
             entity = entityOrRel.target as ConcreteEntityAdapter; // TODO: check this seems wrong but outside of the scope of this PR
@@ -54,10 +63,14 @@ export class AggregateFactory {
             entity = entityOrRel;
         }
 
-        const resolveTreeWhere = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
+        const resolveTreeWhere = {
+            ...this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree),
+            ...extraWhereArgs,
+        };
 
         if (entityOrRel instanceof RelationshipAdapter) {
             if (isConcreteEntity(entity)) {
+                // RELATIONSHIP WITH CONCRETE TARGET
                 checkEntityAuthentication({
                     entity: entity.entity,
                     targetOperations: ["AGGREGATE"],
@@ -74,7 +87,6 @@ export class AggregateFactory {
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
                 });
-
                 return this.hydrateAggregationOperation({
                     relationship: entityOrRel,
                     operation,
@@ -82,8 +94,10 @@ export class AggregateFactory {
                     resolveTree,
                     context,
                     whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: !isInConnection,
                 });
             } else {
+                // RELATIONSHIP WITH INTERFACE TARGET
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
 
                 const parsedProjectionFields = this.getAggregationParsedProjectionFields(entityOrRel, resolveTree);
@@ -128,12 +142,14 @@ export class AggregateFactory {
                     context,
                     operation: compositeAggregationOp,
                     whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: !isInConnection,
                 });
 
                 return compositeAggregationOp;
             }
         } else {
             if (isConcreteEntity(entity)) {
+                // TOP LEVEL CONCRETE
                 let selection: EntitySelection;
                 // NOTE: If we introduce vector index aggregation, checking the phrase will cause a problem
                 if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
@@ -151,32 +167,14 @@ export class AggregateFactory {
                     selection,
                 });
 
-                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
-
-                const fields = this.queryASTFactory.fieldFactory.createAggregationFields(
+                return this.hydrateAggregationOperation({
+                    operation,
                     entity,
-                    parsedProjectionFields.fields
-                );
-
-                operation.setFields(fields);
-
-                const whereArgs = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
-                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-                    entity,
-                    operations: ["AGGREGATE"],
-                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
-                        entity,
-                        parsedProjectionFields.fields
-                    ),
+                    resolveTree,
                     context,
+                    whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: !isInConnection,
                 });
-
-                const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs); // Aggregation filters only apply to target node
-
-                operation.addFilters(...filters);
-                operation.addAuthFilters(...authFilters);
-
-                return operation;
             } else {
                 // TOP level interface/union
                 const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
@@ -215,6 +213,7 @@ export class AggregateFactory {
                     context,
                     operation: compositeAggregationOp,
                     whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: !isInConnection,
                 });
             }
         }
@@ -228,10 +227,23 @@ export class AggregateFactory {
         edge: ResolveTree | undefined;
         fields: Record<string, ResolveTree>;
     } {
-        const rawProjectionFields = {
-            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
-        };
+        let nodeFields: Record<string, ResolveTree> = {};
+        if (adapter instanceof ConcreteEntityAdapter) {
+            nodeFields = {
+                ...(resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.node] ?? {}),
+                ...(resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.connection] ?? {}),
+            };
+        }
+        if (adapter instanceof RelationshipAdapter) {
+            nodeFields = resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename("node")] ?? {};
+        }
 
+        const rawProjectionFields = {
+            // Handle deprecated aggregations
+            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
+            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregateFieldTypename()],
+            ...nodeFields,
+        };
         return this.queryASTFactory.operationsFactory.splitConnectionFields(rawProjectionFields);
     }
 
@@ -242,6 +254,7 @@ export class AggregateFactory {
         resolveTree,
         context,
         whereArgs,
+        deprecatedAttributes,
     }: {
         relationship?: RelationshipAdapter;
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
@@ -249,6 +262,7 @@ export class AggregateFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
+        deprecatedAttributes: boolean;
     }): T {
         if (relationship) {
             const parsedProjectionFields = this.getAggregationParsedProjectionFields(relationship, resolveTree);
@@ -267,10 +281,19 @@ export class AggregateFactory {
 
             const fields = this.queryASTFactory.fieldFactory.createAggregationFields(
                 entity,
-                parsedProjectionFields.fields
+                parsedProjectionFields.fields,
+                deprecatedAttributes
             );
-            const nodeFields = this.queryASTFactory.fieldFactory.createAggregationFields(entity, nodeRawFields);
-            const edgeFields = this.queryASTFactory.fieldFactory.createAggregationFields(relationship, edgeRawFields);
+            const nodeFields = this.queryASTFactory.fieldFactory.createAggregationFields(
+                entity,
+                nodeRawFields,
+                deprecatedAttributes
+            );
+            const edgeFields = this.queryASTFactory.fieldFactory.createAggregationFields(
+                relationship,
+                edgeRawFields,
+                deprecatedAttributes
+            );
             if (isInterfaceEntity(entity)) {
                 const filters = this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
                     entity,
@@ -299,9 +322,43 @@ export class AggregateFactory {
         } else {
             const rawProjectionFields = {
                 ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.selection],
+                ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.node], // Handles both, deprecated and new aggregation parsing
             };
 
-            const fields = this.queryASTFactory.fieldFactory.createAggregationFields(entity, rawProjectionFields);
+            const fields = this.queryASTFactory.fieldFactory.createAggregationFields(
+                entity,
+                rawProjectionFields,
+                deprecatedAttributes
+            );
+            // TOP Level aggregate in connection
+            const connectionFields = {
+                // TOP level connection fields
+                ...resolveTree.fieldsByTypeName[entity.operations.aggregateTypeNames.connection],
+            };
+
+            const nodeResolveTree = findFieldsByNameInFieldsByTypeNameField(connectionFields, "node")[0];
+            const nodeRawFields = {
+                ...nodeResolveTree?.fieldsByTypeName[entity.operations.aggregateTypeNames.node],
+            };
+
+            const nodeFields = this.queryASTFactory.fieldFactory.createAggregationFields(
+                entity,
+                nodeRawFields,
+                deprecatedAttributes
+            );
+            operation.setNodeFields(nodeFields);
+            const countResolveTree = findFieldsByNameInFieldsByTypeNameField(connectionFields, "count")[0];
+
+            if (countResolveTree) {
+                const connetionTopFields = this.queryASTFactory.fieldFactory.createAggregationFields(
+                    entity,
+                    {
+                        count: countResolveTree,
+                    },
+                    deprecatedAttributes
+                );
+                fields.push(...connetionTopFields);
+            }
 
             if (isInterfaceEntity(entity)) {
                 const filters = this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
@@ -316,6 +373,10 @@ export class AggregateFactory {
                     entity,
                     operations: ["AGGREGATE"],
                     context,
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, {
+                        ...nodeRawFields,
+                        ...rawProjectionFields,
+                    }),
                 });
 
                 operation.addAuthFilters(...authFilters);

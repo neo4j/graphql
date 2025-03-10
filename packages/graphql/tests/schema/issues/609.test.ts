@@ -38,6 +38,10 @@ describe("609", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateDeprecatedsMutationResponse {
               deprecateds: [Deprecated!]!
               info: CreateInfo!
@@ -61,6 +65,15 @@ describe("609", () => {
 
             type Deprecated {
               deprecatedField: String @deprecated
+            }
+
+            type DeprecatedAggregate {
+              count: Count!
+              node: DeprecatedAggregateNode!
+            }
+
+            type DeprecatedAggregateNode {
+              deprecatedField: StringAggregateSelection!
             }
 
             type DeprecatedAggregateSelection {
@@ -111,6 +124,7 @@ describe("609", () => {
             }
 
             type DeprecatedsConnection {
+              aggregate: DeprecatedAggregate!
               edges: [DeprecatedEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -132,7 +146,7 @@ describe("609", () => {
 
             type Query {
               deprecateds(limit: Int, offset: Int, options: DeprecatedOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [DeprecatedSort!], where: DeprecatedWhere): [Deprecated!]!
-              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
+              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"deprecatedsConnection\\\\\\" instead\\")
               deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort!], where: DeprecatedWhere): DeprecatedsConnection!
             }
 

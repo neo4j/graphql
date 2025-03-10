@@ -146,6 +146,7 @@ describe("typename_IN", () => {
         });
     });
 
+    // TODO: unrelated issue, to be fixed separately
     test("aggregation", async () => {
         const query = `
         {

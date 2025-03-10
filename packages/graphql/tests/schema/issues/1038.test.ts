@@ -49,6 +49,16 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code: String
             }
 
+            type AWSAccountAggregate {
+              count: Count!
+              node: AWSAccountAggregateNode!
+            }
+
+            type AWSAccountAggregateNode {
+              accountName: StringAggregateSelection!
+              code: StringAggregateSelection!
+            }
+
             type AWSAccountAggregateSelection {
               accountName: StringAggregateSelection!
               code: StringAggregateSelection!
@@ -108,9 +118,14 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type AwsAccountsConnection {
+              aggregate: AWSAccountAggregate!
               edges: [AWSAccountEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateAwsAccountsMutationResponse {
@@ -134,6 +149,16 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             type DNSZone {
               awsId: String
               zoneType: String
+            }
+
+            type DNSZoneAggregate {
+              count: Count!
+              node: DNSZoneAggregateNode!
+            }
+
+            type DNSZoneAggregateNode {
+              awsId: StringAggregateSelection!
+              zoneType: StringAggregateSelection!
             }
 
             type DNSZoneAggregateSelection {
@@ -203,6 +228,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type DnsZonesConnection {
+              aggregate: DNSZoneAggregate!
               edges: [DNSZoneEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -227,10 +253,10 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             type Query {
               awsAccounts(limit: Int, offset: Int, options: AWSAccountOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AWSAccountSort!], where: AWSAccountWhere): [AWSAccount!]!
-              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
+              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"awsAccountsConnection\\\\\\" instead\\")
               awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): AwsAccountsConnection!
               dnsZones(limit: Int, offset: Int, options: DNSZoneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [DNSZoneSort!], where: DNSZoneWhere): [DNSZone!]!
-              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
+              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"dnsZonesConnection\\\\\\" instead\\")
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): DnsZonesConnection!
             }
 

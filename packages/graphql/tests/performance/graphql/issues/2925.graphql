@@ -5,7 +5,7 @@ query SingleRelationshipFilter {
 }
 
 query NestedSingleRelationshipFilter {
-    people(where: { movies: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
+    people(where: { movies_SOME: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
         name
     }
 }
@@ -17,7 +17,7 @@ query SingleRelationshipRequiredFilter {
 }
 
 query NestedSingleRelationshipRequiredFilter {
-    personClones(where: { movies: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
+    personClones(where: { movies_SOME: { favouriteActor: { name_IN: ["Tom Hanks"] } } }) {
         name
     }
 }

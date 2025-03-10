@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import { upperFirst } from "../../../utils/upper-first";
 import { isUnionEntity } from "../../../translate/queryAST/utils/is-union-entity";
-import type { RelationshipDeclarationAdapter } from "./RelationshipDeclarationAdapter";
+import { upperFirst } from "../../../utils/upper-first";
+import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "./RelationshipAdapter";
+import type { RelationshipDeclarationAdapter } from "./RelationshipDeclarationAdapter";
 
 export abstract class RelationshipBaseOperations<T extends RelationshipAdapter | RelationshipDeclarationAdapter> {
     protected constructor(protected readonly relationship: T) {}
@@ -39,13 +39,23 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
 
     protected abstract get edgePrefix(): string;
 
-    /**Note: Required for now to infer the types without ResolveTree */
+    /**Note: Required for now to infer the types without ResolveTree
+     * @deprecated use getAggregateFieldTypename
+     *
+     */
     public getAggregationFieldTypename(nestedField?: "node" | "edge"): string {
         const nestedFieldStr = upperFirst(nestedField || "");
         const aggregationStr = nestedField ? "Aggregate" : "Aggregation";
         return `${this.relationship.source.name}${this.relationship.target.name}${upperFirst(
             this.relationship.name
         )}${nestedFieldStr}${aggregationStr}Selection`;
+    }
+
+    public getAggregateFieldTypename(nestedField?: "node" | "edge"): string {
+        const nestedFieldStr = upperFirst(nestedField || "");
+        return `${this.relationship.source.name}${this.relationship.target.name}${upperFirst(
+            this.relationship.name
+        )}${nestedFieldStr}AggregateSelection`;
     }
 
     public getTargetTypePrettyName(): string {

@@ -33,6 +33,8 @@ export type RootTypeFieldNames = {
 type AggregateTypeNames = {
     selection: string;
     input: string;
+    connection: string;
+    node: string;
 };
 
 type MutationResponseTypeNames = {
@@ -142,7 +144,12 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return `${this.entityAdapter.name}ImplementationsSubscriptionWhere`;
     }
 
+    /** @deprecated use `getAggregateFieldTypename` instead */
     public getAggregationFieldTypename(): string {
+        return this.aggregateTypeNames.selection;
+    }
+
+    public getAggregateFieldTypename(): string {
         return this.aggregateTypeNames.selection;
     }
 
@@ -161,6 +168,8 @@ export class ImplementingEntityOperations<T extends InterfaceEntityAdapter | Con
         return {
             selection: `${this.entityAdapter.name}AggregateSelection`,
             input: `${this.entityAdapter.name}AggregateSelectionInput`,
+            connection: `${this.entityAdapter.name}Aggregate`,
+            node: `${this.entityAdapter.name}AggregateNode`,
         };
     }
 

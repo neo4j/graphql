@@ -81,6 +81,15 @@ export class FieldAggregationComposer {
             );
         }
 
+        this.composer.createObjectTC({
+            name: relationshipAdapter.operations.getAggregateFieldTypename(),
+            fields: {
+                count: this.aggregationTypesMapper.getCountConnectionType().NonNull,
+                ...(aggregateSelectionNode ? { node: aggregateSelectionNode } : {}),
+                ...(aggregateSelectionEdge ? { edge: aggregateSelectionEdge } : {}),
+            },
+        });
+
         return this.composer.createObjectTC({
             name: relationshipAdapter.operations.getAggregationFieldTypename(),
             fields: {
