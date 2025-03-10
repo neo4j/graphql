@@ -34,7 +34,7 @@ describe("@filterable directive", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie @node {
+                type Movie @subscription @node {
                     title: String @filterable
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -103,7 +103,7 @@ describe("@filterable directive", () => {
                     movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                 }
 
-                type Movie @node {
+                type Movie @subscription @node {
                     title: String @filterable(byValue: true, byAggregate: true)
                     actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
@@ -890,7 +890,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -921,20 +920,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -944,11 +931,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -1069,37 +1051,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -1177,14 +1134,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -1371,20 +1320,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -1394,10 +1331,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -1418,29 +1351,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -1546,15 +1460,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -1604,7 +1509,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -1635,20 +1539,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -1658,11 +1550,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -1806,37 +1693,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -1914,14 +1776,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -2108,20 +1962,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -2131,10 +1973,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -2155,29 +1993,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -2283,15 +2102,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -2341,7 +2151,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -2372,20 +2181,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -2395,11 +2192,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -2543,37 +2335,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -2651,14 +2418,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -2845,20 +2604,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -2868,10 +2615,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -2896,13 +2639,6 @@ describe("@filterable directive", () => {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -3002,15 +2738,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated: MovieCreatedEvent!
-                      movieDeleted: MovieDeletedEvent!
-                      movieUpdated: MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -3063,7 +2790,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -3094,20 +2820,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -3117,11 +2831,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -3265,37 +2974,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -3373,14 +3057,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -3516,20 +3192,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -3539,10 +3203,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -3563,29 +3223,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -3690,15 +3331,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -3750,7 +3382,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -3781,20 +3412,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -3804,11 +3423,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -3952,37 +3566,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -4060,14 +3649,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -4254,20 +3835,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -4277,10 +3846,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -4301,29 +3866,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -4429,15 +3975,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -4489,7 +4026,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -4520,20 +4056,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -4543,11 +4067,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -4680,37 +4199,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -4788,14 +4282,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -4963,20 +4449,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -4986,10 +4460,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -5010,29 +4480,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -5114,15 +4565,6 @@ describe("@filterable directive", () => {
                       set: String
                     }
 
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-                    }
-
                     type UpdateActorsMutationResponse {
                       actors: [Actor!]!
                       info: UpdateInfo!
@@ -5172,7 +4614,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -5203,20 +4644,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -5226,11 +4655,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -5374,37 +4798,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -5482,14 +4881,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -5625,20 +5016,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -5648,10 +5027,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -5672,29 +5047,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -5799,15 +5155,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -5864,7 +5211,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor implements Person {
@@ -5887,30 +5233,13 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -6043,37 +5372,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -6151,14 +5455,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -6281,20 +5577,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -6304,10 +5588,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -6337,29 +5617,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -6537,15 +5798,6 @@ describe("@filterable directive", () => {
                       set: String
                     }
 
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-                    }
-
                     type UpdateActorsMutationResponse {
                       actors: [Actor!]!
                       info: UpdateInfo!
@@ -6600,7 +5852,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor implements Person {
@@ -6623,30 +5874,13 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -6779,37 +6013,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -6887,14 +6096,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -7052,20 +6253,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -7075,10 +6264,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -7108,29 +6293,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -7309,15 +6475,6 @@ describe("@filterable directive", () => {
                       set: String
                     }
 
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-                    }
-
                     type UpdateActorsMutationResponse {
                       actors: [Actor!]!
                       info: UpdateInfo!
@@ -7372,7 +6529,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor implements Person {
@@ -7395,30 +6551,13 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -7551,37 +6690,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -7659,14 +6773,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -7789,20 +6895,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: [MovieActorsDeleteFieldInput!]
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -7812,10 +6906,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     type MoviePersonActorsAggregationSelection {
@@ -7845,29 +6935,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: [MovieActorsUpdateFieldInput!]
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -8043,15 +7114,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -8112,7 +7174,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -8143,20 +7204,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -8166,11 +7215,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -8303,37 +7347,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -8415,20 +7434,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type AppearanceCreatedEvent {
-                      createdAppearance: AppearanceEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input AppearanceDeleteInput {
                       movies: [AppearanceMoviesDeleteFieldInput!]
-                    }
-
-                    type AppearanceDeletedEvent {
-                      deletedAppearance: AppearanceEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input AppearanceDisconnectInput {
@@ -8438,11 +7445,6 @@ describe("@filterable directive", () => {
                     type AppearanceEdge {
                       cursor: String!
                       node: Appearance!
-                    }
-
-                    type AppearanceEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type AppearanceMovieMoviesAggregationSelection {
@@ -8575,37 +7577,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input AppearanceSubscriptionWhere {
-                      AND: [AppearanceSubscriptionWhere!]
-                      NOT: AppearanceSubscriptionWhere
-                      OR: [AppearanceSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type AppearanceUpdatedEvent {
-                      event: EventType!
-                      previousState: AppearanceEventPayload!
-                      timestamp: Float!
-                      updatedAppearance: AppearanceEventPayload!
                     }
 
                     input AppearanceWhere {
@@ -8688,14 +7665,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -8890,20 +7859,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: MovieActorsDeleteInput
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -8913,10 +7870,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -8937,29 +7890,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -9089,18 +8023,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      appearanceCreated(where: AppearanceSubscriptionWhere): AppearanceCreatedEvent!
-                      appearanceDeleted(where: AppearanceSubscriptionWhere): AppearanceDeletedEvent!
-                      appearanceUpdated(where: AppearanceSubscriptionWhere): AppearanceUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -9166,7 +8088,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -9197,20 +8118,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -9220,11 +8129,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -9357,37 +8261,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -9469,20 +8348,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type AppearanceCreatedEvent {
-                      createdAppearance: AppearanceEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input AppearanceDeleteInput {
                       movies: [AppearanceMoviesDeleteFieldInput!]
-                    }
-
-                    type AppearanceDeletedEvent {
-                      deletedAppearance: AppearanceEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input AppearanceDisconnectInput {
@@ -9492,11 +8359,6 @@ describe("@filterable directive", () => {
                     type AppearanceEdge {
                       cursor: String!
                       node: Appearance!
-                    }
-
-                    type AppearanceEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type AppearanceMovieMoviesAggregationSelection {
@@ -9629,37 +8491,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input AppearanceSubscriptionWhere {
-                      AND: [AppearanceSubscriptionWhere!]
-                      NOT: AppearanceSubscriptionWhere
-                      OR: [AppearanceSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type AppearanceUpdatedEvent {
-                      event: EventType!
-                      previousState: AppearanceEventPayload!
-                      timestamp: Float!
-                      updatedAppearance: AppearanceEventPayload!
                     }
 
                     input AppearanceWhere {
@@ -9742,14 +8579,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -9944,20 +8773,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: MovieActorsDeleteInput
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -9967,10 +8784,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -9991,29 +8804,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -10143,18 +8937,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      appearanceCreated(where: AppearanceSubscriptionWhere): AppearanceCreatedEvent!
-                      appearanceDeleted(where: AppearanceSubscriptionWhere): AppearanceDeletedEvent!
-                      appearanceUpdated(where: AppearanceSubscriptionWhere): AppearanceUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {
@@ -10220,7 +9002,6 @@ describe("@filterable directive", () => {
                     "schema {
                       query: Query
                       mutation: Mutation
-                      subscription: Subscription
                     }
 
                     type Actor {
@@ -10251,20 +9032,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type ActorCreatedEvent {
-                      createdActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input ActorDeleteInput {
                       movies: [ActorMoviesDeleteFieldInput!]
-                    }
-
-                    type ActorDeletedEvent {
-                      deletedActor: ActorEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input ActorDisconnectInput {
@@ -10274,11 +9043,6 @@ describe("@filterable directive", () => {
                     type ActorEdge {
                       cursor: String!
                       node: Actor!
-                    }
-
-                    type ActorEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type ActorMovieMoviesAggregationSelection {
@@ -10411,37 +9175,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input ActorSubscriptionWhere {
-                      AND: [ActorSubscriptionWhere!]
-                      NOT: ActorSubscriptionWhere
-                      OR: [ActorSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input ActorUpdateInput {
                       movies: [ActorMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type ActorUpdatedEvent {
-                      event: EventType!
-                      previousState: ActorEventPayload!
-                      timestamp: Float!
-                      updatedActor: ActorEventPayload!
                     }
 
                     input ActorWhere {
@@ -10523,20 +9262,8 @@ describe("@filterable directive", () => {
                       username: String!
                     }
 
-                    type AppearanceCreatedEvent {
-                      createdAppearance: AppearanceEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input AppearanceDeleteInput {
                       movies: [AppearanceMoviesDeleteFieldInput!]
-                    }
-
-                    type AppearanceDeletedEvent {
-                      deletedAppearance: AppearanceEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input AppearanceDisconnectInput {
@@ -10546,11 +9273,6 @@ describe("@filterable directive", () => {
                     type AppearanceEdge {
                       cursor: String!
                       node: Appearance!
-                    }
-
-                    type AppearanceEventPayload {
-                      password: String!
-                      username: String!
                     }
 
                     type AppearanceMovieMoviesAggregationSelection {
@@ -10683,37 +9405,12 @@ describe("@filterable directive", () => {
                       username: SortDirection
                     }
 
-                    input AppearanceSubscriptionWhere {
-                      AND: [AppearanceSubscriptionWhere!]
-                      NOT: AppearanceSubscriptionWhere
-                      OR: [AppearanceSubscriptionWhere!]
-                      password: StringScalarFilters
-                      password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
-                      password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
-                      password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
-                      password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
-                      password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
-                      username: StringScalarFilters
-                      username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
-                      username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
-                      username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
-                      username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
-                      username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
-                    }
-
                     input AppearanceUpdateInput {
                       movies: [AppearanceMoviesUpdateFieldInput!]
                       password: StringScalarMutations
                       password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
                       username: StringScalarMutations
                       username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
-                    }
-
-                    type AppearanceUpdatedEvent {
-                      event: EventType!
-                      previousState: AppearanceEventPayload!
-                      timestamp: Float!
-                      updatedAppearance: AppearanceEventPayload!
                     }
 
                     input AppearanceWhere {
@@ -10796,14 +9493,6 @@ describe("@filterable directive", () => {
                     type DeleteInfo {
                       nodesDeleted: Int!
                       relationshipsDeleted: Int!
-                    }
-
-                    enum EventType {
-                      CREATE
-                      CREATE_RELATIONSHIP
-                      DELETE
-                      DELETE_RELATIONSHIP
-                      UPDATE
                     }
 
                     \\"\\"\\"Float filters\\"\\"\\"
@@ -10998,20 +9687,8 @@ describe("@filterable directive", () => {
                       title: String
                     }
 
-                    type MovieCreatedEvent {
-                      createdMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
-                    }
-
                     input MovieDeleteInput {
                       actors: MovieActorsDeleteInput
-                    }
-
-                    type MovieDeletedEvent {
-                      deletedMovie: MovieEventPayload!
-                      event: EventType!
-                      timestamp: Float!
                     }
 
                     input MovieDisconnectInput {
@@ -11021,10 +9698,6 @@ describe("@filterable directive", () => {
                     type MovieEdge {
                       cursor: String!
                       node: Movie!
-                    }
-
-                    type MovieEventPayload {
-                      title: String
                     }
 
                     input MovieRelationshipFilters {
@@ -11045,29 +9718,10 @@ describe("@filterable directive", () => {
                       title: SortDirection
                     }
 
-                    input MovieSubscriptionWhere {
-                      AND: [MovieSubscriptionWhere!]
-                      NOT: MovieSubscriptionWhere
-                      OR: [MovieSubscriptionWhere!]
-                      title: StringScalarFilters
-                      title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
-                      title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
-                      title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
-                      title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
-                      title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
-                    }
-
                     input MovieUpdateInput {
                       actors: MovieActorsUpdateInput
                       title: StringScalarMutations
                       title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
-                    }
-
-                    type MovieUpdatedEvent {
-                      event: EventType!
-                      previousState: MovieEventPayload!
-                      timestamp: Float!
-                      updatedMovie: MovieEventPayload!
                     }
 
                     input MovieWhere {
@@ -11197,18 +9851,6 @@ describe("@filterable directive", () => {
                     \\"\\"\\"String mutations\\"\\"\\"
                     input StringScalarMutations {
                       set: String
-                    }
-
-                    type Subscription {
-                      actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-                      actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-                      actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-                      appearanceCreated(where: AppearanceSubscriptionWhere): AppearanceCreatedEvent!
-                      appearanceDeleted(where: AppearanceSubscriptionWhere): AppearanceDeletedEvent!
-                      appearanceUpdated(where: AppearanceSubscriptionWhere): AppearanceUpdatedEvent!
-                      movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-                      movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-                      movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
                     }
 
                     type UpdateActorsMutationResponse {

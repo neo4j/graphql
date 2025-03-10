@@ -50,7 +50,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
@@ -70,25 +69,9 @@ describe("Subscriptions", () => {
               name: String!
             }
 
-            type ActorCreatedEvent {
-              createdActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type ActorDeletedEvent {
-              deletedActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorEventPayload {
-              name: String!
             }
 
             input ActorRelationshipFilters {
@@ -109,28 +92,9 @@ describe("Subscriptions", () => {
               name: SortDirection
             }
 
-            input ActorSubscriptionWhere {
-              AND: [ActorSubscriptionWhere!]
-              NOT: ActorSubscriptionWhere
-              OR: [ActorSubscriptionWhere!]
-              name: StringScalarFilters
-              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
-              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
-              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-            }
-
             input ActorUpdateInput {
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
-            }
-
-            type ActorUpdatedEvent {
-              event: EventType!
-              previousState: ActorEventPayload!
-              timestamp: Float!
-              updatedActor: ActorEventPayload!
             }
 
             input ActorWhere {
@@ -185,14 +149,6 @@ describe("Subscriptions", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type FloatAggregateSelection {
@@ -402,32 +358,13 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
             }
 
             \\"\\"\\"
@@ -438,34 +375,6 @@ describe("Subscriptions", () => {
               averageRating: SortDirection
               id: SortDirection
               isActive: SortDirection
-            }
-
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: IntScalarFilters
-              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
-              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
-              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
-              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
-              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
-              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
-              id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              isActive: BooleanScalarFilters
-              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             input MovieUpdateInput {
@@ -484,13 +393,6 @@ describe("Subscriptions", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
               isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -614,15 +516,6 @@ describe("Subscriptions", () => {
               set: String
             }
 
-            type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-            }
-
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -673,7 +566,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
@@ -698,18 +590,8 @@ describe("Subscriptions", () => {
               movies: ActorMoviesFieldInput
             }
 
-            type ActorCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorDeleteInput {
               movies: [ActorMoviesDeleteFieldInput!]
-            }
-
-            type ActorDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input ActorDisconnectInput {
@@ -885,11 +767,6 @@ describe("Subscriptions", () => {
               movies: [ActorMoviesUpdateFieldInput!]
             }
 
-            type ActorUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
@@ -963,14 +840,6 @@ describe("Subscriptions", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type FloatAggregateSelection {
@@ -1175,20 +1044,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -1198,13 +1055,6 @@ describe("Subscriptions", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
             }
 
             input MovieRelationshipFilters {
@@ -1228,34 +1078,6 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: IntScalarFilters
-              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
-              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
-              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
-              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
-              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
-              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
-              id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              isActive: BooleanScalarFilters
-              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
-            }
-
             input MovieUpdateInput {
               actorCount: IntScalarMutations
               actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
@@ -1272,13 +1094,6 @@ describe("Subscriptions", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
               isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -1376,15 +1191,6 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type Subscription {
-              actorCreated: ActorCreatedEvent!
-              actorDeleted: ActorDeletedEvent!
-              actorUpdated: ActorUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-            }
-
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -1440,7 +1246,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             union Actor = Person | Star
@@ -1500,14 +1305,6 @@ describe("Subscriptions", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type FloatAggregateSelection {
@@ -1769,20 +1566,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: MovieActorsDeleteInput
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -1792,13 +1577,6 @@ describe("Subscriptions", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
             }
 
             input MovieRelationshipFilters {
@@ -1822,34 +1600,6 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: IntScalarFilters
-              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
-              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
-              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
-              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
-              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
-              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
-              id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              isActive: BooleanScalarFilters
-              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
-            }
-
             input MovieUpdateInput {
               actorCount: IntScalarMutations
               actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
@@ -1866,13 +1616,6 @@ describe("Subscriptions", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
               isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -1983,18 +1726,8 @@ describe("Subscriptions", () => {
               movies: PersonMoviesFieldInput
             }
 
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonDeleteInput {
               movies: [PersonMoviesDeleteFieldInput!]
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonDisconnectInput {
@@ -2159,11 +1892,6 @@ describe("Subscriptions", () => {
               movies: [PersonMoviesUpdateFieldInput!]
             }
 
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonWhere {
               AND: [PersonWhere!]
               NOT: PersonWhere
@@ -2240,18 +1968,8 @@ describe("Subscriptions", () => {
               movies: StarMoviesFieldInput
             }
 
-            type StarCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input StarDeleteInput {
               movies: [StarMoviesDeleteFieldInput!]
-            }
-
-            type StarDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input StarDisconnectInput {
@@ -2416,11 +2134,6 @@ describe("Subscriptions", () => {
               movies: [StarMoviesUpdateFieldInput!]
             }
 
-            type StarUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input StarWhere {
               AND: [StarWhere!]
               NOT: StarWhere
@@ -2458,18 +2171,6 @@ describe("Subscriptions", () => {
               edges: [StarEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            type Subscription {
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
-              starCreated: StarCreatedEvent!
-              starDeleted: StarDeletedEvent!
-              starUpdated: StarUpdatedEvent!
             }
 
             \\"\\"\\"
@@ -2531,7 +2232,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             \\"\\"\\"
@@ -2619,18 +2319,8 @@ describe("Subscriptions", () => {
               movies: ActorMoviesFieldInput
             }
 
-            type ActorCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorDeleteInput {
               movies: [ActorMoviesDeleteFieldInput!]
-            }
-
-            type ActorDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input ActorDisconnectInput {
@@ -2806,11 +2496,6 @@ describe("Subscriptions", () => {
               movies: [ActorMoviesUpdateFieldInput!]
             }
 
-            type ActorUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
@@ -2884,14 +2569,6 @@ describe("Subscriptions", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type FloatAggregateSelection {
@@ -3111,20 +2788,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -3134,13 +2799,6 @@ describe("Subscriptions", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
             }
 
             input MovieRelationshipFilters {
@@ -3164,34 +2822,6 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: IntScalarFilters
-              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
-              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
-              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
-              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
-              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
-              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
-              id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              isActive: BooleanScalarFilters
-              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
-            }
-
             input MovieUpdateInput {
               actorCount: IntScalarMutations
               actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
@@ -3208,13 +2838,6 @@ describe("Subscriptions", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
               isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -3312,15 +2935,6 @@ describe("Subscriptions", () => {
               DESC
             }
 
-            type Subscription {
-              actorCreated: ActorCreatedEvent!
-              actorDeleted: ActorDeletedEvent!
-              actorUpdated: ActorUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-            }
-
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -3369,7 +2983,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
@@ -3389,25 +3002,9 @@ describe("Subscriptions", () => {
               name: String!
             }
 
-            type ActorCreatedEvent {
-              createdActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type ActorDeletedEvent {
-              deletedActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            type ActorEventPayload {
-              name: String!
             }
 
             input ActorRelationshipFilters {
@@ -3428,28 +3025,9 @@ describe("Subscriptions", () => {
               name: SortDirection
             }
 
-            input ActorSubscriptionWhere {
-              AND: [ActorSubscriptionWhere!]
-              NOT: ActorSubscriptionWhere
-              OR: [ActorSubscriptionWhere!]
-              name: StringScalarFilters
-              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
-              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
-              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
-              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
-              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
-            }
-
             input ActorUpdateInput {
               name: StringScalarMutations
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
-            }
-
-            type ActorUpdatedEvent {
-              event: EventType!
-              previousState: ActorEventPayload!
-              timestamp: Float!
-              updatedActor: ActorEventPayload!
             }
 
             input ActorWhere {
@@ -3504,14 +3082,6 @@ describe("Subscriptions", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type FloatAggregateSelection {
@@ -3879,12 +3449,6 @@ describe("Subscriptions", () => {
               set: String
             }
 
-            type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-            }
-
             type UpdateActorsMutationResponse {
               actors: [Actor!]!
               info: UpdateInfo!
@@ -3940,7 +3504,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             union Actor = Person | Star
@@ -4000,14 +3563,6 @@ describe("Subscriptions", () => {
             type DeleteInfo {
               nodesDeleted: Int!
               relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
             }
 
             type FloatAggregateSelection {
@@ -4269,20 +3824,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: MovieActorsDeleteInput
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -4292,13 +3835,6 @@ describe("Subscriptions", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
             }
 
             input MovieRelationshipFilters {
@@ -4322,34 +3858,6 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: IntScalarFilters
-              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
-              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
-              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
-              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
-              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
-              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
-              averageRating: FloatScalarFilters
-              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
-              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
-              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
-              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
-              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
-              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
-              id: IDScalarFilters
-              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
-              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
-              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
-              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
-              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
-              isActive: BooleanScalarFilters
-              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
-            }
-
             input MovieUpdateInput {
               actorCount: IntScalarMutations
               actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
@@ -4366,13 +3874,6 @@ describe("Subscriptions", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               isActive: BooleanScalarMutations
               isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
             }
 
             input MovieWhere {
@@ -4483,18 +3984,8 @@ describe("Subscriptions", () => {
               movies: PersonMoviesFieldInput
             }
 
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonDeleteInput {
               movies: [PersonMoviesDeleteFieldInput!]
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonDisconnectInput {
@@ -4657,11 +4148,6 @@ describe("Subscriptions", () => {
 
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
-            }
-
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonWhere {
@@ -4943,15 +4429,6 @@ describe("Subscriptions", () => {
               edges: [StarEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            type Subscription {
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
             }
 
             \\"\\"\\"

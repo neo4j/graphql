@@ -46,7 +46,7 @@ describe("Subscription authentication roles", () => {
             roles: [String!]!
         }
         
-        type ${typeMovie} @node {
+        type ${typeMovie} @node @subscription {
             title: String!
         }
     
