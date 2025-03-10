@@ -23,6 +23,7 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { caseWhere } from "../utils/case-where";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
+import { buildClause } from "./utils/build-clause";
 import { getRelationshipDirection } from "./utils/get-relationship-direction";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
@@ -135,7 +136,7 @@ function createDeleteAndParams({
                                     aggregationWhere = true;
                                 }
                             }
-                        } catch (err) {
+                        } catch (_err) {
                             innerStrs.push(" \n}");
                             return;
                         }
@@ -173,7 +174,10 @@ function createDeleteAndParams({
                                 new Cypher.NamedVariable(variableName),
                             ];
                             const caseWhereClause = caseWhere(new Cypher.Raw(predicate), columns);
-                            const { cypher } = caseWhereClause.build({ prefix: "aggregateWhereFilter" });
+                            const { cypher } = buildClause(caseWhereClause, {
+                                context,
+                                prefix: "aggregateWhereFilter",
+                            });
                             innerStrs.push(cypher);
                         } else {
                             innerStrs.push(`WHERE ${predicate}`);

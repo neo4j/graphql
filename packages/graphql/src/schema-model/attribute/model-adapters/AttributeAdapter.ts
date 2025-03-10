@@ -110,6 +110,7 @@ export class AttributeAdapter {
 
     isSortableField(): boolean {
         return (
+            this.isSortable() &&
             !this.typeHelper.isList() &&
             !this.isCustomResolvable() &&
             (this.typeHelper.isScalar() || this.typeHelper.isEnum() || this.typeHelper.isSpatial()) &&
@@ -331,6 +332,10 @@ export class AttributeAdapter {
 
     isFilterable(): boolean {
         return this.annotations.filterable?.byValue !== false;
+    }
+
+    isSortable(): boolean {
+        return this.annotations.sortable?.byValue !== false;
     }
 
     isCustomResolvable(): boolean {

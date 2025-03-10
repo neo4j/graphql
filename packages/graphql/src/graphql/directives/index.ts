@@ -39,6 +39,7 @@ export { relationshipPropertiesDirective } from "./relationship-properties";
 export { relayIdDirective } from "./relay-id";
 export { selectableDirective } from "./selectable";
 export { settableDirective } from "./settable";
+export { sortableDirective } from "./sortable";
 export { subscriptionDirective } from "./subscription";
 export { timestampDirective } from "./timestamp";
 export { vectorDirective } from "./vector";

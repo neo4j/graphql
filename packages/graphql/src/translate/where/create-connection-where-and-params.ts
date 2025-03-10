@@ -22,6 +22,7 @@ import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg } from "../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../../utils/compile-cypher";
+import { buildClause } from "../utils/build-clause";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 
 export default function createConnectionWhereAndParams({
@@ -63,7 +64,8 @@ export default function createConnectionWhereAndParams({
     });
 
     // NOTE: the following prefix is just to avoid collision until this is refactored into a single cypher ast
-    const result = whereCypher.build({
+    const result = buildClause(whereCypher, {
+        context,
         prefix: `${parameterPrefix.replace(/\./g, "_").replace(/\[|\]/g, "")}_${nodeVariable}`,
     });
     return { cypher: result.cypher, subquery, params: result.params };
