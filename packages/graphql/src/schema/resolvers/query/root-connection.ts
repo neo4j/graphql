@@ -25,7 +25,7 @@ import {
     type GraphQLResolveInfo,
     type SelectionSetNode,
 } from "graphql";
-import type { InputTypeComposer, ObjectTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -96,21 +96,24 @@ export function rootConnectionResolver({
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
-    const rootFields: ObjectTypeComposerFieldConfigMapDefinition<any, any> = {
-        totalCount: new GraphQLNonNull(GraphQLInt),
-        pageInfo: new GraphQLNonNull(PageInfo),
-        edges: rootEdge.NonNull.List.NonNull,
-    };
-
-    if (entityAdapter.isAggregable) {
-        rootFields["aggregate"] = `${entityAdapter.operations.aggregateTypeNames.connection}!`;
-    }
-
     const rootConnection = composer.createObjectTC({
         name: `${entityAdapter.upperFirstPlural}Connection`,
-        fields: rootFields,
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
+
+    if (entityAdapter.isReadable) {
+        rootConnection.addFields({
+            edges: rootEdge.NonNull.List.NonNull,
+            totalCount: new GraphQLNonNull(GraphQLInt),
+            pageInfo: new GraphQLNonNull(PageInfo),
+        });
+    }
+
+    if (entityAdapter.isAggregable) {
+        rootConnection.addFields({
+            aggregate: `${entityAdapter.operations.aggregateTypeNames.connection}!`,
+        });
+    }
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer | undefined;

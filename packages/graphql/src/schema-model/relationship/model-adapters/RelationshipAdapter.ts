@@ -190,6 +190,7 @@ export class RelationshipAdapter {
         return this.annotations.filterable?.byAggregate !== false;
     }
 
+    // TODO: maybe we can remove this one?
     public isAggregable(): boolean {
         if (!this.aggregate) {
             return false;

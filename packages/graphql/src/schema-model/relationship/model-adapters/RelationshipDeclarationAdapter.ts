@@ -156,6 +156,7 @@ export class RelationshipDeclarationAdapter {
         return this.annotations.filterable?.byAggregate !== false;
     }
 
+    // TODO: maybe we can remove this one?
     public isAggregable(): boolean {
         if (this.source instanceof UnionEntityAdapter || this.target instanceof UnionEntityAdapter) {
             return false;

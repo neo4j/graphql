@@ -682,6 +682,8 @@ function generateObjectType({
             "Query",
             concreteEntityAdapter.operations.rootTypeFieldNames.connection
         );
+
+        // if (concreteEntityAdapter.isAggregable) {
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                 composer,
@@ -690,6 +692,7 @@ function generateObjectType({
                 isLimitRequired: features?.limitRequired,
             }),
         });
+        // }
         composer.Query.setFieldDirectives(
             concreteEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
@@ -801,6 +804,7 @@ function generateInterfaceObjectType({
     });
 
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+
     if (interfaceEntityAdapter.isReadable) {
         complexityEstimatorHelper.registerField("Query", interfaceEntityAdapter.operations.rootTypeFieldNames.read);
         composer.Query.addFields({
@@ -820,6 +824,8 @@ function generateInterfaceObjectType({
             "Query",
             interfaceEntityAdapter.operations.rootTypeFieldNames.connection
         );
+
+        // if (interfaceEntityAdapter.isAggregable) {
         composer.Query.addFields({
             [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                 composer,
@@ -828,6 +834,7 @@ function generateInterfaceObjectType({
                 isLimitRequired: features?.limitRequired,
             }),
         });
+        // }
         composer.Query.setFieldDirectives(
             interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)

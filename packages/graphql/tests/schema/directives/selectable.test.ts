@@ -18,14 +18,13 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
 
 describe("@selectable", () => {
     test("Disable read fields", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
@@ -192,7 +191,7 @@ describe("@selectable", () => {
     });
 
     test("Disable aggregation fields", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: true, onAggregate: false)
@@ -359,7 +358,7 @@ describe("@selectable", () => {
     });
 
     test("Disable read and aggregate fields", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: false)
@@ -525,7 +524,7 @@ describe("@selectable", () => {
     });
 
     test("Disable read fields on subscriptions", async () => {
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type Movie @query(aggregate: true) @node {
                 title: String!
                 description: String @selectable(onRead: false, onAggregate: true)
@@ -693,7 +692,7 @@ describe("@selectable", () => {
 
     describe("relationships fields to a concrete type", () => {
         test("Disable read on relationship field", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
@@ -715,6 +714,7 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
+                  actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -733,6 +733,10 @@ describe("@selectable", () => {
 
                 input ActorActedInConnectFieldInput {
                   where: MovieConnectWhere
+                }
+
+                type ActorActedInConnection {
+                  aggregate: ActorMovieActedInAggregateSelection!
                 }
 
                 input ActorActedInConnectionAggregateInput {
@@ -764,6 +768,10 @@ describe("@selectable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   some: ActorActedInConnectionWhere
+                }
+
+                input ActorActedInConnectionSort {
+                  node: MovieSort
                 }
 
                 input ActorActedInConnectionWhere {
@@ -864,6 +872,16 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
+                type ActorMovieActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorMovieActedInNodeAggregateSelection
+                }
+
+                type ActorMovieActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -929,6 +947,11 @@ describe("@selectable", () => {
                 }
 
                 type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
                   nodes: Int!
                 }
 
@@ -1138,7 +1161,7 @@ describe("@selectable", () => {
             `);
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
@@ -1619,7 +1642,7 @@ describe("@selectable", () => {
 
     describe("relationships fields to a union type", () => {
         test("Disable read on relationship field", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
@@ -2128,7 +2151,7 @@ describe("@selectable", () => {
             `);
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 type Movie @query(aggregate: true) @node {
                     title: String!
                     description: String
@@ -2653,7 +2676,7 @@ describe("@selectable", () => {
 
     describe("relationships fields to an interface type", () => {
         test("Disable read on relationship field", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 interface Production {
                     title: String!
                     description: String
@@ -2685,6 +2708,7 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
+                  actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -2703,6 +2727,10 @@ describe("@selectable", () => {
 
                 input ActorActedInConnectFieldInput {
                   where: ProductionConnectWhere
+                }
+
+                type ActorActedInConnection {
+                  aggregate: ActorProductionActedInAggregateSelection!
                 }
 
                 input ActorActedInConnectionAggregateInput {
@@ -2734,6 +2762,10 @@ describe("@selectable", () => {
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
                   some: ActorActedInConnectionWhere
+                }
+
+                input ActorActedInConnectionSort {
+                  node: ProductionSort
                 }
 
                 input ActorActedInConnectionWhere {
@@ -2834,6 +2866,16 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -2899,6 +2941,11 @@ describe("@selectable", () => {
                 }
 
                 type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
                   nodes: Int!
                 }
 
@@ -3261,7 +3308,7 @@ describe("@selectable", () => {
             `);
         });
         test("Disable aggregation on relationship field (no-op as controlled by @relationship(aggregate: false))", async () => {
-            const typeDefs = gql`
+            const typeDefs = /* GraphQL */ `
                 interface Production {
                     title: String!
                     description: String
@@ -3316,6 +3363,7 @@ describe("@selectable", () => {
                 }
 
                 type ActorActedInConnection {
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3459,6 +3507,16 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
+                  node: ActorProductionActedInNodeAggregateSelection
+                }
+
+                type ActorProductionActedInNodeAggregateSelection {
+                  description: StringAggregateSelection!
+                  title: StringAggregateSelection!
+                }
+
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -3524,6 +3582,11 @@ describe("@selectable", () => {
                 }
 
                 type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
                   nodes: Int!
                 }
 

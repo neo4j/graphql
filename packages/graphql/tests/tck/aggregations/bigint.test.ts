@@ -57,7 +57,7 @@ describe("Cypher Aggregations BigInt", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.size) } AS var0
             }
             CALL {
@@ -100,7 +100,7 @@ describe("Cypher Aggregations BigInt", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.size) } AS var0
             }
             CALL {
@@ -143,7 +143,7 @@ describe("Cypher Aggregations BigInt", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { average: avg(this.size) } AS var0
             }
             CALL {
@@ -186,7 +186,7 @@ describe("Cypher Aggregations BigInt", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { sum: sum(this.size) } AS var0
             }
             CALL {
@@ -232,7 +232,7 @@ describe("Cypher Aggregations BigInt", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } AS var0
             }
             CALL {

@@ -70,19 +70,19 @@ describe("Cypher Aggregations Many with Alias directive", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this._title) DESC
                 WITH collect(this._title) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.\`_imdb Rating\`), max: max(this.\`_imdb Rating\`), average: avg(this.\`_imdb Rating\`) } AS var1
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: apoc.date.convertFormat(toString(min(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this._createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
             CALL {

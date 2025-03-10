@@ -130,7 +130,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                    WITH this4
+                    WITH DISTINCT this4
                     ORDER BY size(this4.name) DESC
                     WITH collect(this4.name) AS list
                     RETURN { longest: head(list), shortest: last(list) } AS var5
@@ -186,7 +186,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this1
+                    WITH DISTINCT this1
                     RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
                 }
                 CALL {
@@ -239,7 +239,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this1
+                    WITH DISTINCT this1
                     ORDER BY size(this1.name) DESC
                     WITH collect(this1.name) AS list
                     RETURN { longest: head(list), shortest: last(list) } AS var2
@@ -292,7 +292,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH this1
+                    WITH DISTINCT this1
                     RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
                 }
                 CALL {
@@ -350,7 +350,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this1
+                    WITH DISTINCT this1
                     ORDER BY size(this1.name) DESC
                     WITH collect(this1.name) AS list
                     RETURN { longest: head(list), shortest: last(list) } AS var2
@@ -358,7 +358,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                    WITH this4
+                    WITH DISTINCT this4
                     RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
                 }
                 CALL {

@@ -57,7 +57,7 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.actorCount) } AS var0
             }
             CALL {
@@ -100,7 +100,7 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.actorCount) } AS var0
             }
             CALL {
@@ -143,7 +143,7 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { average: avg(this.actorCount) } AS var0
             }
             CALL {
@@ -186,7 +186,7 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { sum: sum(this.actorCount) } AS var0
             }
             CALL {
@@ -232,7 +232,7 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
             }
             CALL {
@@ -285,7 +285,7 @@ describe("Cypher Aggregations Float", () => {
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
             }
             CALL {

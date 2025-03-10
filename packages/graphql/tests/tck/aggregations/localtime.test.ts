@@ -57,7 +57,7 @@ describe("Cypher Aggregations LocalTime", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.createdAt) } AS var0
             }
             CALL {
@@ -100,7 +100,7 @@ describe("Cypher Aggregations LocalTime", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.createdAt) } AS var0
             }
             CALL {
@@ -144,7 +144,7 @@ describe("Cypher Aggregations LocalTime", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.createdAt), max: max(this.createdAt) } AS var0
             }
             CALL {

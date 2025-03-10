@@ -195,7 +195,7 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.imdbRatingInt), max: max(this.imdbRatingInt) } AS var0
             }
             CALL {
@@ -249,7 +249,7 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.imdbRatingFloat), max: max(this.imdbRatingFloat) } AS var0
             }
             CALL {
@@ -303,7 +303,7 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.imdbRatingBigInt), max: max(this.imdbRatingBigInt) } AS var0
             }
             CALL {
@@ -357,7 +357,7 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.name) DESC
                 WITH collect(this.name) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
@@ -413,7 +413,7 @@ describe("Cypher Aggregations with Auth", () => {
             CALL {
                 MATCH (this:User)
                 WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
             }
             CALL {

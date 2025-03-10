@@ -58,7 +58,7 @@ describe("Cypher Aggregations String", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
@@ -103,7 +103,7 @@ describe("Cypher Aggregations String", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var0
@@ -149,7 +149,7 @@ describe("Cypher Aggregations String", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
@@ -195,7 +195,7 @@ describe("Cypher Aggregations String", () => {
             CALL {
                 MATCH (this:Movie)
                 WHERE this.testId = $param0
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0

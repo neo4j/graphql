@@ -74,7 +74,7 @@ describe("Field Level Aggregations Alias", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH this1
+                    WITH DISTINCT this1
                     ORDER BY size(this1.name) DESC
                     WITH collect(this1.name) AS list
                     RETURN { shortest: last(list) } AS var2

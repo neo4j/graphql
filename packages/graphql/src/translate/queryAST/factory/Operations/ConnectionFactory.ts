@@ -266,6 +266,7 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
+                    isInConnection: true,
                 });
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
@@ -285,6 +286,7 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
+                    isInConnection: true,
                 });
 
                 const aggregationField = new ConnectionAggregationField({

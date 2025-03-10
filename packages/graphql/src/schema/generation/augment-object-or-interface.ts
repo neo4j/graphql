@@ -21,6 +21,7 @@ import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaCo
 
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
+import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
@@ -111,7 +112,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             composer: schemaComposer,
         }),
         first: {
-            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt): GraphQLInt,
+            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
         },
         after: {
             type: GraphQLString,
@@ -124,8 +125,10 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
     if (connectionSortITC) {
         composeNodeArgs.sort = connectionSortITC.NonNull.List;
     }
+    const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
+    const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
 
-    if (relationshipAdapter.isReadable()) {
+    if (relationshipAdapter.isReadable() || (relationshipAdapter.aggregate && !isTargetUnion && !isSourceInterface)) {
         fields[relationshipAdapter.operations.connectionFieldName] = {
             type: withConnectionObjectType({
                 relationshipAdapter,

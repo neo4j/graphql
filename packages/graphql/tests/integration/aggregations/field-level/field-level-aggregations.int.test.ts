@@ -57,11 +57,46 @@ describe("Field Level Aggregations", () => {
             CREATE (m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(a1:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
             CREATE (m)<-[:ACTED_IN { screentime: 50, character: "someone" }]-(a1)
             CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "John", age:37, born: datetime('2000-02-02')})
         `);
     });
 
     afterAll(async () => {
         await testHelper.close();
+    });
+
+    test("count nodes", async () => {
+        const query = `
+            query {
+                ${typeMovie.plural} {
+                    actorsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [
+                {
+                    actorsConnection: {
+                        aggregate: {
+                            count: {
+                                nodes: 3,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
     });
 
     test("count nodes and edges with repeated relationships", async () => {
@@ -90,8 +125,8 @@ describe("Field Level Aggregations", () => {
                     actorsConnection: {
                         aggregate: {
                             count: {
-                                nodes: 2,
-                                edges: 3,
+                                nodes: 3,
+                                edges: 4,
                             },
                         },
                     },
@@ -129,7 +164,7 @@ describe("Field Level Aggregations", () => {
                                 node: {
                                     name: {
                                         longest: "Arnold",
-                                        shortest: "Linda",
+                                        shortest: "John",
                                     },
                                 },
                             },
@@ -171,8 +206,8 @@ describe("Field Level Aggregations", () => {
                                     age: {
                                         max: 54,
                                         min: 37,
-                                        average: expect.closeTo(48.33),
-                                        sum: 145,
+                                        average: expect.closeTo(42.67),
+                                        sum: 128,
                                     },
                                 },
                             },
@@ -255,8 +290,8 @@ describe("Field Level Aggregations", () => {
                                     screentime: {
                                         max: 120,
                                         min: 50,
-                                        average: expect.closeTo(76.67),
-                                        sum: 230,
+                                        average: expect.closeTo(87.5),
+                                        sum: 350,
                                     },
                                 },
                             },

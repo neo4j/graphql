@@ -36,20 +36,21 @@ export function withConnectionObjectType({
     if (composer.has(typeName)) {
         return composer.getOTC(typeName);
     }
+    const connectionObjectType = composer.getOrCreateOTC(typeName);
 
-    const connectionObjectType = composer.createObjectTC({
-        name: typeName,
-        fields: {
+    if (relationshipAdapter.isReadable()) {
+        connectionObjectType.addFields({
             edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
-        },
-    });
+        });
+    }
 
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
 
-    if (relationshipAdapter.isAggregable() && !isTargetUnion && !isSourceInterface) {
+    if (relationshipAdapter.aggregate && !isTargetUnion && !isSourceInterface) {
+        const connectionObjectType = composer.getOrCreateOTC(typeName);
         connectionObjectType.addFields({
             aggregate: composer.getOTC(relationshipAdapter.operations.getAggregateFieldTypename()).NonNull,
         });

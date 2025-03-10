@@ -74,7 +74,7 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE var1 STARTS WITH $param0
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var2
@@ -169,7 +169,7 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE var1 > $param0
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.released) } AS var2
             }
             CALL {
@@ -269,7 +269,7 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE $param0 IN var2
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var3
@@ -366,7 +366,7 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE $param0 IN var2
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var3

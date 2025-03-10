@@ -77,7 +77,7 @@ describe("Field Level Aggregations", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this0
+                    WITH DISTINCT this0
                     RETURN { min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime) } AS var2
                 }
                 CALL {

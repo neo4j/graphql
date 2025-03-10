@@ -146,7 +146,8 @@ describe("typename_IN", () => {
         });
     });
 
-    test.skip("aggregation", async () => {
+    // TODO: unrelated issue, to be fixed separately
+    test("aggregation", async () => {
         const query = `
         {
             productionsConnection(where: { OR: [ { typename: [${Movie.name}, ${Series.name}] } { typename: [${Cartoon.name}] } ] }) {
@@ -163,8 +164,10 @@ describe("typename_IN", () => {
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
             productionsConnection: {
-                count: {
-                    nodes: 3,
+                aggregate: {
+                    count: {
+                        nodes: 3,
+                    },
                 },
             },
         });
@@ -174,8 +177,8 @@ describe("typename_IN", () => {
         const query = `
         {
             ${Actor.plural} {
-                actedInConnection(where: { NOT:  { typename: [${Movie.name}, ${Series.name}] } }) {
-                    aggegate {
+                actedInConnection(where: { NOT: { typename: [${Movie.name}, ${Series.name}] } }) {
+                    aggregate {
                         count {
                             nodes
                         }

@@ -57,7 +57,7 @@ describe("Cypher Aggregations Duration", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.screenTime) } AS var0
             }
             CALL {
@@ -100,7 +100,7 @@ describe("Cypher Aggregations Duration", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.screenTime) } AS var0
             }
             CALL {
@@ -144,7 +144,7 @@ describe("Cypher Aggregations Duration", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.screenTime), max: max(this.screenTime) } AS var0
             }
             CALL {

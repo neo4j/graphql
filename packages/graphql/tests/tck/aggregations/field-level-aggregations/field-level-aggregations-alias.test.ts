@@ -74,7 +74,7 @@ describe("Field Level Aggregations Alias", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this1
+                    WITH DISTINCT this1
                     ORDER BY size(this1.name) DESC
                     WITH collect(this1.name) AS list
                     RETURN { shortest: last(list) } AS var2
@@ -127,7 +127,7 @@ describe("Field Level Aggregations Alias", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH this0
+                    WITH DISTINCT this0
                     RETURN { max: max(this0.screentime) } AS var2
                 }
                 CALL {
