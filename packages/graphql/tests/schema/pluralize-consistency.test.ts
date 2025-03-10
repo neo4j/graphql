@@ -43,6 +43,20 @@ describe("Pluralize consistency", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -108,10 +122,8 @@ describe("Pluralize consistency", () => {
 
             type Query {
               superFriends(limit: Int, offset: Int, sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
-              superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
               superFriendsConnection(after: String, first: Int, sort: [super_friendSort!], where: super_friendWhere): SuperFriendsConnection!
               superUsers(limit: Int, offset: Int, sort: [super_userSort!], where: super_userWhere): [super_user!]!
-              superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
               superUsersConnection(after: String, first: Int, sort: [super_userSort!], where: super_userWhere): SuperUsersConnection!
             }
 
@@ -150,12 +162,14 @@ describe("Pluralize consistency", () => {
             }
 
             type SuperFriendsConnection {
+              aggregate: super_friendAggregate!
               edges: [super_friendEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
             type SuperUsersConnection {
+              aggregate: super_userAggregate!
               edges: [super_userEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -185,8 +199,12 @@ describe("Pluralize consistency", () => {
               name: String!
             }
 
-            type super_friendAggregateSelection {
-              count: Int!
+            type super_friendAggregate {
+              count: Count!
+              node: super_friendAggregateNode!
+            }
+
+            type super_friendAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -240,13 +258,16 @@ describe("Pluralize consistency", () => {
 
             type super_user {
               my_friend(limit: Int, offset: Int, sort: [super_friendSort!], where: super_friendWhere): [super_friend!]!
-              my_friendAggregate(where: super_friendWhere): super_usersuper_friendMy_friendAggregationSelection
               my_friendConnection(after: String, first: Int, sort: [super_userMy_friendConnectionSort!], where: super_userMy_friendConnectionWhere): super_userMy_friendConnection!
               name: String!
             }
 
-            type super_userAggregateSelection {
-              count: Int!
+            type super_userAggregate {
+              count: Count!
+              node: super_userAggregateNode!
+            }
+
+            type super_userAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -282,12 +303,25 @@ describe("Pluralize consistency", () => {
             }
 
             type super_userMy_friendConnection {
+              aggregate: super_usersuper_friendMy_friendAggregateSelection!
               edges: [super_userMy_friendRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input super_userMy_friendConnectionAggregateInput {
+              AND: [super_userMy_friendConnectionAggregateInput!]
+              NOT: super_userMy_friendConnectionAggregateInput
+              OR: [super_userMy_friendConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: super_userMy_friendNodeAggregationWhereInput
+            }
+
             input super_userMy_friendConnectionFilters {
+              \\"\\"\\"
+              Filter super_users by aggregating results on related super_userMy_friendConnections
+              \\"\\"\\"
+              aggregate: super_userMy_friendConnectionAggregateInput
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
               \\"\\"\\"
@@ -392,7 +426,7 @@ describe("Pluralize consistency", () => {
               NOT: super_userWhere
               OR: [super_userWhere!]
               my_friend: super_friendRelationshipFilters
-              my_friendAggregate: super_userMy_friendAggregateInput
+              my_friendAggregate: super_userMy_friendAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the my_friendConnection filter, please use { my_friendConnection: { aggregate: {...} } } instead\\")
               my_friendConnection: super_userMy_friendConnectionFilters
               \\"\\"\\"
               Return super_users where all of the related super_userMy_friendConnections match this filter
@@ -434,8 +468,8 @@ describe("Pluralize consistency", () => {
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
-            type super_usersuper_friendMy_friendAggregationSelection {
-              count: Int!
+            type super_usersuper_friendMy_friendAggregateSelection {
+              count: CountConnection!
               node: super_usersuper_friendMy_friendNodeAggregateSelection
             }
 

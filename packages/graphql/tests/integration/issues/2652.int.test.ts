@@ -55,12 +55,16 @@ describe("https://github.com/neo4j/graphql/issues/2652", () => {
         const query = `
             query ReviewsAggregate {
                 ${Location.plural} {
-                    reviewsAggregate {
-                        count
-                        node {
-                            rating {
-                                average
+                    reviewsConnection {
+                        aggregate {
+                            count {
+                                nodes
                             }
+                            node {
+                                rating {
+                                    average
+                                }
+                            }    
                         }
                     }
                 }

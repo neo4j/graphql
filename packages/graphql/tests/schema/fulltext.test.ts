@@ -47,6 +47,10 @@ describe("@fulltext schema", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -79,8 +83,12 @@ describe("@fulltext schema", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -147,6 +155,7 @@ describe("@fulltext schema", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -174,7 +183,6 @@ describe("@fulltext schema", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesByDescription(after: String, first: Int, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesByTitle(after: String, first: Int, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!

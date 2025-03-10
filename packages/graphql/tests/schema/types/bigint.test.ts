@@ -68,6 +68,10 @@ describe("Bigint", () => {
               subtract: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateFilesMutationResponse {
               files: [File!]!
               info: CreateInfo!
@@ -94,8 +98,12 @@ describe("Bigint", () => {
               size: BigInt!
             }
 
-            type FileAggregateSelection {
-              count: Int!
+            type FileAggregate {
+              count: Count!
+              node: FileAggregateNode!
+            }
+
+            type FileAggregateNode {
               name: StringAggregateSelection!
               size: BigIntAggregateSelection!
             }
@@ -147,6 +155,7 @@ describe("Bigint", () => {
             }
 
             type FilesConnection {
+              aggregate: FileAggregate!
               edges: [FileEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -168,7 +177,6 @@ describe("Bigint", () => {
 
             type Query {
               files(limit: Int, offset: Int, sort: [FileSort!], where: FileWhere): [File!]!
-              filesAggregate(where: FileWhere): FileAggregateSelection!
               filesConnection(after: String, first: Int, sort: [FileSort!], where: FileWhere): FilesConnection!
             }
 

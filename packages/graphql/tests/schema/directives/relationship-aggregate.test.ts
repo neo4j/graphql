@@ -18,40 +18,12 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import type { GraphQLFieldMap, GraphQLObjectType } from "graphql";
+import type { GraphQLObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql";
 import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@relationship directive, aggregate argument", () => {
-    test("the default behavior should enable nested aggregation (this will change in 4.0)", async () => {
-        const typeDefs = gql`
-            type Actor @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeDefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeDefined();
-    });
-
     test("should disable nested aggregation", async () => {
         const typeDefs = gql`
             type Actor @node {
@@ -73,130 +45,6 @@ describe("@relationship directive, aggregate argument", () => {
         const movieFields = movieType.getFields();
         const movieActorsAggregate = movieFields["actorsAggregate"];
         expect(movieActorsAggregate).toBeUndefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeUndefined();
-    });
-
-    test("should enable nested aggregation", async () => {
-        const typeDefs = gql`
-            type Actor @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeDefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeDefined();
-    });
-
-    test("should work in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
-        const typeDefs = gql`
-            type Actor @query(aggregate: false) @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: true)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeDefined();
-
-        const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-        const movies = queryFields["movies"];
-        const actors = queryFields["actors"];
-
-        expect(movies).toBeDefined();
-        expect(actors).toBeDefined();
-
-        const moviesConnection = queryFields["moviesConnection"];
-        const actorsConnection = queryFields["actorsConnection"];
-
-        expect(moviesConnection).toBeDefined();
-        expect(actorsConnection).toBeDefined();
-
-        const moviesAggregate = queryFields["moviesAggregate"];
-        const actorsAggregate = queryFields["actorsAggregate"];
-
-        expect(moviesAggregate).toBeDefined();
-        expect(actorsAggregate).toBeUndefined();
-
-        const movieActorActorsAggregationSelection = schema.getType(
-            "MovieActorActorsAggregationSelection"
-        ) as GraphQLObjectType;
-        expect(movieActorActorsAggregationSelection).toBeDefined();
-    });
-
-    test("should work in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
-        const typeDefs = gql`
-            type Actor @query(aggregate: true) @node {
-                username: String!
-                password: String!
-            }
-
-            type Movie @node {
-                title: String
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, aggregate: false)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-        const movieType = schema.getType("Movie") as GraphQLObjectType;
-        expect(movieType).toBeDefined();
-
-        const movieFields = movieType.getFields();
-        const movieActorsAggregate = movieFields["actorsAggregate"];
-        expect(movieActorsAggregate).toBeUndefined();
-
-        const queryFields = schema.getQueryType()?.getFields() as GraphQLFieldMap<any, any>;
-
-        const movies = queryFields["movies"];
-        const actors = queryFields["actors"];
-
-        expect(movies).toBeDefined();
-        expect(actors).toBeDefined();
-
-        const moviesConnection = queryFields["moviesConnection"];
-        const actorsConnection = queryFields["actorsConnection"];
-
-        expect(moviesConnection).toBeDefined();
-        expect(actorsConnection).toBeDefined();
-
-        const moviesAggregate = queryFields["moviesAggregate"];
-        const actorsAggregate = queryFields["actorsAggregate"];
-
-        expect(moviesAggregate).toBeDefined();
-        expect(actorsAggregate).toBeDefined();
 
         const movieActorActorsAggregationSelection = schema.getType(
             "MovieActorActorsAggregationSelection"
@@ -232,8 +80,12 @@ describe("@relationship directive, aggregate argument", () => {
                   username: String!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   password: StringAggregateSelection!
                   username: StringAggregateSelection!
                 }
@@ -297,9 +149,19 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -377,7 +239,17 @@ describe("@relationship directive, aggregate argument", () => {
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -480,8 +352,12 @@ describe("@relationship directive, aggregate argument", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   title: StringAggregateSelection!
                 }
 
@@ -517,7 +393,7 @@ describe("@relationship directive, aggregate argument", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -552,6 +428,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -576,10 +453,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -666,8 +541,12 @@ describe("@relationship directive, aggregate argument", () => {
                   username: String!
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   password: StringAggregateSelection!
                   username: StringAggregateSelection!
                 }
@@ -731,9 +610,24 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -784,13 +678,12 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   title: String
                 }
 
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -817,12 +710,23 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -925,8 +829,12 @@ describe("@relationship directive, aggregate argument", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   title: StringAggregateSelection!
                 }
 
@@ -962,7 +870,7 @@ describe("@relationship directive, aggregate argument", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -997,6 +905,7 @@ describe("@relationship directive, aggregate argument", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1021,10 +930,8 @@ describe("@relationship directive, aggregate argument", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1117,8 +1024,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -1167,9 +1078,19 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
+                    type Count {
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -1247,7 +1168,17 @@ describe("@relationship directive, aggregate argument", () => {
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
+                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1350,8 +1281,12 @@ describe("@relationship directive, aggregate argument", () => {
                       where: MovieActorsConnectionWhere
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
                       title: StringAggregateSelection!
                     }
 
@@ -1387,7 +1322,7 @@ describe("@relationship directive, aggregate argument", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: PersonRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -1422,6 +1357,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1445,6 +1381,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1455,8 +1392,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -1525,13 +1466,10 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -1622,8 +1560,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -1672,9 +1614,24 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -1725,7 +1682,6 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
@@ -1748,12 +1704,23 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MoviePersonActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
+                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1856,8 +1823,12 @@ describe("@relationship directive, aggregate argument", () => {
                       where: MovieActorsConnectionWhere
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
                       title: StringAggregateSelection!
                     }
 
@@ -1875,8 +1846,8 @@ describe("@relationship directive, aggregate argument", () => {
                       node: Movie!
                     }
 
-                    type MoviePersonActorsAggregationSelection {
-                      count: Int!
+                    type MoviePersonActorsAggregateSelection {
+                      count: CountConnection!
                       node: MoviePersonActorsNodeAggregateSelection
                     }
 
@@ -1903,7 +1874,7 @@ describe("@relationship directive, aggregate argument", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: PersonRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -1938,6 +1909,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1961,6 +1933,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1971,8 +1944,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -2041,13 +2018,10 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -2142,8 +2116,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -2196,6 +2174,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2217,6 +2196,10 @@ describe("@relationship directive, aggregate argument", () => {
                     input CastMemberWhere {
                       Actor: ActorWhere
                       Person: PersonWhere
+                    }
+
+                    type Count {
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -2388,8 +2371,12 @@ describe("@relationship directive, aggregate argument", () => {
                       Person: [MovieActorsPersonUpdateFieldInput!]
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
                       title: StringAggregateSelection!
                     }
 
@@ -2459,6 +2446,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2485,6 +2473,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2494,8 +2483,12 @@ describe("@relationship directive, aggregate argument", () => {
                       name: String!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
                       name: StringAggregateSelection!
                     }
 
@@ -2538,14 +2531,11 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       castMembers(limit: Int, offset: Int, where: CastMemberWhere): [CastMember!]!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 
@@ -2635,8 +2625,12 @@ describe("@relationship directive, aggregate argument", () => {
                       username: String!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -2689,6 +2683,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2710,6 +2705,10 @@ describe("@relationship directive, aggregate argument", () => {
                     input CastMemberWhere {
                       Actor: ActorWhere
                       Person: PersonWhere
+                    }
+
+                    type Count {
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -2881,8 +2880,12 @@ describe("@relationship directive, aggregate argument", () => {
                       Person: [MovieActorsPersonUpdateFieldInput!]
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
                       title: StringAggregateSelection!
                     }
 
@@ -2952,6 +2955,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2978,6 +2982,7 @@ describe("@relationship directive, aggregate argument", () => {
                     }
 
                     type PeopleConnection {
+                      aggregate: PersonAggregate!
                       edges: [PersonEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -2987,8 +2992,12 @@ describe("@relationship directive, aggregate argument", () => {
                       name: String!
                     }
 
-                    type PersonAggregateSelection {
-                      count: Int!
+                    type PersonAggregate {
+                      count: Count!
+                      node: PersonAggregateNode!
+                    }
+
+                    type PersonAggregateNode {
                       name: StringAggregateSelection!
                     }
 
@@ -3031,14 +3040,11 @@ describe("@relationship directive, aggregate argument", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       castMembers(limit: Int, offset: Int, where: CastMemberWhere): [CastMember!]!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                       people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                      peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                       peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                     }
 

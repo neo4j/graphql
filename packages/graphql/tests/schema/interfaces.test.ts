@@ -54,6 +54,15 @@ describe("Interfaces", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -103,13 +112,12 @@ describe("Interfaces", () => {
               customQuery: [Movie]
               id: ID
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode!]
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieConnectInput {
@@ -138,10 +146,6 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            type MovieMovieMoviesAggregationSelection {
-              count: Int!
-            }
-
             input MovieMoviesAggregateInput {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
@@ -159,7 +163,18 @@ describe("Interfaces", () => {
               where: MovieConnectWhere
             }
 
+            input MovieMoviesConnectionAggregateInput {
+              AND: [MovieMoviesConnectionAggregateInput!]
+              NOT: MovieMoviesConnectionAggregateInput
+              OR: [MovieMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -207,8 +222,8 @@ describe("Interfaces", () => {
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
-            type MovieNodeAggregateSelection {
-              count: Int!
+            type MovieNodeAggregate {
+              count: Count!
             }
 
             type MovieNodeEdge {
@@ -238,7 +253,18 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieNodeMoviesConnectionAggregateInput {
+              AND: [MovieNodeMoviesConnectionAggregateInput!]
+              NOT: MovieNodeMoviesConnectionAggregateInput
+              OR: [MovieNodeMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieNodeMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieNodeMoviesConnectionAggregateInput
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -301,7 +327,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieNodeMoviesAggregateInput
+              moviesAggregate: MovieNodeMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
@@ -331,6 +357,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodesConnection {
+              aggregate: MovieNodeAggregate!
               edges: [MovieNodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -376,7 +403,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieMoviesAggregateInput
+              moviesAggregate: MovieMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
@@ -405,6 +432,7 @@ describe("Interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -426,10 +454,8 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(limit: Int, offset: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
-              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -492,6 +518,15 @@ describe("Interfaces", () => {
 
             directive @something(something: String) on INTERFACE
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -541,13 +576,12 @@ describe("Interfaces", () => {
               customQuery: [Movie]
               id: ID
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
               nodes: [MovieNode!]
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieConnectInput {
@@ -576,10 +610,6 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            type MovieMovieMoviesAggregationSelection {
-              count: Int!
-            }
-
             input MovieMoviesAggregateInput {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
@@ -597,7 +627,18 @@ describe("Interfaces", () => {
               where: MovieConnectWhere
             }
 
+            input MovieMoviesConnectionAggregateInput {
+              AND: [MovieMoviesConnectionAggregateInput!]
+              NOT: MovieMoviesConnectionAggregateInput
+              OR: [MovieMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -645,8 +686,8 @@ describe("Interfaces", () => {
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
-            type MovieNodeAggregateSelection {
-              count: Int!
+            type MovieNodeAggregate {
+              count: Count!
             }
 
             type MovieNodeEdge {
@@ -676,7 +717,18 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
+            input MovieNodeMoviesConnectionAggregateInput {
+              AND: [MovieNodeMoviesConnectionAggregateInput!]
+              NOT: MovieNodeMoviesConnectionAggregateInput
+              OR: [MovieNodeMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieNodeMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieNodeMoviesConnectionAggregateInput
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
@@ -739,7 +791,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieNodeMoviesAggregateInput
+              moviesAggregate: MovieNodeMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
@@ -769,6 +821,7 @@ describe("Interfaces", () => {
             }
 
             type MovieNodesConnection {
+              aggregate: MovieNodeAggregate!
               edges: [MovieNodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -814,7 +867,7 @@ describe("Interfaces", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: MovieMoviesAggregateInput
+              moviesAggregate: MovieMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
@@ -843,6 +896,7 @@ describe("Interfaces", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -864,10 +918,8 @@ describe("Interfaces", () => {
 
             type Query {
               movieNodes(limit: Int, offset: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
-              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection!
               movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

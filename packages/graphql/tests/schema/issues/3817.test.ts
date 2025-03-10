@@ -61,6 +61,20 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -177,6 +191,7 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -184,13 +199,12 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
 
             type Person {
               friends(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              friendsAggregate(where: PersonWhere): PersonPersonFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               id: ID!
             }
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
             }
 
             input PersonConnectInput {
@@ -237,12 +251,25 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
             }
 
             type PersonFriendsConnection {
+              aggregate: PersonPersonFriendsAggregateSelection!
               edges: [PersonFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PersonFriendsConnectionAggregateInput {
+              AND: [PersonFriendsConnectionAggregateInput!]
+              NOT: PersonFriendsConnectionAggregateInput
+              OR: [PersonFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: FriendOfAggregationWhereInput
+            }
+
             input PersonFriendsConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonFriendsConnections
+              \\"\\"\\"
+              aggregate: PersonFriendsConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -313,8 +340,8 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
               where: PersonFriendsConnectionWhere
             }
 
-            type PersonPersonFriendsAggregationSelection {
-              count: Int!
+            type PersonPersonFriendsAggregateSelection {
+              count: CountConnection!
               edge: PersonPersonFriendsEdgeAggregateSelection
             }
 
@@ -349,7 +376,7 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               friends: PersonRelationshipFilters
-              friendsAggregate: PersonFriendsAggregateInput
+              friendsAggregate: PersonFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
@@ -385,7 +412,6 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
 
             type Query {
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 

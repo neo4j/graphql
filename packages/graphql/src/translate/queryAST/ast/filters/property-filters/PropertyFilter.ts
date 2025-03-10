@@ -40,7 +40,7 @@ export class PropertyFilter extends Filter {
         relationship,
         comparisonValue,
         operator,
-        attachedTo,
+        attachedTo = "node",
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
@@ -53,7 +53,7 @@ export class PropertyFilter extends Filter {
         this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.operator = operator;
-        this.attachedTo = attachedTo ?? "node";
+        this.attachedTo = attachedTo;
     }
 
     public getChildren(): QueryASTNode[] {

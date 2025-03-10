@@ -55,6 +55,10 @@ describe("Null", () => {
               eq: [Boolean!]
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -252,10 +256,14 @@ describe("Null", () => {
               names: [String!]!
             }
 
-            type MovieAggregateSelection {
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -410,6 +418,7 @@ describe("Null", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -484,7 +493,6 @@ describe("Null", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

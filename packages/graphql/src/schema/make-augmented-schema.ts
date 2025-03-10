@@ -45,7 +45,6 @@ import { cypherResolver } from "./resolvers/field/cypher";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
-import { aggregateResolver } from "./resolvers/query/aggregate";
 import { findResolver } from "./resolvers/query/read";
 import { rootConnectionResolver } from "./resolvers/query/root-connection";
 import { attributeAdapterToComposeFields, graphqlDirectivesToCompose } from "./to-compose";
@@ -704,16 +703,6 @@ function generateObjectType({
             composer,
             features,
         });
-
-        composer.Query.addFields({
-            [concreteEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                entityAdapter: concreteEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(
-            concreteEntityAdapter.operations.rootTypeFieldNames.aggregate,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
     }
 
     if (concreteEntityAdapter.isCreatable) {
@@ -852,15 +841,5 @@ function generateInterfaceObjectType({
             composer,
             features,
         });
-
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate]: aggregateResolver({
-                entityAdapter: interfaceEntityAdapter,
-            }),
-        });
-        composer.Query.setFieldDirectives(
-            interfaceEntityAdapter.operations.rootTypeFieldNames.aggregate,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
     }
 }

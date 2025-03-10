@@ -133,6 +133,20 @@ describe("Exclude suffix based filtering", () => {
               set: CartesianPointInput
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -301,6 +315,7 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type InterfaceCSConnection {
+              aggregate: interfaceCAggregate!
               edges: [interfaceCEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -447,13 +462,10 @@ describe("Exclude suffix based filtering", () => {
             type Query {
               ds(limit: Int, offset: Int, where: dWhere): [d!]!
               interfaceCS(limit: Int, offset: Int, sort: [interfaceCSort!], where: interfaceCWhere): [interfaceC!]!
-              interfaceCSAggregate(where: interfaceCWhere): interfaceCAggregateSelection!
               interfaceCSConnection(after: String, first: Int, sort: [interfaceCSort!], where: interfaceCWhere): InterfaceCSConnection!
               typeAS(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              typeASAggregate(where: typeAWhere): typeAAggregateSelection!
               typeASConnection(after: String, first: Int, sort: [typeASort!], where: typeAWhere): TypeASConnection!
               typeBS(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              typeBSAggregate(where: typeBWhere): typeBAggregateSelection!
               typeBSConnection(after: String, first: Int, sort: [typeBSort!], where: typeBWhere): TypeBSConnection!
             }
 
@@ -527,12 +539,14 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type TypeASConnection {
+              aggregate: typeAAggregate!
               edges: [typeAEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
             type TypeBSConnection {
+              aggregate: typeBAggregate!
               edges: [typeBEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -578,9 +592,13 @@ describe("Exclude suffix based filtering", () => {
               time: Time
             }
 
-            type interfaceCAggregateSelection {
+            type interfaceCAggregate {
+              count: Count!
+              node: interfaceCAggregateNode!
+            }
+
+            type interfaceCAggregateNode {
               averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
@@ -923,7 +941,6 @@ describe("Exclude suffix based filtering", () => {
 
             type typeA {
               actedIn(limit: Int, offset: Int, sort: [typeBSort!], where: typeBWhere): [typeB!]!
-              actedInAggregate(where: typeBWhere): typeAtypeBActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [typeAActedInConnectionSort!], where: typeAActedInConnectionWhere): typeAActedInConnection!
               name: String
             }
@@ -949,12 +966,26 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeAActedInConnection {
+              aggregate: typeAtypeBActedInAggregateSelection!
               edges: [typeAActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input typeAActedInConnectionAggregateInput {
+              AND: [typeAActedInConnectionAggregateInput!]
+              NOT: typeAActedInConnectionAggregateInput
+              OR: [typeAActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: relTypeAggregationWhereInput
+              node: typeAActedInNodeAggregationWhereInput
+            }
+
             input typeAActedInConnectionFilters {
+              \\"\\"\\"
+              Filter typeAS by aggregating results on related typeAActedInConnections
+              \\"\\"\\"
+              aggregate: typeAActedInConnectionAggregateInput
               \\"\\"\\"
               Return typeAS where all of the related typeAActedInConnections match this filter
               \\"\\"\\"
@@ -1113,8 +1144,12 @@ describe("Exclude suffix based filtering", () => {
               where: typeAActedInConnectionWhere
             }
 
-            type typeAAggregateSelection {
-              count: Int!
+            type typeAAggregate {
+              count: Count!
+              node: typeAAggregateNode!
+            }
+
+            type typeAAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1173,7 +1208,7 @@ describe("Exclude suffix based filtering", () => {
               NOT: typeAWhere
               OR: [typeAWhere!]
               actedIn: typeBRelationshipFilters
-              actedInAggregate: typeAActedInAggregateInput
+              actedInAggregate: typeAActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: typeAActedInConnectionFilters
               name: StringScalarFilters
               name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
@@ -1183,8 +1218,8 @@ describe("Exclude suffix based filtering", () => {
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
-            type typeAtypeBActedInAggregationSelection {
-              count: Int!
+            type typeAtypeBActedInAggregateSelection {
+              count: CountConnection!
               edge: typeAtypeBActedInEdgeAggregateSelection
               node: typeAtypeBActedInNodeAggregateSelection
             }
@@ -1220,14 +1255,17 @@ describe("Exclude suffix based filtering", () => {
               point: Point
               ratings: [Float!]!
               rels(limit: Int, offset: Int, sort: [typeASort!], where: typeAWhere): [typeA!]!
-              relsAggregate(where: typeAWhere): typeBtypeARelsAggregationSelection
               relsConnection(after: String, first: Int, sort: [typeBRelsConnectionSort!], where: typeBRelsConnectionWhere): typeBRelsConnection!
               time: Time
             }
 
-            type typeBAggregateSelection {
+            type typeBAggregate {
+              count: Count!
+              node: typeBAggregateNode!
+            }
+
+            type typeBAggregateNode {
               averageRating: FloatAggregateSelection!
-              count: Int!
               createdAt: DateTimeAggregateSelection!
               duration: DurationAggregateSelection!
               localDateTime: LocalDateTimeAggregateSelection!
@@ -1304,12 +1342,24 @@ describe("Exclude suffix based filtering", () => {
             }
 
             type typeBRelsConnection {
+              aggregate: typeBtypeARelsAggregateSelection!
               edges: [typeBRelsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input typeBRelsConnectionAggregateInput {
+              AND: [typeBRelsConnectionAggregateInput!]
+              NOT: typeBRelsConnectionAggregateInput
+              OR: [typeBRelsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: relTypeAggregationWhereInput
+              node: typeBRelsNodeAggregationWhereInput
+            }
+
             input typeBRelsConnectionFilters {
+              \\"\\"\\"Filter typeBS by aggregating results on related typeBRelsConnections\\"\\"\\"
+              aggregate: typeBRelsConnectionAggregateInput
               \\"\\"\\"
               Return typeBS where all of the related typeBRelsConnections match this filter
               \\"\\"\\"
@@ -1530,7 +1580,7 @@ describe("Exclude suffix based filtering", () => {
               ratings_EQ: [Float!] @deprecated(reason: \\"Please use the relevant generic filter ratings: { eq: ... }\\")
               ratings_INCLUDES: Float @deprecated(reason: \\"Please use the relevant generic filter ratings: { includes: ... }\\")
               rels: typeARelationshipFilters
-              relsAggregate: typeBRelsAggregateInput
+              relsAggregate: typeBRelsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relsConnection filter, please use { relsConnection: { aggregate: {...} } } instead\\")
               relsConnection: typeBRelsConnectionFilters
               time: TimeScalarFilters
               time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
@@ -1541,8 +1591,8 @@ describe("Exclude suffix based filtering", () => {
               time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
             }
 
-            type typeBtypeARelsAggregationSelection {
-              count: Int!
+            type typeBtypeARelsAggregateSelection {
+              count: CountConnection!
               edge: typeBtypeARelsEdgeAggregateSelection
               node: typeBtypeARelsNodeAggregateSelection
             }

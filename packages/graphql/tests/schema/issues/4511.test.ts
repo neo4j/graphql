@@ -63,6 +63,15 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -91,8 +100,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
-            type CreatureAggregateSelection {
-              count: Int!
+            type CreatureAggregate {
+              count: Count!
             }
 
             input CreatureConnectInput {
@@ -147,7 +156,18 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               totalCount: Int!
             }
 
+            input CreatureMoviesConnectionAggregateInput {
+              AND: [CreatureMoviesConnectionAggregateInput!]
+              NOT: CreatureMoviesConnectionAggregateInput
+              OR: [CreatureMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input CreatureMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Creatures by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: CreatureMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
@@ -229,7 +249,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: CreatureWhere
               OR: [CreatureWhere!]
               movies: ProductionRelationshipFilters
-              moviesAggregate: CreatureMoviesAggregateInput
+              moviesAggregate: CreatureMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: CreatureMoviesConnectionFilters
               \\"\\"\\"
               Return Creatures where all of the related CreatureMoviesConnections match this filter
@@ -267,6 +287,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type CreaturesConnection {
+              aggregate: CreatureAggregate!
               edges: [CreatureEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -320,14 +341,17 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type Movie implements Production {
               director(limit: Int, offset: Int, where: CreatureWhere): [Creature!]!
-              directorAggregate(where: CreatureWhere): MovieCreatureDirectorAggregationSelection
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -335,10 +359,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               director: MovieDirectorFieldInput
               id: ID
               title: String!
-            }
-
-            type MovieCreatureDirectorAggregationSelection {
-              count: Int!
             }
 
             input MovieDeleteInput {
@@ -362,7 +382,18 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: CreatureConnectWhere
             }
 
+            input MovieDirectorConnectionAggregateInput {
+              AND: [MovieDirectorConnectionAggregateInput!]
+              NOT: MovieDirectorConnectionAggregateInput
+              OR: [MovieDirectorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input MovieDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: MovieDirectorConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -439,7 +470,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               director: CreatureRelationshipFilters
-              directorAggregate: MovieDirectorAggregateInput
+              directorAggregate: MovieDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
               directorConnection: MovieDirectorConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
@@ -480,6 +511,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -506,6 +538,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -513,12 +546,11 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type Person implements Creature {
               movies(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              moviesAggregate(where: ProductionWhere): PersonProductionMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
             }
 
             input PersonCreateInput {
@@ -551,7 +583,18 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: ProductionConnectWhere
             }
 
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
               \\"\\"\\"
@@ -602,10 +645,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: CreatureMoviesConnectionWhere
             }
 
-            type PersonProductionMoviesAggregationSelection {
-              count: Int!
-            }
-
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
             }
@@ -615,7 +654,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               movies: ProductionRelationshipFilters
-              moviesAggregate: PersonMoviesAggregateInput
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related CreatureMoviesConnections match this filter
@@ -649,8 +688,8 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               id: ID
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
             }
 
             input ProductionConnectInput {
@@ -693,7 +732,18 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               totalCount: Int!
             }
 
+            input ProductionDirectorConnectionAggregateInput {
+              AND: [ProductionDirectorConnectionAggregateInput!]
+              NOT: ProductionDirectorConnectionAggregateInput
+              OR: [ProductionDirectorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input ProductionDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: ProductionDirectorConnectionAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -794,7 +844,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               director: CreatureRelationshipFilters
-              directorAggregate: ProductionDirectorAggregateInput
+              directorAggregate: ProductionDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
               directorConnection: ProductionDirectorConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
@@ -838,6 +888,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -845,38 +896,37 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             type Query {
               creatures(limit: Int, offset: Int, where: CreatureWhere): [Creature!]!
-              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection!
               creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               director(limit: Int, offset: Int, where: CreatureWhere): [Creature!]!
-              directorAggregate(where: CreatureWhere): SeriesCreatureDirectorAggregationSelection
               directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
               title: String!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episode: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -887,10 +937,6 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               episode: Int!
               id: ID
               title: String!
-            }
-
-            type SeriesCreatureDirectorAggregationSelection {
-              count: Int!
             }
 
             input SeriesDeleteInput {
@@ -914,7 +960,18 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               where: CreatureConnectWhere
             }
 
+            input SeriesDirectorConnectionAggregateInput {
+              AND: [SeriesDirectorConnectionAggregateInput!]
+              NOT: SeriesDirectorConnectionAggregateInput
+              OR: [SeriesDirectorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input SeriesDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: SeriesDirectorConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
@@ -996,7 +1053,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               director: CreatureRelationshipFilters
-              directorAggregate: SeriesDirectorAggregateInput
+              directorAggregate: SeriesDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
               directorConnection: SeriesDirectorConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter

@@ -63,8 +63,12 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                 ${Node1.plural} {
                     uuid
                     name
-                    nodesAggregate(where: { active_EQ: true }) {
-                        count
+                    nodesConnection(where: { node: {active: { eq: true } } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -77,15 +81,19 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                 {
                     uuid: "id0",
                     name: "name0",
-                    nodesAggregate: {
-                        count: 0,
+                    nodesConnection: {
+                        aggregate: {
+                            count: { nodes: 0 },
+                        },
                     },
                 },
                 {
                     uuid: "id1",
                     name: "name1",
-                    nodesAggregate: {
-                        count: 2,
+                    nodesConnection: {
+                        aggregate: {
+                            count: { nodes: 2 },
+                        },
                     },
                 },
             ]),
@@ -98,8 +106,12 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                 ${Node1.plural} {
                     uuid
                     name
-                    activeNodes: nodesAggregate(where: { active_EQ: true }) {
-                        count
+                    activeNodes: nodesConnection(where: {node: { active: {eq: true } } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -113,14 +125,18 @@ describe("https://github.com/neo4j/graphql/issues/4759", () => {
                     uuid: "id0",
                     name: "name0",
                     activeNodes: {
-                        count: 0,
+                        aggregate: {
+                            count: { nodes: 0 },
+                        },
                     },
                 },
                 {
                     uuid: "id1",
                     name: "name1",
                     activeNodes: {
-                        count: 2,
+                        aggregate: {
+                            count: { nodes: 2 },
+                        },
                     },
                 },
             ]),

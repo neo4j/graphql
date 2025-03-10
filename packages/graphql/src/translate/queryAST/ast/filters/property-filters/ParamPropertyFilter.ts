@@ -30,15 +30,27 @@ type CypherVariable = Cypher.Variable | Cypher.Property | Cypher.Param;
 export class ParamPropertyFilter extends PropertyFilter {
     protected comparisonValue: CypherVariable;
 
-    constructor(options: {
+    constructor({
+        attribute,
+        comparisonValue,
+        operator,
+        attachedTo = "node",
+        relationship,
+    }: {
         attribute: AttributeAdapter;
         comparisonValue: CypherVariable;
-        operator: FilterOperator,
+        operator: FilterOperator;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }) {
-        super(options);
-        this.comparisonValue = options.comparisonValue;
+        super({
+            attribute,
+            operator,
+            relationship,
+            attachedTo,
+            comparisonValue,
+        });
+        this.comparisonValue = comparisonValue;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {

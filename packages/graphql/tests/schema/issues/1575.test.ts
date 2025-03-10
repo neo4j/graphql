@@ -38,6 +38,10 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateFoosMutationResponse {
               foos: [Foo!]!
               info: CreateInfo!
@@ -64,8 +68,8 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
               point: Point
             }
 
-            type FooAggregateSelection {
-              count: Int!
+            type FooAggregate {
+              count: Count!
             }
 
             input FooCreateInput {
@@ -116,6 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
             }
 
             type FoosConnection {
+              aggregate: FooAggregate!
               edges: [FooEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -184,7 +189,6 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
 
             type Query {
               foos(limit: Int, offset: Int, sort: [FooSort!], where: FooWhere): [Foo!]!
-              foosAggregate(where: FooWhere): FooAggregateSelection!
               foosConnection(after: String, first: Int, sort: [FooSort!], where: FooWhere): FoosConnection!
             }
 

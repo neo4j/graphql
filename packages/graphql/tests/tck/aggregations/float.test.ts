@@ -39,9 +39,13 @@ describe("Cypher Aggregations Float", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        min
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -53,9 +57,23 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: min(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -64,9 +82,13 @@ describe("Cypher Aggregations Float", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -78,9 +100,23 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { max: max(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,9 +125,13 @@ describe("Cypher Aggregations Float", () => {
     test("Average", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        average
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                average
+                            }
+                        }
                     }
                 }
             }
@@ -103,9 +143,23 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { average: avg(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -114,9 +168,13 @@ describe("Cypher Aggregations Float", () => {
     test("Sum", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        sum
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -128,9 +186,23 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { sum: sum(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -139,12 +211,16 @@ describe("Cypher Aggregations Float", () => {
     test("Min, Max, Sum and Average", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        min
-                        max
-                        average
-                        sum
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -156,9 +232,23 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -167,13 +257,19 @@ describe("Cypher Aggregations Float", () => {
     test("Min, Max, Sum and Average with count", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    count
-                    actorCount {
-                        min
-                        max
-                        average
-                        sum
+                moviesConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                        node {
+                            actorCount {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -185,13 +281,27 @@ describe("Cypher Aggregations Float", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
             }
-            RETURN { count: var0, actorCount: var1 }"
+            CALL {
+                WITH *
+                MATCH (this2:Movie)
+                WITH collect({ node: this2 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this2
+                    RETURN collect({ node: { __id: id(this2), __resolveType: \\"Movie\\" } }) AS var3
+                }
+                RETURN var3, totalCount
+            }
+            RETURN { edges: var3, totalCount: totalCount, aggregate: { count: var0, node: { actorCount: var1 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

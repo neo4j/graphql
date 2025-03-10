@@ -73,18 +73,22 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title = $param0 OR this1.title = $param1)
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE (this3.title = $param2 OR this3.title = $param3)
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this3), title: this3.title } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                        WHERE (this1.title = $param0 OR this1.title = $param1)
+                        WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this
+                        MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                        WHERE (this3.title = $param2 OR this3.title = $param3)
+                        WITH { node: { __resolveType: \\"Series\\", __id: id(this3), title: this3.title } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var4
             }

@@ -48,6 +48,20 @@ describe("162", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -157,13 +171,10 @@ describe("162", () => {
 
             type Query {
               tigerJawLevel2Part1s(limit: Int, offset: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              tigerJawLevel2Part1sAggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2Part1AggregateSelection!
               tigerJawLevel2Part1sConnection(after: String, first: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): TigerJawLevel2Part1sConnection!
               tigerJawLevel2s(limit: Int, offset: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): [TigerJawLevel2!]!
-              tigerJawLevel2sAggregate(where: TigerJawLevel2Where): TigerJawLevel2AggregateSelection!
               tigerJawLevel2sConnection(after: String, first: Int, sort: [TigerJawLevel2Sort!], where: TigerJawLevel2Where): TigerJawLevel2sConnection!
               tigers(limit: Int, offset: Int, sort: [TigerSort!], where: TigerWhere): [Tiger!]!
-              tigersAggregate(where: TigerWhere): TigerAggregateSelection!
               tigersConnection(after: String, first: Int, sort: [TigerSort!], where: TigerWhere): TigersConnection!
             }
 
@@ -179,8 +190,12 @@ describe("162", () => {
               x: Int
             }
 
-            type TigerAggregateSelection {
-              count: Int!
+            type TigerAggregate {
+              count: Count!
+              node: TigerAggregateNode!
+            }
+
+            type TigerAggregateNode {
               x: IntAggregateSelection!
             }
 
@@ -200,12 +215,11 @@ describe("162", () => {
             type TigerJawLevel2 {
               id: ID
               part1(limit: Int, offset: Int, sort: [TigerJawLevel2Part1Sort!], where: TigerJawLevel2Part1Where): [TigerJawLevel2Part1!]!
-              part1Aggregate(where: TigerJawLevel2Part1Where): TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection
               part1Connection(after: String, first: Int, sort: [TigerJawLevel2Part1ConnectionSort!], where: TigerJawLevel2Part1ConnectionWhere): TigerJawLevel2Part1Connection!
             }
 
-            type TigerJawLevel2AggregateSelection {
-              count: Int!
+            type TigerJawLevel2Aggregate {
+              count: Count!
             }
 
             input TigerJawLevel2CreateInput {
@@ -225,8 +239,11 @@ describe("162", () => {
             type TigerJawLevel2Part1 {
               id: ID
               tiger(limit: Int, offset: Int, sort: [TigerSort!], where: TigerWhere): [Tiger!]!
-              tigerAggregate(where: TigerWhere): TigerJawLevel2Part1TigerTigerAggregationSelection
               tigerConnection(after: String, first: Int, sort: [TigerJawLevel2Part1TigerConnectionSort!], where: TigerJawLevel2Part1TigerConnectionWhere): TigerJawLevel2Part1TigerConnection!
+            }
+
+            type TigerJawLevel2Part1Aggregate {
+              count: Count!
             }
 
             input TigerJawLevel2Part1AggregateInput {
@@ -239,10 +256,6 @@ describe("162", () => {
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-            }
-
-            type TigerJawLevel2Part1AggregateSelection {
-              count: Int!
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {
@@ -259,12 +272,24 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1Connection {
+              aggregate: TigerJawLevel2TigerJawLevel2Part1Part1AggregateSelection!
               edges: [TigerJawLevel2Part1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input TigerJawLevel2Part1ConnectionAggregateInput {
+              AND: [TigerJawLevel2Part1ConnectionAggregateInput!]
+              NOT: TigerJawLevel2Part1ConnectionAggregateInput
+              OR: [TigerJawLevel2Part1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input TigerJawLevel2Part1ConnectionFilters {
+              \\"\\"\\"
+              Filter TigerJawLevel2s by aggregating results on related TigerJawLevel2Part1Connections
+              \\"\\"\\"
+              aggregate: TigerJawLevel2Part1ConnectionAggregateInput
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
               \\"\\"\\"
@@ -380,12 +405,25 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1TigerConnection {
+              aggregate: TigerJawLevel2Part1TigerTigerAggregateSelection!
               edges: [TigerJawLevel2Part1TigerRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input TigerJawLevel2Part1TigerConnectionAggregateInput {
+              AND: [TigerJawLevel2Part1TigerConnectionAggregateInput!]
+              NOT: TigerJawLevel2Part1TigerConnectionAggregateInput
+              OR: [TigerJawLevel2Part1TigerConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
+            }
+
             input TigerJawLevel2Part1TigerConnectionFilters {
+              \\"\\"\\"
+              Filter TigerJawLevel2Part1s by aggregating results on related TigerJawLevel2Part1TigerConnections
+              \\"\\"\\"
+              aggregate: TigerJawLevel2Part1TigerConnectionAggregateInput
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
               \\"\\"\\"
@@ -464,8 +502,8 @@ describe("162", () => {
               node: Tiger!
             }
 
-            type TigerJawLevel2Part1TigerTigerAggregationSelection {
-              count: Int!
+            type TigerJawLevel2Part1TigerTigerAggregateSelection {
+              count: CountConnection!
               node: TigerJawLevel2Part1TigerTigerNodeAggregateSelection
             }
 
@@ -516,7 +554,7 @@ describe("162", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               tiger: TigerRelationshipFilters
-              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput
+              tigerAggregate: TigerJawLevel2Part1TigerAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the tigerConnection filter, please use { tigerConnection: { aggregate: {...} } } instead\\")
               tigerConnection: TigerJawLevel2Part1TigerConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2Part1s where all of the related TigerJawLevel2Part1TigerConnections match this filter
@@ -553,6 +591,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2Part1sConnection {
+              aggregate: TigerJawLevel2Part1Aggregate!
               edges: [TigerJawLevel2Part1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -565,8 +604,8 @@ describe("162", () => {
               id: SortDirection
             }
 
-            type TigerJawLevel2TigerJawLevel2Part1Part1AggregationSelection {
-              count: Int!
+            type TigerJawLevel2TigerJawLevel2Part1Part1AggregateSelection {
+              count: CountConnection!
             }
 
             input TigerJawLevel2UpdateInput {
@@ -586,7 +625,7 @@ describe("162", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               part1: TigerJawLevel2Part1RelationshipFilters
-              part1Aggregate: TigerJawLevel2Part1AggregateInput
+              part1Aggregate: TigerJawLevel2Part1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the part1Connection filter, please use { part1Connection: { aggregate: {...} } } instead\\")
               part1Connection: TigerJawLevel2Part1ConnectionFilters
               \\"\\"\\"
               Return TigerJawLevel2s where all of the related TigerJawLevel2Part1Connections match this filter
@@ -623,6 +662,7 @@ describe("162", () => {
             }
 
             type TigerJawLevel2sConnection {
+              aggregate: TigerJawLevel2Aggregate!
               edges: [TigerJawLevel2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -667,6 +707,7 @@ describe("162", () => {
             }
 
             type TigersConnection {
+              aggregate: TigerAggregate!
               edges: [TigerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

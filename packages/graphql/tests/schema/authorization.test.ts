@@ -47,6 +47,20 @@ describe("Authorization", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -126,14 +140,17 @@ describe("Authorization", () => {
 
             type Post {
               author(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              authorAggregate(where: UserWhere): PostUserAuthorAggregationSelection
               authorConnection(after: String, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               id: ID!
               name: String!
             }
 
-            type PostAggregateSelection {
-              count: Int!
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -156,12 +173,23 @@ describe("Authorization", () => {
             }
 
             type PostAuthorConnection {
+              aggregate: PostUserAuthorAggregateSelection!
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PostAuthorConnectionAggregateInput {
+              AND: [PostAuthorConnectionAggregateInput!]
+              NOT: PostAuthorConnectionAggregateInput
+              OR: [PostAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostAuthorNodeAggregationWhereInput
+            }
+
             input PostAuthorConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
+              aggregate: PostAuthorConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
               \\"\\"\\"
@@ -281,8 +309,8 @@ describe("Authorization", () => {
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
+            type PostUserAuthorAggregateSelection {
+              count: CountConnection!
               node: PostUserAuthorNodeAggregateSelection
             }
 
@@ -295,7 +323,7 @@ describe("Authorization", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               author: UserRelationshipFilters
-              authorAggregate: PostAuthorAggregateInput
+              authorAggregate: PostAuthorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the authorConnection filter, please use { authorConnection: { aggregate: {...} } } instead\\")
               authorConnection: PostAuthorConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostAuthorConnections match this filter
@@ -336,6 +364,7 @@ describe("Authorization", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -343,10 +372,8 @@ describe("Authorization", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -408,12 +435,15 @@ describe("Authorization", () => {
               id: ID!
               name: String!
               posts(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              postsAggregate(where: UserWhere): UserUserPostsAggregationSelection
               postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -463,12 +493,23 @@ describe("Authorization", () => {
             }
 
             type UserPostsConnection {
+              aggregate: UserUserPostsAggregateSelection!
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input UserPostsConnectionAggregateInput {
+              AND: [UserPostsConnectionAggregateInput!]
+              NOT: UserPostsConnectionAggregateInput
+              OR: [UserPostsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserPostsNodeAggregationWhereInput
+            }
+
             input UserPostsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserPostsConnections\\"\\"\\"
+              aggregate: UserPostsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"
@@ -584,8 +625,8 @@ describe("Authorization", () => {
               posts: [UserPostsUpdateFieldInput!]
             }
 
-            type UserUserPostsAggregationSelection {
-              count: Int!
+            type UserUserPostsAggregateSelection {
+              count: CountConnection!
               node: UserUserPostsNodeAggregateSelection
             }
 
@@ -610,7 +651,7 @@ describe("Authorization", () => {
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               posts: UserRelationshipFilters
-              postsAggregate: UserPostsAggregateInput
+              postsAggregate: UserPostsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the postsConnection filter, please use { postsConnection: { aggregate: {...} } } instead\\")
               postsConnection: UserPostsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
@@ -639,6 +680,7 @@ describe("Authorization", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

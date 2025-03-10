@@ -40,6 +40,10 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -77,7 +81,6 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
 
             type Query {
               test(limit: Int, offset: Int, sort: [TestSort!], where: TestWhere): [Test!]!
-              testAggregate(where: TestWhere): TestAggregateSelection!
               testConnection(after: String, first: Int, sort: [TestSort!], where: TestWhere): TestConnection!
             }
 
@@ -112,12 +115,17 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               Name: String
             }
 
-            type TestAggregateSelection {
+            type TestAggregate {
+              count: Count!
+              node: TestAggregateNode!
+            }
+
+            type TestAggregateNode {
               Name: StringAggregateSelection!
-              count: Int!
             }
 
             type TestConnection {
+              aggregate: TestAggregate!
               edges: [TestEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -84,6 +84,20 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -216,10 +230,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             type Query {
               resourceEntities(limit: Int, offset: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): [ResourceEntity!]!
-              resourceEntitiesAggregate(where: ResourceEntityWhere): ResourceEntityAggregateSelection!
               resourceEntitiesConnection(after: String, first: Int, sort: [ResourceEntitySort!], where: ResourceEntityWhere): ResourceEntitiesConnection!
               resources(limit: Int, offset: Int, sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              resourcesAggregate(where: ResourceWhere): ResourceAggregateSelection!
               resourcesConnection(after: String, first: Int, sort: [ResourceSort!], where: ResourceWhere): ResourcesConnection!
             }
 
@@ -228,7 +240,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               Resources encapsulating the given resource (e.g., a github org contains a repo)
               \\"\\"\\"
               containedBy(limit: Int, offset: Int, sort: [ResourceSort!], where: ResourceWhere): [Resource!]!
-              containedByAggregate(where: ResourceWhere): ResourceResourceContainedByAggregationSelection
               containedByConnection(after: String, first: Int, sort: [ResourceContainedByConnectionSort!], where: ResourceContainedByConnectionWhere): ResourceContainedByConnection!
               createdAt: DateTime!
               externalIds: [ID!]
@@ -241,8 +252,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               updatedAt: DateTime!
             }
 
-            type ResourceAggregateSelection {
-              count: Int!
+            type ResourceAggregate {
+              count: Count!
+              node: ResourceAggregateNode!
+            }
+
+            type ResourceAggregateNode {
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               updatedAt: DateTimeAggregateSelection!
@@ -275,12 +290,25 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceContainedByConnection {
+              aggregate: ResourceResourceContainedByAggregateSelection!
               edges: [ResourceContainedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ResourceContainedByConnectionAggregateInput {
+              AND: [ResourceContainedByConnectionAggregateInput!]
+              NOT: ResourceContainedByConnectionAggregateInput
+              OR: [ResourceContainedByConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ResourceContainedByNodeAggregationWhereInput
+            }
+
             input ResourceContainedByConnectionFilters {
+              \\"\\"\\"
+              Filter Resources by aggregating results on related ResourceContainedByConnections
+              \\"\\"\\"
+              aggregate: ResourceContainedByConnectionAggregateInput
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
               \\"\\"\\"
@@ -416,6 +444,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourceEntitiesConnection {
+              aggregate: ResourceEntityAggregate!
               edges: [ResourceEntityEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -431,8 +460,12 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               type: ResourceType!
             }
 
-            type ResourceEntityAggregateSelection {
-              count: Int!
+            type ResourceEntityAggregate {
+              count: Count!
+              node: ResourceEntityAggregateNode!
+            }
+
+            type ResourceEntityAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -493,8 +526,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               some: ResourceWhere
             }
 
-            type ResourceResourceContainedByAggregationSelection {
-              count: Int!
+            type ResourceResourceContainedByAggregateSelection {
+              count: CountConnection!
               node: ResourceResourceContainedByNodeAggregateSelection
             }
 
@@ -557,7 +590,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               NOT: ResourceWhere
               OR: [ResourceWhere!]
               containedBy: ResourceRelationshipFilters
-              containedByAggregate: ResourceContainedByAggregateInput
+              containedByAggregate: ResourceContainedByAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the containedByConnection filter, please use { containedByConnection: { aggregate: {...} } } instead\\")
               containedByConnection: ResourceContainedByConnectionFilters
               \\"\\"\\"
               Return Resources where all of the related ResourceContainedByConnections match this filter
@@ -624,6 +657,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             }
 
             type ResourcesConnection {
+              aggregate: ResourceAggregate!
               edges: [ResourceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

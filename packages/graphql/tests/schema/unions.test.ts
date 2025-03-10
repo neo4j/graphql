@@ -46,6 +46,10 @@ describe("Unions", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -76,8 +80,8 @@ describe("Unions", () => {
               id: ID
             }
 
-            type GenreAggregateSelection {
-              count: Int!
+            type GenreAggregate {
+              count: Count!
             }
 
             input GenreConnectWhere {
@@ -118,6 +122,7 @@ describe("Unions", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -144,8 +149,8 @@ describe("Unions", () => {
               searchNoDirective: Search
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieConnectInput {
@@ -371,6 +376,7 @@ describe("Unions", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -395,10 +401,8 @@ describe("Unions", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               searches(limit: Int, offset: Int, where: SearchWhere): [Search!]!
             }

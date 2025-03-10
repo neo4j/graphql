@@ -95,7 +95,6 @@ describe("nested aggregation on interface", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -120,12 +119,26 @@ describe("nested aggregation on interface", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorMovieActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -259,8 +272,12 @@ describe("nested aggregation on interface", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -278,8 +295,8 @@ describe("nested aggregation on interface", () => {
               node: Actor!
             }
 
-            type ActorMovieActedInAggregationSelection {
-              count: Int!
+            type ActorMovieActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorMovieActedInEdgeAggregateSelection
               node: ActorMovieActedInNodeAggregateSelection
             }
@@ -312,7 +329,7 @@ describe("nested aggregation on interface", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: MovieRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -347,9 +364,24 @@ describe("nested aggregation on interface", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -450,9 +482,13 @@ describe("nested aggregation on interface", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               cost: FloatAggregateSelection!
-              count: Int!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -534,6 +570,7 @@ describe("nested aggregation on interface", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -558,10 +595,8 @@ describe("nested aggregation on interface", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

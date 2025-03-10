@@ -59,8 +59,12 @@ describe("Plural directive", () => {
     test("Count Tech with plural techs using aggregation", async () => {
         const query = /* GraphQL */ `
             {
-                techsAggregate {
-                    count
+                techsConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -71,9 +75,22 @@ describe("Plural directive", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Tech)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Tech)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Tech\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

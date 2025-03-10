@@ -81,14 +81,16 @@ describe("Delete using top level aggregate where", () => {
             mutation {
                 ${postType.operations.update}(
                     where: { 
-                        likesAggregate: {
-                            count_EQ: 3
-                            node: {
-                                testString_SHORTEST_LENGTH_EQUAL: 3
+                        likesConnection: {
+                            aggregate: {
+                                count: { nodes: { eq: 3 } }
+                                node: {
+                                    testString: { shortestLength: { eq: 3 } }
+                                }
                             }
                         }
                     }
-                    update: { content_SET: "${updatedContent}" }
+                    update: { content: { set: "${updatedContent}" } }
                 ) {
                     ${postType.plural} {
                         id
@@ -109,18 +111,20 @@ describe("Delete using top level aggregate where", () => {
     });
 
     test("Top-level OR", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(where: { 
-                    likesAggregate: {
-                        OR: [
-                            { count_EQ: 3 }
-                            {
-                                node: {
-                                    testString_SHORTEST_LENGTH_EQUAL: 3
+                    likesConnection: {
+                        aggregate: {
+                            OR: [
+                                { count: { nodes: { eq: 3 } } },
+                                {
+                                    node: {
+                                        testString: { shortestLength: { eq: 3 } }
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }) {
                     ${postType.plural} {
@@ -142,18 +146,20 @@ describe("Delete using top level aggregate where", () => {
     });
 
     test("Top-level AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 ${postType.operations.update}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { count_EQ: 3 }
-                            {
-                                node: {
-                                    testString_SHORTEST_LENGTH_EQUAL: 3
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { count: { nodes: { eq: 3 } } },
+                                {
+                                    node: {
+                                        testString: { shortestLength: { eq: 3 } }
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }) {
                     ${postType.plural} {

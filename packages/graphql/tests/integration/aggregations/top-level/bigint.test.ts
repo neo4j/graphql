@@ -34,8 +34,8 @@ describe("aggregations-top_level-bigint", () => {
     test("should return the min of node properties", async () => {
         const movieType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
-            type ${movieType.name} @node {
+        const typeDefs = /* GraphQL */ `
+            type ${movieType} @node {
                 testString: String
                 imdbRatingBigInt: BigInt
             }
@@ -50,33 +50,44 @@ describe("aggregations-top_level-bigint", () => {
 
         await testHelper.executeCypher(
             `
-                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
-                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
-                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
-                    CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}1})
+                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
+                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
+                    CREATE (:${movieType} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType} {testString: "different-string", imdbRatingBigInt: ${bigInt}5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRatingBigInt {
-                            min
+        const query = /* GraphQL */ `
+            {
+                ${movieType.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRatingBigInt {
+                                min
+                            }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
-            imdbRatingBigInt: {
-                min: `${bigInt}1`,
+        expect(gqlResult.data).toEqual({
+            [movieType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRatingBigInt: {
+                            min: `${bigInt}1`,
+                        },
+                    },
+                },
             },
         });
     });
@@ -84,7 +95,7 @@ describe("aggregations-top_level-bigint", () => {
     test("should return the max of node properties", async () => {
         const movieType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${movieType.name} @node {
                 testString: String
                 imdbRatingBigInt: BigInt
@@ -104,29 +115,40 @@ describe("aggregations-top_level-bigint", () => {
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType.name} {testString: "different-string", imdbRatingBigInt: ${bigInt}5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRatingBigInt {
-                            max
+        const query = /* GraphQL */ `
+            {
+                ${movieType.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate { 
+                        node {
+                            imdbRatingBigInt {
+                                max
+                            }
                         }
-                    }
+                    }    
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
-            imdbRatingBigInt: {
-                max: `${bigInt}4`,
+        expect(gqlResult.data).toEqual({
+            [movieType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRatingBigInt: {
+                            max: `${bigInt}4`,
+                        },
+                    },
+                },
             },
         });
     });
@@ -134,7 +156,7 @@ describe("aggregations-top_level-bigint", () => {
     test("should return the average of node properties", async () => {
         const movieType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${movieType.name}  @node {
                 testString: String
                 imdbRatingBigInt: BigInt
@@ -154,29 +176,40 @@ describe("aggregations-top_level-bigint", () => {
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType.name} {testString: "different-string", imdbRatingBigInt: ${bigInt}5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRatingBigInt {
-                            average
+        const query = /* GraphQL */ `
+            {
+                ${movieType.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate { 
+                        node {
+                            imdbRatingBigInt {
+                                average
+                            }
                         }
                     }
-                }
-            `;
+                }    
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
-            imdbRatingBigInt: {
-                average: `${bigInt}2.5`,
+        expect(gqlResult.data).toEqual({
+            [movieType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRatingBigInt: {
+                            average: `${bigInt}2.5`,
+                        },
+                    },
+                },
             },
         });
     });
@@ -184,7 +217,7 @@ describe("aggregations-top_level-bigint", () => {
     test("should return the sum of node properties", async () => {
         const movieType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${movieType.name} @node {
                 testString: String
                 imdbRatingBigInt: BigInt
@@ -204,29 +237,40 @@ describe("aggregations-top_level-bigint", () => {
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType.name} {testString: "different-string", imdbRatingBigInt: ${bigInt}5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRatingBigInt {
-                            sum
+        const query = /* GraphQL */ `
+            {
+                ${movieType.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRatingBigInt {
+                                sum
+                            }
                         }
-                    }
+                    }    
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
-            imdbRatingBigInt: {
-                sum: "85899345890",
+        expect(gqlResult.data).toEqual({
+            [movieType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRatingBigInt: {
+                            sum: "85899345890",
+                        },
+                    },
+                },
             },
         });
     });
@@ -234,7 +278,7 @@ describe("aggregations-top_level-bigint", () => {
     test("should return the min, max, sum and average of node properties", async () => {
         const movieType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${movieType.name} @node {
                 testString: String
                 imdbRatingBigInt: BigInt
@@ -254,35 +298,46 @@ describe("aggregations-top_level-bigint", () => {
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}2})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}3})
                     CREATE (:${movieType.name} {testString: $testString, imdbRatingBigInt: ${bigInt}4})
+                    CREATE (:${movieType.name} {testString: "different-string", imdbRatingBigInt: ${bigInt}5})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${movieType.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        imdbRatingBigInt {
-                            min
-                            max
-                            average
-                            sum
+        const query = /* GraphQL */ `
+            {
+                ${movieType.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            imdbRatingBigInt {
+                                min
+                                max
+                                average
+                                sum
+                            }
                         }
-                    }
+                    }    
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[movieType.operations.aggregate]).toEqual({
-            imdbRatingBigInt: {
-                min: `${bigInt}1`,
-                max: `${bigInt}4`,
-                average: `${bigInt}2.5`,
-                sum: "85899345890",
+        expect(gqlResult.data).toEqual({
+            [movieType.operations.connection]: {
+                aggregate: {
+                    node: {
+                        imdbRatingBigInt: {
+                            min: `${bigInt}1`,
+                            max: `${bigInt}4`,
+                            average: `${bigInt}2.5`,
+                            sum: "85899345890",
+                        },
+                    },
+                },
             },
         });
     });

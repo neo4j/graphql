@@ -162,6 +162,10 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -204,11 +208,15 @@ describe("@populatedBy tests", () => {
                   id: ID
                 }
 
-                type MovieAggregateSelection {
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   callback1: StringAggregateSelection!
                   callback2: StringAggregateSelection!
                   callback3: StringAggregateSelection!
-                  count: Int!
                 }
 
                 input MovieCreateInput {
@@ -269,6 +277,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -290,7 +299,6 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -373,6 +381,10 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -439,11 +451,15 @@ describe("@populatedBy tests", () => {
                   id: ID
                 }
 
-                type MovieAggregateSelection {
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   callback1: IntAggregateSelection!
                   callback2: IntAggregateSelection!
                   callback3: IntAggregateSelection!
-                  count: Int!
                 }
 
                 input MovieCreateInput {
@@ -509,6 +525,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -530,7 +547,6 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -738,6 +754,20 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -778,8 +808,8 @@ describe("@populatedBy tests", () => {
                   id: ID!
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
+                type GenreAggregate {
+                  count: Count!
                 }
 
                 input GenreConnectWhere {
@@ -831,6 +861,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -862,13 +893,12 @@ describe("@populatedBy tests", () => {
 
                 type Movie {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -885,8 +915,8 @@ describe("@populatedBy tests", () => {
                   node: Movie!
                 }
 
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
+                type MovieGenreGenresAggregateSelection {
+                  count: CountConnection!
                   edge: MovieGenreGenresEdgeAggregateSelection
                 }
 
@@ -915,12 +945,23 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
+                  aggregate: MovieGenreGenresAggregateSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionAggregateInput {
+                  AND: [MovieGenresConnectionAggregateInput!]
+                  NOT: MovieGenresConnectionAggregateInput
+                  OR: [MovieGenresConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  edge: RelPropertiesAggregationWhereInput
+                }
+
                 input MovieGenresConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+                  aggregate: MovieGenresConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1008,7 +1049,7 @@ describe("@populatedBy tests", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   genres: GenreRelationshipFilters
-                  genresAggregate: MovieGenresAggregateInput
+                  genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the genresConnection filter, please use { genresConnection: { aggregate: {...} } } instead\\")
                   genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
@@ -1043,6 +1084,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1067,10 +1109,8 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1288,6 +1328,20 @@ describe("@populatedBy tests", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -1328,8 +1382,8 @@ describe("@populatedBy tests", () => {
                   id: ID!
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
+                type GenreAggregate {
+                  count: Count!
                 }
 
                 input GenreConnectWhere {
@@ -1381,6 +1435,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1434,13 +1489,12 @@ describe("@populatedBy tests", () => {
 
                 type Movie {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection
                   genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection!
                   id: ID
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -1457,8 +1511,8 @@ describe("@populatedBy tests", () => {
                   node: Movie!
                 }
 
-                type MovieGenreGenresAggregationSelection {
-                  count: Int!
+                type MovieGenreGenresAggregateSelection {
+                  count: CountConnection!
                   edge: MovieGenreGenresEdgeAggregateSelection
                 }
 
@@ -1487,12 +1541,23 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MovieGenresConnection {
+                  aggregate: MovieGenreGenresAggregateSelection!
                   edges: [MovieGenresRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieGenresConnectionAggregateInput {
+                  AND: [MovieGenresConnectionAggregateInput!]
+                  NOT: MovieGenresConnectionAggregateInput
+                  OR: [MovieGenresConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  edge: RelPropertiesAggregationWhereInput
+                }
+
                 input MovieGenresConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+                  aggregate: MovieGenresConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
                   \\"\\"\\"
@@ -1580,7 +1645,7 @@ describe("@populatedBy tests", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   genres: GenreRelationshipFilters
-                  genresAggregate: MovieGenresAggregateInput
+                  genresAggregate: MovieGenresAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the genresConnection filter, please use { genresConnection: { aggregate: {...} } } instead\\")
                   genresConnection: MovieGenresConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieGenresConnections match this filter
@@ -1615,6 +1680,7 @@ describe("@populatedBy tests", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1639,10 +1705,8 @@ describe("@populatedBy tests", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 

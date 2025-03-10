@@ -51,6 +51,10 @@ describe("@vector schema", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -83,8 +87,12 @@ describe("@vector schema", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -151,6 +159,7 @@ describe("@vector schema", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -179,7 +188,6 @@ describe("@vector schema", () => {
             type Query {
               descriptionQuery(after: String, first: Int, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               titleQuery(after: String, first: Int, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
             }

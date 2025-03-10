@@ -75,6 +75,10 @@ describe("Comments", () => {
               set: Boolean
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -209,10 +213,14 @@ describe("Comments", () => {
               isActive: Boolean
             }
 
-            type MovieAggregateSelection {
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             input MovieCreateInput {
@@ -297,6 +305,7 @@ describe("Comments", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -318,7 +327,6 @@ describe("Comments", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -373,8 +381,12 @@ describe("Comments", () => {
                   name: String
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -427,9 +439,24 @@ describe("Comments", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -495,13 +522,12 @@ describe("Comments", () => {
                 type Movie {
                   \\"\\"\\"Actors in Movie\\"\\"\\"
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
-                type MovieActorActorsAggregationSelection {
-                  count: Int!
+                type MovieActorActorsAggregateSelection {
+                  count: CountConnection!
                   node: MovieActorActorsNodeAggregateSelection
                 }
 
@@ -527,12 +553,23 @@ describe("Comments", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MovieActorActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -619,8 +656,8 @@ describe("Comments", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -655,7 +692,7 @@ describe("Comments", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: ActorRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -690,6 +727,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -714,10 +752,8 @@ describe("Comments", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -878,7 +914,6 @@ describe("Comments", () => {
                 type Actor {
                   \\"\\"\\"Acted in Production\\"\\"\\"
                   actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -903,12 +938,26 @@ describe("Comments", () => {
                 }
 
                 type ActorActedInConnection {
+                  aggregate: ActorProductionActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  edge: ActedInAggregationWhereInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1000,8 +1049,12 @@ describe("Comments", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -1019,8 +1072,8 @@ describe("Comments", () => {
                   node: Actor!
                 }
 
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
+                type ActorProductionActedInAggregateSelection {
+                  count: CountConnection!
                   edge: ActorProductionActedInEdgeAggregateSelection
                   node: ActorProductionActedInNodeAggregateSelection
                 }
@@ -1051,7 +1104,7 @@ describe("Comments", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -1086,9 +1139,24 @@ describe("Comments", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -1169,8 +1237,12 @@ describe("Comments", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   runtime: IntAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1222,6 +1294,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1251,8 +1324,12 @@ describe("Comments", () => {
                   title: String!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
+                type ProductionAggregate {
+                  count: Count!
+                  node: ProductionAggregateNode!
+                }
+
+                type ProductionAggregateNode {
                   title: StringAggregateSelection!
                 }
 
@@ -1312,6 +1389,7 @@ describe("Comments", () => {
                 }
 
                 type ProductionsConnection {
+                  aggregate: ProductionAggregate!
                   edges: [ProductionEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1319,16 +1397,12 @@ describe("Comments", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -1337,13 +1411,18 @@ describe("Comments", () => {
                   title: String!
                 }
 
-                type SeriesAggregateSelection {
-                  count: Int!
+                type SeriesAggregate {
+                  count: Count!
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
                   episodes: IntAggregateSelection!
                   title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1479,6 +1558,10 @@ describe("Comments", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 type CreateGenresMutationResponse {
                   genres: [Genre!]!
                   info: CreateInfo!
@@ -1509,8 +1592,8 @@ describe("Comments", () => {
                   id: ID
                 }
 
-                type GenreAggregateSelection {
-                  count: Int!
+                type GenreAggregate {
+                  count: Count!
                 }
 
                 input GenreConnectWhere {
@@ -1551,6 +1634,7 @@ describe("Comments", () => {
                 }
 
                 type GenresConnection {
+                  aggregate: GenreAggregate!
                   edges: [GenreEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1577,8 +1661,8 @@ describe("Comments", () => {
                   searchNoDirective: Search
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieConnectInput {
@@ -1804,6 +1888,7 @@ describe("Comments", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1828,10 +1913,8 @@ describe("Comments", () => {
 
                 type Query {
                   genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-                  genresAggregate(where: GenreWhere): GenreAggregateSelection!
                   genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   searches(limit: Int, offset: Int, where: SearchWhere): [Search!]!
                 }

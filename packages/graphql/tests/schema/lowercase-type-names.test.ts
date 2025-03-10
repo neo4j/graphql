@@ -51,9 +51,24 @@ describe("lower case type names", () => {
             }
 
             type ActorsConnection {
+              aggregate: actorAggregate!
               edges: [actorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -154,6 +169,7 @@ describe("lower case type names", () => {
             }
 
             type MoviesConnection {
+              aggregate: movieAggregate!
               edges: [movieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -178,10 +194,8 @@ describe("lower case type names", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): actorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [actorSort!], where: actorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): movieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [movieSort!], where: movieWhere): MoviesConnection!
             }
 
@@ -242,14 +256,17 @@ describe("lower case type names", () => {
             type actor {
               createdAt: DateTime
               movies(limit: Int, offset: Int, sort: [movieSort!], where: movieWhere): [movie!]!
-              moviesAggregate(where: movieWhere): actormovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [actorMoviesConnectionSort!], where: actorMoviesConnectionWhere): actorMoviesConnection!
               name: String
               year: Int
             }
 
-            type actorAggregateSelection {
-              count: Int!
+            type actorAggregate {
+              count: Count!
+              node: actorAggregateNode!
+            }
+
+            type actorAggregateNode {
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -302,12 +319,23 @@ describe("lower case type names", () => {
             }
 
             type actorMoviesConnection {
+              aggregate: actormovieMoviesAggregateSelection!
               edges: [actorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input actorMoviesConnectionAggregateInput {
+              AND: [actorMoviesConnectionAggregateInput!]
+              NOT: actorMoviesConnectionAggregateInput
+              OR: [actorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: actorMoviesNodeAggregationWhereInput
+            }
+
             input actorMoviesConnectionFilters {
+              \\"\\"\\"Filter actors by aggregating results on related actorMoviesConnections\\"\\"\\"
+              aggregate: actorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
               \\"\\"\\"
@@ -488,7 +516,7 @@ describe("lower case type names", () => {
               createdAt_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lt: ... }\\")
               createdAt_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter createdAt: { lte: ... }\\")
               movies: movieRelationshipFilters
-              moviesAggregate: actorMoviesAggregateInput
+              moviesAggregate: actorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: actorMoviesConnectionFilters
               \\"\\"\\"
               Return actors where all of the related actorMoviesConnections match this filter
@@ -529,8 +557,8 @@ describe("lower case type names", () => {
               year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
-            type actormovieMoviesAggregationSelection {
-              count: Int!
+            type actormovieMoviesAggregateSelection {
+              count: CountConnection!
               node: actormovieMoviesNodeAggregateSelection
             }
 
@@ -543,7 +571,6 @@ describe("lower case type names", () => {
 
             type movie {
               actors(limit: Int, offset: Int, sort: [actorSort!], where: actorWhere): [actor!]!
-              actorsAggregate(where: actorWhere): movieactorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [movieActorsConnectionSort!], where: movieActorsConnectionWhere): movieActorsConnection!
               createdAt: DateTime
               name: String
@@ -570,12 +597,23 @@ describe("lower case type names", () => {
             }
 
             type movieActorsConnection {
+              aggregate: movieactorActorsAggregateSelection!
               edges: [movieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input movieActorsConnectionAggregateInput {
+              AND: [movieActorsConnectionAggregateInput!]
+              NOT: movieActorsConnectionAggregateInput
+              OR: [movieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: movieActorsNodeAggregationWhereInput
+            }
+
             input movieActorsConnectionFilters {
+              \\"\\"\\"Filter movies by aggregating results on related movieActorsConnections\\"\\"\\"
+              aggregate: movieActorsConnectionAggregateInput
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter
               \\"\\"\\"
@@ -696,8 +734,12 @@ describe("lower case type names", () => {
               where: movieActorsConnectionWhere
             }
 
-            type movieAggregateSelection {
-              count: Int!
+            type movieAggregate {
+              count: Count!
+              node: movieAggregateNode!
+            }
+
+            type movieAggregateNode {
               createdAt: DateTimeAggregateSelection!
               name: StringAggregateSelection!
               testId: StringAggregateSelection!
@@ -773,7 +815,7 @@ describe("lower case type names", () => {
               NOT: movieWhere
               OR: [movieWhere!]
               actors: actorRelationshipFilters
-              actorsAggregate: movieActorsAggregateInput
+              actorsAggregate: movieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: movieActorsConnectionFilters
               \\"\\"\\"
               Return movies where all of the related movieActorsConnections match this filter
@@ -827,8 +869,8 @@ describe("lower case type names", () => {
               year_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter year: { lte: ... }\\")
             }
 
-            type movieactorActorsAggregationSelection {
-              count: Int!
+            type movieactorActorsAggregateSelection {
+              count: CountConnection!
               node: movieactorActorsNodeAggregateSelection
             }
 

@@ -50,6 +50,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -112,7 +126,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -131,12 +144,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -193,8 +217,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -206,8 +230,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -232,7 +256,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -267,6 +291,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -290,6 +315,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -299,8 +325,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -350,10 +380,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -433,6 +461,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -495,7 +537,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -514,12 +555,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -589,8 +641,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -603,8 +655,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -630,7 +682,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -665,6 +717,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -688,6 +741,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -697,8 +751,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -748,10 +806,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -831,6 +887,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -893,7 +963,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -916,12 +985,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -987,8 +1067,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -1001,8 +1081,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1028,7 +1108,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -1063,6 +1143,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1086,6 +1167,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1095,8 +1177,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -1150,10 +1236,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1233,6 +1317,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -1295,7 +1393,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -1314,12 +1411,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1385,8 +1493,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -1398,8 +1506,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1425,7 +1533,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -1460,6 +1568,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1483,6 +1592,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1492,8 +1602,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -1543,10 +1657,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1626,6 +1738,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -1688,7 +1814,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -1707,12 +1832,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -1778,8 +1914,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -1795,8 +1931,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1822,7 +1958,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -1857,6 +1993,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1880,6 +2017,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1889,8 +2027,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -1940,10 +2082,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -2023,6 +2163,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -2085,7 +2239,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -2104,12 +2257,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2175,8 +2339,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -2188,8 +2352,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2215,7 +2379,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -2250,6 +2414,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2273,6 +2438,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2282,8 +2448,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -2333,10 +2503,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -2417,6 +2585,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -2479,7 +2661,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -2498,12 +2679,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2560,8 +2752,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -2573,8 +2765,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2599,7 +2791,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -2634,6 +2826,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2657,6 +2850,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2666,8 +2860,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -2717,10 +2915,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -2802,6 +2998,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -2864,7 +3074,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -2883,12 +3092,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -2945,8 +3165,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -2958,8 +3178,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2984,7 +3204,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -3019,6 +3239,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3042,6 +3263,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3052,8 +3274,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -3110,10 +3336,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -3194,6 +3418,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -3256,11 +3494,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -3282,12 +3518,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -3374,8 +3621,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -3392,8 +3639,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -3401,8 +3648,8 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
+                type MoviePersonProducersAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -3424,12 +3671,25 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregateSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
                 input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -3514,7 +3774,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -3547,7 +3807,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -3576,6 +3836,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3599,6 +3860,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3608,8 +3870,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -3663,10 +3929,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -3747,6 +4011,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -3809,11 +4087,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -3831,12 +4107,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -3906,8 +4193,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -3920,8 +4207,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -3929,8 +4216,8 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
+                type MoviePersonProducersAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -3952,12 +4239,25 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregateSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
                 input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -4042,7 +4342,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -4075,7 +4375,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -4104,6 +4404,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4127,6 +4428,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4136,8 +4438,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -4187,10 +4493,8 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -4283,6 +4587,10 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -4383,8 +4691,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -4447,6 +4755,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4478,8 +4787,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -4517,6 +4830,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4537,8 +4851,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -4576,6 +4894,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4588,14 +4907,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -4677,6 +4993,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -4815,8 +5135,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -4881,6 +5201,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4912,8 +5233,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -4951,6 +5276,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -4971,8 +5297,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -5010,6 +5340,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5022,14 +5353,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -5111,6 +5439,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -5249,8 +5581,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -5315,6 +5647,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5346,8 +5679,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -5389,6 +5726,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5409,8 +5747,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -5452,6 +5794,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5464,14 +5807,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -5553,6 +5893,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -5678,8 +6022,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -5743,6 +6087,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5774,8 +6119,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -5813,6 +6162,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5833,8 +6183,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -5872,6 +6226,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -5884,14 +6239,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -5973,6 +6325,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -6103,8 +6459,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -6172,6 +6528,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6203,8 +6560,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -6242,6 +6603,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6262,8 +6624,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -6301,6 +6667,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6313,14 +6680,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -6402,6 +6766,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -6527,8 +6895,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -6592,6 +6960,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6623,8 +6992,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -6662,6 +7035,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6682,8 +7056,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -6721,6 +7099,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -6733,14 +7112,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -6823,6 +7199,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -6925,8 +7305,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -6989,6 +7369,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7020,8 +7401,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -7059,6 +7444,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7079,8 +7465,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -7118,6 +7508,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7130,14 +7521,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -7224,6 +7612,10 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                type Count {
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -7324,8 +7716,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -7388,6 +7780,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7420,8 +7813,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -7466,6 +7863,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7487,8 +7885,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -7533,6 +7935,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -7545,14 +7948,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -7635,6 +8035,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -7822,8 +8226,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -7991,6 +8395,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8022,8 +8427,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -8065,6 +8474,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8085,8 +8495,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -8128,6 +8542,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8140,14 +8555,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -8230,6 +8642,10 @@ describe("Relationship nested operations", () => {
                 "schema {
                   query: Query
                   mutation: Mutation
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 \\"\\"\\"
@@ -8370,8 +8786,8 @@ describe("Relationship nested operations", () => {
                   PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -8535,6 +8951,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8566,8 +8983,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -8605,6 +9026,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8625,8 +9047,12 @@ describe("Relationship nested operations", () => {
                   nameTwo: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -8664,6 +9090,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -8676,14 +9103,11 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -8777,6 +9201,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -8857,7 +9295,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -8876,12 +9313,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -8938,8 +9386,8 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -8951,8 +9399,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -8977,7 +9425,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -9012,6 +9460,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9038,6 +9487,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9047,8 +9497,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -9067,8 +9521,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -9114,6 +9572,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9141,8 +9600,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -9180,6 +9643,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9200,16 +9664,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -9303,6 +9763,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -9383,7 +9857,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -9402,12 +9875,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -9477,8 +9961,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -9491,8 +9975,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -9518,7 +10002,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -9553,6 +10037,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9579,6 +10064,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9588,8 +10074,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -9613,8 +10103,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -9660,6 +10154,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9687,8 +10182,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -9726,6 +10225,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -9746,16 +10246,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -9849,6 +10345,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -9929,7 +10439,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -9952,12 +10461,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -10023,8 +10543,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -10037,8 +10557,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -10064,7 +10584,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10099,6 +10619,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10125,6 +10646,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10134,8 +10656,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -10158,8 +10684,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -10205,6 +10735,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10232,8 +10763,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -10271,6 +10806,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10291,16 +10827,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -10394,6 +10926,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -10474,7 +11020,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -10493,12 +11038,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -10564,8 +11120,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -10577,8 +11133,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -10604,7 +11160,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -10639,6 +11195,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10665,6 +11222,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10674,8 +11232,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -10694,8 +11256,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -10741,6 +11307,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10768,8 +11335,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -10807,6 +11378,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -10832,16 +11404,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -10935,6 +11503,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -11015,7 +11597,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -11034,12 +11615,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -11105,8 +11697,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -11122,8 +11714,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -11149,7 +11741,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11184,6 +11776,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11210,6 +11803,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11219,8 +11813,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -11239,8 +11837,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -11286,6 +11888,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11313,8 +11916,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -11352,6 +11959,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11372,16 +11980,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -11475,6 +12079,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -11555,7 +12173,6 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
@@ -11574,12 +12191,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -11645,8 +12273,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -11658,8 +12286,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -11685,7 +12313,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -11720,6 +12348,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11746,6 +12375,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11755,8 +12385,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -11775,8 +12409,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -11822,6 +12460,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11849,8 +12488,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -11888,6 +12531,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -11908,16 +12552,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -12012,6 +12652,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -12092,11 +12746,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -12118,12 +12770,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -12210,8 +12873,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -12228,8 +12891,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -12237,8 +12900,8 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
+                type MoviePersonProducersAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -12260,12 +12923,25 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregateSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
                 input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -12350,7 +13026,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -12383,7 +13059,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -12412,6 +13088,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -12438,6 +13115,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -12447,8 +13125,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -12476,8 +13158,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -12523,6 +13209,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -12550,8 +13237,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -12589,6 +13280,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -12614,16 +13306,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -12719,6 +13407,20 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
+                }
+
                 \\"\\"\\"
                 Information about the number of nodes and relationships created during a create mutation
                 \\"\\"\\"
@@ -12799,11 +13501,9 @@ describe("Relationship nested operations", () => {
 
                 type Movie {
                   actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
                   actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                   producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(where: PersonWhere): MoviePersonProducersAggregationSelection
                   producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
@@ -12821,12 +13521,23 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieActorsConnection {
+                  aggregate: MoviePersonActorsAggregateSelection!
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
                 input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
@@ -12901,8 +13612,8 @@ describe("Relationship nested operations", () => {
                   where: MovieActorsConnectionWhere
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
                 }
 
                 input MovieCreateInput {
@@ -12919,8 +13630,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
+                type MoviePersonActorsAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -12928,8 +13639,8 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
+                type MoviePersonProducersAggregateSelection {
+                  count: CountConnection!
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
@@ -12951,12 +13662,25 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MovieProducersConnection {
+                  aggregate: MoviePersonProducersAggregateSelection!
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
                 input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
@@ -13041,7 +13765,7 @@ describe("Relationship nested operations", () => {
                   NOT: MovieWhere
                   OR: [MovieWhere!]
                   actors: PersonRelationshipFilters
-                  actorsAggregate: MovieActorsAggregateInput
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                   actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
@@ -13074,7 +13798,7 @@ describe("Relationship nested operations", () => {
                   id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
                   id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                   producers: PersonRelationshipFilters
-                  producersAggregate: MovieProducersAggregateInput
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
                   producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
@@ -13103,6 +13827,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -13129,6 +13854,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PeopleConnection {
+                  aggregate: PersonAggregate!
                   edges: [PersonEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -13138,8 +13864,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
+                type PersonAggregate {
+                  count: Count!
+                  node: PersonAggregateNode!
+                }
+
+                type PersonAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -13163,8 +13893,12 @@ describe("Relationship nested operations", () => {
                   someExtraProp: [Int!]!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
+                type PersonOneAggregate {
+                  count: Count!
+                  node: PersonOneAggregateNode!
+                }
+
+                type PersonOneAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -13210,6 +13944,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonOnesConnection {
+                  aggregate: PersonOneAggregate!
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -13237,8 +13972,12 @@ describe("Relationship nested operations", () => {
                   name: String
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
+                type PersonTwoAggregate {
+                  count: Count!
+                  node: PersonTwoAggregateNode!
+                }
+
+                type PersonTwoAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -13276,6 +14015,7 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwosConnection {
+                  aggregate: PersonTwoAggregate!
                   edges: [PersonTwoEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -13296,16 +14036,12 @@ describe("Relationship nested operations", () => {
 
                 type Query {
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                   personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
                   personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 

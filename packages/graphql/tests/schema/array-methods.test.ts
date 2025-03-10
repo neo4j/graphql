@@ -85,7 +85,6 @@ describe("Arrays Methods", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String
             }
@@ -110,12 +109,25 @@ describe("Arrays Methods", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorMovieActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -214,8 +226,12 @@ describe("Arrays Methods", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -245,8 +261,8 @@ describe("Arrays Methods", () => {
               node: Actor!
             }
 
-            type ActorMovieActedInAggregationSelection {
-              count: Int!
+            type ActorMovieActedInAggregateSelection {
+              count: CountConnection!
               node: ActorMovieActedInNodeAggregateSelection
             }
 
@@ -283,7 +299,7 @@ describe("Arrays Methods", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: MovieRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -318,9 +334,24 @@ describe("Arrays Methods", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -422,15 +453,14 @@ describe("Arrays Methods", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float!
               id: ID!
               ratings: [Float!]!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
               node: MovieActorActorsNodeAggregateSelection
             }
 
@@ -458,12 +488,23 @@ describe("Arrays Methods", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -557,9 +598,13 @@ describe("Arrays Methods", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               averageRating: FloatAggregateSelection!
-              count: Int!
             }
 
             input MovieConnectInput {
@@ -630,7 +675,7 @@ describe("Arrays Methods", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -675,6 +720,7 @@ describe("Arrays Methods", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -699,10 +745,8 @@ describe("Arrays Methods", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

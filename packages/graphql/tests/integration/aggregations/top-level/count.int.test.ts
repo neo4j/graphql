@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Aggregate -> count", () => {
@@ -32,7 +31,7 @@ describe("Aggregate -> count", () => {
     test("should count nodes", async () => {
         const randomType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${randomType.name} @node {
                 id: ID
             }
@@ -47,24 +46,36 @@ describe("Aggregate -> count", () => {
                 `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                 {
-                    ${randomType.operations.aggregate}{
-                      count
+                    ${randomType.operations.connection}{
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
-            `;
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
+        expect(gqlResult.data).toEqual({
+            [randomType.operations.connection]: {
+                aggregate: {
+                    count: {
+                        nodes: 2,
+                    },
+                },
+            },
+        });
     });
 
     test("should count nodes with where and or predicate", async () => {
         const randomType = testHelper.createUniqueType("Movie");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${randomType.name} @node {
                 id: ID
             }
@@ -72,34 +83,52 @@ describe("Aggregate -> count", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const id1 = generate({
-            charset: "alphabetic",
-        });
+        const id1 = "id1";
 
-        const id2 = generate({
-            charset: "alphabetic",
-        });
+        const id2 = "id2";
+
+        const id3 = "id3";
 
         await testHelper.executeCypher(
             `
                 CREATE (:${randomType.name} {id: $id1})
                 CREATE (:${randomType.name} {id: $id2})
+                CREATE (:${randomType.name} {id: $id3})
             `,
-            { id1, id2 }
+            { id1, id2, id3 }
         );
 
-        const query = `
-                {
-                  ${randomType.operations.aggregate}(where: { OR: [{id_EQ: "${id1}"}, {id_EQ: "${id2}"}] }){
-                    count
-                  }
+        const query = /* GraphQL */ `
+            {
+                ${randomType.operations.connection}(
+                    where: { 
+                        OR: [
+                            { id: { eq: "${id1}" } },
+                            { id: { eq: "${id2}" } }
+                        ]
+                    }
+                ) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[randomType.operations.aggregate].count).toBe(2);
+        expect(gqlResult.data).toEqual({
+            [randomType.operations.connection]: {
+                aggregate: {
+                    count: {
+                        nodes: 2,
+                    },
+                },
+            },
+        });
     });
 });

@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Date", () => {
@@ -37,6 +37,10 @@ describe("Date", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -97,8 +101,8 @@ describe("Date", () => {
               id: ID
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -146,6 +150,7 @@ describe("Date", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -167,7 +172,6 @@ describe("Date", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

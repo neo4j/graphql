@@ -49,10 +49,14 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               code: String
             }
 
-            type AWSAccountAggregateSelection {
+            type AWSAccountAggregate {
+              count: Count!
+              node: AWSAccountAggregateNode!
+            }
+
+            type AWSAccountAggregateNode {
               accountName: StringAggregateSelection!
               code: StringAggregateSelection!
-              count: Int!
             }
 
             input AWSAccountCreateInput {
@@ -99,9 +103,14 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type AwsAccountsConnection {
+              aggregate: AWSAccountAggregate!
               edges: [AWSAccountEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateAwsAccountsMutationResponse {
@@ -127,9 +136,13 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
               zoneType: String
             }
 
-            type DNSZoneAggregateSelection {
+            type DNSZoneAggregate {
+              count: Count!
+              node: DNSZoneAggregateNode!
+            }
+
+            type DNSZoneAggregateNode {
               awsId: StringAggregateSelection!
-              count: Int!
               zoneType: StringAggregateSelection!
             }
 
@@ -185,6 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
             }
 
             type DnsZonesConnection {
+              aggregate: DNSZoneAggregate!
               edges: [DNSZoneEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -209,10 +223,8 @@ describe("https://github.com/neo4j/graphql/issues/1038", () => {
 
             type Query {
               awsAccounts(limit: Int, offset: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): [AWSAccount!]!
-              awsAccountsAggregate(where: AWSAccountWhere): AWSAccountAggregateSelection!
               awsAccountsConnection(after: String, first: Int, sort: [AWSAccountSort!], where: AWSAccountWhere): AwsAccountsConnection!
               dnsZones(limit: Int, offset: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): [DNSZone!]!
-              dnsZonesAggregate(where: DNSZoneWhere): DNSZoneAggregateSelection!
               dnsZonesConnection(after: String, first: Int, sort: [DNSZoneSort!], where: DNSZoneWhere): DnsZonesConnection!
             }
 

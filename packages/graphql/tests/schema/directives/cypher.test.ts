@@ -145,8 +145,12 @@ describe("Cypher", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -195,6 +199,7 @@ describe("Cypher", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -275,6 +280,10 @@ describe("Cypher", () => {
             input CartesianPointListFilters {
               eq: [CartesianPointInput!]
               includes: CartesianPointInput
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -487,8 +496,8 @@ describe("Cypher", () => {
               list_of_custom_times: [Time]
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -679,6 +688,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -751,10 +761,8 @@ describe("Cypher", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -848,6 +856,10 @@ describe("Cypher", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -873,8 +885,8 @@ describe("Cypher", () => {
               custom_cypher_string_list: [String]
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -906,6 +918,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -927,7 +940,6 @@ describe("Cypher", () => {
 
             type Query {
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -970,6 +982,10 @@ describe("Cypher", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -995,8 +1011,8 @@ describe("Cypher", () => {
               custom_string_with_param(param: String): String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -1032,6 +1048,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1053,7 +1070,6 @@ describe("Cypher", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -1127,8 +1143,12 @@ describe("Cypher", () => {
               title: String
             }
 
-            type BlogAggregateSelection {
-              count: Int!
+            type BlogAggregate {
+              count: Count!
+              node: BlogAggregateNode!
+            }
+
+            type BlogAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -1172,6 +1192,7 @@ describe("Cypher", () => {
             }
 
             type BlogsConnection {
+              aggregate: BlogAggregate!
               edges: [BlogEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1182,6 +1203,10 @@ describe("Cypher", () => {
             input ContentWhere {
               Blog: BlogWhere
               Post: PostWhere
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateBlogsMutationResponse {
@@ -1231,9 +1256,13 @@ describe("Cypher", () => {
               content: String
             }
 
-            type PostAggregateSelection {
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             input PostCreateInput {
@@ -1281,6 +1310,7 @@ describe("Cypher", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1288,11 +1318,9 @@ describe("Cypher", () => {
 
             type Query {
               blogs(limit: Int, offset: Int, sort: [BlogSort!], where: BlogWhere): [Blog!]!
-              blogsAggregate(where: BlogWhere): BlogAggregateSelection!
               blogsConnection(after: String, first: Int, sort: [BlogSort!], where: BlogWhere): BlogsConnection!
               contents(limit: Int, offset: Int, where: ContentWhere): [Content!]!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
             }
 
@@ -1408,8 +1436,12 @@ describe("Cypher", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1464,9 +1496,14 @@ describe("Cypher", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1500,8 +1537,8 @@ describe("Cypher", () => {
               actors: [Actor]
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -1547,6 +1584,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1574,8 +1612,8 @@ describe("Cypher", () => {
               actors: [Actor]
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
             }
 
             type ProductionEdge {
@@ -1595,6 +1633,7 @@ describe("Cypher", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1602,13 +1641,10 @@ describe("Cypher", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, where: ProductionWhere): ProductionsConnection!
             }
 
@@ -1719,8 +1755,12 @@ describe("Cypher", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1775,9 +1815,14 @@ describe("Cypher", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1811,8 +1856,8 @@ describe("Cypher", () => {
               actors: [Actor]
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -1858,6 +1903,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1882,10 +1928,8 @@ describe("Cypher", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -1979,8 +2023,12 @@ describe("Cypher", () => {
               totalScreenTime: Int!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -2026,9 +2074,14 @@ describe("Cypher", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -2086,8 +2139,8 @@ describe("Cypher", () => {
               id: ID
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -2124,6 +2177,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2148,10 +2202,8 @@ describe("Cypher", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -2220,6 +2272,10 @@ describe("Cypher", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -2246,8 +2302,12 @@ describe("Cypher", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -2292,6 +2352,7 @@ describe("Cypher", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2313,7 +2374,6 @@ describe("Cypher", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

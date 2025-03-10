@@ -70,9 +70,13 @@ describe("Field Level Aggregations Field Authorization", () => {
     test("fail title validation", async () => {
         const query = `
             query {
-                ${Series.operations.aggregate} {
-                    title {
-                        longest
+                ${Series.operations.connection} {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -90,10 +94,12 @@ describe("Field Level Aggregations Field Authorization", () => {
         const query = `
             query {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            title {
-                                longest
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                title {
+                                    longest
+                                }
                             }
                         }
                     }

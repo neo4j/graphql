@@ -42,6 +42,7 @@ describe("200", () => {
             }
 
             type CategoriesConnection {
+              aggregate: CategoryAggregate!
               edges: [CategoryEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -54,8 +55,12 @@ describe("200", () => {
               name: String!
             }
 
-            type CategoryAggregateSelection {
-              count: Int!
+            type CategoryAggregate {
+              count: Count!
+              node: CategoryAggregateNode!
+            }
+
+            type CategoryAggregateNode {
               description: StringAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -118,6 +123,10 @@ describe("200", () => {
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             type CreateCategoriesMutationResponse {
               categories: [Category!]!
               info: CreateInfo!
@@ -171,7 +180,6 @@ describe("200", () => {
 
             type Query {
               categories(limit: Int, offset: Int, sort: [CategorySort!], where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection!
               categoriesConnection(after: String, first: Int, sort: [CategorySort!], where: CategoryWhere): CategoriesConnection!
             }
 

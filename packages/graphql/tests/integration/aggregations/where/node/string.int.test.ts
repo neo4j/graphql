@@ -80,16 +80,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: {shortestLength: { eq: ${shortestTestString.length} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { shortestLength: { eq: ${shortestTestString.length} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -139,16 +148,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { longestLength: { eq: ${longestTestString.length} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { longestLength: { eq: ${longestTestString.length} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -203,16 +221,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { eq: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { averageLength: { eq: ${avg} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {
@@ -264,16 +291,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { gt: ${avgGT} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { averageLength: { gt: ${avgGT} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -325,16 +361,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { gte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { averageLength: { gte: ${avg} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -387,16 +432,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { lt: ${avgLT} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { averageLength: { lt: ${avgLT} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -448,16 +502,25 @@ describe("aggregations-where-node-string", () => {
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { lte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { averageLength: { lte: ${avg} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -543,16 +606,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: {shortestLength: { eq: ${shortestTestString.length} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { shortestLength: { eq: ${shortestTestString.length} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -604,16 +676,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { longestLength: { eq: ${longestTestString.length} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { longestLength: { eq: ${longestTestString.length} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -670,16 +751,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { eq: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { averageLength: { eq: ${avg} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -732,16 +822,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { gt: ${avgGT} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { averageLength: { gt: ${avgGT} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -793,16 +892,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { gte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { averageLength: { gte: ${avg} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -855,16 +963,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { lt: ${avgLT} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { averageLength: { lt: ${avgLT} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
 
@@ -916,16 +1033,25 @@ describe("aggregations-where-node-string interface relationships of concrete typ
                     `
             );
 
-            const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: { averageLength: { lte: ${avg} } } } } }) {
-                            testString
-                            likes {
-                                testString
+            const query = /* GraphQL */ `
+                {
+                    ${Post.plural}(where: { 
+                        testString: { eq: "${testString}" },
+                        likesConnection: {
+                            aggregate: {
+                                node: { 
+                                    testString: { averageLength: { lte: ${avg} } } 
+                                }
                             }
                         }
+                    }) {
+                        testString
+                        likes {
+                            testString
+                        }
                     }
-                `;
+                }
+            `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
             if (gqlResult.errors) {
@@ -1016,16 +1142,25 @@ describe("aggregations-where-node-string relationships of interface types", () =
                     `
         );
 
-        const query = `
-                    {
-                        ${Post.plural}(where: { testString: { eq: "${testString}"}, likesAggregate: { node: { testString: {shortestLength: { eq: ${shortestTestString.length} } } } } }) {
-                            testString
-                            likes {
-                                testString
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { 
+                    testString: { eq: "${testString}" },
+                    likesConnection: {
+                        aggregate: {
+                            node: { 
+                                testString: { shortestLength: { eq: ${shortestTestString.length} } } 
                             }
                         }
                     }
-                `;
+                }) {
+                    testString
+                    likes {
+                        testString
+                    }
+                }
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
         if (gqlResult.errors) {

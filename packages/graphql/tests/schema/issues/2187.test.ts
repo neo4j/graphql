@@ -48,6 +48,20 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateGenresMutationResponse {
               genres: [Genre!]!
               info: CreateInfo!
@@ -110,13 +124,16 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Genre {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
             }
 
-            type GenreAggregateSelection {
-              count: Int!
+            type GenreAggregate {
+              count: Count!
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -146,8 +163,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               node: Genre!
             }
 
-            type GenreMovieMoviesAggregationSelection {
-              count: Int!
+            type GenreMovieMoviesAggregateSelection {
+              count: CountConnection!
               node: GenreMovieMoviesNodeAggregateSelection
             }
 
@@ -176,12 +193,23 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type GenreMoviesConnection {
+              aggregate: GenreMovieMoviesAggregateSelection!
               edges: [GenreMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input GenreMoviesConnectionAggregateInput {
+              AND: [GenreMoviesConnectionAggregateInput!]
+              NOT: GenreMoviesConnectionAggregateInput
+              OR: [GenreMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: GenreMoviesNodeAggregationWhereInput
+            }
+
             input GenreMoviesConnectionFilters {
+              \\"\\"\\"Filter Genres by aggregating results on related GenreMoviesConnections\\"\\"\\"
+              aggregate: GenreMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -341,7 +369,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               NOT: GenreWhere
               OR: [GenreWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: GenreMoviesAggregateInput
+              moviesAggregate: GenreMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
@@ -376,6 +404,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -415,15 +444,18 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Movie {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use genre\\")
-              genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use genre\\")
               genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use genre\\")
               imdbRating: Float
               title: String @deprecated(reason: \\"Do not use title\\")
               year: Int
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               imdbRating: FloatAggregateSelection!
               title: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -457,8 +489,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               node: Movie!
             }
 
-            type MovieGenreGenresAggregationSelection {
-              count: Int!
+            type MovieGenreGenresAggregateSelection {
+              count: CountConnection!
               node: MovieGenreGenresNodeAggregateSelection
             }
 
@@ -485,12 +517,23 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type MovieGenresConnection {
+              aggregate: MovieGenreGenresAggregateSelection!
               edges: [MovieGenresRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieGenresConnectionAggregateInput {
+              AND: [MovieGenresConnectionAggregateInput!]
+              NOT: MovieGenresConnectionAggregateInput
+              OR: [MovieGenresConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieGenresNodeAggregationWhereInput
+            }
+
             input MovieGenresConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+              aggregate: MovieGenresConnectionAggregateInput @deprecated(reason: \\"Do not use genre\\")
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -669,6 +712,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -693,10 +737,8 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

@@ -18,7 +18,6 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { hasTarget } from "../../../utils/context-has-target";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import type { FilterOperator } from "../Filter";
@@ -27,25 +26,40 @@ import { Filter } from "../Filter";
 export class CountFilter extends Filter {
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
+    protected attachedTo: "node" | "relationship";
 
     constructor({
         operator,
         comparisonValue,
+        attachedTo = "node",
     }: {
         operator: FilterOperator;
-
         comparisonValue: unknown;
+        attachedTo?: "node" | "relationship";
     }) {
         super();
         this.comparisonValue = comparisonValue;
         this.operator = operator;
+        this.attachedTo = attachedTo;
+    }
+
+    protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
+        const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
+        if (!target) {
+            throw new Error("No target found");
+        }
+        return target;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!queryASTContext.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
+        const target = this.getTarget(queryASTContext);
+
         return this.createBaseOperation({
             operator: this.operator,
-            expr: Cypher.count(queryASTContext.target),
+            expr: Cypher.count(target).distinct(),
             param: new Cypher.Param(this.comparisonValue),
         });
     }

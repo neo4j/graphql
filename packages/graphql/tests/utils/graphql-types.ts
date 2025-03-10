@@ -27,7 +27,7 @@ type UniqueTypeOperations = {
     create: string;
     update: string;
     delete: string;
-    aggregate: string;
+    aggregate: string; // TODO: remove
     connection: string;
     subscribe: {
         created: string;

@@ -60,13 +60,16 @@ describe("inheritance", () => {
 
             type Actor implements Person @customDirectiveObj {
               friends(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              friendsAggregate(where: PersonWhere): ActorPersonFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [PersonFriendsConnectionSort!], where: PersonFriendsConnectionWhere): PersonFriendsConnection!
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -104,7 +107,20 @@ describe("inheritance", () => {
               where: PersonConnectWhere
             }
 
+            input ActorFriendsConnectionAggregateInput {
+              AND: [ActorFriendsConnectionAggregateInput!]
+              NOT: ActorFriendsConnectionAggregateInput
+              OR: [ActorFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: FriendsWithAggregationWhereInput
+              node: ActorFriendsNodeAggregationWhereInput
+            }
+
             input ActorFriendsConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related PersonFriendsConnections
+              \\"\\"\\"
+              aggregate: ActorFriendsConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -179,20 +195,6 @@ describe("inheritance", () => {
               where: PersonFriendsConnectionWhere
             }
 
-            type ActorPersonFriendsAggregationSelection {
-              count: Int!
-              edge: ActorPersonFriendsEdgeAggregateSelection
-              node: ActorPersonFriendsNodeAggregateSelection
-            }
-
-            type ActorPersonFriendsEdgeAggregateSelection {
-              since: IntAggregateSelection!
-            }
-
-            type ActorPersonFriendsNodeAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -211,7 +213,7 @@ describe("inheritance", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               friends: PersonRelationshipFilters
-              friendsAggregate: ActorFriendsAggregateInput
+              friendsAggregate: ActorFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: ActorFriendsConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonFriendsConnections match this filter
@@ -246,9 +248,19 @@ describe("inheritance", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -345,13 +357,6 @@ describe("inheritance", () => {
               since_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter since: { lte: ... }\\")
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
             input IntScalarAggregationFilters {
               average: FloatScalarFilters
@@ -392,6 +397,7 @@ describe("inheritance", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -403,8 +409,12 @@ describe("inheritance", () => {
               name: String @customDirectiveField
             }
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -459,7 +469,20 @@ describe("inheritance", () => {
               totalCount: Int!
             }
 
+            input PersonFriendsConnectionAggregateInput {
+              AND: [PersonFriendsConnectionAggregateInput!]
+              NOT: PersonFriendsConnectionAggregateInput
+              OR: [PersonFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PersonFriendsEdgeAggregationWhereInput
+              node: PersonFriendsNodeAggregationWhereInput
+            }
+
             input PersonFriendsConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonFriendsConnections
+              \\"\\"\\"
+              aggregate: PersonFriendsConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
               \\"\\"\\"
@@ -623,7 +646,7 @@ describe("inheritance", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               friends: PersonRelationshipFilters
-              friendsAggregate: PersonFriendsAggregateInput
+              friendsAggregate: PersonFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: PersonFriendsConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonFriendsConnections match this filter
@@ -660,10 +683,8 @@ describe("inheritance", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 

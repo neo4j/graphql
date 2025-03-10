@@ -38,6 +38,10 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -102,8 +106,12 @@ describe("Algebraic", () => {
               viewers: Int!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               viewers: IntAggregateSelection!
             }
 
@@ -154,6 +162,7 @@ describe("Algebraic", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -175,7 +184,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -248,6 +256,10 @@ describe("Algebraic", () => {
               subtract: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -288,8 +300,12 @@ describe("Algebraic", () => {
               viewers: BigInt!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               viewers: BigIntAggregateSelection!
             }
 
@@ -340,6 +356,7 @@ describe("Algebraic", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -361,7 +378,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -404,6 +420,10 @@ describe("Algebraic", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -472,8 +492,12 @@ describe("Algebraic", () => {
               viewers: Float!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               viewers: FloatAggregateSelection!
             }
 
@@ -526,6 +550,7 @@ describe("Algebraic", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -547,7 +572,6 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -597,6 +621,20 @@ describe("Algebraic", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateDirectorsMutationResponse {
               directors: [Director!]!
               info: CreateInfo!
@@ -625,13 +663,16 @@ describe("Algebraic", () => {
 
             type Director {
               directs(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              directsAggregate(where: MovieWhere): DirectorMovieDirectsAggregationSelection
               directsConnection(after: String, first: Int, sort: [DirectorDirectsConnectionSort!], where: DirectorDirectsConnectionWhere): DirectorDirectsConnection!
               lastName: String!
             }
 
-            type DirectorAggregateSelection {
-              count: Int!
+            type DirectorAggregate {
+              count: Count!
+              node: DirectorAggregateNode!
+            }
+
+            type DirectorAggregateNode {
               lastName: StringAggregateSelection!
             }
 
@@ -671,12 +712,25 @@ describe("Algebraic", () => {
             }
 
             type DirectorDirectsConnection {
+              aggregate: DirectorMovieDirectsAggregateSelection!
               edges: [DirectorDirectsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input DirectorDirectsConnectionAggregateInput {
+              AND: [DirectorDirectsConnectionAggregateInput!]
+              NOT: DirectorDirectsConnectionAggregateInput
+              OR: [DirectorDirectsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: DirectorDirectsNodeAggregationWhereInput
+            }
+
             input DirectorDirectsConnectionFilters {
+              \\"\\"\\"
+              Filter Directors by aggregating results on related DirectorDirectsConnections
+              \\"\\"\\"
+              aggregate: DirectorDirectsConnectionAggregateInput
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
               \\"\\"\\"
@@ -779,8 +833,8 @@ describe("Algebraic", () => {
               node: Director!
             }
 
-            type DirectorMovieDirectsAggregationSelection {
-              count: Int!
+            type DirectorMovieDirectsAggregateSelection {
+              count: CountConnection!
               node: DirectorMovieDirectsNodeAggregateSelection
             }
 
@@ -817,7 +871,7 @@ describe("Algebraic", () => {
               NOT: DirectorWhere
               OR: [DirectorWhere!]
               directs: MovieRelationshipFilters
-              directsAggregate: DirectorDirectsAggregateInput
+              directsAggregate: DirectorDirectsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directsConnection filter, please use { directsConnection: { aggregate: {...} } } instead\\")
               directsConnection: DirectorDirectsConnectionFilters
               \\"\\"\\"
               Return Directors where all of the related DirectorDirectsConnections match this filter
@@ -852,6 +906,7 @@ describe("Algebraic", () => {
             }
 
             type DirectorsConnection {
+              aggregate: DirectorAggregate!
               edges: [DirectorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -915,14 +970,17 @@ describe("Algebraic", () => {
 
             type Movie {
               directedBy(limit: Int, offset: Int, sort: [DirectorSort!], where: DirectorWhere): [Director!]!
-              directedByAggregate(where: DirectorWhere): MovieDirectorDirectedByAggregationSelection
               directedByConnection(after: String, first: Int, sort: [MovieDirectedByConnectionSort!], where: MovieDirectedByConnectionWhere): MovieDirectedByConnection!
               id: ID
               viewers: Int!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               viewers: IntAggregateSelection!
             }
 
@@ -963,12 +1021,25 @@ describe("Algebraic", () => {
             }
 
             type MovieDirectedByConnection {
+              aggregate: MovieDirectorDirectedByAggregateSelection!
               edges: [MovieDirectedByRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieDirectedByConnectionAggregateInput {
+              AND: [MovieDirectedByConnectionAggregateInput!]
+              NOT: MovieDirectedByConnectionAggregateInput
+              OR: [MovieDirectedByConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieDirectedByNodeAggregationWhereInput
+            }
+
             input MovieDirectedByConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieDirectedByConnections
+              \\"\\"\\"
+              aggregate: MovieDirectedByConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieDirectedByConnections match this filter
               \\"\\"\\"
@@ -1057,8 +1128,8 @@ describe("Algebraic", () => {
               where: MovieDirectedByConnectionWhere
             }
 
-            type MovieDirectorDirectedByAggregationSelection {
-              count: Int!
+            type MovieDirectorDirectedByAggregateSelection {
+              count: CountConnection!
               node: MovieDirectorDirectedByNodeAggregateSelection
             }
 
@@ -1109,7 +1180,7 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               directedBy: DirectorRelationshipFilters
-              directedByAggregate: MovieDirectedByAggregateInput
+              directedByAggregate: MovieDirectedByAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directedByConnection filter, please use { directedByConnection: { aggregate: {...} } } instead\\")
               directedByConnection: MovieDirectedByConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieDirectedByConnections match this filter
@@ -1151,6 +1222,7 @@ describe("Algebraic", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1175,10 +1247,8 @@ describe("Algebraic", () => {
 
             type Query {
               directors(limit: Int, offset: Int, sort: [DirectorSort!], where: DirectorWhere): [Director!]!
-              directorsAggregate(where: DirectorWhere): DirectorAggregateSelection!
               directorsConnection(after: String, first: Int, sort: [DirectorSort!], where: DirectorWhere): DirectorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -1261,6 +1331,20 @@ describe("Algebraic", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -1349,12 +1433,15 @@ describe("Algebraic", () => {
               id: ID
               viewers: Int!
               workers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              workersAggregate(where: PersonWhere): MoviePersonWorkersAggregationSelection
               workersConnection(after: String, first: Int, sort: [MovieWorkersConnectionSort!], where: MovieWorkersConnectionWhere): MovieWorkersConnection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               viewers: IntAggregateSelection!
             }
 
@@ -1373,8 +1460,8 @@ describe("Algebraic", () => {
               node: Movie!
             }
 
-            type MoviePersonWorkersAggregationSelection {
-              count: Int!
+            type MoviePersonWorkersAggregateSelection {
+              count: CountConnection!
               node: MoviePersonWorkersNodeAggregateSelection
             }
 
@@ -1418,7 +1505,7 @@ describe("Algebraic", () => {
               viewers_LT: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { lt: ... }\\")
               viewers_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter viewers: { lte: ... }\\")
               workers: PersonRelationshipFilters
-              workersAggregate: MovieWorkersAggregateInput
+              workersAggregate: MovieWorkersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the workersConnection filter, please use { workersConnection: { aggregate: {...} } } instead\\")
               workersConnection: MovieWorkersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
@@ -1465,12 +1552,25 @@ describe("Algebraic", () => {
             }
 
             type MovieWorkersConnection {
+              aggregate: MoviePersonWorkersAggregateSelection!
               edges: [MovieWorkersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieWorkersConnectionAggregateInput {
+              AND: [MovieWorkersConnectionAggregateInput!]
+              NOT: MovieWorkersConnectionAggregateInput
+              OR: [MovieWorkersConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieWorkersNodeAggregationWhereInput
+            }
+
             input MovieWorkersConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieWorkersConnections
+              \\"\\"\\"
+              aggregate: MovieWorkersConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieWorkersConnections match this filter
               \\"\\"\\"
@@ -1560,6 +1660,7 @@ describe("Algebraic", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1583,6 +1684,7 @@ describe("Algebraic", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1591,12 +1693,15 @@ describe("Algebraic", () => {
             type Person {
               name: String!
               worksInProduction(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              worksInProductionAggregate(where: ProductionWhere): PersonProductionWorksInProductionAggregationSelection
               worksInProductionConnection(after: String, first: Int, sort: [PersonWorksInProductionConnectionSort!], where: PersonWorksInProductionConnectionWhere): PersonWorksInProductionConnection!
             }
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1626,8 +1731,8 @@ describe("Algebraic", () => {
               node: Person!
             }
 
-            type PersonProductionWorksInProductionAggregationSelection {
-              count: Int!
+            type PersonProductionWorksInProductionAggregateSelection {
+              count: CountConnection!
               node: PersonProductionWorksInProductionNodeAggregateSelection
             }
 
@@ -1670,7 +1775,7 @@ describe("Algebraic", () => {
               name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
               name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
               worksInProduction: ProductionRelationshipFilters
-              worksInProductionAggregate: PersonWorksInProductionAggregateInput
+              worksInProductionAggregate: PersonWorksInProductionAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the worksInProductionConnection filter, please use { worksInProductionConnection: { aggregate: {...} } } instead\\")
               worksInProductionConnection: PersonWorksInProductionConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
@@ -1716,12 +1821,25 @@ describe("Algebraic", () => {
             }
 
             type PersonWorksInProductionConnection {
+              aggregate: PersonProductionWorksInProductionAggregateSelection!
               edges: [PersonWorksInProductionRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PersonWorksInProductionConnectionAggregateInput {
+              AND: [PersonWorksInProductionConnectionAggregateInput!]
+              NOT: PersonWorksInProductionConnectionAggregateInput
+              OR: [PersonWorksInProductionConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonWorksInProductionNodeAggregationWhereInput
+            }
+
             input PersonWorksInProductionConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonWorksInProductionConnections
+              \\"\\"\\"
+              aggregate: PersonWorksInProductionConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonWorksInProductionConnections match this filter
               \\"\\"\\"
@@ -1817,8 +1935,12 @@ describe("Algebraic", () => {
               viewers: Int!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               viewers: IntAggregateSelection!
             }
 
@@ -1879,6 +2001,7 @@ describe("Algebraic", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1886,13 +2009,10 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
             }
 
@@ -2054,6 +2174,20 @@ describe("Algebraic", () => {
               roles_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter roles: { includes: ... }\\")
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -2133,7 +2267,6 @@ describe("Algebraic", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              actorsAggregate(where: PersonWhere): MoviePersonActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               title: String!
             }
@@ -2159,12 +2292,24 @@ describe("Algebraic", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MoviePersonActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2258,8 +2403,12 @@ describe("Algebraic", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -2289,8 +2438,8 @@ describe("Algebraic", () => {
               node: Movie!
             }
 
-            type MoviePersonActorsAggregationSelection {
-              count: Int!
+            type MoviePersonActorsAggregateSelection {
+              count: CountConnection!
               edge: MoviePersonActorsEdgeAggregateSelection
               node: MoviePersonActorsNodeAggregateSelection
             }
@@ -2332,7 +2481,7 @@ describe("Algebraic", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: PersonRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -2367,6 +2516,7 @@ describe("Algebraic", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2390,6 +2540,7 @@ describe("Algebraic", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2397,7 +2548,6 @@ describe("Algebraic", () => {
 
             type Person {
               actedInMovies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              actedInMoviesAggregate(where: MovieWhere): PersonMovieActedInMoviesAggregationSelection
               actedInMoviesConnection(after: String, first: Int, sort: [PersonActedInMoviesConnectionSort!], where: PersonActedInMoviesConnectionWhere): PersonActedInMoviesConnection!
               name: String!
             }
@@ -2423,12 +2573,26 @@ describe("Algebraic", () => {
             }
 
             type PersonActedInMoviesConnection {
+              aggregate: PersonMovieActedInMoviesAggregateSelection!
               edges: [PersonActedInMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PersonActedInMoviesConnectionAggregateInput {
+              AND: [PersonActedInMoviesConnectionAggregateInput!]
+              NOT: PersonActedInMoviesConnectionAggregateInput
+              OR: [PersonActedInMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: PersonActedInMoviesNodeAggregationWhereInput
+            }
+
             input PersonActedInMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonActedInMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonActedInMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter
               \\"\\"\\"
@@ -2522,8 +2686,12 @@ describe("Algebraic", () => {
               where: PersonActedInMoviesConnectionWhere
             }
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -2553,8 +2721,8 @@ describe("Algebraic", () => {
               node: Person!
             }
 
-            type PersonMovieActedInMoviesAggregationSelection {
-              count: Int!
+            type PersonMovieActedInMoviesAggregateSelection {
+              count: CountConnection!
               edge: PersonMovieActedInMoviesEdgeAggregateSelection
               node: PersonMovieActedInMoviesNodeAggregateSelection
             }
@@ -2596,7 +2764,7 @@ describe("Algebraic", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               actedInMovies: MovieRelationshipFilters
-              actedInMoviesAggregate: PersonActedInMoviesAggregateInput
+              actedInMoviesAggregate: PersonActedInMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInMoviesConnection filter, please use { actedInMoviesConnection: { aggregate: {...} } } instead\\")
               actedInMoviesConnection: PersonActedInMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonActedInMoviesConnections match this filter
@@ -2632,10 +2800,8 @@ describe("Algebraic", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
             }
 

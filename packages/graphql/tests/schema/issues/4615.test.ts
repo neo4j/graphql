@@ -130,7 +130,6 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ShowSort!], where: ShowWhere): [Show!]!
-              actedInAggregate(where: ShowWhere): ActorShowActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -156,12 +155,26 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorShowActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -255,8 +268,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -297,8 +314,8 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               some: ActorWhere
             }
 
-            type ActorShowActedInAggregationSelection {
-              count: Int!
+            type ActorShowActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorShowActedInEdgeAggregateSelection
               node: ActorShowActedInNodeAggregateSelection
             }
@@ -329,7 +346,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ShowRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -364,9 +381,24 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -467,25 +499,10 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             type Movie implements Show {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               release: DateTime!
               runtime: Int
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -508,7 +525,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -573,8 +601,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ShowActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               release: DateTimeAggregateSelection!
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
@@ -622,7 +654,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
@@ -671,6 +703,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -698,39 +731,20 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
               shows(limit: Int, offset: Int, sort: [ShowSort!], where: ShowWhere): [Show!]!
-              showsAggregate(where: ShowWhere): ShowAggregateSelection!
               showsConnection(after: String, first: Int, sort: [ShowSort!], where: ShowWhere): ShowsConnection!
             }
 
             type Series implements Show {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               episodes: Int
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -753,7 +767,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"Filter Series by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -818,13 +843,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ShowActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -868,7 +898,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
@@ -941,7 +971,18 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               totalCount: Int!
             }
 
+            input ShowActorsConnectionAggregateInput {
+              AND: [ShowActorsConnectionAggregateInput!]
+              NOT: ShowActorsConnectionAggregateInput
+              OR: [ShowActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ShowActorsEdgeAggregationWhereInput
+              node: ShowActorsNodeAggregationWhereInput
+            }
+
             input ShowActorsConnectionFilters {
+              \\"\\"\\"Filter Shows by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: ShowActorsConnectionAggregateInput
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -1077,8 +1118,12 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               where: ShowActorsConnectionWhere
             }
 
-            type ShowAggregateSelection {
-              count: Int!
+            type ShowAggregate {
+              count: Count!
+              node: ShowAggregateNode!
+            }
+
+            type ShowAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -1142,7 +1187,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               NOT: ShowWhere
               OR: [ShowWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ShowActorsAggregateInput
+              actorsAggregate: ShowActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
@@ -1178,6 +1223,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             }
 
             type ShowsConnection {
+              aggregate: ShowAggregate!
               edges: [ShowEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

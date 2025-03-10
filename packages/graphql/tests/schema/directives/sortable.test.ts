@@ -130,14 +130,17 @@ describe("@sortable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -169,8 +172,8 @@ describe("@sortable directive", () => {
                       node: Actor!
                     }
 
-                    type ActorMovieMoviesAggregationSelection {
-                      count: Int!
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
                       node: ActorMovieMoviesNodeAggregateSelection
                     }
 
@@ -197,12 +200,23 @@ describe("@sortable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
+                      \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -323,7 +337,7 @@ describe("@sortable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -364,9 +378,24 @@ describe("@sortable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -417,13 +446,12 @@ describe("@sortable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
-                    type MovieActorActorsAggregationSelection {
-                      count: Int!
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
                       node: MovieActorActorsNodeAggregateSelection
                     }
 
@@ -451,12 +479,23 @@ describe("@sortable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
+                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -561,8 +600,12 @@ describe("@sortable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
                       title: StringAggregateSelection!
                     }
 
@@ -621,7 +664,7 @@ describe("@sortable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -656,6 +699,7 @@ describe("@sortable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -680,10 +724,8 @@ describe("@sortable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                     }
 
@@ -772,14 +814,17 @@ describe("@sortable directive", () => {
 
                     type Actor {
                       movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
                       moviesConnection(after: String, first: Int, where: ActorMoviesConnectionWhere): ActorMoviesConnection!
                       password: String!
                       username: String!
                     }
 
-                    type ActorAggregateSelection {
-                      count: Int!
+                    type ActorAggregate {
+                      count: Count!
+                      node: ActorAggregateNode!
+                    }
+
+                    type ActorAggregateNode {
                       password: StringAggregateSelection!
                       username: StringAggregateSelection!
                     }
@@ -811,8 +856,8 @@ describe("@sortable directive", () => {
                       node: Actor!
                     }
 
-                    type ActorMovieMoviesAggregationSelection {
-                      count: Int!
+                    type ActorMovieMoviesAggregateSelection {
+                      count: CountConnection!
                       node: ActorMovieMoviesNodeAggregateSelection
                     }
 
@@ -839,12 +884,23 @@ describe("@sortable directive", () => {
                     }
 
                     type ActorMoviesConnection {
+                      aggregate: ActorMovieMoviesAggregateSelection!
                       edges: [ActorMoviesRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
                     }
 
+                    input ActorMoviesConnectionAggregateInput {
+                      AND: [ActorMoviesConnectionAggregateInput!]
+                      NOT: ActorMoviesConnectionAggregateInput
+                      OR: [ActorMoviesConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: ActorMoviesNodeAggregationWhereInput
+                    }
+
                     input ActorMoviesConnectionFilters {
+                      \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+                      aggregate: ActorMoviesConnectionAggregateInput
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
                       \\"\\"\\"
@@ -961,7 +1017,7 @@ describe("@sortable directive", () => {
                       NOT: ActorWhere
                       OR: [ActorWhere!]
                       movies: MovieRelationshipFilters
-                      moviesAggregate: ActorMoviesAggregateInput
+                      moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
                       moviesConnection: ActorMoviesConnectionFilters
                       \\"\\"\\"
                       Return Actors where all of the related ActorMoviesConnections match this filter
@@ -1002,9 +1058,24 @@ describe("@sortable directive", () => {
                     }
 
                     type ActorsConnection {
+                      aggregate: ActorAggregate!
                       edges: [ActorEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
+                    }
+
+                    input ConnectionAggregationCountFilterInput {
+                      edges: IntScalarFilters
+                      nodes: IntScalarFilters
+                    }
+
+                    type Count {
+                      nodes: Int!
+                    }
+
+                    type CountConnection {
+                      edges: Int!
+                      nodes: Int!
                     }
 
                     type CreateActorsMutationResponse {
@@ -1055,13 +1126,12 @@ describe("@sortable directive", () => {
 
                     type Movie {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
                       actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                       title: String
                     }
 
-                    type MovieActorActorsAggregationSelection {
-                      count: Int!
+                    type MovieActorActorsAggregateSelection {
+                      count: CountConnection!
                       node: MovieActorActorsNodeAggregateSelection
                     }
 
@@ -1089,12 +1159,23 @@ describe("@sortable directive", () => {
                     }
 
                     type MovieActorsConnection {
+                      aggregate: MovieActorActorsAggregateSelection!
                       edges: [MovieActorsRelationship!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
                     }
 
+                    input MovieActorsConnectionAggregateInput {
+                      AND: [MovieActorsConnectionAggregateInput!]
+                      NOT: MovieActorsConnectionAggregateInput
+                      OR: [MovieActorsConnectionAggregateInput!]
+                      count: ConnectionAggregationCountFilterInput
+                      node: MovieActorsNodeAggregationWhereInput
+                    }
+
                     input MovieActorsConnectionFilters {
+                      \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                      aggregate: MovieActorsConnectionAggregateInput
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
                       \\"\\"\\"
@@ -1199,8 +1280,12 @@ describe("@sortable directive", () => {
                       where: MovieActorsConnectionWhere
                     }
 
-                    type MovieAggregateSelection {
-                      count: Int!
+                    type MovieAggregate {
+                      count: Count!
+                      node: MovieAggregateNode!
+                    }
+
+                    type MovieAggregateNode {
                       title: StringAggregateSelection!
                     }
 
@@ -1252,7 +1337,7 @@ describe("@sortable directive", () => {
                       NOT: MovieWhere
                       OR: [MovieWhere!]
                       actors: ActorRelationshipFilters
-                      actorsAggregate: MovieActorsAggregateInput
+                      actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
                       actorsConnection: MovieActorsConnectionFilters
                       \\"\\"\\"
                       Return Movies where all of the related MovieActorsConnections match this filter
@@ -1287,6 +1372,7 @@ describe("@sortable directive", () => {
                     }
 
                     type MoviesConnection {
+                      aggregate: MovieAggregate!
                       edges: [MovieEdge!]!
                       pageInfo: PageInfo!
                       totalCount: Int!
@@ -1311,10 +1397,8 @@ describe("@sortable directive", () => {
 
                     type Query {
                       actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                      actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                       actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                       movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-                      moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                       moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
                     }
 

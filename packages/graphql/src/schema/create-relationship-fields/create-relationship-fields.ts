@@ -18,8 +18,8 @@
  */
 
 import { GraphQLNonNull, GraphQLString, type DirectiveNode } from "graphql";
-import type { Directive, InterfaceTypeComposer, SchemaComposer } from "graphql-compose";
-import { ObjectTypeComposer } from "graphql-compose";
+import { ObjectTypeComposer, type Directive, type InterfaceTypeComposer, type SchemaComposer } from "graphql-compose";
+import { type ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -48,7 +48,6 @@ import { withSortInputType } from "../generation/sort-and-options-input";
 import { augmentUpdateInputTypeWithUpdateFieldInput, withUpdateInputType } from "../generation/update-input";
 import { withSourceWhereInputType, withWhereInputType } from "../generation/where-input";
 import { graphqlDirectivesToCompose } from "../to-compose";
-import { type ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 
 function doForRelationshipDeclaration({
     relationshipDeclarationAdapter,
@@ -263,29 +262,11 @@ export function createRelationshipFields({
             return;
         }
 
-        // TODO: new way
         if (composeNode instanceof ObjectTypeComposer) {
             // make a new fn augmentObjectTypeWithAggregationField
             const fieldAggregationComposer = new FieldAggregationComposer(schemaComposer, subgraph);
 
-            const aggregationTypeObject = fieldAggregationComposer.createAggregationTypeObject(
-                relationshipAdapter,
-                features
-            );
-
-            const aggregationFieldsBaseArgs = {
-                where: relationshipTarget.operations.whereInputTypeName,
-            };
-
-            if (relationshipAdapter.aggregate) {
-                composeNode.addFields({
-                    [relationshipAdapter.operations.aggregateTypeName]: {
-                        type: aggregationTypeObject,
-                        args: aggregationFieldsBaseArgs,
-                        directives: deprecatedDirectives,
-                    },
-                });
-            }
+            fieldAggregationComposer.createAggregationTypeObject(relationshipAdapter, features);
         }
 
         if (relationshipTarget instanceof ConcreteEntityAdapter) {
@@ -329,7 +310,7 @@ function createRelationshipFieldsForTarget({
         withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
     }
 
-    complexityEstimatorHelper.registerField(composeNode.getTypeName(), relationshipAdapter.name)
+    complexityEstimatorHelper.registerField(composeNode.getTypeName(), relationshipAdapter.name);
     composeNode.addFields(
         augmentObjectOrInterfaceTypeWithRelationshipField({
             relationshipAdapter,
@@ -339,10 +320,18 @@ function createRelationshipFieldsForTarget({
             features,
         })
     );
-    
-    complexityEstimatorHelper.registerField(composeNode.getTypeName(), relationshipAdapter.operations.connectionFieldName)
+
+    complexityEstimatorHelper.registerField(
+        composeNode.getTypeName(),
+        relationshipAdapter.operations.connectionFieldName
+    );
     composeNode.addFields(
-        augmentObjectOrInterfaceTypeWithConnectionField(relationshipAdapter, userDefinedFieldDirectives, composer, features)
+        augmentObjectOrInterfaceTypeWithConnectionField(
+            relationshipAdapter,
+            userDefinedFieldDirectives,
+            composer,
+            features
+        )
     );
 
     withRelationInputType({

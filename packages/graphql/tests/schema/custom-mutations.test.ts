@@ -58,6 +58,10 @@ describe("Custom-mutations", () => {
               subscription: Subscription
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -101,8 +105,8 @@ describe("Custom-mutations", () => {
               id: ID
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -139,6 +143,7 @@ describe("Custom-mutations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -162,7 +167,6 @@ describe("Custom-mutations", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               testCypherQuery(input: ExampleInput): String
               testQuery(input: ExampleInput): String

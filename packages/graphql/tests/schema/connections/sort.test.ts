@@ -43,6 +43,20 @@ describe("Sort", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -101,12 +115,15 @@ describe("Sort", () => {
             type Node1 {
               property: String!
               relatedTo(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              relatedToAggregate(where: Node2Where): Node1Node2RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, where: Node1RelatedToConnectionWhere): Node1RelatedToConnection!
             }
 
-            type Node1AggregateSelection {
-              count: Int!
+            type Node1Aggregate {
+              count: Count!
+              node: Node1AggregateNode!
+            }
+
+            type Node1AggregateNode {
               property: StringAggregateSelection!
             }
 
@@ -136,8 +153,8 @@ describe("Sort", () => {
               node: Node1!
             }
 
-            type Node1Node2RelatedToAggregationSelection {
-              count: Int!
+            type Node1Node2RelatedToAggregateSelection {
+              count: CountConnection!
             }
 
             input Node1RelatedToAggregateInput {
@@ -158,12 +175,24 @@ describe("Sort", () => {
             }
 
             type Node1RelatedToConnection {
+              aggregate: Node1Node2RelatedToAggregateSelection!
               edges: [Node1RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input Node1RelatedToConnectionAggregateInput {
+              AND: [Node1RelatedToConnectionAggregateInput!]
+              NOT: Node1RelatedToConnectionAggregateInput
+              OR: [Node1RelatedToConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
             input Node1RelatedToConnectionFilters {
+              \\"\\"\\"
+              Filter Node1s by aggregating results on related Node1RelatedToConnections
+              \\"\\"\\"
+              aggregate: Node1RelatedToConnectionAggregateInput
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
               \\"\\"\\"
@@ -261,7 +290,7 @@ describe("Sort", () => {
               property_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter property: { in: ... }\\")
               property_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter property: { startsWith: ... }\\")
               relatedTo: Node2RelationshipFilters
-              relatedToAggregate: Node1RelatedToAggregateInput
+              relatedToAggregate: Node1RelatedToAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relatedToConnection filter, please use { relatedToConnection: { aggregate: {...} } } instead\\")
               relatedToConnection: Node1RelatedToConnectionFilters
               \\"\\"\\"
               Return Node1s where all of the related Node1RelatedToConnections match this filter
@@ -290,6 +319,7 @@ describe("Sort", () => {
             }
 
             type Node1sConnection {
+              aggregate: Node1Aggregate!
               edges: [Node1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -297,12 +327,11 @@ describe("Sort", () => {
 
             type Node2 {
               relatedTo(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              relatedToAggregate(where: Node1Where): Node2Node1RelatedToAggregationSelection
               relatedToConnection(after: String, first: Int, sort: [Node2RelatedToConnectionSort!], where: Node2RelatedToConnectionWhere): Node2RelatedToConnection!
             }
 
-            type Node2AggregateSelection {
-              count: Int!
+            type Node2Aggregate {
+              count: Count!
             }
 
             input Node2ConnectInput {
@@ -330,8 +359,8 @@ describe("Sort", () => {
               node: Node2!
             }
 
-            type Node2Node1RelatedToAggregationSelection {
-              count: Int!
+            type Node2Node1RelatedToAggregateSelection {
+              count: CountConnection!
               node: Node2Node1RelatedToNodeAggregateSelection
             }
 
@@ -358,12 +387,25 @@ describe("Sort", () => {
             }
 
             type Node2RelatedToConnection {
+              aggregate: Node2Node1RelatedToAggregateSelection!
               edges: [Node2RelatedToRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input Node2RelatedToConnectionAggregateInput {
+              AND: [Node2RelatedToConnectionAggregateInput!]
+              NOT: Node2RelatedToConnectionAggregateInput
+              OR: [Node2RelatedToConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Node2RelatedToNodeAggregationWhereInput
+            }
+
             input Node2RelatedToConnectionFilters {
+              \\"\\"\\"
+              Filter Node2s by aggregating results on related Node2RelatedToConnections
+              \\"\\"\\"
+              aggregate: Node2RelatedToConnectionAggregateInput
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
               \\"\\"\\"
@@ -472,7 +514,7 @@ describe("Sort", () => {
               NOT: Node2Where
               OR: [Node2Where!]
               relatedTo: Node1RelationshipFilters
-              relatedToAggregate: Node2RelatedToAggregateInput
+              relatedToAggregate: Node2RelatedToAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the relatedToConnection filter, please use { relatedToConnection: { aggregate: {...} } } instead\\")
               relatedToConnection: Node2RelatedToConnectionFilters
               \\"\\"\\"
               Return Node2s where all of the related Node2RelatedToConnections match this filter
@@ -501,6 +543,7 @@ describe("Sort", () => {
             }
 
             type Node2sConnection {
+              aggregate: Node2Aggregate!
               edges: [Node2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -516,10 +559,8 @@ describe("Sort", () => {
 
             type Query {
               node1s(limit: Int, offset: Int, sort: [Node1Sort!], where: Node1Where): [Node1!]!
-              node1sAggregate(where: Node1Where): Node1AggregateSelection!
               node1sConnection(after: String, first: Int, sort: [Node1Sort!], where: Node1Where): Node1sConnection!
               node2s(limit: Int, offset: Int, where: Node2Where): [Node2!]!
-              node2sAggregate(where: Node2Where): Node2AggregateSelection!
               node2sConnection(after: String, first: Int, where: Node2Where): Node2sConnection!
             }
 

@@ -76,6 +76,10 @@ describe("Aggregations", () => {
               subtract: BigInt
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -269,8 +273,12 @@ describe("Aggregations", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               createdAt: DateTimeAggregateSelection!
               imdbRating: FloatAggregateSelection!
               isbn: StringAggregateSelection!
@@ -433,6 +441,7 @@ describe("Aggregations", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -454,7 +463,6 @@ describe("Aggregations", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -603,6 +611,20 @@ describe("Aggregations", () => {
               add: BigInt
               set: BigInt
               subtract: BigInt
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -1142,14 +1164,17 @@ describe("Aggregations", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               someID: ID
               title: String
             }
 
-            type PostAggregateSelection {
-              count: Int!
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -1188,12 +1213,24 @@ describe("Aggregations", () => {
             }
 
             type PostLikesConnection {
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PostLikesConnectionAggregateInput {
+              AND: [PostLikesConnectionAggregateInput!]
+              NOT: PostLikesConnectionAggregateInput
+              OR: [PostLikesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: LikesAggregationWhereInput
+              node: PostLikesNodeAggregationWhereInput
+            }
+
             input PostLikesConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
+              aggregate: PostLikesConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
@@ -1424,8 +1461,8 @@ describe("Aggregations", () => {
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
               edge: PostUserLikesEdgeAggregateSelection
               node: PostUserLikesNodeAggregateSelection
             }
@@ -1459,7 +1496,7 @@ describe("Aggregations", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               likes: UserRelationshipFilters
-              likesAggregate: PostLikesAggregateInput
+              likesAggregate: PostLikesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the likesConnection filter, please use { likesConnection: { aggregate: {...} } } instead\\")
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
@@ -1500,6 +1537,7 @@ describe("Aggregations", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1507,10 +1545,8 @@ describe("Aggregations", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -1610,8 +1646,12 @@ describe("Aggregations", () => {
               someTime: Time
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
@@ -1778,6 +1818,7 @@ describe("Aggregations", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1868,6 +1909,20 @@ describe("Aggregations", () => {
               add: BigInt
               set: BigInt
               subtract: BigInt
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             \\"\\"\\"
@@ -2348,13 +2403,16 @@ describe("Aggregations", () => {
 
             type Post {
               likes(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              likesAggregate(where: UserWhere): PostUserLikesAggregationSelection
               likesConnection(after: String, first: Int, sort: [PostLikesConnectionSort!], where: PostLikesConnectionWhere): PostLikesConnection!
               title: String
             }
 
-            type PostAggregateSelection {
-              count: Int!
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -2391,12 +2449,23 @@ describe("Aggregations", () => {
             }
 
             type PostLikesConnection {
+              aggregate: PostUserLikesAggregateSelection!
               edges: [PostLikesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PostLikesConnectionAggregateInput {
+              AND: [PostLikesConnectionAggregateInput!]
+              NOT: PostLikesConnectionAggregateInput
+              OR: [PostLikesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostLikesNodeAggregationWhereInput
+            }
+
             input PostLikesConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostLikesConnections\\"\\"\\"
+              aggregate: PostLikesConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
               \\"\\"\\"
@@ -2624,8 +2693,8 @@ describe("Aggregations", () => {
               title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
-            type PostUserLikesAggregationSelection {
-              count: Int!
+            type PostUserLikesAggregateSelection {
+              count: CountConnection!
               node: PostUserLikesNodeAggregateSelection
             }
 
@@ -2646,7 +2715,7 @@ describe("Aggregations", () => {
               NOT: PostWhere
               OR: [PostWhere!]
               likes: UserRelationshipFilters
-              likesAggregate: PostLikesAggregateInput
+              likesAggregate: PostLikesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the likesConnection filter, please use { likesConnection: { aggregate: {...} } } instead\\")
               likesConnection: PostLikesConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostLikesConnections match this filter
@@ -2681,6 +2750,7 @@ describe("Aggregations", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2688,10 +2758,8 @@ describe("Aggregations", () => {
 
             type Query {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -2803,8 +2871,12 @@ describe("Aggregations", () => {
               someTime: Time
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               someBigInt: BigIntAggregateSelection!
               someDateTime: DateTimeAggregateSelection!
               someDuration: DurationAggregateSelection!
@@ -2971,6 +3043,7 @@ describe("Aggregations", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

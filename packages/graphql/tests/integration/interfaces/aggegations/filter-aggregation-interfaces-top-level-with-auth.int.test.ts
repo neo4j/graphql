@@ -109,9 +109,13 @@ describe("Top-level filter interface query fields with authorization", () => {
     test("aggregation with auth should succeed", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Production.operations.aggregate} (where: { title_STARTS_WITH: "The" }) {
-                    title {
-                        longest
+                ${Production.operations.connection} (where: { title_STARTS_WITH: "The" }) {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -120,15 +124,29 @@ describe("Top-level filter interface query fields with authorization", () => {
         const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
-        expect((queryResult as any).data[Production.operations.aggregate]["title"]["longest"]).toBe("The Series Three");
+        expect(queryResult.data).toEqual({
+            [Production.operations.connection]: {
+                aggregate: {
+                    node: {
+                        title: {
+                            longest: "The Series Three",
+                        },
+                    },
+                },
+            },
+        });
     });
 
     test("aggregation with auth should fail", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Production.operations.aggregate} (where: { title_STARTS_WITH: "The" }) {
-                    title {
-                        longest
+                ${Production.operations.connection} (where: { title_STARTS_WITH: "The" }) {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }

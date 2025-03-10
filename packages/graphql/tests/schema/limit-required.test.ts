@@ -132,11 +132,9 @@ describe("limitRequired constructor option", () => {
 
             type Actor implements Person {
               actedIn(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int!, sort: [PersonActedInConnectionSort!], where: PersonActedInConnectionWhere): PersonActedInConnection!
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int!, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
               name: String!
             }
@@ -160,7 +158,20 @@ describe("limitRequired constructor option", () => {
               where: ProductionConnectWhere
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related PersonActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonActedInConnections match this filter
               \\"\\"\\"
@@ -233,8 +244,12 @@ describe("limitRequired constructor option", () => {
               where: PersonActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -269,21 +284,6 @@ describe("limitRequired constructor option", () => {
               node: Actor!
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              edge: ActorMovieMoviesEdgeAggregateSelection
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
-            type ActorMovieMoviesEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type ActorMovieMoviesNodeAggregateSelection {
-              runtime: IntAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
@@ -304,7 +304,20 @@ describe("limitRequired constructor option", () => {
               where: MovieConnectWhere
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -390,20 +403,6 @@ describe("limitRequired constructor option", () => {
               where: PersonMoviesConnectionWhere
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
-              edge: ActorProductionActedInEdgeAggregateSelection
-              node: ActorProductionActedInNodeAggregateSelection
-            }
-
-            type ActorProductionActedInEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type ActorProductionActedInNodeAggregateSelection {
-              title: StringAggregateSelection!
-            }
-
             input ActorRelationshipFilters {
               \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
               all: ActorWhere
@@ -437,7 +436,7 @@ describe("limitRequired constructor option", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonActedInConnections match this filter
@@ -470,7 +469,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related PersonMoviesConnections match this filter
@@ -505,9 +504,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -599,15 +613,14 @@ describe("limitRequired constructor option", () => {
 
             type Movie implements Production {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int!, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID!
               runtime: Int!
               title: String!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
               edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
             }
@@ -641,12 +654,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -740,8 +765,12 @@ describe("limitRequired constructor option", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -811,7 +840,7 @@ describe("limitRequired constructor option", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -859,6 +888,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -885,6 +915,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -919,7 +950,20 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input PersonActedInConnectionAggregateInput {
+              AND: [PersonActedInConnectionAggregateInput!]
+              NOT: PersonActedInConnectionAggregateInput
+              OR: [PersonActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PersonActedInEdgeAggregationWhereInput
+              node: PersonActedInNodeAggregationWhereInput
+            }
+
             input PersonActedInConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonActedInConnections
+              \\"\\"\\"
+              aggregate: PersonActedInConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
               \\"\\"\\"
@@ -1005,8 +1049,12 @@ describe("limitRequired constructor option", () => {
 
             union PersonActedInRelationshipProperties = ActedIn
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1039,7 +1087,20 @@ describe("limitRequired constructor option", () => {
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PersonMoviesEdgeAggregationWhereInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -1169,7 +1230,7 @@ describe("limitRequired constructor option", () => {
               NOT: PersonWhere
               OR: [PersonWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: PersonActedInAggregateInput
+              actedInAggregate: PersonActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: PersonActedInConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonActedInConnections match this filter
@@ -1202,7 +1263,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: PersonMoviesAggregateInput
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
@@ -1242,8 +1303,12 @@ describe("limitRequired constructor option", () => {
               title: String!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -1312,6 +1377,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1319,19 +1385,14 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int!, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int!, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               productions(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int!, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int!, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int!, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -1341,13 +1402,18 @@ describe("limitRequired constructor option", () => {
               title: String!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1581,13 +1647,11 @@ describe("limitRequired constructor option", () => {
 
             type Actor {
               actedIn(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int!, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               contact(limit: Int!, offset: Int, where: ContactWhere): [Contact!]!
               contactConnection(after: String, first: Int!, where: ActorContactConnectionWhere): ActorContactConnection!
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int!, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
@@ -1612,12 +1676,26 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -1709,8 +1787,12 @@ describe("limitRequired constructor option", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1891,8 +1973,8 @@ describe("limitRequired constructor option", () => {
               node: Actor!
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
               edge: ActorMovieMoviesEdgeAggregateSelection
               node: ActorMovieMoviesNodeAggregateSelection
             }
@@ -1927,12 +2009,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -2047,8 +2141,8 @@ describe("limitRequired constructor option", () => {
               where: ActorMoviesConnectionWhere
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -2095,7 +2189,7 @@ describe("limitRequired constructor option", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -2154,7 +2248,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -2189,9 +2283,15 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             union Contact = Email | Telephone
@@ -2210,6 +2310,15 @@ describe("limitRequired constructor option", () => {
             input ContactWhere {
               Email: EmailWhere
               Telephone: TelephoneWhere
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -2257,9 +2366,13 @@ describe("limitRequired constructor option", () => {
               address: String!
             }
 
-            type EmailAggregateSelection {
+            type EmailAggregate {
+              count: Count!
+              node: EmailAggregateNode!
+            }
+
+            type EmailAggregateNode {
               address: StringAggregateSelection!
-              count: Int!
             }
 
             input EmailConnectWhere {
@@ -2300,6 +2413,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type EmailsConnection {
+              aggregate: EmailAggregate!
               edges: [EmailEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2363,15 +2477,14 @@ describe("limitRequired constructor option", () => {
 
             type Movie implements Production {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int!, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               id: ID!
               runtime: Int!
               title: String!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
               edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
             }
@@ -2405,12 +2518,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2504,8 +2629,12 @@ describe("limitRequired constructor option", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2575,7 +2704,7 @@ describe("limitRequired constructor option", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -2623,6 +2752,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2659,8 +2789,12 @@ describe("limitRequired constructor option", () => {
               title: String!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -2729,6 +2863,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2736,23 +2871,17 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               contacts(limit: Int!, offset: Int, where: ContactWhere): [Contact!]!
               emails(limit: Int!, offset: Int, sort: [EmailSort!], where: EmailWhere): [Email!]!
-              emailsAggregate(where: EmailWhere): EmailAggregateSelection!
               emailsConnection(after: String, first: Int!, sort: [EmailSort!], where: EmailWhere): EmailsConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int!, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int!, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int!, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int!, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
               telephones(limit: Int!, offset: Int, sort: [TelephoneSort!], where: TelephoneWhere): [Telephone!]!
-              telephonesAggregate(where: TelephoneWhere): TelephoneAggregateSelection!
               telephonesConnection(after: String, first: Int!, sort: [TelephoneSort!], where: TelephoneWhere): TelephonesConnection!
             }
 
@@ -2762,13 +2891,18 @@ describe("limitRequired constructor option", () => {
               title: String!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2868,8 +3002,12 @@ describe("limitRequired constructor option", () => {
               number: String!
             }
 
-            type TelephoneAggregateSelection {
-              count: Int!
+            type TelephoneAggregate {
+              count: Count!
+              node: TelephoneAggregateNode!
+            }
+
+            type TelephoneAggregateNode {
               number: StringAggregateSelection!
             }
 
@@ -2911,6 +3049,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type TelephonesConnection {
+              aggregate: TelephoneAggregate!
               edges: [TelephoneEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3050,13 +3189,16 @@ describe("limitRequired constructor option", () => {
             type Actor {
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int!, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -3075,8 +3217,8 @@ describe("limitRequired constructor option", () => {
               node: Actor!
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
               edge: ActorMovieMoviesEdgeAggregateSelection
               node: ActorMovieMoviesNodeAggregateSelection
             }
@@ -3110,12 +3252,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -3250,7 +3404,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -3285,9 +3439,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -3383,8 +3552,12 @@ describe("limitRequired constructor option", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3466,6 +3639,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3496,10 +3670,8 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesByDescription(after: String, first: Int!, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesByTitle(after: String, first: Int!, phrase: String!, sort: [MovieIndexSort!], where: MovieIndexWhere): MoviesIndexConnection!
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
@@ -3662,13 +3834,16 @@ describe("limitRequired constructor option", () => {
             type Actor {
               id: ID!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int!, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -3687,8 +3862,8 @@ describe("limitRequired constructor option", () => {
               node: Actor!
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
               edge: ActorMovieMoviesEdgeAggregateSelection
               node: ActorMovieMoviesNodeAggregateSelection
             }
@@ -3722,12 +3897,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -3862,7 +4049,7 @@ describe("limitRequired constructor option", () => {
               id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -3897,9 +4084,24 @@ describe("limitRequired constructor option", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -3995,8 +4197,12 @@ describe("limitRequired constructor option", () => {
               title: String
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -4078,6 +4284,7 @@ describe("limitRequired constructor option", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4108,11 +4315,9 @@ describe("limitRequired constructor option", () => {
 
             type Query {
               actors(limit: Int!, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int!, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               descriptionQuery(after: String, first: Int!, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
               movies(limit: Int!, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int!, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               titleQuery(after: String, first: Int!, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
             }

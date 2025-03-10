@@ -39,9 +39,13 @@ describe("Cypher Aggregations LocalDateTime", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    createdAt {
-                        min
+                moviesConnection {
+                    aggregate {
+                        node {
+                            createdAt {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -53,9 +57,23 @@ describe("Cypher Aggregations LocalDateTime", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: min(this.createdAt) } AS var0
             }
-            RETURN { createdAt: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -64,9 +82,13 @@ describe("Cypher Aggregations LocalDateTime", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    createdAt {
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            createdAt {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -78,9 +100,23 @@ describe("Cypher Aggregations LocalDateTime", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { max: max(this.createdAt) } AS var0
             }
-            RETURN { createdAt: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,10 +125,14 @@ describe("Cypher Aggregations LocalDateTime", () => {
     test("Min and Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    createdAt {
-                        min
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            createdAt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -104,9 +144,23 @@ describe("Cypher Aggregations LocalDateTime", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: min(this.createdAt), max: max(this.createdAt) } AS var0
             }
-            RETURN { createdAt: var0 }"
+            CALL {
+                WITH *
+                MATCH (this1:Movie)
+                WITH collect({ node: this1 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1
+                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
+                }
+                RETURN var2, totalCount
+            }
+            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

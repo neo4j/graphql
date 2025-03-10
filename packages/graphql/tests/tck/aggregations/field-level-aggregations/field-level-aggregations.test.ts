@@ -49,8 +49,13 @@ describe("Field Level Aggregations", () => {
             query {
                 movies {
                     title
-                    actorsAggregate {
-                        count
+                    actorsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                                edges
+                            }
+                        }
                     }
                 }
             }
@@ -63,10 +68,27 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    RETURN { nodes: count(DISTINCT this1), edges: count(DISTINCT this0) } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Actor\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { count: var2 } } AS var6
             }
-            RETURN this { .title, actorsAggregate: { count: var2 } } AS this"
+            RETURN this { .title, actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -76,12 +98,16 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        count
-                        node {
-                            name {
-                                longest
-                                shortest
+                    actorsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                name {
+                                    longest
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -96,18 +122,35 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH this4
+                    ORDER BY size(this4.name) DESC
+                    WITH collect(this4.name) AS list
+                    RETURN { longest: head(list), shortest: last(list) } AS var5
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this6:ACTED_IN]-(this7:Actor)
+                    WITH collect({ node: this7, relationship: this6 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this7, edge.relationship AS this6
+                        RETURN collect({ node: { __id: id(this7), __resolveType: \\"Actor\\" } }) AS var8
+                    }
+                    RETURN var8, totalCount
+                }
+                RETURN { edges: var8, totalCount: totalCount, aggregate: { count: var2, node: { name: var5 } } } AS var9
             }
-            CALL {
-                WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                WITH this4
-                ORDER BY size(this4.name) DESC
-                WITH collect(this4.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var5
-            }
-            RETURN this { actorsAggregate: { count: var2, node: { name: var5 } } } AS this"
+            RETURN this { actorsConnection: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,13 +160,15 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        node {
-                            age {
-                                min
-                                max
-                                average
-                                sum
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                age {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -138,10 +183,28 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH this1
+                    RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Actor\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { node: { age: var2 } } } AS var6
             }
-            RETURN this { actorsAggregate: { node: { age: var2 } } } AS this"
+            RETURN this { actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -152,11 +215,13 @@ describe("Field Level Aggregations", () => {
             query {
                 movies {
                     title
-                    actorsAggregate {
-                        node {
-                            name {
-                                longest
-                                shortest
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                name {
+                                    longest
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -171,13 +236,30 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1
-                ORDER BY size(this1.name) DESC
-                WITH collect(this1.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH this1
+                    ORDER BY size(this1.name) DESC
+                    WITH collect(this1.name) AS list
+                    RETURN { longest: head(list), shortest: last(list) } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Actor\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { node: { name: var2 } } } AS var6
             }
-            RETURN this { .title, actorsAggregate: { node: { name: var2 } } } AS this"
+            RETURN this { .title, actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -187,10 +269,12 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 actors {
-                    moviesAggregate {
-                        node {
-                            released {
-                                min
+                    moviesConnection {
+                        aggregate {
+                            node {
+                                released {
+                                    min
+                                }
                             }
                         }
                     }
@@ -205,10 +289,28 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WITH this1
+                    RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)-[this3:ACTED_IN]->(this4:Movie)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Movie\\" } }) AS var5
+                    }
+                    RETURN var5, totalCount
+                }
+                RETURN { edges: var5, totalCount: totalCount, aggregate: { node: { released: var2 } } } AS var6
             }
-            RETURN this { moviesAggregate: { node: { released: var2 } } } AS this"
+            RETURN this { moviesConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -218,17 +320,19 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        node {
-                            name {
-                                longest
-                                shortest
-                            }
-                            age {
-                                min
-                                max
-                                average
-                                sum
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                name {
+                                    longest
+                                    shortest
+                                }
+                                age {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -243,18 +347,36 @@ describe("Field Level Aggregations", () => {
             MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1
-                ORDER BY size(this1.name) DESC
-                WITH collect(this1.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH this1
+                    ORDER BY size(this1.name) DESC
+                    WITH collect(this1.name) AS list
+                    RETURN { longest: head(list), shortest: last(list) } AS var2
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH this4
+                    RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)<-[this6:ACTED_IN]-(this7:Actor)
+                    WITH collect({ node: this7, relationship: this6 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this7, edge.relationship AS this6
+                        RETURN collect({ node: { __id: id(this7), __resolveType: \\"Actor\\" } }) AS var8
+                    }
+                    RETURN var8, totalCount
+                }
+                RETURN { edges: var8, totalCount: totalCount, aggregate: { node: { name: var2, age: var5 } } } AS var9
             }
-            CALL {
-                WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
-            }
-            RETURN this { actorsAggregate: { node: { name: var2, age: var5 } } } AS this"
+            RETURN this { actorsConnection: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

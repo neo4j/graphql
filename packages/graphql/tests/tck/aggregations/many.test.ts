@@ -42,19 +42,23 @@ describe("Cypher Aggregations Many", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        shortest
-                        longest
-                    }
-                    imdbRating {
-                        min
-                        max
-                        average
-                    }
-                    createdAt {
-                        min
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                                longest
+                            }
+                            imdbRating {
+                                min
+                                max
+                                average
+                            }
+                            createdAt {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -73,13 +77,28 @@ describe("Cypher Aggregations Many", () => {
             }
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating) } AS var1
             }
             CALL {
                 MATCH (this:Movie)
+                WITH this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
-            RETURN { title: var0, imdbRating: var1, createdAt: var2 }"
+            CALL {
+                WITH *
+                MATCH (this3:Movie)
+                WITH collect({ node: this3 }) AS edges
+                WITH edges, size(edges) AS totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge.node AS this3
+                    RETURN collect({ node: { __id: id(this3), __resolveType: \\"Movie\\" } }) AS var4
+                }
+                RETURN var4, totalCount
+            }
+            RETURN { edges: var4, totalCount: totalCount, aggregate: { node: { title: var0, imdbRating: var1, createdAt: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

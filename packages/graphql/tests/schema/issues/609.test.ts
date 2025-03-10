@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("609", () => {
@@ -36,6 +36,10 @@ describe("609", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateDeprecatedsMutationResponse {
@@ -63,8 +67,12 @@ describe("609", () => {
               deprecatedField: String @deprecated
             }
 
-            type DeprecatedAggregateSelection {
-              count: Int!
+            type DeprecatedAggregate {
+              count: Count!
+              node: DeprecatedAggregateNode!
+            }
+
+            type DeprecatedAggregateNode {
               deprecatedField: StringAggregateSelection!
             }
 
@@ -102,6 +110,7 @@ describe("609", () => {
             }
 
             type DeprecatedsConnection {
+              aggregate: DeprecatedAggregate!
               edges: [DeprecatedEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -123,7 +132,6 @@ describe("609", () => {
 
             type Query {
               deprecateds(limit: Int, offset: Int, sort: [DeprecatedSort!], where: DeprecatedWhere): [Deprecated!]!
-              deprecatedsAggregate(where: DeprecatedWhere): DeprecatedAggregateSelection!
               deprecatedsConnection(after: String, first: Int, sort: [DeprecatedSort!], where: DeprecatedWhere): DeprecatedsConnection!
             }
 

@@ -39,6 +39,10 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -64,8 +68,12 @@ describe("@selectable", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -114,6 +122,7 @@ describe("@selectable", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -135,7 +144,6 @@ describe("@selectable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -198,6 +206,10 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -224,8 +236,12 @@ describe("@selectable", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -273,6 +289,7 @@ describe("@selectable", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -294,7 +311,6 @@ describe("@selectable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -357,6 +373,10 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -382,8 +402,12 @@ describe("@selectable", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -431,6 +455,7 @@ describe("@selectable", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -452,7 +477,6 @@ describe("@selectable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -515,6 +539,10 @@ describe("@selectable", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -540,8 +568,12 @@ describe("@selectable", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               description: StringAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -590,6 +622,7 @@ describe("@selectable", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -611,7 +644,6 @@ describe("@selectable", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -683,7 +715,6 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
                   name: String!
                 }
 
@@ -704,7 +735,19 @@ describe("@selectable", () => {
                   where: MovieConnectWhere
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -798,8 +841,12 @@ describe("@selectable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -815,16 +862,6 @@ describe("@selectable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
-                }
-
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
-                type ActorMovieActedInNodeAggregateSelection {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -845,7 +882,7 @@ describe("@selectable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: MovieRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -880,9 +917,19 @@ describe("@selectable", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -936,8 +983,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1001,6 +1052,7 @@ describe("@selectable", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1025,10 +1077,8 @@ describe("@selectable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1111,7 +1161,6 @@ describe("@selectable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  actedInAggregate(where: MovieWhere): ActorMovieActedInAggregationSelection
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -1134,12 +1183,25 @@ describe("@selectable", () => {
                 }
 
                 type ActorActedInConnection {
+                  aggregate: ActorMovieActedInAggregateSelection!
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -1242,8 +1304,12 @@ describe("@selectable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -1261,8 +1327,8 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
+                type ActorMovieActedInAggregateSelection {
+                  count: CountConnection!
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
@@ -1289,7 +1355,7 @@ describe("@selectable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: MovieRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -1324,9 +1390,24 @@ describe("@selectable", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
+                }
+
+                type CountConnection {
+                  edges: Int!
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -1380,8 +1461,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1445,6 +1530,7 @@ describe("@selectable", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1469,10 +1555,8 @@ describe("@selectable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1688,8 +1772,12 @@ describe("@selectable", () => {
                   Series: [ActorActedInSeriesUpdateFieldInput!]
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -1759,9 +1847,14 @@ describe("@selectable", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -1800,8 +1893,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1854,6 +1951,7 @@ describe("@selectable", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -1899,14 +1997,11 @@ describe("@selectable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -1915,8 +2010,12 @@ describe("@selectable", () => {
                   name: String!
                 }
 
-                type SeriesAggregateSelection {
-                  count: Int!
+                type SeriesAggregate {
+                  count: Count!
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -1926,6 +2025,7 @@ describe("@selectable", () => {
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2194,8 +2294,12 @@ describe("@selectable", () => {
                   Series: [ActorActedInSeriesUpdateFieldInput!]
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -2265,9 +2369,14 @@ describe("@selectable", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -2306,8 +2415,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -2360,6 +2473,7 @@ describe("@selectable", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2405,14 +2519,11 @@ describe("@selectable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -2421,8 +2532,12 @@ describe("@selectable", () => {
                   name: String!
                 }
 
-                type SeriesAggregateSelection {
-                  count: Int!
+                type SeriesAggregate {
+                  count: Count!
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -2432,6 +2547,7 @@ describe("@selectable", () => {
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2569,7 +2685,6 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
                   name: String!
                 }
 
@@ -2590,7 +2705,19 @@ describe("@selectable", () => {
                   where: ProductionConnectWhere
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -2684,8 +2811,12 @@ describe("@selectable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -2701,16 +2832,6 @@ describe("@selectable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInNodeAggregateSelection {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -2731,7 +2852,7 @@ describe("@selectable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -2766,9 +2887,19 @@ describe("@selectable", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -2827,8 +2958,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -2877,6 +3012,7 @@ describe("@selectable", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2907,8 +3043,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
+                type ProductionAggregate {
+                  count: Count!
+                  node: ProductionAggregateNode!
+                }
+
+                type ProductionAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -2978,6 +3118,7 @@ describe("@selectable", () => {
                 }
 
                 type ProductionsConnection {
+                  aggregate: ProductionAggregate!
                   edges: [ProductionEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -2985,16 +3126,12 @@ describe("@selectable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -3003,13 +3140,18 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type SeriesAggregateSelection {
-                  count: Int!
+                type SeriesAggregate {
+                  count: Count!
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3152,7 +3294,6 @@ describe("@selectable", () => {
 
                 type Actor {
                   actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
                   actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
@@ -3180,7 +3321,19 @@ describe("@selectable", () => {
                   totalCount: Int!
                 }
 
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
                 input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
@@ -3283,8 +3436,12 @@ describe("@selectable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                type ActorAggregateSelection {
-                  count: Int!
+                type ActorAggregate {
+                  count: Count!
+                  node: ActorAggregateNode!
+                }
+
+                type ActorAggregateNode {
                   name: StringAggregateSelection!
                 }
 
@@ -3300,16 +3457,6 @@ describe("@selectable", () => {
                 type ActorEdge {
                   cursor: String!
                   node: Actor!
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInNodeAggregateSelection {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
                 }
 
                 \\"\\"\\"
@@ -3330,7 +3477,7 @@ describe("@selectable", () => {
                   NOT: ActorWhere
                   OR: [ActorWhere!]
                   actedIn: ProductionRelationshipFilters
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
                   actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
@@ -3365,9 +3512,19 @@ describe("@selectable", () => {
                 }
 
                 type ActorsConnection {
+                  aggregate: ActorAggregate!
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
+                type Count {
+                  nodes: Int!
                 }
 
                 type CreateActorsMutationResponse {
@@ -3426,8 +3583,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
+                type MovieAggregate {
+                  count: Count!
+                  node: MovieAggregateNode!
+                }
+
+                type MovieAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -3476,6 +3637,7 @@ describe("@selectable", () => {
                 }
 
                 type MoviesConnection {
+                  aggregate: MovieAggregate!
                   edges: [MovieEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3506,8 +3668,12 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
+                type ProductionAggregate {
+                  count: Count!
+                  node: ProductionAggregateNode!
+                }
+
+                type ProductionAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -3577,6 +3743,7 @@ describe("@selectable", () => {
                 }
 
                 type ProductionsConnection {
+                  aggregate: ProductionAggregate!
                   edges: [ProductionEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
@@ -3584,16 +3751,12 @@ describe("@selectable", () => {
 
                 type Query {
                   actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
                   movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                   productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
                   series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -3602,13 +3765,18 @@ describe("@selectable", () => {
                   title: String!
                 }
 
-                type SeriesAggregateSelection {
-                  count: Int!
+                type SeriesAggregate {
+                  count: Count!
+                  node: SeriesAggregateNode!
+                }
+
+                type SeriesAggregateNode {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
 
                 type SeriesConnection {
+                  aggregate: SeriesAggregate!
                   edges: [SeriesEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!

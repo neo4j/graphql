@@ -147,13 +147,16 @@ describe("Union Interface Relationships", () => {
             type Actor {
               id: Int
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): ActorMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               id: IntAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -185,8 +188,8 @@ describe("Union Interface Relationships", () => {
               node: Actor!
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
+            type ActorMovieMoviesAggregateSelection {
+              count: CountConnection!
               edge: ActorMovieMoviesEdgeAggregateSelection
               node: ActorMovieMoviesNodeAggregateSelection
             }
@@ -221,12 +224,24 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorMoviesConnection {
+              aggregate: ActorMovieMoviesAggregateSelection!
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
             input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
@@ -382,7 +397,7 @@ describe("Union Interface Relationships", () => {
               id_LT: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lt: ... }\\")
               id_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lte: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: ActorMoviesAggregateInput
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
@@ -417,9 +432,24 @@ describe("Union Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -528,8 +558,12 @@ describe("Union Interface Relationships", () => {
               url: String!
             }
 
-            type InfluencerAggregateSelection {
-              count: Int!
+            type InfluencerAggregate {
+              count: Count!
+              node: InfluencerAggregateNode!
+            }
+
+            type InfluencerAggregateNode {
               reputation: IntAggregateSelection!
               reviewerId: IntAggregateSelection!
               url: StringAggregateSelection!
@@ -595,6 +629,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type InfluencersConnection {
+              aggregate: InfluencerAggregate!
               edges: [InfluencerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -634,19 +669,17 @@ describe("Union Interface Relationships", () => {
 
             type Movie {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               directors(limit: Int, offset: Int, where: DirectorWhere): [Director!]!
               directorsConnection(after: String, first: Int, sort: [MovieDirectorsConnectionSort!], where: MovieDirectorsConnectionWhere): MovieDirectorsConnection!
               imdbId: Int
               reviewers(limit: Int, offset: Int, sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): MovieReviewerReviewersAggregationSelection
               reviewersConnection(after: String, first: Int, sort: [MovieReviewersConnectionSort!], where: MovieReviewersConnectionWhere): MovieReviewersConnection!
               title: String!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
               edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
             }
@@ -681,12 +714,24 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -801,8 +846,12 @@ describe("Union Interface Relationships", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               imdbId: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1014,8 +1063,8 @@ describe("Union Interface Relationships", () => {
               some: MovieWhere
             }
 
-            type MovieReviewerReviewersAggregationSelection {
-              count: Int!
+            type MovieReviewerReviewersAggregateSelection {
+              count: CountConnection!
               edge: MovieReviewerReviewersEdgeAggregateSelection
               node: MovieReviewerReviewersNodeAggregateSelection
             }
@@ -1049,12 +1098,26 @@ describe("Union Interface Relationships", () => {
             }
 
             type MovieReviewersConnection {
+              aggregate: MovieReviewerReviewersAggregateSelection!
               edges: [MovieReviewersRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieReviewersConnectionAggregateInput {
+              AND: [MovieReviewersConnectionAggregateInput!]
+              NOT: MovieReviewersConnectionAggregateInput
+              OR: [MovieReviewersConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ReviewAggregationWhereInput
+              node: MovieReviewersNodeAggregationWhereInput
+            }
+
             input MovieReviewersConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieReviewersConnections
+              \\"\\"\\"
+              aggregate: MovieReviewersConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
               \\"\\"\\"
@@ -1197,7 +1260,7 @@ describe("Union Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -1257,7 +1320,7 @@ describe("Union Interface Relationships", () => {
               imdbId_LT: Int @deprecated(reason: \\"Please use the relevant generic filter imdbId: { lt: ... }\\")
               imdbId_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter imdbId: { lte: ... }\\")
               reviewers: ReviewerRelationshipFilters
-              reviewersAggregate: MovieReviewersAggregateInput
+              reviewersAggregate: MovieReviewersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the reviewersConnection filter, please use { reviewersConnection: { aggregate: {...} } } instead\\")
               reviewersConnection: MovieReviewersConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieReviewersConnections match this filter
@@ -1292,6 +1355,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1321,6 +1385,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type PeopleConnection {
+              aggregate: PersonAggregate!
               edges: [PersonEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1329,15 +1394,18 @@ describe("Union Interface Relationships", () => {
             type Person implements Reviewer {
               id: Int
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): PersonMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
               name: String!
               reputation: Int!
               reviewerId: Int
             }
 
-            type PersonAggregateSelection {
-              count: Int!
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
               id: IntAggregateSelection!
               name: StringAggregateSelection!
               reputation: IntAggregateSelection!
@@ -1373,8 +1441,8 @@ describe("Union Interface Relationships", () => {
               node: Person!
             }
 
-            type PersonMovieMoviesAggregationSelection {
-              count: Int!
+            type PersonMovieMoviesAggregateSelection {
+              count: CountConnection!
               edge: PersonMovieMoviesEdgeAggregateSelection
               node: PersonMovieMoviesNodeAggregateSelection
             }
@@ -1409,12 +1477,26 @@ describe("Union Interface Relationships", () => {
             }
 
             type PersonMoviesConnection {
+              aggregate: PersonMovieMoviesAggregateSelection!
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ReviewAggregationWhereInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
             input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesConnectionAggregateInput
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
@@ -1569,7 +1651,7 @@ describe("Union Interface Relationships", () => {
               id_LT: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lt: ... }\\")
               id_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter id: { lte: ... }\\")
               movies: MovieRelationshipFilters
-              moviesAggregate: PersonMoviesAggregateInput
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
@@ -1619,20 +1701,15 @@ describe("Union Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               directors(limit: Int, offset: Int, where: DirectorWhere): [Director!]!
               influencers(limit: Int, offset: Int, sort: [InfluencerSort!], where: InfluencerWhere): [Influencer!]!
-              influencersAggregate(where: InfluencerWhere): InfluencerAggregateSelection!
               influencersConnection(after: String, first: Int, sort: [InfluencerSort!], where: InfluencerWhere): InfluencersConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
               reviewers(limit: Int, offset: Int, sort: [ReviewerSort!], where: ReviewerWhere): [Reviewer!]!
-              reviewersAggregate(where: ReviewerWhere): ReviewerAggregateSelection!
               reviewersConnection(after: String, first: Int, sort: [ReviewerSort!], where: ReviewerWhere): ReviewersConnection!
             }
 
@@ -1705,8 +1782,12 @@ describe("Union Interface Relationships", () => {
               reviewerId: Int
             }
 
-            type ReviewerAggregateSelection {
-              count: Int!
+            type ReviewerAggregate {
+              count: Count!
+              node: ReviewerAggregateNode!
+            }
+
+            type ReviewerAggregateNode {
               reputation: IntAggregateSelection!
               reviewerId: IntAggregateSelection!
             }
@@ -1782,6 +1863,7 @@ describe("Union Interface Relationships", () => {
             }
 
             type ReviewersConnection {
+              aggregate: ReviewerAggregate!
               edges: [ReviewerEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

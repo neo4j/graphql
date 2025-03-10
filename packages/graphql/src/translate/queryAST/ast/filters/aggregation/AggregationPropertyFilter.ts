@@ -22,7 +22,6 @@ import type { AttributeAdapter } from "../../../../../schema-model/attribute/mod
 import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
-import { hasTarget } from "../../../utils/context-has-target";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
@@ -42,7 +41,7 @@ export class AggregationPropertyFilter extends Filter {
         logicalOperator,
         comparisonValue,
         aggregationOperator,
-        attachedTo,
+        attachedTo = "node",
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
@@ -57,7 +56,7 @@ export class AggregationPropertyFilter extends Filter {
         this.comparisonValue = comparisonValue;
         this.logicalOperator = logicalOperator;
         this.aggregationOperator = aggregationOperator;
-        this.attachedTo = attachedTo ?? "node";
+        this.attachedTo = attachedTo;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -124,7 +123,9 @@ export class AggregationPropertyFilter extends Filter {
         queryASTContext: QueryASTContext,
         concreteLabelsToAttributeAlias: [string[], string][]
     ): Cypher.Case {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!queryASTContext.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const aliasesCase = new Cypher.Case();
         for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
             aliasesCase
@@ -137,13 +138,14 @@ export class AggregationPropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+            if (!queryASTContext.hasTarget()) {
+                throw new Error("No parent node found!");
+            }
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);
-        } else {
-            throw new Error("Transpilation error, relationship on filter not available");
         }
+        throw new Error("Transpilation error, relationship on filter not available");
     }
 
     private getAggregateOperation(

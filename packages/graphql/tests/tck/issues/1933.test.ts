@@ -59,14 +59,18 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                     employeeId
                     firstName
                     lastName
-                    projectsAggregate {
-                        count
-                        edge {
-                            allocation {
-                                max
-                                min
-                                average
-                                sum
+                    projectsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            edge {
+                                allocation {
+                                    max
+                                    min
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -88,15 +92,33 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             WHERE var2 = true
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
-                RETURN count(this4) AS var5
+                CALL {
+                    WITH this
+                    MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
+                    RETURN { nodes: count(DISTINCT this4) } AS var5
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
+                    WITH this6
+                    RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
+                }
+                CALL {
+                    WITH *
+                    MATCH (this)-[this9:PARTICIPATES]->(this10:Project)
+                    WITH collect({ node: this10, relationship: this9 }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge.node AS this10, edge.relationship AS this9
+                        RETURN collect({ node: { __id: id(this10), __resolveType: \\"Project\\" } }) AS var11
+                    }
+                    RETURN var11, totalCount
+                }
+                RETURN { edges: var11, totalCount: totalCount, aggregate: { count: var5, edge: { allocation: var8 } } } AS var12
             }
-            CALL {
-                WITH this
-                MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
-                RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
-            }
-            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var8 } } } AS this"
+            RETURN this { .employeeId, .firstName, .lastName, projectsConnection: var12 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

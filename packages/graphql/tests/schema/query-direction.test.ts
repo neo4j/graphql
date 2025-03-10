@@ -39,6 +39,20 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -96,7 +110,6 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -151,13 +164,16 @@ describe("Query Direction", () => {
 
             type User {
               friends(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -206,12 +222,23 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input UserFriendsConnectionAggregateInput {
+              AND: [UserFriendsConnectionAggregateInput!]
+              NOT: UserFriendsConnectionAggregateInput
+              OR: [UserFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserFriendsNodeAggregationWhereInput
+            }
+
             input UserFriendsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserFriendsConnections\\"\\"\\"
+              aggregate: UserFriendsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -324,8 +351,8 @@ describe("Query Direction", () => {
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
-            type UserUserFriendsAggregationSelection {
-              count: Int!
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
               node: UserUserFriendsNodeAggregateSelection
             }
 
@@ -338,7 +365,7 @@ describe("Query Direction", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               friends: UserRelationshipFilters
-              friendsAggregate: UserFriendsAggregateInput
+              friendsAggregate: UserFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
@@ -373,6 +400,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -396,6 +424,20 @@ describe("Query Direction", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -453,7 +495,6 @@ describe("Query Direction", () => {
 
             type Query {
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -508,13 +549,16 @@ describe("Query Direction", () => {
 
             type User {
               friends(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              friendsAggregate(where: UserWhere): UserUserFriendsAggregationSelection
               friendsConnection(after: String, first: Int, sort: [UserFriendsConnectionSort!], where: UserFriendsConnectionWhere): UserFriendsConnection!
               name: String!
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -563,12 +607,23 @@ describe("Query Direction", () => {
             }
 
             type UserFriendsConnection {
+              aggregate: UserUserFriendsAggregateSelection!
               edges: [UserFriendsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input UserFriendsConnectionAggregateInput {
+              AND: [UserFriendsConnectionAggregateInput!]
+              NOT: UserFriendsConnectionAggregateInput
+              OR: [UserFriendsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserFriendsNodeAggregationWhereInput
+            }
+
             input UserFriendsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserFriendsConnections\\"\\"\\"
+              aggregate: UserFriendsConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
               \\"\\"\\"
@@ -681,8 +736,8 @@ describe("Query Direction", () => {
               name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
-            type UserUserFriendsAggregationSelection {
-              count: Int!
+            type UserUserFriendsAggregateSelection {
+              count: CountConnection!
               node: UserUserFriendsNodeAggregateSelection
             }
 
@@ -695,7 +750,7 @@ describe("Query Direction", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               friends: UserRelationshipFilters
-              friendsAggregate: UserFriendsAggregateInput
+              friendsAggregate: UserFriendsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the friendsConnection filter, please use { friendsConnection: { aggregate: {...} } } instead\\")
               friendsConnection: UserFriendsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFriendsConnections match this filter
@@ -730,6 +785,7 @@ describe("Query Direction", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

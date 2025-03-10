@@ -28,7 +28,7 @@ describe("aggregations-top_level-datetime", () => {
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 testString: String
                 createdAt: DateTime
@@ -56,29 +56,40 @@ describe("aggregations-top_level-datetime", () => {
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
+                    CREATE (:${Movie} {testString: "different-string", createdAt: datetime()})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        createdAt {
-                            min
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            createdAt {
+                                min
+                            }
                         }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            createdAt: {
-                min: minDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        createdAt: {
+                            min: minDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });
@@ -100,29 +111,40 @@ describe("aggregations-top_level-datetime", () => {
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${Movie} {testString: "different-string", createdAt: datetime()})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        createdAt {
-                            max
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            createdAt {
+                                max
+                            }
                         }
-                    }
+                    }    
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            createdAt: {
-                max: maxDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        createdAt: {
+                            max: maxDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });
@@ -144,31 +166,42 @@ describe("aggregations-top_level-datetime", () => {
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime()})
                     CREATE (:${Movie} {testString: $testString, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${Movie} {testString: "different-string", createdAt: datetime()})
                 `,
             {
                 testString,
             }
         );
 
-        const query = `
-                {
-                    ${Movie.operations.aggregate}(where: {testString_EQ: "${testString}"}) {
-                        createdAt {
-                            min
-                            max
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                    aggregate {
+                        node {
+                            createdAt {
+                                min
+                                max
+                            }
                         }
                     }
-                }
-            `;
+                }    
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Movie.operations.aggregate]).toEqual({
-            createdAt: {
-                min: minDate.toISOString(),
-                max: maxDate.toISOString(),
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    node: {
+                        createdAt: {
+                            min: minDate.toISOString(),
+                            max: maxDate.toISOString(),
+                        },
+                    },
+                },
             },
         });
     });

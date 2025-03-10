@@ -41,7 +41,7 @@ describe("Nested within AND/OR", () => {
         userType = testHelper.createUniqueType("User");
         postType = testHelper.createUniqueType("Post");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${userType.name} @node {
                 testString: String!
             }
@@ -75,13 +75,15 @@ describe("Nested within AND/OR", () => {
     });
 
     test("Implicit AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        count: { eq: 3 }
-                        node: {
-                            testString: { shortestLength: { eq: 3 } }
+                    likesConnection: {
+                        aggregate: {
+                            count: { nodes: { eq: 3 } }
+                            node: {
+                                testString: { shortestLength: { eq: 3 } }
+                            }
                         }
                     }
                 }) {
@@ -103,18 +105,20 @@ describe("Nested within AND/OR", () => {
     });
 
     test("Top-level OR", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        OR: [
-                            { count: {eq: 3 } }
-                            {
-                                node: {
-                                    testString: { shortestLength: { eq: 3 } }
+                    likesConnection: {
+                        aggregate: {
+                            OR: [
+                                { count: { nodes: { eq: 3 } } }
+                                {
+                                    node: {
+                                        testString: { shortestLength: { eq: 3 } }
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -144,18 +148,20 @@ describe("Nested within AND/OR", () => {
     });
 
     test("Top-level AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { count: { eq: 3 } }
-                            {
-                                node: {
-                                    testString: {shortestLength: {eq: 3} }
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { count: { nodes: { eq: 3 } } }
+                                {
+                                    node: {
+                                        testString: {shortestLength: {eq: 3} }
+                                    }
                                 }
-                            }
-                        ]
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -176,27 +182,29 @@ describe("Nested within AND/OR", () => {
     });
 
     test("AND within an AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { count: { lte: 2 } }
-                            {
-                                AND: [
-                                    {
-                                        node: {
-                                            testString: {shortestLength: {lt: 4} }
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { count: { nodes: { lte: 2 } } }
+                                {
+                                    AND: [
+                                        {
+                                            node: {
+                                                testString: {shortestLength: {lt: 4} }
+                                            }
                                         }
-                                    }
-                                    {
-                                        node: {
-                                            testString: {shortestLength: { gt: 2 } }
+                                        {
+                                            node: {
+                                                testString: {shortestLength: { gt: 2 } }
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        ]
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -220,27 +228,29 @@ describe("Nested within AND/OR", () => {
     });
 
     test("AND within an AND with NOT", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { NOT: { count_GT: 2 } }
-                            {
-                                AND: [
-                                    {
-                                        node: {
-                                            NOT: { testString: {shortestLength: { gt: 4 } } }
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { NOT: { count: { nodes: { gt: 2 } } } }
+                                {
+                                    AND: [
+                                        {
+                                            node: {
+                                                NOT: { testString: {shortestLength: { gt: 4 } } }
+                                            }
                                         }
-                                    }
-                                    {
-                                        node: {
-                                            testString: {shortestLength: { gt: 2 } }
+                                        {
+                                            node: {
+                                                testString: {shortestLength: { gt: 2 } }
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        ]
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -264,27 +274,29 @@ describe("Nested within AND/OR", () => {
     });
 
     test("OR within an OR", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        OR: [
-                            { count: { lte: 2 } }
-                            {
-                                OR: [
-                                    {
-                                        node: {
-                                            testString: {shortestLength: {lt: 4} }
+                    likesConnection: {
+                        aggregate: {
+                            OR: [
+                                { count: { nodes: { lte: 2 } } }
+                                {
+                                    OR: [
+                                        {
+                                            node: {
+                                                testString: {shortestLength: {lt: 4} }
+                                            }
                                         }
-                                    }
-                                    {
-                                        node: {
-                                            testString: {shortestLength: { gt: 20 } }
+                                        {
+                                            node: {
+                                                testString: {shortestLength: { gt: 20 } }
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        ]
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -314,27 +326,29 @@ describe("Nested within AND/OR", () => {
     });
 
     test("OR within an AND", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { count: { lte: 2 } }
-                            {
-                                OR: [
-                                    {
-                                        node: {
-                                            testString: {shortestLength: {lt: 4} }
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { count: { nodes: { lte: 2 } } }
+                                {
+                                    OR: [
+                                        {
+                                            node: {
+                                                testString: {shortestLength: {lt: 4} }
+                                            }
                                         }
-                                    }
-                                    {
-                                        node: {
-                                            testString: {shortestLength: { gt: 20 } }
+                                        {
+                                            node: {
+                                                testString: {shortestLength: { gt: 20 } }
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        ]
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -358,27 +372,29 @@ describe("Nested within AND/OR", () => {
     });
 
     test("OR within an AND with NOT", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        AND: [
-                            { NOT: { count_GT: 2 } }
-                            {
-                                OR: [
-                                    {
-                                        node: {
-                                            NOT: { testString: {shortestLength: { gt: 4 } } }
+                    likesConnection: {
+                        aggregate: {
+                            AND: [
+                                { NOT: { count: { nodes: { gt: 2 } } } }
+                                {
+                                    OR: [
+                                        {
+                                            node: {
+                                                NOT: { testString: {shortestLength: { gt: 4 } } }
+                                            }
                                         }
-                                    }
-                                    {
-                                        node: {
-                                            testString: {shortestLength: { gt: 20 } }
+                                        {
+                                            node: {
+                                                testString: {shortestLength: { gt: 20 } }
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        ]
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }) {
                     content
@@ -402,27 +418,29 @@ describe("Nested within AND/OR", () => {
     });
 
     test("AND within an OR", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 ${postType.plural}(where: { 
-                    likesAggregate: {
-                        OR: [
-                            { count_GTE: 2 }
-                            {
-                                AND: [
-                                    {
-                                        node: {
-                                            testString: {shortestLength: {lt: 4} }
+                    likesConnection: {
+                        aggregate: {
+                            OR: [
+                                { count: { nodes: { gte: 2 } } }
+                                {
+                                    AND: [
+                                        {
+                                            node: {
+                                                testString: {shortestLength: {lt: 4} }
+                                            }
                                         }
-                                    }
-                                    {
-                                        node: {
-                                            testString: {shortestLength: { gt: 2 } }
+                                        {
+                                            node: {
+                                                testString: {shortestLength: { gt: 2 } }
+                                            }
                                         }
-                                    }
-                                ]
-                            }
-                        ]
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }) {
                     content

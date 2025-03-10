@@ -54,6 +54,10 @@ describe("@customResolver directive", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -105,10 +109,8 @@ describe("@customResolver directive", () => {
 
             type Query {
               userInterfaces(limit: Int, offset: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
-              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection!
               userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): UserInterfacesConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -162,8 +164,12 @@ describe("@customResolver directive", () => {
               username: String!
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               password: StringAggregateSelection!
               username: StringAggregateSelection!
             }
@@ -183,8 +189,12 @@ describe("@customResolver directive", () => {
               customResolver: String
             }
 
-            type UserInterfaceAggregateSelection {
-              count: Int!
+            type UserInterfaceAggregate {
+              count: Count!
+              node: UserInterfaceAggregateNode!
+            }
+
+            type UserInterfaceAggregateNode {
               customResolver: StringAggregateSelection!
             }
 
@@ -218,6 +228,7 @@ describe("@customResolver directive", () => {
             }
 
             type UserInterfacesConnection {
+              aggregate: UserInterfaceAggregate!
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -266,6 +277,7 @@ describe("@customResolver directive", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -53,6 +53,20 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             type CreateCrewMembersMutationResponse {
               crewMembers: [CrewMember!]!
               info: CreateInfo!
@@ -73,12 +87,11 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type CrewMember {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): CrewMemberMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [CrewMemberMoviesConnectionSort!], where: CrewMemberMoviesConnectionWhere): CrewMemberMoviesConnection!
             }
 
-            type CrewMemberAggregateSelection {
-              count: Int!
+            type CrewMemberAggregate {
+              count: Count!
             }
 
             input CrewMemberCreateInput {
@@ -94,8 +107,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               node: CrewMember!
             }
 
-            type CrewMemberMovieMoviesAggregationSelection {
-              count: Int!
+            type CrewMemberMovieMoviesAggregateSelection {
+              count: CountConnection!
               node: CrewMemberMovieMoviesNodeAggregateSelection
             }
 
@@ -122,12 +135,25 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMemberMoviesConnection {
+              aggregate: CrewMemberMovieMoviesAggregateSelection!
               edges: [CrewMemberMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input CrewMemberMoviesConnectionAggregateInput {
+              AND: [CrewMemberMoviesConnectionAggregateInput!]
+              NOT: CrewMemberMoviesConnectionAggregateInput
+              OR: [CrewMemberMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: CrewMemberMoviesNodeAggregationWhereInput
+            }
+
             input CrewMemberMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter CrewMembers by aggregating results on related CrewMemberMoviesConnections
+              \\"\\"\\"
+              aggregate: CrewMemberMoviesConnectionAggregateInput
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
               \\"\\"\\"
@@ -228,7 +254,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               NOT: CrewMemberWhere
               OR: [CrewMemberWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: CrewMemberMoviesAggregateInput
+              moviesAggregate: CrewMemberMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: CrewMemberMoviesConnectionFilters
               \\"\\"\\"
               Return CrewMembers where all of the related CrewMemberMoviesConnections match this filter
@@ -257,6 +283,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type CrewMembersConnection {
+              aggregate: CrewMemberAggregate!
               edges: [CrewMemberEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -341,8 +368,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               name: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -395,6 +426,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -419,10 +451,8 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
             type Query {
               crewMembers(limit: Int, offset: Int, where: CrewMemberWhere): [CrewMember!]!
-              crewMembersAggregate(where: CrewMemberWhere): CrewMemberAggregateSelection!
               crewMembersConnection(after: String, first: Int, where: CrewMemberWhere): CrewMembersConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

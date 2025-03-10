@@ -45,8 +45,12 @@ describe("@node", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -84,9 +88,14 @@ describe("@node", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -126,7 +135,6 @@ describe("@node", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
             }
 
@@ -205,8 +213,12 @@ describe("@node", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -244,9 +256,14 @@ describe("@node", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -296,8 +313,12 @@ describe("@node", () => {
               name: String
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -331,6 +352,7 @@ describe("@node", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -338,13 +360,10 @@ describe("@node", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -352,12 +371,17 @@ describe("@node", () => {
               name: String
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               name: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -473,8 +497,12 @@ describe("@node", () => {
               name: String
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -512,9 +540,14 @@ describe("@node", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -572,11 +605,9 @@ describe("@node", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -584,12 +615,17 @@ describe("@node", () => {
               name: String
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               name: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

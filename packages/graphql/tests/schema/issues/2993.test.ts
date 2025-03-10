@@ -50,6 +50,20 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -200,8 +214,12 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               userName: String!
             }
 
-            type ProfileAggregateSelection {
-              count: Int!
+            type ProfileAggregate {
+              count: Count!
+              node: ProfileAggregateNode!
+            }
+
+            type ProfileAggregateNode {
               userName: StringAggregateSelection!
             }
 
@@ -268,6 +286,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type ProfilesConnection {
+              aggregate: ProfileAggregate!
               edges: [ProfileEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -275,10 +294,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type Query {
               profiles(limit: Int, offset: Int, sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
-              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection!
               profilesConnection(after: String, first: Int, sort: [ProfileSort!], where: ProfileWhere): ProfilesConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -333,14 +350,17 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             type User implements Profile {
               following(limit: Int, offset: Int, sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
-              followingAggregate(where: ProfileWhere): UserProfileFollowingAggregationSelection
               followingConnection(after: String, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               userName: StringAggregateSelection!
             }
 
@@ -377,12 +397,26 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserFollowingConnection {
+              aggregate: UserProfileFollowingAggregateSelection!
               edges: [UserFollowingRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input UserFollowingConnectionAggregateInput {
+              AND: [UserFollowingConnectionAggregateInput!]
+              NOT: UserFollowingConnectionAggregateInput
+              OR: [UserFollowingConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: FOLLOWSAggregationWhereInput
+              node: UserFollowingNodeAggregationWhereInput
+            }
+
             input UserFollowingConnectionFilters {
+              \\"\\"\\"
+              Filter Users by aggregating results on related UserFollowingConnections
+              \\"\\"\\"
+              aggregate: UserFollowingConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"
@@ -473,8 +507,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               where: UserFollowingConnectionWhere
             }
 
-            type UserProfileFollowingAggregationSelection {
-              count: Int!
+            type UserProfileFollowingAggregateSelection {
+              count: CountConnection!
               edge: UserProfileFollowingEdgeAggregateSelection
               node: UserProfileFollowingNodeAggregateSelection
             }
@@ -506,7 +540,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               following: ProfileRelationshipFilters
-              followingAggregate: UserFollowingAggregateInput
+              followingAggregate: UserFollowingAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the followingConnection filter, please use { followingConnection: { aggregate: {...} } } instead\\")
               followingConnection: UserFollowingConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
@@ -547,6 +581,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

@@ -491,15 +491,19 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                    WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
-                        MATCH (this1)<-[:HAS_POST]-(this2:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                    } AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                        WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
+                            MATCH (this1)<-[:HAS_POST]-(this2:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                        } AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var3
             }
@@ -555,15 +559,19 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                    WHERE (this1.id = $param4 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
-                        MATCH (this1)<-[:HAS_POST]-(this2:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                    } AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
-                    RETURN edge
+                    CALL {
+                        WITH this
+                        MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                        WHERE (this1.id = $param4 AND apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
+                            MATCH (this1)<-[:HAS_POST]-(this2:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                        } AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                        WITH { node: { __resolveType: \\"Post\\", __id: id(this1), id: this1.id } } AS edge
+                        RETURN edge
+                    }
+                    RETURN collect(edge) AS edges
                 }
-                WITH collect(edge) AS edges
+                WITH edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS var3
             }

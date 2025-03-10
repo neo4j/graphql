@@ -25,6 +25,7 @@ import type {
     InputTypeComposerFieldConfigMapDefinition,
     SchemaComposer,
 } from "graphql-compose";
+import { DEPRECATED } from "../../constants";
 import type { EntityAdapter } from "../../schema-model/entity/EntityAdapter";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
@@ -34,8 +35,9 @@ import type { RelationshipDeclarationAdapter } from "../../schema-model/relation
 import { isUnionEntity } from "../../translate/queryAST/utils/is-union-entity";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { getWhereFieldsForAttributes } from "../get-where-fields";
-import { withAggregateInputType } from "./aggregate-types";
+import { withAggregateInputType, withConnectionAggregateInputType } from "./aggregate-types";
 import { augmentWhereInputWithRelationshipFilters } from "./augment-where-input";
+import { shouldAddDeprecatedFields } from "./utils";
 
 function isEmptyObject(obj: Record<string, unknown>): boolean {
     return !Object.keys(obj).length;
@@ -145,7 +147,7 @@ function makeWhereFields({
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
-    composer: SchemaComposer
+    composer: SchemaComposer;
 }): InputTypeComposerFieldConfigMapDefinition {
     if (entityAdapter instanceof UnionEntityAdapter) {
         const fields: InputTypeComposerFieldConfigMapDefinition = {};
@@ -161,7 +163,6 @@ function makeWhereFields({
         features,
         ignoreCypherFieldFilters,
         composer,
-        
     });
 }
 
@@ -177,7 +178,7 @@ export function withSourceWhereInputType({
     deprecatedDirectives: Directive[];
     userDefinedDirectivesOnTargetFields: Map<string, DirectiveNode[]> | undefined;
     features: Neo4jFeaturesSettings | undefined;
-}): InputTypeComposer | undefined {
+}): void {
     const relationshipTarget = relationshipAdapter.target;
     const relationshipSource = relationshipAdapter.source;
     const whereInput = composer.getITC(relationshipSource.operations.whereInputTypeName);
@@ -194,24 +195,40 @@ export function withSourceWhereInputType({
         return;
     }
 
-    const whereAggregateInput = withAggregateInputType({
-        relationshipAdapter,
-        entityAdapter: relationshipTarget,
-        composer: composer,
-        userDefinedDirectivesOnTargetFields,
-        features,
-    });
-
     if (relationshipAdapter.isFilterableByAggregate()) {
-        whereInput.addFields({
-            [relationshipAdapter.operations.aggregateTypeName]: {
-                type: whereAggregateInput,
-                directives: deprecatedDirectives,
-            },
+        withConnectionAggregateInputType({
+            relationshipAdapter,
+            entityAdapter: relationshipTarget,
+            composer: composer,
+            userDefinedDirectivesOnTargetFields,
+            features,
         });
-    }
+        if (shouldAddDeprecatedFields(features, "aggregationFiltersOutsideConnection")) {
+            const whereAggregateInput = withAggregateInputType({
+                relationshipAdapter,
+                entityAdapter: relationshipTarget,
+                composer: composer,
+                userDefinedDirectivesOnTargetFields,
+                features,
+            });
 
-    return whereInput;
+            whereInput.addFields({
+                [relationshipAdapter.operations.aggregateFieldName]: {
+                    type: whereAggregateInput,
+                    directives: deprecatedDirectives.length
+                        ? deprecatedDirectives
+                        : [
+                              {
+                                  name: DEPRECATED,
+                                  args: {
+                                      reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
+                                  },
+                              },
+                          ],
+                },
+            });
+        }
+    }
 }
 
 export function withConnectWhereFieldInputType(

@@ -62,48 +62,157 @@ describe("aggregations-top_level-alias", () => {
                     CREATE (:${typeMovie} {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
                     CREATE (:${typeMovie} {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
                     CREATE (:${typeMovie} {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "different-string", id: "5555", title: "5555", imdbRating: 5, createdAt: datetime()})
                 `
         );
 
         const query = /* GraphQL */ `
                 {
-                    ${typeMovie.operations.aggregate}(where: { testString_EQ: "${testString}" }) {
-                        _count: count
-                        _title: title {
-                            _shortest: shortest
-                            _longest: longest
-                        }
-                        _imdbRating: imdbRating {
-                            _min: min
-                            _max: max
-                            _average: average
-                        }
-                        _createdAt: createdAt {
-                            _min: min
-                            _max: max
-                        }
+                    ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" }}) {
+                        aggr: aggregate {
+                            _count: count {
+                                n: nodes
+                            }
+                            n: node {
+                                _title: title {
+                                    _shortest: shortest
+                                    _longest: longest
+                                }
+                                _imdbRating: imdbRating {
+                                    _min: min
+                                    _max: max
+                                    _average: average
+                                }
+                                _createdAt: createdAt {
+                                    _min: min
+                                    _max: max
+                                }
+                            }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
-            _count: 4,
-            _title: {
-                _shortest: "1",
-                _longest: "4444",
+        expect(gqlResult.data).toEqual({
+            [typeMovie.operations.connection]: {
+                aggr: {
+                    _count: {
+                        n: 4,
+                    },
+                    n: {
+                        _title: {
+                            _shortest: "1",
+                            _longest: "4444",
+                        },
+                        _imdbRating: {
+                            _min: 1,
+                            _max: 4,
+                            _average: 2.5,
+                        },
+                        _createdAt: {
+                            _min: minDate.toISOString(),
+                            _max: maxDate.toISOString(),
+                        },
+                    },
+                },
             },
-            _imdbRating: {
-                _min: 1,
-                _max: 4,
-                _average: 2.5,
-            },
-            _createdAt: {
-                _min: minDate.toISOString(),
-                _max: maxDate.toISOString(),
+        });
+    });
+
+    test("using multiple aliased aggregate projections", async () => {
+        const typeDefs = `
+            type ${typeMovie} @node {
+                testString: ID!
+                title: String!
+                imdbRating: Int!
+            }
+        `;
+
+        const testString = generate({
+            charset: "alphabetic",
+            readable: true,
+        });
+
+        const minDate = new Date();
+
+        const maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + 1);
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "different-string", id: "5555", title: "5555", imdbRating: 5, createdAt: datetime()})
+                `
+        );
+
+        const query = /* GraphQL */ `
+                {
+                    ${typeMovie.operations.connection}(where: { testString: { eq: "${testString}" } }) {
+                        aggr1: aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                title {
+                                    shortest: shortest
+                                    longest: longest
+                                }
+                                imdbRating: imdbRating {
+                                    min: min
+                                    max: max
+                                    average: average
+                                }        
+                            }       
+                        }
+                        aggr2: aggregate {
+                            node {
+                                _title: title {
+                                    shortest: shortest
+                                    longest: longest
+                                }    
+                            }
+                        }
+                    }
+                }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data).toEqual({
+            [typeMovie.operations.connection]: {
+                aggr1: {
+                    count: { nodes: 4 },
+                    node: {
+                        title: {
+                            shortest: "1",
+                            longest: "4444",
+                        },
+                        imdbRating: {
+                            min: 1,
+                            max: 4,
+                            average: 2.5,
+                        },
+                    },
+                },
+                aggr2: {
+                    node: {
+                        _title: {
+                            shortest: "1",
+                            longest: "4444",
+                        },
+                    },
+                },
             },
         });
     });

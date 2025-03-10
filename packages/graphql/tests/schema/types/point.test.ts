@@ -38,6 +38,10 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -63,8 +67,8 @@ describe("Point", () => {
               filmedAt: Point!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -103,6 +107,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -171,7 +176,6 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -260,6 +264,10 @@ describe("Point", () => {
               set: CartesianPointInput
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -285,8 +293,8 @@ describe("Point", () => {
               partLocation: CartesianPoint!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
+            type MachineAggregate {
+              count: Count!
             }
 
             input MachineCreateInput {
@@ -325,6 +333,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -346,7 +355,6 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, sort: [MachineSort!], where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesConnection(after: String, first: Int, sort: [MachineSort!], where: MachineWhere): MachinesConnection!
             }
 
@@ -390,6 +398,10 @@ describe("Point", () => {
               mutation: Mutation
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -422,8 +434,8 @@ describe("Point", () => {
               filmedAt: [Point!]!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -452,6 +464,7 @@ describe("Point", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -497,7 +510,6 @@ describe("Point", () => {
 
             type Query {
               movies(limit: Int, offset: Int, where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, where: MovieWhere): MoviesConnection!
             }
 
@@ -557,6 +569,10 @@ describe("Point", () => {
               includes: CartesianPointInput
             }
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -589,8 +605,8 @@ describe("Point", () => {
               partLocations: [CartesianPoint!]!
             }
 
-            type MachineAggregateSelection {
-              count: Int!
+            type MachineAggregate {
+              count: Count!
             }
 
             input MachineCreateInput {
@@ -619,6 +635,7 @@ describe("Point", () => {
             }
 
             type MachinesConnection {
+              aggregate: MachineAggregate!
               edges: [MachineEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -640,7 +657,6 @@ describe("Point", () => {
 
             type Query {
               machines(limit: Int, offset: Int, where: MachineWhere): [Machine!]!
-              machinesAggregate(where: MachineWhere): MachineAggregateSelection!
               machinesConnection(after: String, first: Int, where: MachineWhere): MachinesConnection!
             }
 

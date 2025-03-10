@@ -46,6 +46,10 @@ describe("Directive-preserve", () => {
 
             directive @preservedTopLevel(boolean: Boolean, float: Float, int: Int, string: String) on OBJECT
 
+            type Count {
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -85,8 +89,8 @@ describe("Directive-preserve", () => {
               id: ID @preservedFieldLevel(string: \\"str\\", int: 12, float: 1.2, boolean: true)
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
             }
 
             input MovieCreateInput {
@@ -123,6 +127,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -144,7 +149,6 @@ describe("Directive-preserve", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -194,6 +198,20 @@ describe("Directive-preserve", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateGenresMutationResponse {
@@ -258,13 +276,16 @@ describe("Directive-preserve", () => {
 
             type Genre {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): GenreMovieMoviesAggregationSelection
               moviesConnection(after: String, first: Int, sort: [GenreMoviesConnectionSort!], where: GenreMoviesConnectionWhere): GenreMoviesConnection!
               name: String
             }
 
-            type GenreAggregateSelection {
-              count: Int!
+            type GenreAggregate {
+              count: Count!
+              node: GenreAggregateNode!
+            }
+
+            type GenreAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -294,8 +315,8 @@ describe("Directive-preserve", () => {
               node: Genre!
             }
 
-            type GenreMovieMoviesAggregationSelection {
-              count: Int!
+            type GenreMovieMoviesAggregateSelection {
+              count: CountConnection!
               node: GenreMovieMoviesNodeAggregateSelection
             }
 
@@ -324,12 +345,23 @@ describe("Directive-preserve", () => {
             }
 
             type GenreMoviesConnection {
+              aggregate: GenreMovieMoviesAggregateSelection!
               edges: [GenreMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input GenreMoviesConnectionAggregateInput {
+              AND: [GenreMoviesConnectionAggregateInput!]
+              NOT: GenreMoviesConnectionAggregateInput
+              OR: [GenreMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: GenreMoviesNodeAggregationWhereInput
+            }
+
             input GenreMoviesConnectionFilters {
+              \\"\\"\\"Filter Genres by aggregating results on related GenreMoviesConnections\\"\\"\\"
+              aggregate: GenreMoviesConnectionAggregateInput
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
               \\"\\"\\"
@@ -489,7 +521,7 @@ describe("Directive-preserve", () => {
               NOT: GenreWhere
               OR: [GenreWhere!]
               movies: MovieRelationshipFilters
-              moviesAggregate: GenreMoviesAggregateInput
+              moviesAggregate: GenreMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
               moviesConnection: GenreMoviesConnectionFilters
               \\"\\"\\"
               Return Genres where all of the related GenreMoviesConnections match this filter
@@ -524,6 +556,7 @@ describe("Directive-preserve", () => {
             }
 
             type GenresConnection {
+              aggregate: GenreAggregate!
               edges: [GenreEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -563,15 +596,18 @@ describe("Directive-preserve", () => {
 
             type Movie {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]! @deprecated(reason: \\"Do not use\\")
-              genresAggregate(where: GenreWhere): MovieGenreGenresAggregationSelection @deprecated(reason: \\"Do not use\\")
               genresConnection(after: String, first: Int, sort: [MovieGenresConnectionSort!], where: MovieGenresConnectionWhere): MovieGenresConnection! @deprecated(reason: \\"Do not use\\")
               imdbRating: Float
               title: String
               year: Int
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               imdbRating: FloatAggregateSelection!
               title: StringAggregateSelection!
               year: IntAggregateSelection!
@@ -605,8 +641,8 @@ describe("Directive-preserve", () => {
               node: Movie!
             }
 
-            type MovieGenreGenresAggregationSelection {
-              count: Int!
+            type MovieGenreGenresAggregateSelection {
+              count: CountConnection!
               node: MovieGenreGenresNodeAggregateSelection
             }
 
@@ -633,12 +669,23 @@ describe("Directive-preserve", () => {
             }
 
             type MovieGenresConnection {
+              aggregate: MovieGenreGenresAggregateSelection!
               edges: [MovieGenresRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieGenresConnectionAggregateInput {
+              AND: [MovieGenresConnectionAggregateInput!]
+              NOT: MovieGenresConnectionAggregateInput
+              OR: [MovieGenresConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieGenresNodeAggregationWhereInput
+            }
+
             input MovieGenresConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieGenresConnections\\"\\"\\"
+              aggregate: MovieGenresConnectionAggregateInput @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"
               Return Movies where all of the related MovieGenresConnections match this filter
               \\"\\"\\"
@@ -817,6 +864,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -841,10 +889,8 @@ describe("Directive-preserve", () => {
 
             type Query {
               genres(limit: Int, offset: Int, sort: [GenreSort!], where: GenreWhere): [Genre!]!
-              genresAggregate(where: GenreWhere): GenreAggregateSelection!
               genresConnection(after: String, first: Int, sort: [GenreSort!], where: GenreWhere): GenresConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -1011,7 +1057,6 @@ describe("Directive-preserve", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -1037,12 +1082,26 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -1136,8 +1195,12 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -1167,8 +1230,8 @@ describe("Directive-preserve", () => {
               node: Actor!
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -1210,7 +1273,7 @@ describe("Directive-preserve", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -1245,9 +1308,24 @@ describe("Directive-preserve", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1317,24 +1395,9 @@ describe("Directive-preserve", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection! @deprecated(reason: \\"Do not use\\")
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1357,7 +1420,20 @@ describe("Directive-preserve", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1422,8 +1498,12 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1508,6 +1588,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1565,7 +1646,20 @@ describe("Directive-preserve", () => {
               totalCount: Int!
             }
 
+            input ProductionActorsConnectionAggregateInput {
+              AND: [ProductionActorsConnectionAggregateInput!]
+              NOT: ProductionActorsConnectionAggregateInput
+              OR: [ProductionActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
             input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: ProductionActorsConnectionAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1701,8 +1795,12 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -1766,7 +1864,7 @@ describe("Directive-preserve", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ProductionActorsAggregateInput
+              actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -1802,6 +1900,7 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1809,39 +1908,20 @@ describe("Directive-preserve", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodes: Int!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              role: StringAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1864,7 +1944,20 @@ describe("Directive-preserve", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1929,13 +2022,18 @@ describe("Directive-preserve", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1979,7 +2077,7 @@ describe("Directive-preserve", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
@@ -2189,7 +2287,6 @@ describe("Directive-preserve", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -2214,12 +2311,26 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2311,8 +2422,12 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -2342,8 +2457,8 @@ describe("Directive-preserve", () => {
               node: Actor!
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -2385,7 +2500,7 @@ describe("Directive-preserve", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -2420,9 +2535,24 @@ describe("Directive-preserve", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -2492,14 +2622,13 @@ describe("Directive-preserve", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]! @deprecated(reason: \\"Do not use\\")
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Do not use\\")
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection! @deprecated(reason: \\"Do not use\\")
               runtime: Int!
               title: String!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
               edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
             }
@@ -2533,12 +2662,24 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput @deprecated(reason: \\"Do not use\\")
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -2632,8 +2773,12 @@ describe("Directive-preserve", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2718,6 +2863,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2748,8 +2894,12 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -2809,6 +2959,7 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2816,29 +2967,24 @@ describe("Directive-preserve", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
               episodes: Int!
               title: String!
             }
 
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
+            type SeriesActorActorsAggregateSelection {
+              count: CountConnection!
               edge: SeriesActorActorsEdgeAggregateSelection
               node: SeriesActorActorsNodeAggregateSelection
             }
@@ -2872,12 +3018,26 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorsConnection {
+              aggregate: SeriesActorActorsAggregateSelection!
               edges: [SeriesActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -2971,13 +3131,18 @@ describe("Directive-preserve", () => {
               where: SeriesActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3021,7 +3186,7 @@ describe("Directive-preserve", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
@@ -3219,7 +3384,6 @@ describe("Directive-preserve", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -3244,12 +3408,26 @@ describe("Directive-preserve", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -3341,8 +3519,12 @@ describe("Directive-preserve", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -3372,8 +3554,8 @@ describe("Directive-preserve", () => {
               node: Actor!
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -3415,7 +3597,7 @@ describe("Directive-preserve", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -3450,9 +3632,24 @@ describe("Directive-preserve", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -3522,14 +3719,13 @@ describe("Directive-preserve", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               runtime: Int!
               title: String!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
+            type MovieActorActorsAggregateSelection {
+              count: CountConnection!
               edge: MovieActorActorsEdgeAggregateSelection
               node: MovieActorActorsNodeAggregateSelection
             }
@@ -3563,12 +3759,24 @@ describe("Directive-preserve", () => {
             }
 
             type MovieActorsConnection {
+              aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
@@ -3662,8 +3870,12 @@ describe("Directive-preserve", () => {
               where: MovieActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3706,7 +3918,7 @@ describe("Directive-preserve", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
@@ -3748,6 +3960,7 @@ describe("Directive-preserve", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3778,8 +3991,12 @@ describe("Directive-preserve", () => {
               title: String!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -3839,6 +4056,7 @@ describe("Directive-preserve", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3846,29 +4064,24 @@ describe("Directive-preserve", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [SeriesActorsConnectionSort!], where: SeriesActorsConnectionWhere): SeriesActorsConnection!
               episodes: Int!
               title: String!
             }
 
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
+            type SeriesActorActorsAggregateSelection {
+              count: CountConnection!
               edge: SeriesActorActorsEdgeAggregateSelection
               node: SeriesActorActorsNodeAggregateSelection
             }
@@ -3902,12 +4115,26 @@ describe("Directive-preserve", () => {
             }
 
             type SeriesActorsConnection {
+              aggregate: SeriesActorActorsAggregateSelection!
               edges: [SeriesActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
               \\"\\"\\"
@@ -4001,13 +4228,18 @@ describe("Directive-preserve", () => {
               where: SeriesActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4051,7 +4283,7 @@ describe("Directive-preserve", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesActorsConnections match this filter
@@ -4185,13 +4417,16 @@ describe("Directive-preserve", () => {
 
             type Blog {
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): BlogPostPostsAggregationSelection
               postsConnection(after: String, first: Int, sort: [BlogPostsConnectionSort!], where: BlogPostsConnectionWhere): BlogPostsConnection!
               title: String
             }
 
-            type BlogAggregateSelection {
-              count: Int!
+            type BlogAggregate {
+              count: Count!
+              node: BlogAggregateNode!
+            }
+
+            type BlogAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -4221,8 +4456,8 @@ describe("Directive-preserve", () => {
               node: Blog!
             }
 
-            type BlogPostPostsAggregationSelection {
-              count: Int!
+            type BlogPostPostsAggregateSelection {
+              count: CountConnection!
               node: BlogPostPostsNodeAggregateSelection
             }
 
@@ -4248,12 +4483,23 @@ describe("Directive-preserve", () => {
             }
 
             type BlogPostsConnection {
+              aggregate: BlogPostPostsAggregateSelection!
               edges: [BlogPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input BlogPostsConnectionAggregateInput {
+              AND: [BlogPostsConnectionAggregateInput!]
+              NOT: BlogPostsConnectionAggregateInput
+              OR: [BlogPostsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: BlogPostsNodeAggregationWhereInput
+            }
+
             input BlogPostsConnectionFilters {
+              \\"\\"\\"Filter Blogs by aggregating results on related BlogPostsConnections\\"\\"\\"
+              aggregate: BlogPostsConnectionAggregateInput
               \\"\\"\\"
               Return Blogs where all of the related BlogPostsConnections match this filter
               \\"\\"\\"
@@ -4358,7 +4604,7 @@ describe("Directive-preserve", () => {
               NOT: BlogWhere
               OR: [BlogWhere!]
               posts: PostRelationshipFilters
-              postsAggregate: BlogPostsAggregateInput
+              postsAggregate: BlogPostsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the postsConnection filter, please use { postsConnection: { aggregate: {...} } } instead\\")
               postsConnection: BlogPostsConnectionFilters
               \\"\\"\\"
               Return Blogs where all of the related BlogPostsConnections match this filter
@@ -4393,9 +4639,15 @@ describe("Directive-preserve", () => {
             }
 
             type BlogsConnection {
+              aggregate: BlogAggregate!
               edges: [BlogEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             union Content = Blog | Post
@@ -4414,6 +4666,15 @@ describe("Directive-preserve", () => {
             input ContentWhere {
               Blog: BlogWhere
               Post: PostWhere
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateBlogsMutationResponse {
@@ -4491,9 +4752,13 @@ describe("Directive-preserve", () => {
               content: String @deprecated(reason: \\"Do not use post.content\\")
             }
 
-            type PostAggregateSelection {
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
+            }
+
+            type PostAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             input PostConnectWhere {
@@ -4545,6 +4810,7 @@ describe("Directive-preserve", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4552,14 +4818,11 @@ describe("Directive-preserve", () => {
 
             type Query {
               blogs(limit: Int, offset: Int, sort: [BlogSort!], where: BlogWhere): [Blog!]!
-              blogsAggregate(where: BlogWhere): BlogAggregateSelection!
               blogsConnection(after: String, first: Int, sort: [BlogSort!], where: BlogWhere): BlogsConnection!
               contents(limit: Int, offset: Int, where: ContentWhere): [Content!]!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -4628,8 +4891,12 @@ describe("Directive-preserve", () => {
               name: String
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -4834,6 +5101,7 @@ describe("Directive-preserve", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

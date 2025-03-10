@@ -122,7 +122,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -147,12 +146,26 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -244,8 +257,12 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -263,8 +280,8 @@ describe("Interface Relationships", () => {
               node: Actor!
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -295,7 +312,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -330,9 +347,24 @@ describe("Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -413,8 +445,12 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -466,6 +502,7 @@ describe("Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -495,8 +532,12 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -556,6 +597,7 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -563,16 +605,12 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
@@ -581,13 +619,18 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodes: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -810,7 +853,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -836,12 +878,26 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -935,8 +991,12 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -966,8 +1026,8 @@ describe("Interface Relationships", () => {
               node: Actor!
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -1009,7 +1069,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -1044,9 +1104,24 @@ describe("Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -1088,12 +1163,15 @@ describe("Interface Relationships", () => {
             type Episode {
               runtime: Int!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
-            type EpisodeAggregateSelection {
-              count: Int!
+            type EpisodeAggregate {
+              count: Count!
+              node: EpisodeAggregateNode!
+            }
+
+            type EpisodeAggregateNode {
               runtime: IntAggregateSelection!
             }
 
@@ -1153,12 +1231,25 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesConnection {
+              aggregate: EpisodeSeriesSeriesAggregateSelection!
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input EpisodeSeriesConnectionAggregateInput {
+              AND: [EpisodeSeriesConnectionAggregateInput!]
+              NOT: EpisodeSeriesConnectionAggregateInput
+              OR: [EpisodeSeriesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
             input EpisodeSeriesConnectionFilters {
+              \\"\\"\\"
+              Filter Episodes by aggregating results on related EpisodeSeriesConnections
+              \\"\\"\\"
+              aggregate: EpisodeSeriesConnectionAggregateInput
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
@@ -1255,8 +1346,8 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
-            type EpisodeSeriesSeriesAggregationSelection {
-              count: Int!
+            type EpisodeSeriesSeriesAggregateSelection {
+              count: CountConnection!
               node: EpisodeSeriesSeriesNodeAggregateSelection
             }
 
@@ -1305,7 +1396,7 @@ describe("Interface Relationships", () => {
               runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               series: SeriesRelationshipFilters
-              seriesAggregate: EpisodeSeriesAggregateInput
+              seriesAggregate: EpisodeSeriesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the seriesConnection filter, please use { seriesConnection: { aggregate: {...} } } instead\\")
               seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
@@ -1334,6 +1425,7 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodesConnection {
+              aggregate: EpisodeAggregate!
               edges: [EpisodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1383,24 +1475,9 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -1423,7 +1500,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1488,8 +1578,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -1532,7 +1626,7 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
@@ -1574,6 +1668,7 @@ describe("Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1634,7 +1729,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ProductionActorsConnectionAggregateInput {
+              AND: [ProductionActorsConnectionAggregateInput!]
+              NOT: ProductionActorsConnectionAggregateInput
+              OR: [ProductionActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
             input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: ProductionActorsConnectionAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -1770,8 +1878,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -1835,7 +1947,7 @@ describe("Interface Relationships", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ProductionActorsAggregateInput
+              actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -1871,6 +1983,7 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -1878,45 +1991,24 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
               episodesConnection(after: String, first: Int, sort: [EpisodeSort!], where: EpisodeWhere): EpisodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -1939,7 +2031,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -2004,8 +2109,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -2020,6 +2129,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -2047,8 +2157,8 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
-            type SeriesEpisodeEpisodesAggregationSelection {
-              count: Int!
+            type SeriesEpisodeEpisodesAggregateSelection {
+              count: CountConnection!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
             }
 
@@ -2075,12 +2185,25 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodesConnection {
+              aggregate: SeriesEpisodeEpisodesAggregateSelection!
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input SeriesEpisodesConnectionAggregateInput {
+              AND: [SeriesEpisodesConnectionAggregateInput!]
+              NOT: SeriesEpisodesConnectionAggregateInput
+              OR: [SeriesEpisodesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: SeriesEpisodesNodeAggregationWhereInput
+            }
+
             input SeriesEpisodesConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesEpisodesConnections
+              \\"\\"\\"
+              aggregate: SeriesEpisodesConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
@@ -2209,7 +2332,7 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
@@ -2243,7 +2366,7 @@ describe("Interface Relationships", () => {
               episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
               episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               episodes: EpisodeRelationshipFilters
-              episodesAggregate: SeriesEpisodesAggregateInput
+              episodesAggregate: SeriesEpisodesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the episodesConnection filter, please use { episodesConnection: { aggregate: {...} } } instead\\")
               episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
@@ -2456,7 +2579,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              actedInAggregate(where: ProductionWhere): ActorProductionActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -2482,12 +2604,26 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorProductionActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -2581,8 +2717,12 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -2612,8 +2752,8 @@ describe("Interface Relationships", () => {
               node: Actor!
             }
 
-            type ActorProductionActedInAggregationSelection {
-              count: Int!
+            type ActorProductionActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorProductionActedInEdgeAggregateSelection
               node: ActorProductionActedInNodeAggregateSelection
             }
@@ -2655,7 +2795,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ProductionRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -2690,9 +2830,24 @@ describe("Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -2734,12 +2889,15 @@ describe("Interface Relationships", () => {
             type Episode {
               runtime: Int!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): EpisodeSeriesSeriesAggregationSelection
               seriesConnection(after: String, first: Int, sort: [EpisodeSeriesConnectionSort!], where: EpisodeSeriesConnectionWhere): EpisodeSeriesConnection!
             }
 
-            type EpisodeAggregateSelection {
-              count: Int!
+            type EpisodeAggregate {
+              count: Count!
+              node: EpisodeAggregateNode!
+            }
+
+            type EpisodeAggregateNode {
               runtime: IntAggregateSelection!
             }
 
@@ -2799,12 +2957,25 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodeSeriesConnection {
+              aggregate: EpisodeSeriesSeriesAggregateSelection!
               edges: [EpisodeSeriesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input EpisodeSeriesConnectionAggregateInput {
+              AND: [EpisodeSeriesConnectionAggregateInput!]
+              NOT: EpisodeSeriesConnectionAggregateInput
+              OR: [EpisodeSeriesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: EpisodeSeriesNodeAggregationWhereInput
+            }
+
             input EpisodeSeriesConnectionFilters {
+              \\"\\"\\"
+              Filter Episodes by aggregating results on related EpisodeSeriesConnections
+              \\"\\"\\"
+              aggregate: EpisodeSeriesConnectionAggregateInput
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
               \\"\\"\\"
@@ -2901,8 +3072,8 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
-            type EpisodeSeriesSeriesAggregationSelection {
-              count: Int!
+            type EpisodeSeriesSeriesAggregateSelection {
+              count: CountConnection!
               node: EpisodeSeriesSeriesNodeAggregateSelection
             }
 
@@ -2951,7 +3122,7 @@ describe("Interface Relationships", () => {
               runtime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lt: ... }\\")
               runtime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter runtime: { lte: ... }\\")
               series: SeriesRelationshipFilters
-              seriesAggregate: EpisodeSeriesAggregateInput
+              seriesAggregate: EpisodeSeriesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the seriesConnection filter, please use { seriesConnection: { aggregate: {...} } } instead\\")
               seriesConnection: EpisodeSeriesConnectionFilters
               \\"\\"\\"
               Return Episodes where all of the related EpisodeSeriesConnections match this filter
@@ -2980,6 +3151,7 @@ describe("Interface Relationships", () => {
             }
 
             type EpisodesConnection {
+              aggregate: EpisodeAggregate!
               edges: [EpisodeEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3029,24 +3201,9 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -3069,7 +3226,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3134,8 +3304,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3178,7 +3352,7 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionActorsConnections match this filter
@@ -3220,6 +3394,7 @@ describe("Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3280,7 +3455,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ProductionActorsConnectionAggregateInput {
+              AND: [ProductionActorsConnectionAggregateInput!]
+              NOT: ProductionActorsConnectionAggregateInput
+              OR: [ProductionActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ProductionActorsEdgeAggregationWhereInput
+              node: ProductionActorsNodeAggregationWhereInput
+            }
+
             input ProductionActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: ProductionActorsConnectionAggregateInput
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3436,8 +3624,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -3501,7 +3693,7 @@ describe("Interface Relationships", () => {
               NOT: ProductionWhere
               OR: [ProductionWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ProductionActorsAggregateInput
+              actorsAggregate: ProductionActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ProductionActorsConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionActorsConnections match this filter
@@ -3537,6 +3729,7 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3544,45 +3737,24 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): EpisodeAggregateSelection!
               episodesConnection(after: String, first: Int, sort: [EpisodeSort!], where: EpisodeWhere): EpisodesConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ProductionActorsConnectionSort!], where: ProductionActorsConnectionWhere): ProductionActorsConnection!
               episodeCount: Int!
               episodes(limit: Int, offset: Int, sort: [EpisodeSort!], where: EpisodeWhere): [Episode!]!
-              episodesAggregate(where: EpisodeWhere): SeriesEpisodeEpisodesAggregationSelection
               episodesConnection(after: String, first: Int, sort: [SeriesEpisodesConnectionSort!], where: SeriesEpisodesConnectionWhere): SeriesEpisodesConnection!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              seasons: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -3605,7 +3777,20 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: StarredInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorsConnections
+              \\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
               \\"\\"\\"
@@ -3670,8 +3855,12 @@ describe("Interface Relationships", () => {
               where: ProductionActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -3686,6 +3875,7 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -3713,8 +3903,8 @@ describe("Interface Relationships", () => {
               node: Series!
             }
 
-            type SeriesEpisodeEpisodesAggregationSelection {
-              count: Int!
+            type SeriesEpisodeEpisodesAggregateSelection {
+              count: CountConnection!
               node: SeriesEpisodeEpisodesNodeAggregateSelection
             }
 
@@ -3741,12 +3931,25 @@ describe("Interface Relationships", () => {
             }
 
             type SeriesEpisodesConnection {
+              aggregate: SeriesEpisodeEpisodesAggregateSelection!
               edges: [SeriesEpisodesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input SeriesEpisodesConnectionAggregateInput {
+              AND: [SeriesEpisodesConnectionAggregateInput!]
+              NOT: SeriesEpisodesConnectionAggregateInput
+              OR: [SeriesEpisodesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: SeriesEpisodesNodeAggregationWhereInput
+            }
+
             input SeriesEpisodesConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related SeriesEpisodesConnections
+              \\"\\"\\"
+              aggregate: SeriesEpisodesConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
               \\"\\"\\"
@@ -3875,7 +4078,7 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionActorsConnections match this filter
@@ -3909,7 +4112,7 @@ describe("Interface Relationships", () => {
               episodeCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lt: ... }\\")
               episodeCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episodeCount: { lte: ... }\\")
               episodes: EpisodeRelationshipFilters
-              episodesAggregate: SeriesEpisodesAggregateInput
+              episodesAggregate: SeriesEpisodesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the episodesConnection filter, please use { episodesConnection: { aggregate: {...} } } instead\\")
               episodesConnection: SeriesEpisodesConnectionFilters
               \\"\\"\\"
               Return Series where all of the related SeriesEpisodesConnections match this filter
@@ -4116,6 +4319,20 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -4183,8 +4400,12 @@ describe("Interface Relationships", () => {
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
-            type Interface1AggregateSelection {
-              count: Int!
+            type Interface1Aggregate {
+              count: Count!
+              node: Interface1AggregateNode!
+            }
+
+            type Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -4242,7 +4463,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionAggregateInput {
+              AND: [Interface1Interface2ConnectionAggregateInput!]
+              NOT: Interface1Interface2ConnectionAggregateInput
+              OR: [Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -4359,7 +4592,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Aggregate: Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -4397,6 +4630,7 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1sConnection {
+              aggregate: Interface1Aggregate!
               edges: [Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4406,8 +4640,12 @@ describe("Interface Relationships", () => {
               field2: String
             }
 
-            type Interface2AggregateSelection {
-              count: Int!
+            type Interface2Aggregate {
+              count: Count!
+              node: Interface2AggregateNode!
+            }
+
+            type Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -4467,6 +4705,7 @@ describe("Interface Relationships", () => {
             }
 
             type Interface2sConnection {
+              aggregate: Interface2Aggregate!
               edges: [Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4500,25 +4739,18 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection!
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -4559,12 +4791,15 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1Aggregate(where: Interface1Where): Type1Interface1Interface1AggregationSelection
               interface1Connection(after: String, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
-            type Type1AggregateSelection {
-              count: Int!
+            type Type1Aggregate {
+              count: Count!
+              node: Type1AggregateNode!
+            }
+
+            type Type1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -4585,8 +4820,12 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type1Interface1Aggregate {
+              count: Count!
+              node: Type1Interface1AggregateNode!
             }
 
             input Type1Interface1AggregateInput {
@@ -4602,8 +4841,7 @@ describe("Interface Relationships", () => {
               node: Type1Interface1NodeAggregationWhereInput
             }
 
-            type Type1Interface1AggregateSelection {
-              count: Int!
+            type Type1Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -4613,12 +4851,25 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
+              aggregate: Type1Interface1Interface1AggregateSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input Type1Interface1ConnectionAggregateInput {
+              AND: [Type1Interface1ConnectionAggregateInput!]
+              NOT: Type1Interface1ConnectionAggregateInput
+              OR: [Type1Interface1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1NodeAggregationWhereInput
+            }
+
             input Type1Interface1ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1s by aggregating results on related Type1Interface1Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1ConnectionAggregateInput
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
@@ -4681,8 +4932,8 @@ describe("Interface Relationships", () => {
               create: [Type1Interface1CreateFieldInput!]
             }
 
-            type Type1Interface1Interface1AggregationSelection {
-              count: Int!
+            type Type1Interface1Interface1AggregateSelection {
+              count: CountConnection!
               node: Type1Interface1Interface1NodeAggregateSelection
             }
 
@@ -4707,7 +4958,19 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type1Interface1Interface2ConnectionAggregateInput {
+              AND: [Type1Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type1Interface1Interface2ConnectionAggregateInput
+              OR: [Type1Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -4741,15 +5004,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2FieldInput {
               connect: [Type1Interface1Interface2ConnectFieldInput!]
               create: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type1Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              node: Type1Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type1Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2NodeAggregationWhereInput {
@@ -4851,7 +5105,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Aggregate: Type1Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -4888,6 +5142,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1sConnection {
+              aggregate: Type1Interface1Aggregate!
               edges: [Type1Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4897,8 +5152,12 @@ describe("Interface Relationships", () => {
               field2: String!
             }
 
-            type Type1Interface2AggregateSelection {
-              count: Int!
+            type Type1Interface2Aggregate {
+              count: Count!
+              node: Type1Interface2AggregateNode!
+            }
+
+            type Type1Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -4936,6 +5195,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2sConnection {
+              aggregate: Type1Interface2Aggregate!
               edges: [Type1Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -4965,7 +5225,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface1: Interface1RelationshipFilters
-              interface1Aggregate: Type1Interface1AggregateInput
+              interface1Aggregate: Type1Interface1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface1Connection filter, please use { interface1Connection: { aggregate: {...} } } instead\\")
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -4994,6 +5254,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1sConnection {
+              aggregate: Type1Aggregate!
               edges: [Type1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5002,12 +5263,15 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
-            type Type2Interface1AggregateSelection {
-              count: Int!
+            type Type2Interface1Aggregate {
+              count: Count!
+              node: Type2Interface1AggregateNode!
+            }
+
+            type Type2Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -5042,7 +5306,19 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type2Interface1Interface2ConnectionAggregateInput {
+              AND: [Type2Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type2Interface1Interface2ConnectionAggregateInput
+              OR: [Type2Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type2Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type2Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -5076,15 +5352,6 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2FieldInput {
               connect: [Type2Interface1Interface2ConnectFieldInput!]
               create: [Type2Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type2Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              node: Type2Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type2Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2NodeAggregationWhereInput {
@@ -5146,7 +5413,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Aggregate: Type2Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5183,6 +5450,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1sConnection {
+              aggregate: Type2Interface1Aggregate!
               edges: [Type2Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5192,8 +5460,12 @@ describe("Interface Relationships", () => {
               field2: String!
             }
 
-            type Type2Interface2AggregateSelection {
-              count: Int!
+            type Type2Interface2Aggregate {
+              count: Count!
+              node: Type2Interface2AggregateNode!
+            }
+
+            type Type2Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -5231,6 +5503,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2sConnection {
+              aggregate: Type2Interface2Aggregate!
               edges: [Type2Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5326,6 +5599,20 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -5377,13 +5664,6 @@ describe("Interface Relationships", () => {
               lte: Float
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
             input IntScalarAggregationFilters {
               average: FloatScalarFilters
@@ -5415,8 +5695,12 @@ describe("Interface Relationships", () => {
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
-            type Interface1AggregateSelection {
-              count: Int!
+            type Interface1Aggregate {
+              count: Count!
+              node: Interface1AggregateNode!
+            }
+
+            type Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -5476,7 +5760,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionAggregateInput {
+              AND: [Interface1Interface2ConnectionAggregateInput!]
+              NOT: Interface1Interface2ConnectionAggregateInput
+              OR: [Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Interface1Interface2EdgeAggregationWhereInput
+              node: Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -5645,7 +5942,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Aggregate: Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -5683,6 +5980,7 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1sConnection {
+              aggregate: Interface1Aggregate!
               edges: [Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5692,8 +5990,12 @@ describe("Interface Relationships", () => {
               field2: String
             }
 
-            type Interface2AggregateSelection {
-              count: Int!
+            type Interface2Aggregate {
+              count: Count!
+              node: Interface2AggregateNode!
+            }
+
+            type Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -5753,6 +6055,7 @@ describe("Interface Relationships", () => {
             }
 
             type Interface2sConnection {
+              aggregate: Interface2Aggregate!
               edges: [Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -5850,25 +6153,18 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection!
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -5909,12 +6205,15 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1Aggregate(where: Interface1Where): Type1Interface1Interface1AggregationSelection
               interface1Connection(after: String, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
-            type Type1AggregateSelection {
-              count: Int!
+            type Type1Aggregate {
+              count: Count!
+              node: Type1AggregateNode!
+            }
+
+            type Type1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -5935,8 +6234,12 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type1Interface1Aggregate {
+              count: Count!
+              node: Type1Interface1AggregateNode!
             }
 
             input Type1Interface1AggregateInput {
@@ -5952,8 +6255,7 @@ describe("Interface Relationships", () => {
               node: Type1Interface1NodeAggregationWhereInput
             }
 
-            type Type1Interface1AggregateSelection {
-              count: Int!
+            type Type1Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -5963,12 +6265,25 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
+              aggregate: Type1Interface1Interface1AggregateSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input Type1Interface1ConnectionAggregateInput {
+              AND: [Type1Interface1ConnectionAggregateInput!]
+              NOT: Type1Interface1ConnectionAggregateInput
+              OR: [Type1Interface1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1NodeAggregationWhereInput
+            }
+
             input Type1Interface1ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1s by aggregating results on related Type1Interface1Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1ConnectionAggregateInput
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
@@ -6031,8 +6346,8 @@ describe("Interface Relationships", () => {
               create: [Type1Interface1CreateFieldInput!]
             }
 
-            type Type1Interface1Interface1AggregationSelection {
-              count: Int!
+            type Type1Interface1Interface1AggregateSelection {
+              count: CountConnection!
               node: Type1Interface1Interface1NodeAggregateSelection
             }
 
@@ -6059,7 +6374,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type1Interface1Interface2ConnectionAggregateInput {
+              AND: [Type1Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type1Interface1Interface2ConnectionAggregateInput
+              OR: [Type1Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PropsAggregationWhereInput
+              node: Type1Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -6094,20 +6422,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2FieldInput {
               connect: [Type1Interface1Interface2ConnectFieldInput!]
               create: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type1Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type1Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type1Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type1Interface1Interface2Interface2EdgeAggregateSelection {
-              propsField: IntAggregateSelection!
-            }
-
-            type Type1Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2NodeAggregationWhereInput {
@@ -6210,7 +6524,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Aggregate: Type1Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6247,6 +6561,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1sConnection {
+              aggregate: Type1Interface1Aggregate!
               edges: [Type1Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6256,8 +6571,12 @@ describe("Interface Relationships", () => {
               field2: String!
             }
 
-            type Type1Interface2AggregateSelection {
-              count: Int!
+            type Type1Interface2Aggregate {
+              count: Count!
+              node: Type1Interface2AggregateNode!
+            }
+
+            type Type1Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -6295,6 +6614,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2sConnection {
+              aggregate: Type1Interface2Aggregate!
               edges: [Type1Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6324,7 +6644,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface1: Interface1RelationshipFilters
-              interface1Aggregate: Type1Interface1AggregateInput
+              interface1Aggregate: Type1Interface1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface1Connection filter, please use { interface1Connection: { aggregate: {...} } } instead\\")
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -6353,6 +6673,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1sConnection {
+              aggregate: Type1Aggregate!
               edges: [Type1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6361,12 +6682,15 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
-            type Type2Interface1AggregateSelection {
-              count: Int!
+            type Type2Interface1Aggregate {
+              count: Count!
+              node: Type2Interface1AggregateNode!
+            }
+
+            type Type2Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -6403,7 +6727,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type2Interface1Interface2ConnectionAggregateInput {
+              AND: [Type2Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type2Interface1Interface2ConnectionAggregateInput
+              OR: [Type2Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: PropsAggregationWhereInput
+              node: Type2Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type2Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -6438,20 +6775,6 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2FieldInput {
               connect: [Type2Interface1Interface2ConnectFieldInput!]
               create: [Type2Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type2Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type2Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type2Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type2Interface1Interface2Interface2EdgeAggregateSelection {
-              propsField: IntAggregateSelection!
-            }
-
-            type Type2Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2NodeAggregationWhereInput {
@@ -6514,7 +6837,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Aggregate: Type2Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -6551,6 +6874,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1sConnection {
+              aggregate: Type2Interface1Aggregate!
               edges: [Type2Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6560,8 +6884,12 @@ describe("Interface Relationships", () => {
               field2: String!
             }
 
-            type Type2Interface2AggregateSelection {
-              count: Int!
+            type Type2Interface2Aggregate {
+              count: Count!
+              node: Type2Interface2AggregateNode!
+            }
+
+            type Type2Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -6599,6 +6927,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2sConnection {
+              aggregate: Type2Interface2Aggregate!
               edges: [Type2Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -6700,6 +7029,20 @@ describe("Interface Relationships", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships created during a create mutation
             \\"\\"\\"
@@ -6751,13 +7094,6 @@ describe("Interface Relationships", () => {
               lte: Float
             }
 
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
             \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
             input IntScalarAggregationFilters {
               average: FloatScalarFilters
@@ -6789,8 +7125,12 @@ describe("Interface Relationships", () => {
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
-            type Interface1AggregateSelection {
-              count: Int!
+            type Interface1Aggregate {
+              count: Count!
+              node: Interface1AggregateNode!
+            }
+
+            type Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -6850,7 +7190,20 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input Interface1Interface2ConnectionAggregateInput {
+              AND: [Interface1Interface2ConnectionAggregateInput!]
+              NOT: Interface1Interface2ConnectionAggregateInput
+              OR: [Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Interface1Interface2EdgeAggregationWhereInput
+              node: Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7039,7 +7392,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Interface1Interface2AggregateInput
+              interface2Aggregate: Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -7077,6 +7430,7 @@ describe("Interface Relationships", () => {
             }
 
             type Interface1sConnection {
+              aggregate: Interface1Aggregate!
               edges: [Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7086,8 +7440,12 @@ describe("Interface Relationships", () => {
               field2: String
             }
 
-            type Interface2AggregateSelection {
-              count: Int!
+            type Interface2Aggregate {
+              count: Count!
+              node: Interface2AggregateNode!
+            }
+
+            type Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -7147,6 +7505,7 @@ describe("Interface Relationships", () => {
             }
 
             type Interface2sConnection {
+              aggregate: Interface2Aggregate!
               edges: [Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7180,25 +7539,18 @@ describe("Interface Relationships", () => {
 
             type Query {
               interface1s(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1sAggregate(where: Interface1Where): Interface1AggregateSelection!
               interface1sConnection(after: String, first: Int, sort: [Interface1Sort!], where: Interface1Where): Interface1sConnection!
               interface2s(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2sAggregate(where: Interface2Where): Interface2AggregateSelection!
               interface2sConnection(after: String, first: Int, sort: [Interface2Sort!], where: Interface2Where): Interface2sConnection!
               type1Interface1s(limit: Int, offset: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): [Type1Interface1!]!
-              type1Interface1sAggregate(where: Type1Interface1Where): Type1Interface1AggregateSelection!
               type1Interface1sConnection(after: String, first: Int, sort: [Type1Interface1Sort!], where: Type1Interface1Where): Type1Interface1sConnection!
               type1Interface2s(limit: Int, offset: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): [Type1Interface2!]!
-              type1Interface2sAggregate(where: Type1Interface2Where): Type1Interface2AggregateSelection!
               type1Interface2sConnection(after: String, first: Int, sort: [Type1Interface2Sort!], where: Type1Interface2Where): Type1Interface2sConnection!
               type1s(limit: Int, offset: Int, sort: [Type1Sort!], where: Type1Where): [Type1!]!
-              type1sAggregate(where: Type1Where): Type1AggregateSelection!
               type1sConnection(after: String, first: Int, sort: [Type1Sort!], where: Type1Where): Type1sConnection!
               type2Interface1s(limit: Int, offset: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): [Type2Interface1!]!
-              type2Interface1sAggregate(where: Type2Interface1Where): Type2Interface1AggregateSelection!
               type2Interface1sConnection(after: String, first: Int, sort: [Type2Interface1Sort!], where: Type2Interface1Where): Type2Interface1sConnection!
               type2Interface2s(limit: Int, offset: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): [Type2Interface2!]!
-              type2Interface2sAggregate(where: Type2Interface2Where): Type2Interface2AggregateSelection!
               type2Interface2sConnection(after: String, first: Int, sort: [Type2Interface2Sort!], where: Type2Interface2Where): Type2Interface2sConnection!
             }
 
@@ -7239,12 +7591,15 @@ describe("Interface Relationships", () => {
             type Type1 {
               field1: String!
               interface1(limit: Int, offset: Int, sort: [Interface1Sort!], where: Interface1Where): [Interface1!]!
-              interface1Aggregate(where: Interface1Where): Type1Interface1Interface1AggregationSelection
               interface1Connection(after: String, first: Int, sort: [Type1Interface1ConnectionSort!], where: Type1Interface1ConnectionWhere): Type1Interface1Connection!
             }
 
-            type Type1AggregateSelection {
-              count: Int!
+            type Type1Aggregate {
+              count: Count!
+              node: Type1AggregateNode!
+            }
+
+            type Type1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -7265,8 +7620,12 @@ describe("Interface Relationships", () => {
             type Type1Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type1Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
+            }
+
+            type Type1Interface1Aggregate {
+              count: Count!
+              node: Type1Interface1AggregateNode!
             }
 
             input Type1Interface1AggregateInput {
@@ -7282,8 +7641,7 @@ describe("Interface Relationships", () => {
               node: Type1Interface1NodeAggregationWhereInput
             }
 
-            type Type1Interface1AggregateSelection {
-              count: Int!
+            type Type1Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -7293,12 +7651,25 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1Connection {
+              aggregate: Type1Interface1Interface1AggregateSelection!
               edges: [Type1Interface1Relationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input Type1Interface1ConnectionAggregateInput {
+              AND: [Type1Interface1ConnectionAggregateInput!]
+              NOT: Type1Interface1ConnectionAggregateInput
+              OR: [Type1Interface1ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Type1Interface1NodeAggregationWhereInput
+            }
+
             input Type1Interface1ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1s by aggregating results on related Type1Interface1Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1ConnectionAggregateInput
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
               \\"\\"\\"
@@ -7361,8 +7732,8 @@ describe("Interface Relationships", () => {
               create: [Type1Interface1CreateFieldInput!]
             }
 
-            type Type1Interface1Interface1AggregationSelection {
-              count: Int!
+            type Type1Interface1Interface1AggregateSelection {
+              count: CountConnection!
               node: Type1Interface1Interface1NodeAggregateSelection
             }
 
@@ -7389,7 +7760,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type1Interface1Interface2ConnectionAggregateInput {
+              AND: [Type1Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type1Interface1Interface2ConnectionAggregateInput
+              OR: [Type1Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Type1PropsAggregationWhereInput
+              node: Type1Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type1Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type1Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type1Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7424,20 +7808,6 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2FieldInput {
               connect: [Type1Interface1Interface2ConnectFieldInput!]
               create: [Type1Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type1Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type1Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type1Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type1Interface1Interface2Interface2EdgeAggregateSelection {
-              type1Field: IntAggregateSelection!
-            }
-
-            type Type1Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type1Interface1Interface2NodeAggregationWhereInput {
@@ -7540,7 +7910,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type1Interface1Interface2AggregateInput
+              interface2Aggregate: Type1Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type1Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type1Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -7577,6 +7947,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface1sConnection {
+              aggregate: Type1Interface1Aggregate!
               edges: [Type1Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7586,8 +7957,12 @@ describe("Interface Relationships", () => {
               field2: String!
             }
 
-            type Type1Interface2AggregateSelection {
-              count: Int!
+            type Type1Interface2Aggregate {
+              count: Count!
+              node: Type1Interface2AggregateNode!
+            }
+
+            type Type1Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -7625,6 +8000,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1Interface2sConnection {
+              aggregate: Type1Interface2Aggregate!
               edges: [Type1Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7717,7 +8093,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface1: Interface1RelationshipFilters
-              interface1Aggregate: Type1Interface1AggregateInput
+              interface1Aggregate: Type1Interface1AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface1Connection filter, please use { interface1Connection: { aggregate: {...} } } instead\\")
               interface1Connection: Type1Interface1ConnectionFilters
               \\"\\"\\"
               Return Type1s where all of the related Type1Interface1Connections match this filter
@@ -7746,6 +8122,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type1sConnection {
+              aggregate: Type1Aggregate!
               edges: [Type1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7754,12 +8131,15 @@ describe("Interface Relationships", () => {
             type Type2Interface1 implements Interface1 {
               field1: String!
               interface2(limit: Int, offset: Int, sort: [Interface2Sort!], where: Interface2Where): [Interface2!]!
-              interface2Aggregate(where: Interface2Where): Type2Interface1Interface2Interface2AggregationSelection
               interface2Connection(after: String, first: Int, sort: [Interface1Interface2ConnectionSort!], where: Interface1Interface2ConnectionWhere): Interface1Interface2Connection!
             }
 
-            type Type2Interface1AggregateSelection {
-              count: Int!
+            type Type2Interface1Aggregate {
+              count: Count!
+              node: Type2Interface1AggregateNode!
+            }
+
+            type Type2Interface1AggregateNode {
               field1: StringAggregateSelection!
             }
 
@@ -7796,7 +8176,20 @@ describe("Interface Relationships", () => {
               where: Interface2ConnectWhere
             }
 
+            input Type2Interface1Interface2ConnectionAggregateInput {
+              AND: [Type2Interface1Interface2ConnectionAggregateInput!]
+              NOT: Type2Interface1Interface2ConnectionAggregateInput
+              OR: [Type2Interface1Interface2ConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: Type2PropsAggregationWhereInput
+              node: Type2Interface1Interface2NodeAggregationWhereInput
+            }
+
             input Type2Interface1Interface2ConnectionFilters {
+              \\"\\"\\"
+              Filter Type2Interface1s by aggregating results on related Interface1Interface2Connections
+              \\"\\"\\"
+              aggregate: Type2Interface1Interface2ConnectionAggregateInput
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
               \\"\\"\\"
@@ -7831,20 +8224,6 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2FieldInput {
               connect: [Type2Interface1Interface2ConnectFieldInput!]
               create: [Type2Interface1Interface2CreateFieldInput!]
-            }
-
-            type Type2Interface1Interface2Interface2AggregationSelection {
-              count: Int!
-              edge: Type2Interface1Interface2Interface2EdgeAggregateSelection
-              node: Type2Interface1Interface2Interface2NodeAggregateSelection
-            }
-
-            type Type2Interface1Interface2Interface2EdgeAggregateSelection {
-              type2Field: IntAggregateSelection!
-            }
-
-            type Type2Interface1Interface2Interface2NodeAggregateSelection {
-              field2: StringAggregateSelection!
             }
 
             input Type2Interface1Interface2NodeAggregationWhereInput {
@@ -7907,7 +8286,7 @@ describe("Interface Relationships", () => {
               field1_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter field1: { in: ... }\\")
               field1_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter field1: { startsWith: ... }\\")
               interface2: Interface2RelationshipFilters
-              interface2Aggregate: Type2Interface1Interface2AggregateInput
+              interface2Aggregate: Type2Interface1Interface2AggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the interface2Connection filter, please use { interface2Connection: { aggregate: {...} } } instead\\")
               interface2Connection: Type2Interface1Interface2ConnectionFilters
               \\"\\"\\"
               Return Type2Interface1s where all of the related Interface1Interface2Connections match this filter
@@ -7944,6 +8323,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface1sConnection {
+              aggregate: Type2Interface1Aggregate!
               edges: [Type2Interface1Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -7953,8 +8333,12 @@ describe("Interface Relationships", () => {
               field2: String!
             }
 
-            type Type2Interface2AggregateSelection {
-              count: Int!
+            type Type2Interface2Aggregate {
+              count: Count!
+              node: Type2Interface2AggregateNode!
+            }
+
+            type Type2Interface2AggregateNode {
               field2: StringAggregateSelection!
             }
 
@@ -7992,6 +8376,7 @@ describe("Interface Relationships", () => {
             }
 
             type Type2Interface2sConnection {
+              aggregate: Type2Interface2Aggregate!
               edges: [Type2Interface2Edge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -8143,17 +8528,19 @@ describe("Interface Relationships", () => {
             type Comment implements Content {
               content: String
               creator(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              creatorAggregate(where: UserWhere): CommentUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
               post(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postAggregate(where: PostWhere): CommentPostPostAggregationSelection
               postConnection(after: String, first: Int, sort: [CommentPostConnectionSort!], where: CommentPostConnectionWhere): CommentPostConnection!
             }
 
-            type CommentAggregateSelection {
+            type CommentAggregate {
+              count: Count!
+              node: CommentAggregateNode!
+            }
+
+            type CommentAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             input CommentConnectInput {
@@ -8190,7 +8577,19 @@ describe("Interface Relationships", () => {
               where: UserConnectWhere
             }
 
+            input CommentCreatorConnectionAggregateInput {
+              AND: [CommentCreatorConnectionAggregateInput!]
+              NOT: CommentCreatorConnectionAggregateInput
+              OR: [CommentCreatorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: CommentCreatorNodeAggregationWhereInput
+            }
+
             input CommentCreatorConnectionFilters {
+              \\"\\"\\"
+              Filter Comments by aggregating results on related ContentCreatorConnections
+              \\"\\"\\"
+              aggregate: CommentCreatorConnectionAggregateInput
               \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -8287,12 +8686,25 @@ describe("Interface Relationships", () => {
             }
 
             type CommentPostConnection {
+              aggregate: CommentPostPostAggregateSelection!
               edges: [CommentPostRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input CommentPostConnectionAggregateInput {
+              AND: [CommentPostConnectionAggregateInput!]
+              NOT: CommentPostConnectionAggregateInput
+              OR: [CommentPostConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: CommentPostNodeAggregationWhereInput
+            }
+
             input CommentPostConnectionFilters {
+              \\"\\"\\"
+              Filter Comments by aggregating results on related CommentPostConnections
+              \\"\\"\\"
+              aggregate: CommentPostConnectionAggregateInput
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
               \\"\\"\\"
@@ -8363,8 +8775,8 @@ describe("Interface Relationships", () => {
               content_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'content: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
-            type CommentPostPostAggregationSelection {
-              count: Int!
+            type CommentPostPostAggregateSelection {
+              count: CountConnection!
               node: CommentPostPostNodeAggregateSelection
             }
 
@@ -8418,15 +8830,6 @@ describe("Interface Relationships", () => {
               post: [CommentPostUpdateFieldInput!]
             }
 
-            type CommentUserCreatorAggregationSelection {
-              count: Int!
-              node: CommentUserCreatorNodeAggregateSelection
-            }
-
-            type CommentUserCreatorNodeAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
             input CommentWhere {
               AND: [CommentWhere!]
               NOT: CommentWhere
@@ -8438,7 +8841,7 @@ describe("Interface Relationships", () => {
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
               creator: UserRelationshipFilters
-              creatorAggregate: CommentCreatorAggregateInput
+              creatorAggregate: CommentCreatorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the creatorConnection filter, please use { creatorConnection: { aggregate: {...} } } instead\\")
               creatorConnection: CommentCreatorConnectionFilters
               \\"\\"\\"
               Return Comments where all of the related ContentCreatorConnections match this filter
@@ -8471,7 +8874,7 @@ describe("Interface Relationships", () => {
               id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
               id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               post: PostRelationshipFilters
-              postAggregate: CommentPostAggregateInput
+              postAggregate: CommentPostAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the postConnection filter, please use { postConnection: { aggregate: {...} } } instead\\")
               postConnection: CommentPostConnectionFilters
               \\"\\"\\"
               Return Comments where all of the related CommentPostConnections match this filter
@@ -8500,9 +8903,15 @@ describe("Interface Relationships", () => {
             }
 
             type CommentsConnection {
+              aggregate: CommentAggregate!
               edges: [CommentEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             interface Content {
@@ -8512,9 +8921,13 @@ describe("Interface Relationships", () => {
               id: ID
             }
 
-            type ContentAggregateSelection {
+            type ContentAggregate {
+              count: Count!
+              node: ContentAggregateNode!
+            }
+
+            type ContentAggregateNode {
               content: StringAggregateSelection!
-              count: Int!
             }
 
             input ContentConnectInput {
@@ -8554,7 +8967,19 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ContentCreatorConnectionAggregateInput {
+              AND: [ContentCreatorConnectionAggregateInput!]
+              NOT: ContentCreatorConnectionAggregateInput
+              OR: [ContentCreatorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ContentCreatorNodeAggregationWhereInput
+            }
+
             input ContentCreatorConnectionFilters {
+              \\"\\"\\"
+              Filter Contents by aggregating results on related ContentCreatorConnections
+              \\"\\"\\"
+              aggregate: ContentCreatorConnectionAggregateInput
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -8694,7 +9119,7 @@ describe("Interface Relationships", () => {
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
               creator: UserRelationshipFilters
-              creatorAggregate: ContentCreatorAggregateInput
+              creatorAggregate: ContentCreatorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the creatorConnection filter, please use { creatorConnection: { aggregate: {...} } } instead\\")
               creatorConnection: ContentCreatorConnectionFilters
               \\"\\"\\"
               Return Contents where all of the related ContentCreatorConnections match this filter
@@ -8730,9 +9155,19 @@ describe("Interface Relationships", () => {
             }
 
             type ContentsConnection {
+              aggregate: ContentAggregate!
               edges: [ContentEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateCommentsMutationResponse {
@@ -8822,22 +9257,24 @@ describe("Interface Relationships", () => {
 
             type Post implements Content {
               comments(limit: Int, offset: Int, sort: [CommentSort!], where: CommentWhere): [Comment!]!
-              commentsAggregate(where: CommentWhere): PostCommentCommentsAggregationSelection
               commentsConnection(after: String, first: Int, sort: [PostCommentsConnectionSort!], where: PostCommentsConnectionWhere): PostCommentsConnection!
               content: String
               creator(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              creatorAggregate(where: UserWhere): PostUserCreatorAggregationSelection
               creatorConnection(after: String, first: Int, sort: [ContentCreatorConnectionSort!], where: ContentCreatorConnectionWhere): ContentCreatorConnection!
               id: ID
             }
 
-            type PostAggregateSelection {
-              content: StringAggregateSelection!
-              count: Int!
+            type PostAggregate {
+              count: Count!
+              node: PostAggregateNode!
             }
 
-            type PostCommentCommentsAggregationSelection {
-              count: Int!
+            type PostAggregateNode {
+              content: StringAggregateSelection!
+            }
+
+            type PostCommentCommentsAggregateSelection {
+              count: CountConnection!
               node: PostCommentCommentsNodeAggregateSelection
             }
 
@@ -8864,12 +9301,23 @@ describe("Interface Relationships", () => {
             }
 
             type PostCommentsConnection {
+              aggregate: PostCommentCommentsAggregateSelection!
               edges: [PostCommentsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input PostCommentsConnectionAggregateInput {
+              AND: [PostCommentsConnectionAggregateInput!]
+              NOT: PostCommentsConnectionAggregateInput
+              OR: [PostCommentsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostCommentsNodeAggregationWhereInput
+            }
+
             input PostCommentsConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostCommentsConnections\\"\\"\\"
+              aggregate: PostCommentsConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
               \\"\\"\\"
@@ -8992,7 +9440,19 @@ describe("Interface Relationships", () => {
               where: UserConnectWhere
             }
 
+            input PostCreatorConnectionAggregateInput {
+              AND: [PostCreatorConnectionAggregateInput!]
+              NOT: PostCreatorConnectionAggregateInput
+              OR: [PostCreatorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostCreatorNodeAggregationWhereInput
+            }
+
             input PostCreatorConnectionFilters {
+              \\"\\"\\"
+              Filter Posts by aggregating results on related ContentCreatorConnections
+              \\"\\"\\"
+              aggregate: PostCreatorConnectionAggregateInput
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
               \\"\\"\\"
@@ -9098,21 +9558,12 @@ describe("Interface Relationships", () => {
               id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
-            type PostUserCreatorAggregationSelection {
-              count: Int!
-              node: PostUserCreatorNodeAggregateSelection
-            }
-
-            type PostUserCreatorNodeAggregateSelection {
-              name: StringAggregateSelection!
-            }
-
             input PostWhere {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
               comments: CommentRelationshipFilters
-              commentsAggregate: PostCommentsAggregateInput
+              commentsAggregate: PostCommentsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the commentsConnection filter, please use { commentsConnection: { aggregate: {...} } } instead\\")
               commentsConnection: PostCommentsConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related PostCommentsConnections match this filter
@@ -9145,7 +9596,7 @@ describe("Interface Relationships", () => {
               content_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter content: { in: ... }\\")
               content_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter content: { startsWith: ... }\\")
               creator: UserRelationshipFilters
-              creatorAggregate: PostCreatorAggregateInput
+              creatorAggregate: PostCreatorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the creatorConnection filter, please use { creatorConnection: { aggregate: {...} } } instead\\")
               creatorConnection: PostCreatorConnectionFilters
               \\"\\"\\"
               Return Posts where all of the related ContentCreatorConnections match this filter
@@ -9180,6 +9631,7 @@ describe("Interface Relationships", () => {
             }
 
             type PostsConnection {
+              aggregate: PostAggregate!
               edges: [PostEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -9187,16 +9639,12 @@ describe("Interface Relationships", () => {
 
             type Query {
               comments(limit: Int, offset: Int, sort: [CommentSort!], where: CommentWhere): [Comment!]!
-              commentsAggregate(where: CommentWhere): CommentAggregateSelection!
               commentsConnection(after: String, first: Int, sort: [CommentSort!], where: CommentWhere): CommentsConnection!
               contents(limit: Int, offset: Int, sort: [ContentSort!], where: ContentWhere): [Content!]!
-              contentsAggregate(where: ContentWhere): ContentAggregateSelection!
               contentsConnection(after: String, first: Int, sort: [ContentSort!], where: ContentWhere): ContentsConnection!
               posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
               users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -9261,14 +9709,17 @@ describe("Interface Relationships", () => {
 
             type User {
               content(limit: Int, offset: Int, sort: [ContentSort!], where: ContentWhere): [Content!]!
-              contentAggregate(where: ContentWhere): UserContentContentAggregationSelection
               contentConnection(after: String, first: Int, sort: [UserContentConnectionSort!], where: UserContentConnectionWhere): UserContentConnection!
               id: ID
               name: String
             }
 
-            type UserAggregateSelection {
-              count: Int!
+            type UserAggregate {
+              count: Count!
+              node: UserAggregateNode!
+            }
+
+            type UserAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -9299,12 +9750,23 @@ describe("Interface Relationships", () => {
             }
 
             type UserContentConnection {
+              aggregate: UserContentContentAggregateSelection!
               edges: [UserContentRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input UserContentConnectionAggregateInput {
+              AND: [UserContentConnectionAggregateInput!]
+              NOT: UserContentConnectionAggregateInput
+              OR: [UserContentConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserContentNodeAggregationWhereInput
+            }
+
             input UserContentConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserContentConnections\\"\\"\\"
+              aggregate: UserContentConnectionAggregateInput
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
               \\"\\"\\"
@@ -9334,8 +9796,8 @@ describe("Interface Relationships", () => {
               node: ContentWhere
             }
 
-            type UserContentContentAggregationSelection {
-              count: Int!
+            type UserContentContentAggregateSelection {
+              count: CountConnection!
               node: UserContentContentNodeAggregateSelection
             }
 
@@ -9453,7 +9915,7 @@ describe("Interface Relationships", () => {
               NOT: UserWhere
               OR: [UserWhere!]
               content: ContentRelationshipFilters
-              contentAggregate: UserContentAggregateInput
+              contentAggregate: UserContentAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the contentConnection filter, please use { contentConnection: { aggregate: {...} } } instead\\")
               contentConnection: UserContentConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserContentConnections match this filter
@@ -9494,6 +9956,7 @@ describe("Interface Relationships", () => {
             }
 
             type UsersConnection {
+              aggregate: UserAggregate!
               edges: [UserEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -9614,7 +10077,6 @@ describe("Interface Relationships", () => {
 
             type Actor {
               actedIn(limit: Int, offset: Int, sort: [ShowSort!], where: ShowWhere): [Show!]!
-              actedInAggregate(where: ShowWhere): ActorShowActedInAggregationSelection
               actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String!
             }
@@ -9640,12 +10102,26 @@ describe("Interface Relationships", () => {
             }
 
             type ActorActedInConnection {
+              aggregate: ActorShowActedInAggregateSelection!
               edges: [ActorActedInRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
 
+            input ActorActedInConnectionAggregateInput {
+              AND: [ActorActedInConnectionAggregateInput!]
+              NOT: ActorActedInConnectionAggregateInput
+              OR: [ActorActedInConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
             input ActorActedInConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorActedInConnections
+              \\"\\"\\"
+              aggregate: ActorActedInConnectionAggregateInput
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
               \\"\\"\\"
@@ -9739,8 +10215,12 @@ describe("Interface Relationships", () => {
               where: ActorActedInConnectionWhere
             }
 
-            type ActorAggregateSelection {
-              count: Int!
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
               name: StringAggregateSelection!
             }
 
@@ -9781,8 +10261,8 @@ describe("Interface Relationships", () => {
               some: ActorWhere
             }
 
-            type ActorShowActedInAggregationSelection {
-              count: Int!
+            type ActorShowActedInAggregateSelection {
+              count: CountConnection!
               edge: ActorShowActedInEdgeAggregateSelection
               node: ActorShowActedInNodeAggregateSelection
             }
@@ -9813,7 +10293,7 @@ describe("Interface Relationships", () => {
               NOT: ActorWhere
               OR: [ActorWhere!]
               actedIn: ShowRelationshipFilters
-              actedInAggregate: ActorActedInAggregateInput
+              actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
               actedInConnection: ActorActedInConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorActedInConnections match this filter
@@ -9848,9 +10328,24 @@ describe("Interface Relationships", () => {
             }
 
             type ActorsConnection {
+              aggregate: ActorAggregate!
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CountConnection {
+              edges: Int!
+              nodes: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -9928,24 +10423,9 @@ describe("Interface Relationships", () => {
 
             type Movie implements Production & Show {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): MovieActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               runtime: Int!
               title: String!
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-              edge: MovieActorActorsEdgeAggregateSelection
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsEdgeAggregateSelection {
-              screenTime: IntAggregateSelection!
-            }
-
-            type MovieActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input MovieActorsAggregateInput {
@@ -9968,7 +10448,18 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
             input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -10033,8 +10524,12 @@ describe("Interface Relationships", () => {
               where: ShowActorsConnectionWhere
             }
 
-            type MovieAggregateSelection {
-              count: Int!
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
               runtime: IntAggregateSelection!
               title: StringAggregateSelection!
             }
@@ -10077,7 +10572,7 @@ describe("Interface Relationships", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: MovieActorsAggregateInput
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ShowActorsConnections match this filter
@@ -10119,6 +10614,7 @@ describe("Interface Relationships", () => {
             }
 
             type MoviesConnection {
+              aggregate: MovieAggregate!
               edges: [MovieEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -10149,8 +10645,12 @@ describe("Interface Relationships", () => {
               title: String!
             }
 
-            type ProductionAggregateSelection {
-              count: Int!
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -10185,6 +10685,7 @@ describe("Interface Relationships", () => {
             }
 
             type ProductionsConnection {
+              aggregate: ProductionAggregate!
               edges: [ProductionEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -10192,42 +10693,22 @@ describe("Interface Relationships", () => {
 
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
               shows(limit: Int, offset: Int, sort: [ShowSort!], where: ShowWhere): [Show!]!
-              showsAggregate(where: ShowWhere): ShowAggregateSelection!
               showsConnection(after: String, first: Int, sort: [ShowSort!], where: ShowWhere): ShowsConnection!
             }
 
             type Series implements Production & Show {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): SeriesActorActorsAggregationSelection
               actorsConnection(after: String, first: Int, sort: [ShowActorsConnectionSort!], where: ShowActorsConnectionWhere): ShowActorsConnection!
               episodeCount: Int!
               title: String!
-            }
-
-            type SeriesActorActorsAggregationSelection {
-              count: Int!
-              edge: SeriesActorActorsEdgeAggregateSelection
-              node: SeriesActorActorsNodeAggregateSelection
-            }
-
-            type SeriesActorActorsEdgeAggregateSelection {
-              episodeNr: IntAggregateSelection!
-            }
-
-            type SeriesActorActorsNodeAggregateSelection {
-              name: StringAggregateSelection!
             }
 
             input SeriesActorsAggregateInput {
@@ -10250,7 +10731,18 @@ describe("Interface Relationships", () => {
               where: ActorConnectWhere
             }
 
+            input SeriesActorsConnectionAggregateInput {
+              AND: [SeriesActorsConnectionAggregateInput!]
+              NOT: SeriesActorsConnectionAggregateInput
+              OR: [SeriesActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: StarredInAggregationWhereInput
+              node: SeriesActorsNodeAggregationWhereInput
+            }
+
             input SeriesActorsConnectionFilters {
+              \\"\\"\\"Filter Series by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: SeriesActorsConnectionAggregateInput
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -10315,13 +10807,18 @@ describe("Interface Relationships", () => {
               where: ShowActorsConnectionWhere
             }
 
-            type SeriesAggregateSelection {
-              count: Int!
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
               episodeCount: IntAggregateSelection!
               title: StringAggregateSelection!
             }
 
             type SeriesConnection {
+              aggregate: SeriesAggregate!
               edges: [SeriesEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
@@ -10365,7 +10862,7 @@ describe("Interface Relationships", () => {
               NOT: SeriesWhere
               OR: [SeriesWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: SeriesActorsAggregateInput
+              actorsAggregate: SeriesActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: SeriesActorsConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ShowActorsConnections match this filter
@@ -10438,7 +10935,18 @@ describe("Interface Relationships", () => {
               totalCount: Int!
             }
 
+            input ShowActorsConnectionAggregateInput {
+              AND: [ShowActorsConnectionAggregateInput!]
+              NOT: ShowActorsConnectionAggregateInput
+              OR: [ShowActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ShowActorsEdgeAggregationWhereInput
+              node: ShowActorsNodeAggregationWhereInput
+            }
+
             input ShowActorsConnectionFilters {
+              \\"\\"\\"Filter Shows by aggregating results on related ShowActorsConnections\\"\\"\\"
+              aggregate: ShowActorsConnectionAggregateInput
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
               \\"\\"\\"
@@ -10594,8 +11102,12 @@ describe("Interface Relationships", () => {
               where: ShowActorsConnectionWhere
             }
 
-            type ShowAggregateSelection {
-              count: Int!
+            type ShowAggregate {
+              count: Count!
+              node: ShowAggregateNode!
+            }
+
+            type ShowAggregateNode {
               title: StringAggregateSelection!
             }
 
@@ -10659,7 +11171,7 @@ describe("Interface Relationships", () => {
               NOT: ShowWhere
               OR: [ShowWhere!]
               actors: ActorRelationshipFilters
-              actorsAggregate: ShowActorsAggregateInput
+              actorsAggregate: ShowActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
               actorsConnection: ShowActorsConnectionFilters
               \\"\\"\\"
               Return Shows where all of the related ShowActorsConnections match this filter
@@ -10695,6 +11207,7 @@ describe("Interface Relationships", () => {
             }
 
             type ShowsConnection {
+              aggregate: ShowAggregate!
               edges: [ShowEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!

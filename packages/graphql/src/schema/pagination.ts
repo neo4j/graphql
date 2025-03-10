@@ -92,6 +92,7 @@ export function createConnectionWithEdgeProperties({
     const sliceStart = lastEdgeCursor + 1;
 
     const edges: any[] = source?.edges || [];
+    const aggregate: any = source?.aggregate || {};
 
     const selections = selectionSet?.selections || [];
 
@@ -114,6 +115,7 @@ export function createConnectionWithEdgeProperties({
 
     const pageInfoKey = getAliasKey({ selectionSet, key: "pageInfo" });
     const edgesKey = getAliasKey({ selectionSet, key: "edges" });
+    const aggregateKey = getAliasKey({ selectionSet, key: "aggregate" });
     const pageInfoField = selections.find((x): x is FieldNode => x.kind === Kind.FIELD && x.name.value === "pageInfo");
     const pageInfoSelectionSet = pageInfoField?.selectionSet;
     const startCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "startCursor" });
@@ -123,6 +125,7 @@ export function createConnectionWithEdgeProperties({
 
     return {
         [edgesKey]: mappedEdges,
+        [aggregateKey]: aggregate,
         [pageInfoKey]: {
             [startCursorKey]: startCursor,
             [endCursorKey]: endCursor,
