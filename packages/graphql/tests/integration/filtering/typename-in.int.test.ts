@@ -173,11 +173,12 @@ describe("typename_IN", () => {
         });
     });
 
+    // TODO: Fix before 7.0
     test.skip("nested aggregation", async () => {
         const query = `
         {
             ${Actor.plural} {
-                actedInConnection(where: { NOT: { typename: [${Movie.name}, ${Series.name}] } }) {
+                actedInConnection(where: { NOT: { node: { typename: [${Movie.name}, ${Series.name}] } } }) {
                     aggregate {
                         count {
                             nodes
@@ -194,8 +195,10 @@ describe("typename_IN", () => {
             [Actor.plural]: expect.arrayContaining([
                 {
                     actedInConnection: {
-                        count: {
-                            nodes: 1,
+                        aggregate: {
+                            count: {
+                                nodes: 1,
+                            },
                         },
                     },
                 },
