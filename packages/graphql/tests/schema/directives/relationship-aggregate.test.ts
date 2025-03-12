@@ -23,7 +23,7 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@relationship directive, aggregate argument", () => {
-    test.skip("the default behavior should enable nested aggregation", async () => {
+    test("the default behavior should enable nested aggregation", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
                 username: String!
@@ -42,9 +42,8 @@ describe("@relationship directive, aggregate argument", () => {
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
-        const { actorsAggregate, actorsConnection } = movieType.getFields();
+        const { actorsConnection } = movieType.getFields();
 
-        expect(actorsAggregate).toBeDefined();
         expect(actorsConnection).toBeDefined();
 
         const { aggregate, edges } = (actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields();
@@ -52,7 +51,7 @@ describe("@relationship directive, aggregate argument", () => {
         expect(edges).toBeDefined();
     });
 
-    test.skip("should disable nested aggregation", async () => {
+    test("should disable nested aggregation", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
                 username: String!
@@ -70,9 +69,8 @@ describe("@relationship directive, aggregate argument", () => {
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
-        const { actorsAggregate, actorsConnection } = movieType.getFields();
+        const { actorsConnection } = movieType.getFields();
 
-        expect(actorsAggregate).toBeUndefined();
         expect(actorsConnection).toBeDefined();
 
         const { aggregate, edges } = (actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields();
@@ -80,7 +78,7 @@ describe("@relationship directive, aggregate argument", () => {
         expect(edges).toBeDefined();
     });
 
-    test.skip("should enable nested aggregation", async () => {
+    test("should enable nested aggregation", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
                 username: String!
@@ -98,9 +96,8 @@ describe("@relationship directive, aggregate argument", () => {
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
-        const { actorsAggregate, actorsConnection } = movieType.getFields();
+        const { actorsConnection } = movieType.getFields();
 
-        expect(actorsAggregate).toBeDefined();
         expect(actorsConnection).toBeDefined();
 
         const { aggregate, edges } = (actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields();
@@ -108,7 +105,7 @@ describe("@relationship directive, aggregate argument", () => {
         expect(edges).toBeDefined();
     });
 
-    test.skip("should work in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
+    test("should work in conjunction with @query aggregate:false and @relationship aggregate:true", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @query(aggregate: false) @node {
                 username: String!
@@ -127,9 +124,8 @@ describe("@relationship directive, aggregate argument", () => {
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
-        const { actorsAggregate, actorsConnection } = movieType.getFields();
+        const { actorsConnection } = movieType.getFields();
 
-        expect(actorsAggregate).toBeDefined();
         expect(actorsConnection).toBeDefined();
 
         const { aggregate, edges } = (actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields();
@@ -137,11 +133,11 @@ describe("@relationship directive, aggregate argument", () => {
         expect(aggregate).toBeDefined();
         expect(edges).toBeDefined();
 
-        const { actorsAggregate: topLevelActorsAggregate, actorsConnection: topLevelActorsConnection } = schema
-            .getQueryType()
-            ?.getFields() as GraphQLFieldMap<any, any>;
+        const { actorsConnection: topLevelActorsConnection } = schema.getQueryType()?.getFields() as GraphQLFieldMap<
+            any,
+            any
+        >;
 
-        expect(topLevelActorsAggregate).toBeUndefined();
         expect(topLevelActorsConnection).toBeDefined();
 
         const { aggregate: topLevelAggregateInsideConnection, edges: topLevelEdgesInsideConnection } = (
@@ -152,7 +148,7 @@ describe("@relationship directive, aggregate argument", () => {
         expect(topLevelEdgesInsideConnection).toBeDefined();
     });
 
-    test.skip("should work in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
+    test("should work in conjunction with @query aggregate:true and @relationship aggregate:false", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @query(aggregate: true) @node {
                 username: String!
@@ -170,9 +166,8 @@ describe("@relationship directive, aggregate argument", () => {
         const movieType = schema.getType("Movie") as GraphQLObjectType;
         expect(movieType).toBeDefined();
 
-        const { actorsAggregate, actorsConnection } = movieType.getFields();
+        const { actorsConnection } = movieType.getFields();
 
-        expect(actorsAggregate).toBeUndefined();
         expect(actorsConnection).toBeDefined();
 
         const { aggregate, edges } = (actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>).ofType.getFields();
@@ -180,11 +175,11 @@ describe("@relationship directive, aggregate argument", () => {
         expect(aggregate).toBeUndefined();
         expect(edges).toBeDefined();
 
-        const { actorsAggregate: topLevelActorsAggregate, actorsConnection: topLevelActorsConnection } = schema
-            .getQueryType()
-            ?.getFields() as GraphQLFieldMap<any, any>;
+        const { actorsConnection: topLevelActorsConnection } = schema.getQueryType()?.getFields() as GraphQLFieldMap<
+            any,
+            any
+        >;
 
-        expect(topLevelActorsAggregate).toBeDefined();
         expect(topLevelActorsConnection).toBeDefined();
 
         const { aggregate: topLevelAggregateInsideConnection, edges: topLevelEdgesInsideConnection } = (

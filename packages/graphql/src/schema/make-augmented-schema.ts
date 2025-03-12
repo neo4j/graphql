@@ -663,7 +663,20 @@ function generateObjectType({
 
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
-
+    if (concreteEntityAdapter.isReadable || concreteEntityAdapter.isAggregable) {
+        complexityEstimatorHelper.registerField(
+            "Query",
+            concreteEntityAdapter.operations.rootTypeFieldNames.connection
+        );
+        composer.Query.addFields({
+            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: concreteEntityAdapter,
+                propagatedDirectives,
+                isLimitRequired: features?.limitRequired,
+            }),
+        });
+    }
     if (concreteEntityAdapter.isReadable) {
         complexityEstimatorHelper.registerField("Query", concreteEntityAdapter.operations.rootTypeFieldNames.read);
         composer.Query.addFields({
@@ -678,21 +691,6 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
 
-        complexityEstimatorHelper.registerField(
-            "Query",
-            concreteEntityAdapter.operations.rootTypeFieldNames.connection
-        );
-
-        // if (concreteEntityAdapter.isAggregable) {
-        composer.Query.addFields({
-            [concreteEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
-                entityAdapter: concreteEntityAdapter,
-                propagatedDirectives,
-                isLimitRequired: features?.limitRequired,
-            }),
-        });
-        // }
         composer.Query.setFieldDirectives(
             concreteEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
@@ -804,7 +802,16 @@ function generateInterfaceObjectType({
     });
 
     const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
-
+    if (interfaceEntityAdapter.isReadable || interfaceEntityAdapter.isAggregable) {
+        composer.Query.addFields({
+            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                composer,
+                entityAdapter: interfaceEntityAdapter,
+                propagatedDirectives,
+                isLimitRequired: features?.limitRequired,
+            }),
+        });
+    }
     if (interfaceEntityAdapter.isReadable) {
         complexityEstimatorHelper.registerField("Query", interfaceEntityAdapter.operations.rootTypeFieldNames.read);
         composer.Query.addFields({
