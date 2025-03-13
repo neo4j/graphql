@@ -56,7 +56,7 @@ describe("Field Level Aggregations Edge Filters", () => {
         });
     });
 
-    test("Aggregate with edge filters in nested connection", async () => {
+    test("aggregate with edge filters in nested connection", async () => {
         const query = /* GraphQL */ `
             query {
                 actors {
