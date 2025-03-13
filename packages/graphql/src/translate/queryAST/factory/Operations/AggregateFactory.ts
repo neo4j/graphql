@@ -437,11 +437,16 @@ export class AggregateFactory {
                 deprecatedAttributes
             );
             if (isInterfaceEntity(entity)) {
-                const filters = this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
+                const nodeFilters = this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
                     entity,
                     whereFields: whereArgs.node ?? {},
                 });
-                operation.addFilters(...filters);
+
+                const edgefilters = this.queryASTFactory.filterFactory.createEdgeFilters(
+                    relationship,
+                    whereArgs.edge ?? {}
+                );
+                operation.addFilters(...nodeFilters, ...edgefilters);
             } else {
                 const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs.node ?? {}); // Aggregation filters only apply to target node
                 const edgeFilters = this.queryASTFactory.filterFactory.createEdgeFilters(
