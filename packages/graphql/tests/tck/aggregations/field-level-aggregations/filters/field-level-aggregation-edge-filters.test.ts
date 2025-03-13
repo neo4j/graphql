@@ -73,7 +73,7 @@ describe("Field Level Aggregations Edge Filters", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.title = $param0 AND this0.screentime = $param1
+                    WHERE (this1.title = $param0 AND this0.screentime = $param1)
                     WITH DISTINCT this1
                     ORDER BY size(this1.title) DESC
                     WITH collect(this1.title) AS list
@@ -82,7 +82,7 @@ describe("Field Level Aggregations Edge Filters", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this3:ACTED_IN]->(this4:Movie)
-                    WHERE (this4.title = $param1 AND this3.screentime = $param2)
+                    WHERE (this4.title = $param2 AND this3.screentime = $param3)
                     WITH collect({ node: this4, relationship: this3 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL {
@@ -101,8 +101,12 @@ describe("Field Level Aggregations Edge Filters", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Tha Matrix\\",
-                \\"param1\\": \\"Tha Matrix\\",
-                \\"param2\\": {
+                \\"param1\\": {
+                    \\"low\\": 19,
+                    \\"high\\": 0
+                },
+                \\"param2\\": \\"Tha Matrix\\",
+                \\"param3\\": {
                     \\"low\\": 19,
                     \\"high\\": 0
                 }

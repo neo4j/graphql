@@ -154,7 +154,7 @@ export class ConnectionFactory {
                     relationship,
                     context,
                     operation: compositeConnectionOp,
-                    whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
+                    whereArgs: resolveTreeWhere, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
                 });
             }
         }
@@ -238,8 +238,7 @@ export class ConnectionFactory {
             relationship,
             context,
             operation,
-            // CHange this
-            whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
+            whereArgs: resolveTreeWhere, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
         });
 
         return operation;
