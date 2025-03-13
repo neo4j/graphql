@@ -22,7 +22,7 @@ import { GraphQLError } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@query directive", () => {
-    describe.skip("on OBJECT", () => {
+    describe("on OBJECT", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = /* GraphQL */ `
                 type Actor @node {
@@ -37,7 +37,7 @@ describe("@query directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+            const { movies, actors, moviesConnection, actorsConnection } = schema
                 .getQueryType()
                 ?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -46,9 +46,6 @@ describe("@query directive", () => {
 
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
-
-            expect(moviesAggregate).toBeUndefined();
-            expect(actorsAggregate).toBeDefined();
 
             const moviesConnectionType = schema.getType("MoviesConnection") as GraphQLObjectType;
             expect(moviesConnectionType).toBeDefined();
@@ -72,7 +69,7 @@ describe("@query directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+            const { movies, actors, moviesConnection, actorsConnection } = schema
                 .getQueryType()
                 ?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -81,9 +78,6 @@ describe("@query directive", () => {
 
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
-
-            expect(moviesAggregate).toBeDefined();
-            expect(actorsAggregate).toBeDefined();
 
             const moviesConnectionType = schema.getType("MoviesConnection") as GraphQLObjectType;
             expect(moviesConnectionType).toBeDefined();
@@ -106,7 +100,7 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+            const { movies, actors, moviesConnection, actorsConnection } = schema
                 .getQueryType()
                 ?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -115,9 +109,6 @@ describe("@query directive", () => {
 
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeUndefined();
-
-            expect(moviesAggregate).toBeDefined();
-            expect(actorsAggregate).toBeUndefined();
 
             const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
             expect(actorsConnectionType).toBeUndefined();
@@ -136,7 +127,7 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+            const { movies, actors, moviesConnection, actorsConnection } = schema
                 .getQueryType()
                 ?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -145,9 +136,6 @@ describe("@query directive", () => {
 
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
-
-            expect(moviesAggregate).toBeDefined();
-            expect(actorsAggregate).toBeDefined();
 
             const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
             expect(actorsConnectionType).toBeDefined();
@@ -174,7 +162,7 @@ describe("@query directive", () => {
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             const schema = await neoSchema.getSchema();
-            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+            const { movies, actors, moviesConnection, actorsConnection } = schema
                 .getQueryType()
                 ?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -183,9 +171,6 @@ describe("@query directive", () => {
 
             expect(moviesConnection).toBeDefined();
             expect(actorsConnection).toBeDefined();
-
-            expect(moviesAggregate).toBeUndefined();
-            expect(actorsAggregate).toBeUndefined();
 
             const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
             expect(actorsConnectionType).toBeDefined();
@@ -209,7 +194,7 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const { movies, actors, moviesConnection, actorsConnection, moviesAggregate, actorsAggregate } = schema
+            const { movies, actors, moviesConnection, actorsConnection } = schema
                 .getQueryType()
                 ?.getFields() as GraphQLFieldMap<any, any>;
 
@@ -218,9 +203,6 @@ describe("@query directive", () => {
 
             expect(moviesConnection).toBeUndefined();
             expect(actorsConnection).toBeUndefined();
-
-            expect(moviesAggregate).toBeUndefined();
-            expect(actorsAggregate).toBeUndefined();
 
             const actorsConnectionType = schema.getType("ActorsConnection") as GraphQLObjectType;
             expect(actorsConnectionType).toBeUndefined();

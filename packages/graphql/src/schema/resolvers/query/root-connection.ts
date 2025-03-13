@@ -29,10 +29,12 @@ import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { translateRead } from "../../../translate";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
+import { makeSortInput } from "../../generation/sort-and-options-input";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
@@ -117,8 +119,8 @@ export function rootConnectionResolver({
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer | undefined;
-    if (composer.has(entityAdapter.operations.sortInputTypeName)) {
-        sortArg = composer.getITC(entityAdapter.operations.sortInputTypeName);
+    if (!(entityAdapter instanceof UnionEntityAdapter)) {
+        sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
     }
 
     return {
