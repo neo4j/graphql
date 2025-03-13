@@ -238,6 +238,7 @@ export class ConnectionFactory {
             relationship,
             context,
             operation,
+            // CHange this
             whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
         });
 
@@ -268,7 +269,6 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
-                    isInConnection: true,
                 });
                 // NOTE: This will always be true on 7.x and this attribute should be removed
                 aggregationOperation.isInConnectionField = true;
@@ -290,7 +290,6 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
-                    isInConnection: true,
                 });
                 // NOTE: This will always be true on 7.x and this attribute should be removed
                 aggregationOperation.isInConnectionField = true;

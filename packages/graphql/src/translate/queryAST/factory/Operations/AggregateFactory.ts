@@ -48,13 +48,165 @@ export class AggregateFactory {
         resolveTree,
         context,
         extraWhereArgs = {},
-        isInConnection = false,
     }: {
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         extraWhereArgs?: Record<string, any>;
-        isInConnection?: boolean;
+    }): AggregationOperation | CompositeAggregationOperation {
+        console.log(extraWhereArgs);
+        let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        if (entityOrRel instanceof RelationshipAdapter) {
+            entity = entityOrRel.target as ConcreteEntityAdapter; // TODO: check this seems wrong but outside of the scope of this PR
+        } else {
+            entity = entityOrRel;
+        }
+
+        const resolveTreeWhere = extraWhereArgs;
+
+        if (entityOrRel instanceof RelationshipAdapter) {
+            if (isConcreteEntity(entity)) {
+                // RELATIONSHIP WITH CONCRETE TARGET
+                checkEntityAuthentication({
+                    entity: entity.entity,
+                    targetOperations: ["AGGREGATE"],
+                    context,
+                });
+
+                const selection = new RelationshipSelection({
+                    relationship: entityOrRel,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                });
+
+                const operation = new AggregationOperation({
+                    entity: entityOrRel,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection,
+                });
+                return this.hydrateAggregationOperation({
+                    relationship: entityOrRel,
+                    operation,
+                    entity,
+                    resolveTree,
+                    context,
+                    whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: false,
+                });
+            } else {
+                // RELATIONSHIP WITH INTERFACE TARGET
+                const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
+
+                const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                    const aggregationPartial = new CompositeAggregationPartial({
+                        target: concreteEntity,
+                        entity: entityOrRel,
+                        directed: Boolean(resolveTree.args?.directed ?? true),
+                    });
+
+                    const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        context,
+                        attributes: [],
+                    });
+                    aggregationPartial.addAuthFilters(...authFilters);
+
+                    return aggregationPartial;
+                });
+
+                const compositeAggregationOp = new CompositeAggregationOperation({
+                    compositeEntity: entity,
+                    children: concreteAggregationOperations,
+                });
+
+                this.hydrateAggregationOperation({
+                    relationship: entityOrRel,
+                    entity,
+                    resolveTree,
+                    context,
+                    operation: compositeAggregationOp,
+                    whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: false,
+                });
+
+                return compositeAggregationOp;
+            }
+        } else {
+            if (isConcreteEntity(entity)) {
+                // TOP LEVEL CONCRETE
+
+                const selection = new NodeSelection({
+                    target: entity,
+                    alias: "this",
+                });
+
+                const operation = new AggregationOperation({
+                    entity,
+                    directed: Boolean(resolveTree.args?.directed ?? true),
+                    selection,
+                });
+
+                return this.hydrateAggregationOperation({
+                    operation,
+                    entity,
+                    resolveTree,
+                    context,
+                    whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: false,
+                });
+            } else {
+                // TOP level interface/union
+                const concreteEntities = getConcreteEntities(entity, resolveTreeWhere);
+
+                const parsedProjectionFields = this.getAggregationParsedProjectionFields(entity, resolveTree);
+
+                const concreteAggregationOperations = concreteEntities.map((concreteEntity: ConcreteEntityAdapter) => {
+                    const aggregationPartial = new CompositeAggregationPartial({
+                        target: concreteEntity,
+                        directed: Boolean(resolveTree.args?.directed ?? true),
+                    });
+
+                    const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                        entity: concreteEntity,
+                        operations: ["AGGREGATE"],
+                        attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                            concreteEntity,
+                            parsedProjectionFields.fields
+                        ),
+                        context,
+                    });
+
+                    aggregationPartial.addAuthFilters(...authFilters);
+
+                    return aggregationPartial;
+                });
+
+                const compositeAggregationOp = new CompositeAggregationOperation({
+                    compositeEntity: entity,
+                    children: concreteAggregationOperations,
+                });
+
+                return this.hydrateAggregationOperation({
+                    entity,
+                    resolveTree,
+                    context,
+                    operation: compositeAggregationOp,
+                    whereArgs: resolveTreeWhere,
+                    deprecatedAttributes: false,
+                });
+            }
+        }
+    }
+
+    /** @deprecated */
+    public createAggregationOperationDeprecated({
+        entityOrRel,
+        resolveTree,
+        context,
+    }: {
+        entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
     }): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -65,7 +217,6 @@ export class AggregateFactory {
 
         const resolveTreeWhere = {
             ...this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree),
-            ...extraWhereArgs,
         };
 
         if (entityOrRel instanceof RelationshipAdapter) {
@@ -94,7 +245,7 @@ export class AggregateFactory {
                     resolveTree,
                     context,
                     whereArgs: resolveTreeWhere,
-                    deprecatedAttributes: !isInConnection,
+                    deprecatedAttributes: true,
                 });
             } else {
                 // RELATIONSHIP WITH INTERFACE TARGET
@@ -142,7 +293,7 @@ export class AggregateFactory {
                     context,
                     operation: compositeAggregationOp,
                     whereArgs: resolveTreeWhere,
-                    deprecatedAttributes: !isInConnection,
+                    deprecatedAttributes: true,
                 });
 
                 return compositeAggregationOp;
@@ -173,7 +324,7 @@ export class AggregateFactory {
                     resolveTree,
                     context,
                     whereArgs: resolveTreeWhere,
-                    deprecatedAttributes: !isInConnection,
+                    deprecatedAttributes: true,
                 });
             } else {
                 // TOP level interface/union
@@ -213,7 +364,7 @@ export class AggregateFactory {
                     context,
                     operation: compositeAggregationOp,
                     whereArgs: resolveTreeWhere,
-                    deprecatedAttributes: !isInConnection,
+                    deprecatedAttributes: true,
                 });
             }
         }
