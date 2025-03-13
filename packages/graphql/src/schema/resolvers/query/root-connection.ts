@@ -119,9 +119,6 @@ export function rootConnectionResolver({
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer | undefined;
-    // if (composer.has(entityAdapter.operations.sortInputTypeName)) {
-    //     sortArg = composer.getITC(entityAdapter.operations.sortInputTypeName);
-    // }
     if (!(entityAdapter instanceof UnionEntityAdapter)) {
         sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
     }
