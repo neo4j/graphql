@@ -118,7 +118,7 @@ describe("@coalesce directive", () => {
 
         expect((gqlResult.data as any)[type.plural][0]).toEqual({
             id,
-            classification: null,
+            classification: "Unrated",
         });
     });
 
@@ -163,7 +163,7 @@ describe("@coalesce directive", () => {
 
         expect((gqlResult.data as any)[type.plural][0]).toEqual({
             id,
-            status: null,
+            status: "ACTIVE",
         });
     });
 
@@ -209,7 +209,50 @@ describe("@coalesce directive", () => {
 
         expect((gqlResult.data as any)[type.plural][0]).toEqual({
             id,
-            statuses: null,
+            statuses: ["ACTIVE", "INACTIVE"],
+        });
+    });
+
+    test("@cypher directive can be used for more complex coalesce scenarios", async () => {
+        const type = testHelper.createUniqueType("User");
+
+        const email = "notset@ohno.com";
+
+        const typeDefs = `
+            type ${type.name} @node {
+                id: ID!
+                email: String! @cypher(statement: "RETURN coalesce(this.email, this.backupEmail, this.backupBackupEmail) AS email", columnName: "email")
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+
+        const query = `
+            query {
+                ${type.plural}(where: { email: { eq: "${email}" } }) {
+                    id
+                    email
+                }
+            }
+        `;
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        await testHelper.executeCypher(`
+                CREATE (:${type.name} {id: "${id}", backupBackupEmail: "${email}"})
+            `);
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any)[type.plural][0]).toEqual({
+            id,
+            email,
         });
     });
 });
