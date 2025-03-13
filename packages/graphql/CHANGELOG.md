@@ -1,5 +1,29 @@
 # @neo4j/graphql
 
+## 6.5.1
+
+### Patch Changes
+
+- [#6079](https://github.com/neo4j/graphql/pull/6079) [`7e9a0bd`](https://github.com/neo4j/graphql/commit/7e9a0bdb9ca4eded026e4230794cb6de58949835) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix edge filtering for aggregate fields inside connections.
+
+    Previously, the following query would aggregate all the movies named The Matrix, ignoring the edge filter
+
+    ```graphql
+    query {
+        actors {
+            moviesConnection(where: { edge: { screentime_EQ: 19 }, node: { title_EQ: "The Matrix" } }) {
+                aggregate {
+                    node {
+                        title {
+                            longest
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ```
+
 ## 6.5.0
 
 ### Minor Changes
