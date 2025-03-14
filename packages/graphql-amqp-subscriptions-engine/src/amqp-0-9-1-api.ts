@@ -35,7 +35,7 @@ enum Status {
 export class AmqpApi<T> {
     public channel: amqp.Channel | undefined;
     public readonly exchange: string;
-    public connection?: amqp.Connection;
+    public connection?: amqp.ChannelModel;
 
     private status: Status = Status.STOPPED;
     private reconnectTimeout: number | undefined;
@@ -93,7 +93,7 @@ export class AmqpApi<T> {
         }, this.reconnectTimeout);
     }
 
-    private async createChannel(connection: amqp.Connection): Promise<amqp.Channel> {
+    private async createChannel(connection: amqp.ChannelModel): Promise<amqp.Channel> {
         const channel = await connection.createChannel();
         await channel.assertExchange(this.exchange, "fanout", { durable: false });
         return channel;
