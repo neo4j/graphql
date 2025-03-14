@@ -18,7 +18,6 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { CypherFunction } from "@neo4j/cypher-builder/dist/expressions/functions/CypherFunctions";
 import { Neo4jGraphQLTemporalType } from "../../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../QueryASTContext";
@@ -52,7 +51,7 @@ export class TimestampField extends InputField {
         return [];
     }
 
-    private GetFunctionForTemporalType(type: Neo4jGraphQLTemporalType): CypherFunction {
+    private GetFunctionForTemporalType(type: Neo4jGraphQLTemporalType): Cypher.Function {
         switch (type) {
             case Neo4jGraphQLTemporalType.DateTime:
                 return Cypher.datetime();
