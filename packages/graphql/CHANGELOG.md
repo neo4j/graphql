@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 6.5.2
+
+### Patch Changes
+
+- [#6081](https://github.com/neo4j/graphql/pull/6081) [`90d9b58`](https://github.com/neo4j/graphql/commit/90d9b58aca400b47ffdee237a88204fc3706c1fa) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix missing authentication rules for interfaces in aggregate fields in connections.
+
 ## 6.5.1
 
 ### Patch Changes
