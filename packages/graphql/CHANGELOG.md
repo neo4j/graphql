@@ -318,6 +318,37 @@
 
 - [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
 
+
+## 6.5.2
+
+### Patch Changes
+
+- [#6081](https://github.com/neo4j/graphql/pull/6081) [`90d9b58`](https://github.com/neo4j/graphql/commit/90d9b58aca400b47ffdee237a88204fc3706c1fa) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix missing authentication rules for interfaces in aggregate fields in connections.
+
+## 6.5.1
+
+### Patch Changes
+
+- [#6079](https://github.com/neo4j/graphql/pull/6079) [`7e9a0bd`](https://github.com/neo4j/graphql/commit/7e9a0bdb9ca4eded026e4230794cb6de58949835) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix edge filtering for aggregate fields inside connections.
+
+    Previously, the following query would aggregate all the movies named The Matrix, ignoring the edge filter
+
+    ```graphql
+    query {
+        actors {
+            moviesConnection(where: { edge: { screentime_EQ: 19 }, node: { title_EQ: "The Matrix" } }) {
+                aggregate {
+                    node {
+                        title {
+                            longest
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ```
+
 ## 6.5.0
 
 ### Minor Changes

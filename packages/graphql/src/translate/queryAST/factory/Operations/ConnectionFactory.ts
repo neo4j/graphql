@@ -152,7 +152,7 @@ export class ConnectionFactory {
                     relationship,
                     context,
                     operation: compositeConnectionOp,
-                    whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
+                    whereArgs: resolveTreeWhere, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
                 });
             }
         }
@@ -235,7 +235,7 @@ export class ConnectionFactory {
             relationship,
             context,
             operation,
-            whereArgs: resolveTreeWhere.node, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
+            whereArgs: resolveTreeWhere, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
         });
 
         return operation;
@@ -266,7 +266,6 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
-                    isInConnection: true,
                 });
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
@@ -286,7 +285,6 @@ export class ConnectionFactory {
                     resolveTree: resolveTreeAggregate,
                     context,
                     extraWhereArgs: whereArgs,
-                    isInConnection: true,
                 });
 
                 const aggregationField = new ConnectionAggregationField({

@@ -188,7 +188,9 @@ export class CompositeAggregationOperation extends Operation {
         const filterContext = new QueryASTContext({
             neo4jGraphQLContext: context.neo4jGraphQLContext,
             target: node,
+            relationship: new Cypher.NamedRelationship("edge"),
         });
+
         const filterPredicates = this.getPredicates(filterContext);
 
         let withClause: Cypher.With | undefined;
