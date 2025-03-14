@@ -24,7 +24,7 @@
         "release-tagged": "yarn build && changeset publish --tag $BRANCH"
     },
     "devDependencies": {
-        "@tsconfig/node16": "1.0.4",
+        "@tsconfig/node22": "22.0.0",
         "@typescript-eslint/eslint-plugin": "8.26.1",
         "@typescript-eslint/parser": "8.26.1",
         "concurrently": "9.1.2",
