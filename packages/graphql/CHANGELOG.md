@@ -1,5 +1,118 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.4
+
+### Major Changes
+
+- [#6048](https://github.com/neo4j/graphql/pull/6048) [`c667618`](https://github.com/neo4j/graphql/commit/c667618ed90a0f645b8550711a7fad276ec57d01) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Subscriptions are now an opt-in feature which can be enabled by using the `@subscription` directive on either schema or type.
+
+    For example, to enable subscriptions for the whole schema (equivalent to before this breaking change):
+
+    ```graphql
+    type Movie @node {
+        title: String!
+    }
+
+    extend schema @subscription
+    ```
+
+    To enable subscriptions just for the `Movie` type:
+
+    ```graphql
+    type Movie @node @subscription {
+        title: String!
+    }
+    ```
+
+- [#6077](https://github.com/neo4j/graphql/pull/6077) [`4cf7c07`](https://github.com/neo4j/graphql/commit/4cf7c07166e7193bb985223ba0191a2f97a57454) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Values specified within the `@coalesce` directive are now also returned when selecting those fields, and not just when those fields are used in a filter.
+
+- [#6027](https://github.com/neo4j/graphql/pull/6027) [`fd7d373`](https://github.com/neo4j/graphql/commit/fd7d373013f3c7b159af6e05a23945ec43937efa) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove deprecated fields `*aggregate` in favor of the `aggregate` field in connections. Remove option `deprecatedAggregateOperations` from the `excludeDeprecatedFields` setting.
+
+### Minor Changes
+
+- [#6024](https://github.com/neo4j/graphql/pull/6024) [`2318336`](https://github.com/neo4j/graphql/commit/2318336606c668778090edd4ebf56178264f41ca) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Aggregations filters are moved to the connection input field.
+
+    **Current aggregation filters:**
+
+    ```graphql
+    {
+        posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { eq: 10 } } } } } }) {
+            content
+        }
+    }
+    ```
+
+    **Deprecated aggregation filters:**
+
+    ```graphql
+    {
+        posts(where: { likesAggregate: { node: { someInt: { average: { eq: 10 } } } } }) {
+            content
+        }
+    }
+    ```
+
+- [#6024](https://github.com/neo4j/graphql/pull/6024) [`2318336`](https://github.com/neo4j/graphql/commit/2318336606c668778090edd4ebf56178264f41ca) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - The aggregation filter `count` now supports both, nodes and relationships.
+
+    **Count filter on nodes:**
+
+    ```graphql
+    {
+        posts(where: { likesConnection: { aggregate: { count: { nodes: { eq: 2 } } } } }) {
+            title
+            likes {
+                name
+            }
+        }
+    }
+    ```
+
+    **Count filter on edges:**
+
+    ```graphql
+    {
+        posts(where: { likesConnection: { aggregate: { count: { edges: { eq: 2 } } } } }) {
+            title
+            likes {
+                name
+            }
+        }
+    }
+    ```
+
+### Patch Changes
+
+- [#6024](https://github.com/neo4j/graphql/pull/6024) [`667e75c`](https://github.com/neo4j/graphql/commit/667e75c3219886fc24de472dc3edbf3d0bce913b) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Following the changes of moving aggregations inside the connection fields,
+  the previous aggregations filters outside the connection filters are now deprecated.
+
+    The flag `aggregationFiltersOutsideConnection` has been added to the excludeDeprecatedFields setting.
+
+    ```ts
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        features: { excludeDeprecatedFields: { aggregationFiltersOutsideConnection: true } },
+    });
+    ```
+
+- [#6000](https://github.com/neo4j/graphql/pull/6000) [`271a0a3`](https://github.com/neo4j/graphql/commit/271a0a306bf33959382255eac47749c6de46798d) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Add `addVersionPrefix` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    This prepends all Cypher queries with a `CYPHER [version]` statement:
+
+    ```cypher
+    CYPHER 5
+    MATCH (this:Movie)
+    WHERE this.title = $param0
+    RETURN this { .title } AS this
+    ```
+
 ## 7.0.0-alpha.3
 
 ### Major Changes
@@ -317,7 +430,6 @@
     > Warning: This is a safety mechanism to avoid Cypher injection. Changing these options may lead to code injection and an unsafe server.
 
 - [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
-
 
 ## 6.5.2
 
