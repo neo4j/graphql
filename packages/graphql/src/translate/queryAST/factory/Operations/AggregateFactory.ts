@@ -101,12 +101,26 @@ export class AggregateFactory {
                         directed: Boolean(resolveTree.args?.directed ?? true),
                     });
 
+                    const parsedProjectionFields = this.getAggregationParsedProjectionFields(entityOrRel, resolveTree);
+
+                    const nodeRawFields = {
+                        ...parsedProjectionFields.node?.fieldsByTypeName[
+                            entityOrRel.operations.getAggregateFieldTypename("node")
+                        ],
+                    };
+
+                    const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        concreteEntity,
+                        nodeRawFields
+                    );
+
                     const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
                         entity: concreteEntity,
                         operations: ["AGGREGATE"],
                         context,
-                        attributes: [],
+                        attributes,
                     });
+
                     aggregationPartial.addAuthFilters(...authFilters);
 
                     return aggregationPartial;

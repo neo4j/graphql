@@ -18,8 +18,8 @@
  */
 
 import type { GraphQLError } from "graphql";
-import { createBearerToken } from "../../../utils/create-bearer-token";
-import { TestHelper } from "../../../utils/tests-helper";
+import { createBearerToken } from "../../utils/create-bearer-token";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Field-level filter interface query fields with authorization", () => {
     const secret = "the-secret";
@@ -135,12 +135,10 @@ describe("Field-level filter interface query fields with authorization", () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
-                    actedInConnection(where: { node: { title_STARTS_WITH: "The" } }) {
-                        aggregate {
-                            node {
-                                title {
-                                    longest
-                                }
+                    actedInAggregate(where: { title_STARTS_WITH: "The" }) {
+                        node {
+                            title {
+                                longest
                             }
                         }
                     }
