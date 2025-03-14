@@ -1,5 +1,11 @@
 # @neo4j/graphql-plugin-subscriptions-amqp
 
+## 2.0.1
+
+### Patch Changes
+
+-   [#6082](https://github.com/neo4j/graphql/pull/6082) [`3587922`](https://github.com/neo4j/graphql/commit/3587922ddebf58de8c527e383117e9e9f93cfe6d) Thanks [@angrykoala](https://github.com/angrykoala)! - Update types of amqplib
+
 ## 2.0.0
 
 ### Patch Changes
