@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - dev
-      - '*.*.*'
-      - '*.x'
+      - lts
+      - "*.*.*"
+      - "*.x"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -57,7 +58,7 @@ jobs:
         with:
           title: changesets for branch `${{ github.ref_name }}`
           version: yarn changeset-version
-          publish: yarn release
+          publish: yarn ${{ github.ref_name == 'dev' && 'release-dev' || 'release-tagged' }}
           setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
