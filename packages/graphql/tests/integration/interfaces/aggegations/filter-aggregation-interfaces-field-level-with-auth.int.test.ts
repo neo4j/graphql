@@ -131,7 +131,7 @@ describe("Field-level filter interface query fields with authorization", () => {
         ]);
     });
 
-    test("field level filter aggregation with missing role should fail", async () => {
+    test("field level filter aggregation with missing role should fail - deprecated", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
@@ -139,6 +139,31 @@ describe("Field-level filter interface query fields with authorization", () => {
                         node {
                             title {
                                 longest
+                            }
+                        }
+                    }
+                    name,
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, { roles: ["movies-reader", "series-reader"] });
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
+        expect(queryResult.errors).toBeDefined();
+        expect((queryResult.errors as GraphQLError[]).some((el) => el.message.includes("Forbidden"))).toBeTruthy();
+        expect(queryResult.data).toBeNull();
+    });
+
+    test("field level filter aggregation with missing role should fail", async () => {
+        const query = /* GraphQL */ `
+            query {
+                ${Actor.plural} {
+                    actedInConnection(where: { node: { title_STARTS_WITH: "The" } }) {
+                        aggregate {
+                            node {
+                                title {
+                                    longest
+                                }
                             }
                         }
                     }
