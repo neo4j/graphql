@@ -18,6 +18,7 @@ module.exports = {
         "@neo4j/graphql/dist/types": "<rootDir>/packages/graphql/src/types",
         "@neo4j/introspector(.*)$": "<rootDir>/packages/introspector/src/$1",
         "@neo4j/graphql(.*)$": "<rootDir>/packages/graphql/src/$1",
+        "^(.*)\\.js$": "$1", // Remove .js extension for Jest resolution
     },
     snapshotFormat: {
         escapeString: true,
