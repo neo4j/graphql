@@ -34,9 +34,9 @@ export class TTYFormatter {
     private parseForTTYTable(
         results: Array<Performance.TestDisplayData>,
         oldResults: Record<string, Performance.TestDisplayData> | undefined
-    ) {
+    ): Record<string, TTYTableItem> {
         return results.reduce(
-            (acc, displayData) => {
+            (acc: Record<string, TTYTableItem>, displayData) => {
                 if (displayData.error !== undefined) {
                     const [key, item] = this.formatErrorItem(displayData);
                     acc[key] = item;
@@ -46,7 +46,7 @@ export class TTYFormatter {
                 }
                 return acc;
             },
-            {} as Record<string, TTYTableItem>
+            {}
         );
     }
 

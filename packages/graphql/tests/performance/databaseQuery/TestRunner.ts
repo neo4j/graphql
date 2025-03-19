@@ -48,7 +48,7 @@ export class TestRunner {
             } catch (err) {
                 console.error("Error running test", test.filename, test.name);
                 console.warn(err);
-                results.push({ name: test.name, error: `${err}`, file: test.filename, type: "graphql" });
+                results.push({ name: test.name, error: String(err), file: test.filename, type: "graphql" });
             }
         }
 
