@@ -63,35 +63,38 @@ ${nonDiffTable}
 
         for (const item of data) {
             const key = `${item.file}.${item.name}`;
-            let prefix = "";
 
-            if (key in comparisonData) {
-                const comparisonItem = comparisonData[key];
-                if (!comparisonItem) throw new Error("Performance test: comparisonData not found");
-
-                const diff = item.result.dbHits - comparisonItem.result.dbHits;
-                if (diff >= 0 && diff / comparisonItem.result.dbHits >= 0.1) {
-                    prefix = "🟥";
-                } else if (diff < 0 && -diff / comparisonItem.result.dbHits >= 0.1) {
-                    prefix = "🟩";
-                }
-            } else {
-                prefix = "🟦";
-            }
-
-            if ((prefix && diffOnly) || !diffOnly) {
-                let oldTime = "N/A" as string | number;
-                let oldDbHits = "N/A" as string | number;
-                if (key in comparisonData) {
-                    const comparisonItem = comparisonData[key];
-                    if (!comparisonItem) throw new Error("Performance test: comparisonData not found");
-
-                    oldTime = comparisonItem.result.time;
-                    oldDbHits = comparisonItem.result.dbHits;
-                }
-
-                table += `| ${prefix} ${key} | ${item.result.dbHits} | ${oldDbHits} | ${item.result.time} | ${oldTime} | ${item.result.maxRows} |\n`;
+            if (item.error !== undefined) {
+                const errorPrefix = "❌";
+                table += `| ${errorPrefix} ${key} [ERROR] | N/A | N/A  | N/A  | N/A | N/A |\n`;
                 rows += 1;
+            } else {
+                let prefix = "";
+
+                const comparisonItem = comparisonData[key];
+                if (comparisonItem && comparisonItem.error === undefined) {
+                    const diff = item.result.dbHits - comparisonItem.result.dbHits;
+                    if (diff >= 0 && diff / comparisonItem.result.dbHits >= 0.1) {
+                        prefix = "🟥";
+                    } else if (diff < 0 && -diff / comparisonItem.result.dbHits >= 0.1) {
+                        prefix = "🟩";
+                    }
+                } else {
+                    prefix = "🟦";
+                }
+
+                if ((prefix && diffOnly) || !diffOnly) {
+                    let oldTime = "N/A" as string | number;
+                    let oldDbHits = "N/A" as string | number;
+                    const comparisonItem = comparisonData[key];
+                    if (comparisonItem && comparisonItem.error === undefined) {
+                        oldTime = comparisonItem.result.time;
+                        oldDbHits = comparisonItem.result.dbHits;
+                    }
+
+                    table += `| ${prefix} ${key} | ${item.result.dbHits} | ${oldDbHits} | ${item.result.time} | ${oldTime} | ${item.result.maxRows} |\n`;
+                    rows += 1;
+                }
             }
         }
 
