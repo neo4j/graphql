@@ -50,7 +50,7 @@ const basicTypeDefs = `
     }
 
     type DividerBlock implements Block @node {
-        id: ID @id @unique
+        id: ID @id
     }
 
     type ImageBlock implements Block @node {
