@@ -80,7 +80,8 @@ export function getLargeSchema(size = 500): string {
 }
 
 export async function schemaPerformance() {
-    const typeDefs = getLargeSchema();
+    const typeDefs = getLargeSchema(600);
+    console.log("TypeDefs Size:", prettyBytes(byteSize(typeDefs)));
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
     });
@@ -89,4 +90,17 @@ export async function schemaPerformance() {
         console.error(e);
     });
     console.timeEnd("Schema Generation");
+}
+
+function byteSize(str: string): number {
+    return new Blob([str]).size;
+}
+
+function prettyBytes(num: number): string {
+    const UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    if (Math.abs(num) < 1) return `${num} ${UNITS[0]}`;
+    const exponent = Math.min(Math.floor(Math.log10(num < 0 ? -num : num) / 3), UNITS.length - 1);
+    const n = Number(((num < 0 ? -num : num) / 1000 ** exponent).toPrecision(3));
+
+    return `${num < 0 ? "-" : ""}${n} ${UNITS[exponent]}`;
 }
