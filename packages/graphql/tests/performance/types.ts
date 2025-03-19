@@ -28,11 +28,21 @@ export type ProfileResult = {
 
 export type Result = ProfileResult & { time: number };
 
-export type TestDisplayData = {
+export type ErroredDisplayData = {
+    name: string;
+    file: string;
+    type: "cypher" | "graphql";
+    error: string;
+};
+
+export type CorrectDisplayData = {
     name: string;
     result: Result;
     file: string;
     type: "cypher" | "graphql";
+    error?: undefined;
 };
+
+export type TestDisplayData = CorrectDisplayData | ErroredDisplayData;
 
 export type TestInfo = { query: string; name: string; filename: string; type: "query" | "mutation" | "cypher" };

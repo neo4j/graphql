@@ -19,9 +19,9 @@
 
 import assert from "assert";
 import type { Driver, ProfiledPlan } from "neo4j-driver";
-import type * as Performance from "../types";
-import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+import { translateQuery } from "../../tck/utils/tck-test-utils";
+import type * as Performance from "../types";
 
 type ExecutionHook = (info: Performance.TestInfo) => Promise<void>;
 
@@ -48,6 +48,7 @@ export class TestRunner {
             } catch (err) {
                 console.error("Error running test", test.filename, test.name);
                 console.warn(err);
+                results.push({ name: test.name, error: `${err}`, file: test.filename, type: "graphql" });
             }
         }
 
