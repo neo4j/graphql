@@ -22,7 +22,7 @@ import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
-import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
@@ -37,10 +37,8 @@ import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AggregationDateTimeFilter } from "../ast/filters/aggregation/AggregationDateTimePropertyFilter";
 import { AggregationDurationFilter } from "../ast/filters/aggregation/AggregationDurationPropertyFilter";
-import { AggregationFilter } from "../ast/filters/aggregation/AggregationFilter";
 import { AggregationPropertyFilter } from "../ast/filters/aggregation/AggregationPropertyFilter";
 import { AggregationTimeFilter } from "../ast/filters/aggregation/AggregationTimePropertyFilter";
-import { CountDeprecatedFilter } from "../ast/filters/aggregation/CountDeprecatedFilter";
 import { CountFilter } from "../ast/filters/aggregation/CountFilter";
 import { CypherFilter } from "../ast/filters/property-filters/CypherFilter";
 import { DateTimeFilter } from "../ast/filters/property-filters/DateTimeFilter";
@@ -649,6 +647,7 @@ export class FilterFactory {
                 throw new Error(`Invalid operator ${key}`);
         }
     }
+
     private parseGenericOperatorForAggregation(key: string): AggregationLogicalOperator {
         // we convert them to the previous format to keep the same translation logic
         switch (key) {
@@ -686,24 +685,22 @@ export class FilterFactory {
         relationship,
         value,
         operator,
-
         isConnection,
         isAggregate,
     }: {
         relationship: RelationshipAdapter;
         value: Record<string, any>;
         operator: FilterOperator | undefined;
-
         isConnection: boolean;
         isAggregate: boolean;
     }): Filter | Filter[] {
         if (isAggregate) {
-            return this.createAggregationFilter(relationship, value as AggregateWhereInput);
+            return this.createAggregationFilter(relationship, value as AggregateWhereInput, true);
         }
         if (!operator) {
             const genericFilters = Object.entries(value).flatMap(([genericOperator, predicate]) => {
                 if (genericOperator === "aggregate") {
-                    return this.createAggregationFilter(relationship, predicate as AggregateWhereInput);
+                    return this.createAggregationFilter(relationship, predicate as AggregateWhereInput, false);
                 }
                 const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(genericOperator);
 
@@ -815,44 +812,45 @@ export class FilterFactory {
         value,
         attachedTo,
         useDeprecated = true,
+        relationship,
     }: {
         operatorKey: string;
         value: unknown;
         attachedTo: "node" | "relationship";
         useDeprecated?: boolean;
+        relationship: RelationshipAdapter;
     }): CountFilter {
-        const operator = this.parseGenericOperator(operatorKey);
-        if (useDeprecated) {
-            return new CountDeprecatedFilter({
-                operator: operator,
-                comparisonValue: value,
-                attachedTo,
-            });
-        }
+        const operator = this.parseGenericOperator(operatorKey) as AggregationLogicalOperator;
         return new CountFilter({
             operator: operator,
             comparisonValue: value,
             attachedTo,
+            relationship,
+            isDeprecated: useDeprecated,
         });
     }
 
     private parseConnectionAggregationCountFilter(
         countInput: Record<string, any>,
-        attachedTo: "node" | "relationship"
+        attachedTo: "node" | "relationship",
+        relationship: RelationshipAdapter
     ): CountFilter[] {
         return Object.entries(countInput).map(([key, value]) => {
-            return this.createCountFilter({
-                operatorKey: key,
-                value,
+            const operator = this.parseGenericOperator(key) as AggregationLogicalOperator;
+            return new CountFilter({
+                operator: operator,
+                comparisonValue: value,
                 attachedTo,
-                useDeprecated: false,
+                relationship,
+                isDeprecated: false,
             });
         });
     }
 
     private getAggregationNestedFilters(
         where: AggregateWhereInput,
-        relationship: RelationshipAdapter
+        relationship: RelationshipAdapter,
+        isDeprecated = false
     ): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> {
         const nestedFilters = Object.entries(where).flatMap(
             ([key, value]): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> => {
@@ -867,10 +865,11 @@ export class FilterFactory {
                     });
                     return [logicalFilter];
                 }
-                const { fieldName, operator } = parseWhereField(key);
+                const { fieldName, logicalOperator: operator } = parseAggregationWhereFields(key);
 
                 if (fieldName === "count") {
                     if (!operator) {
+                        // TODO: Change this logic, we know now with the isDeprecated flag if we're in the likesConnection.aggregate or in likesAggregate
                         // A little bit hacky, but here we don't longer know if we're in the likesConnection.aggregate or in likesAggregate that have different syntax for count
                         // so we check if nodes and/or edges fields are present to determine the correct parsing
                         // In v8 we will no longer have the likesAggregate syntax so we can assume the connection syntax
@@ -878,16 +877,19 @@ export class FilterFactory {
                             // TODO: Add value.edges when it's supported
                             return Object.entries(value).flatMap(([key, value]) => {
                                 if (key === "nodes") {
-                                    return this.parseConnectionAggregationCountFilter(value, "node");
+                                    return this.parseConnectionAggregationCountFilter(value, "node", relationship);
                                 }
-                                return this.parseConnectionAggregationCountFilter(value, "relationship");
+                                return this.parseConnectionAggregationCountFilter(value, "relationship", relationship);
                             });
                         }
                         return Object.entries(value).map(([key, value]) => {
-                            return this.createCountFilter({
-                                operatorKey: key,
-                                value,
+                            const operator = this.parseGenericOperator(key) as AggregationLogicalOperator;
+                            return new CountFilter({
+                                operator: operator,
+                                comparisonValue: value,
                                 attachedTo: "node",
+                                relationship,
+                                isDeprecated,
                             });
                         });
                     }
@@ -895,6 +897,8 @@ export class FilterFactory {
                     const countFilter = new CountFilter({
                         operator: operator ?? "EQ",
                         comparisonValue: value,
+                        relationship,
+                        isDeprecated,
                     });
                     return [countFilter];
                 }
@@ -902,8 +906,9 @@ export class FilterFactory {
                 if (fieldName === "node") {
                     return this.createAggregationNodeFilters(
                         value as Record<string, any>,
-                        relationship.target as InterfaceEntityAdapter | ConcreteEntityAdapter,
-                        relationship
+                        relationship,
+                        "node",
+                        isDeprecated
                     );
                 }
 
@@ -915,12 +920,22 @@ export class FilterFactory {
                     ) {
                         return Object.entries(value).flatMap(([k, v]) => {
                             if (k === relationship.propertiesTypeName) {
-                                return this.createAggregationNodeFilters(v as Record<string, any>, relationship);
+                                return this.createAggregationNodeFilters(
+                                    v as Record<string, any>,
+                                    relationship,
+                                    "relationship",
+                                    isDeprecated
+                                );
                             }
                             return [];
                         });
                     }
-                    return this.createAggregationNodeFilters(value as Record<string, any>, relationship);
+                    return this.createAggregationNodeFilters(
+                        value as Record<string, any>,
+                        relationship,
+                        "relationship",
+                        isDeprecated
+                    );
                 }
 
                 throw new Error(`Aggregation filter not found ${key}`);
@@ -929,30 +944,37 @@ export class FilterFactory {
 
         return this.wrapMultipleFiltersInLogical(nestedFilters);
     }
-
-    private createAggregationFilter(relationship: RelationshipAdapter, where: AggregateWhereInput): AggregationFilter {
-        const aggregationFilter = new AggregationFilter(relationship);
-        const nestedFilters = this.getAggregationNestedFilters(where, relationship);
-        aggregationFilter.addFilters(...nestedFilters);
-
-        return aggregationFilter;
+    //TODO: Change this signature to be an object
+    private createAggregationFilter(
+        relationship: RelationshipAdapter,
+        where: AggregateWhereInput,
+        isDeprecated: boolean
+    ): Filter | Filter[] {
+        return this.wrapMultipleFiltersInLogical(this.getAggregationNestedFilters(where, relationship, isDeprecated));
     }
 
     private createAggregationNodeFilters(
         where: Record<string, any>,
-        entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        relationship?: RelationshipAdapter
+        //entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
+        relationship: RelationshipAdapter,
+        attachedTo: "node" | "relationship",
+        isDeprecated: boolean
     ): Array<AggregationPropertyFilter | LogicalFilter> {
         const filters = Object.entries(where).flatMap(([key, value]) => {
             if (isLogicalOperator(key)) {
                 const filters = asArray(value).flatMap((nestedWhere) => {
-                    return this.createAggregationNodeFilters(nestedWhere, entity, relationship);
+                    return this.createAggregationNodeFilters(nestedWhere, relationship, attachedTo, isDeprecated);
                 });
                 return new LogicalFilter({
                     operation: key,
                     filters,
                 });
             }
+            const entity = (attachedTo === "node" ? relationship.target : relationship) as
+                | RelationshipAdapter
+                | ConcreteEntityAdapter
+                | InterfaceEntityAdapter; // Union are not supported in aggregations.
+
             // NOTE: if aggregationOperator is undefined, maybe we could return a normal PropertyFilter instead
             const { fieldName, logicalOperator, aggregationOperator } = parseAggregationWhereFields(key);
 
@@ -960,7 +982,7 @@ export class FilterFactory {
             if (!attr) {
                 throw new Error(`Attribute ${fieldName} not found`);
             }
-            const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
+            // const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
 
             if (!aggregationOperator) {
                 const filters = Object.entries(value).flatMap(([aggregationOperator, value]) => {
@@ -972,40 +994,47 @@ export class FilterFactory {
                         if (attr.typeHelper.isDuration()) {
                             return new AggregationDurationFilter({
                                 attribute: attr,
+                                relationship: relationship,
                                 comparisonValue: value,
                                 logicalOperator: parsedOperator || "EQUAL",
                                 aggregationOperator: parsedAggregationOperation,
                                 attachedTo,
+                                isDeprecated,
                             });
                         }
 
                         if (attr.typeHelper.isDateTime()) {
                             return new AggregationDateTimeFilter({
                                 attribute: attr,
+                                relationship: relationship,
                                 comparisonValue: value,
                                 logicalOperator: parsedOperator || "EQUAL",
                                 aggregationOperator: parsedAggregationOperation,
                                 attachedTo,
+                                isDeprecated,
                             });
                         }
 
                         if (attr.typeHelper.isTime()) {
                             return new AggregationTimeFilter({
                                 attribute: attr,
+                                relationship: relationship,
                                 comparisonValue: value,
                                 logicalOperator: parsedOperator || "EQUAL",
                                 aggregationOperator: parsedAggregationOperation,
                                 attachedTo,
+                                isDeprecated,
                             });
                         }
 
                         return new AggregationPropertyFilter({
                             attribute: attr,
-                            relationship,
+                            relationship: relationship,
                             comparisonValue: value,
                             logicalOperator: parsedOperator || "EQUAL",
                             aggregationOperator: parsedAggregationOperation,
                             attachedTo,
+                            isDeprecated,
                         });
                     });
                 });
@@ -1015,40 +1044,47 @@ export class FilterFactory {
             if (attr.typeHelper.isDuration()) {
                 return new AggregationDurationFilter({
                     attribute: attr,
+                    relationship: relationship,
                     comparisonValue: value,
                     logicalOperator: logicalOperator || "EQUAL",
                     aggregationOperator: aggregationOperator,
                     attachedTo,
+                    isDeprecated,
                 });
             }
 
             if (attr.typeHelper.isDateTime()) {
                 return new AggregationDateTimeFilter({
                     attribute: attr,
+                    relationship: relationship,
                     comparisonValue: value,
                     logicalOperator: logicalOperator || "EQUAL",
                     aggregationOperator: aggregationOperator,
                     attachedTo,
+                    isDeprecated,
                 });
             }
 
             if (attr.typeHelper.isTime()) {
                 return new AggregationTimeFilter({
                     attribute: attr,
+                    relationship: relationship,
                     comparisonValue: value,
                     logicalOperator: logicalOperator || "EQUAL",
                     aggregationOperator: aggregationOperator,
                     attachedTo,
+                    isDeprecated,
                 });
             }
 
             return new AggregationPropertyFilter({
                 attribute: attr,
-                relationship,
+                relationship: relationship,
                 comparisonValue: value,
                 logicalOperator: logicalOperator || "EQUAL",
                 aggregationOperator: aggregationOperator,
                 attachedTo,
+                isDeprecated,
             });
         });
 

@@ -25,25 +25,25 @@ export class AggregationTimeFilter extends AggregationPropertyFilter {
     protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {
         return this.createTimeOperation({
             operator: this.logicalOperator,
-            property: expr,
+            expr,
             param: new Cypher.Param(this.comparisonValue),
         });
     }
 
     private createTimeOperation({
         operator,
-        property,
+        expr,
         param,
     }: {
         operator: AggregationLogicalOperator;
-        property: Cypher.Expr;
+        expr: Cypher.Expr;
         param: Cypher.Expr;
     }) {
         const variable = Cypher.time(param);
 
         return this.createBaseOperation({
             operator,
-            property,
+            expr,
             param: variable,
         });
     }
