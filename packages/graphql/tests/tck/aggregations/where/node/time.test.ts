@@ -59,6 +59,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someTime) = time($param0) AS var2
             }
             WITH *
@@ -90,6 +91,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someTime) > time($param0) AS var2
             }
             WITH *
@@ -121,6 +123,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someTime) >= time($param0) AS var2
             }
             WITH *
@@ -152,6 +155,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someTime) < time($param0) AS var2
             }
             WITH *
@@ -183,6 +187,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someTime) <= time($param0) AS var2
             }
             WITH *
@@ -214,6 +219,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someTime) = time($param0) AS var2
             }
             WITH *
@@ -245,6 +251,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someTime) > time($param0) AS var2
             }
             WITH *
@@ -276,6 +283,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someTime) >= time($param0) AS var2
             }
             WITH *
@@ -307,6 +315,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someTime) < time($param0) AS var2
             }
             WITH *
@@ -338,6 +347,7 @@ describe("Cypher Aggregations where node with Time", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someTime) <= time($param0) AS var2
             }
             WITH *
