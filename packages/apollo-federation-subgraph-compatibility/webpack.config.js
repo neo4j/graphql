@@ -20,7 +20,6 @@
 const path = require("path");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
-const webpack = require("webpack");
 
 module.exports = {
     mode: "none",
@@ -41,9 +40,6 @@ module.exports = {
         extensions: [".ts", ".mjs", ".js"],
     },
     plugins: [
-        new webpack.NormalModuleReplacementPlugin(/(.*)Subgraph\.js/, function (resource) {
-            resource.request = resource.request.replace("Subgraph.js", "Subgraph");
-        }),
         new ForkTsCheckerWebpackPlugin({
             typescript: {
                 build: true,
