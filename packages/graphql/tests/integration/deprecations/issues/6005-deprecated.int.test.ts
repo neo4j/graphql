@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/6005 - deprecated", () => {
     let Movie: UniqueType;

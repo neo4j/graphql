@@ -26,7 +26,7 @@ import type { RelationshipAdapter } from "../../../schema-model/relationship/mod
 import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { ConnectionWhereArg, GraphQLWhereArg } from "../../../types";
 import { fromGlobalId } from "../../../utils/global-ids";
-import { asArray, filterTruthy, isRecord } from "../../../utils/utils";
+import { asArray, filterTruthy } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import { ConnectionFilter } from "../ast/filters/ConnectionFilter";
 import { CypherOneToOneRelationshipFilter } from "../ast/filters/CypherOneToOneRelationshipFilter";
@@ -695,12 +695,20 @@ export class FilterFactory {
         isAggregate: boolean;
     }): Filter | Filter[] {
         if (isAggregate) {
-            return this.createAggregationFilter(relationship, value as AggregateWhereInput, true);
+            return this.createAggregationFilter({
+                relationship,
+                where: value as AggregateWhereInput,
+                isDeprecated: true,
+            });
         }
         if (!operator) {
             const genericFilters = Object.entries(value).flatMap(([genericOperator, predicate]) => {
                 if (genericOperator === "aggregate") {
-                    return this.createAggregationFilter(relationship, predicate as AggregateWhereInput, false);
+                    return this.createAggregationFilter({
+                        relationship,
+                        where: predicate as AggregateWhereInput,
+                        isDeprecated: false,
+                    });
                 }
                 const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(genericOperator);
 
@@ -830,11 +838,15 @@ export class FilterFactory {
         });
     }
 
-    private parseConnectionAggregationCountFilter(
-        countInput: Record<string, any>,
-        attachedTo: "node" | "relationship",
-        relationship: RelationshipAdapter
-    ): CountFilter[] {
+    private parseConnectionAggregationCountFilter({
+        countInput,
+        attachedTo,
+        relationship,
+    }: {
+        countInput: Record<string, any>;
+        attachedTo: "node" | "relationship";
+        relationship: RelationshipAdapter;
+    }): CountFilter[] {
         return Object.entries(countInput).map(([key, value]) => {
             const operator = this.parseGenericOperator(key) as AggregationLogicalOperator;
             return new CountFilter({
@@ -847,16 +859,24 @@ export class FilterFactory {
         });
     }
 
-    private getAggregationNestedFilters(
-        where: AggregateWhereInput,
-        relationship: RelationshipAdapter,
-        isDeprecated: boolean
-    ): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> {
+    private getAggregationNestedFilters({
+        where,
+        relationship,
+        isDeprecated,
+    }: {
+        where: AggregateWhereInput;
+        relationship: RelationshipAdapter;
+        isDeprecated: boolean;
+    }): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> {
         const nestedFilters = Object.entries(where).flatMap(
             ([key, value]): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                        return this.getAggregationNestedFilters(nestedWhere, relationship, isDeprecated);
+                        return this.getAggregationNestedFilters({
+                            where: nestedWhere,
+                            relationship,
+                            isDeprecated,
+                        });
                     });
 
                     const logicalFilter = new LogicalFilter({
@@ -869,18 +889,20 @@ export class FilterFactory {
 
                 if (fieldName === "count") {
                     if (!operator) {
-                        // TODO: Change this logic, we know now with the isDeprecated flag if we're in the likesConnection.aggregate or in likesAggregate
-                        // A little bit hacky, but here we don't longer know if we're in the likesConnection.aggregate or in likesAggregate that have different syntax for count
-                        // so we check if nodes and/or edges fields are present to determine the correct parsing
-                        // In v8 we will no longer have the likesAggregate syntax so we can assume the connection syntax
                         if (!isDeprecated) {
-                        //if (isRecord(value) && (value.nodes || value.edges)) {
-                            // TODO: Add value.edges when it's supported
                             return Object.entries(value).flatMap(([key, value]) => {
                                 if (key === "nodes") {
-                                    return this.parseConnectionAggregationCountFilter(value, "node", relationship);
+                                    return this.parseConnectionAggregationCountFilter({
+                                        countInput: value,
+                                        attachedTo: "node",
+                                        relationship,
+                                    });
                                 }
-                                return this.parseConnectionAggregationCountFilter(value, "relationship", relationship);
+                                return this.parseConnectionAggregationCountFilter({
+                                    countInput: value,
+                                    attachedTo: "relationship",
+                                    relationship,
+                                });
                             });
                         }
                         return Object.entries(value).map(([key, value]) => {
@@ -905,12 +927,12 @@ export class FilterFactory {
                 }
 
                 if (fieldName === "node") {
-                    return this.createAggregationNodeFilters(
-                        value as Record<string, any>,
+                    return this.createAggregationNodeFilters({
+                        where: value as Record<string, any>,
                         relationship,
-                        "node",
-                        isDeprecated
-                    );
+                        attachedTo: "node",
+                        isDeprecated,
+                    });
                 }
 
                 if (fieldName === "edge" && relationship.propertiesTypeName) {
@@ -921,22 +943,22 @@ export class FilterFactory {
                     ) {
                         return Object.entries(value).flatMap(([k, v]) => {
                             if (k === relationship.propertiesTypeName) {
-                                return this.createAggregationNodeFilters(
-                                    v as Record<string, any>,
+                                return this.createAggregationNodeFilters({
+                                    where: v as Record<string, any>,
                                     relationship,
-                                    "relationship",
-                                    isDeprecated
-                                );
+                                    attachedTo: "relationship",
+                                    isDeprecated,
+                                });
                             }
                             return [];
                         });
                     }
-                    return this.createAggregationNodeFilters(
-                        value as Record<string, any>,
+                    return this.createAggregationNodeFilters({
+                        where: value as Record<string, any>,
                         relationship,
-                        "relationship",
-                        isDeprecated
-                    );
+                        attachedTo: "relationship",
+                        isDeprecated,
+                    });
                 }
 
                 throw new Error(`Aggregation filter not found ${key}`);
@@ -945,26 +967,41 @@ export class FilterFactory {
 
         return this.wrapMultipleFiltersInLogical(nestedFilters);
     }
-    //TODO: Change this signature to be an object
-    private createAggregationFilter(
-        relationship: RelationshipAdapter,
-        where: AggregateWhereInput,
-        isDeprecated: boolean
-    ): Filter | Filter[] {
-        return this.wrapMultipleFiltersInLogical(this.getAggregationNestedFilters(where, relationship, isDeprecated));
+
+    private createAggregationFilter({
+        relationship,
+        where,
+        isDeprecated,
+    }: {
+        relationship: RelationshipAdapter;
+        where: AggregateWhereInput;
+        isDeprecated: boolean;
+    }): Filter | Filter[] {
+        return this.wrapMultipleFiltersInLogical(
+            this.getAggregationNestedFilters({ where, relationship, isDeprecated })
+        );
     }
 
-    private createAggregationNodeFilters(
-        where: Record<string, any>,
-        //entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
-        relationship: RelationshipAdapter,
-        attachedTo: "node" | "relationship",
-        isDeprecated: boolean
-    ): Array<AggregationPropertyFilter | LogicalFilter> {
+    private createAggregationNodeFilters({
+        where,
+        relationship,
+        attachedTo,
+        isDeprecated,
+    }: {
+        where: Record<string, any>;
+        relationship: RelationshipAdapter;
+        attachedTo: "node" | "relationship";
+        isDeprecated: boolean;
+    }): Array<AggregationPropertyFilter | LogicalFilter> {
         const filters = Object.entries(where).flatMap(([key, value]) => {
             if (isLogicalOperator(key)) {
                 const filters = asArray(value).flatMap((nestedWhere) => {
-                    return this.createAggregationNodeFilters(nestedWhere, relationship, attachedTo, isDeprecated);
+                    return this.createAggregationNodeFilters({
+                        where: nestedWhere,
+                        relationship,
+                        attachedTo,
+                        isDeprecated,
+                    });
                 });
                 return new LogicalFilter({
                     operation: key,

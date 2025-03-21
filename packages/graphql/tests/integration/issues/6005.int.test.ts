@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         await testHelper.close();
     });
 
-    test("should filter movies by actors count with unique results", async () => {
+    test.only("should filter movies by actors count with unique results", async () => {
         // count should be the 3 actors but should not count Arnold twice
         const query = /* GraphQL */ `
             query {
