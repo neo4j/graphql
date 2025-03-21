@@ -60,61 +60,6 @@ export class AggregationPropertyFilter extends AggregationFilter {
         return [];
     }
 
-    // public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-    //     if (!context.hasTarget()) {
-    //         throw new Error("No parent node found!");
-    //     }
-    //     this.subqueryReturnVariable = new Cypher.Variable();
-    //     const relatedEntity = this.relationship.target;
-
-    //     const relatedNode: Cypher.Node = new Cypher.Node();
-    //     let relatedNodeLabels: string[] = [];
-    //     let labelsFilter: Cypher.Predicate | undefined;
-
-    //     if (relatedEntity instanceof InterfaceEntityAdapter) {
-    //         const labelsForImplementations = relatedEntity.concreteEntities.map((e) =>
-    //             relatedNode.hasLabels(...e.getLabels())
-    //         );
-    //         labelsFilter = Cypher.or(...labelsForImplementations);
-    //     } else {
-    //         relatedNodeLabels = getEntityLabels(relatedEntity, context.neo4jGraphQLContext);
-    //     }
-    //     const relationshipTarget = new Cypher.Relationship();
-
-    //     const pattern = new Cypher.Pattern(context.target)
-    //         .related(relationshipTarget, {
-    //             direction: this.relationship.getCypherDirection(),
-    //             type: this.relationship.type,
-    //         })
-    //         .to(relatedNode, { labels: relatedNodeLabels });
-
-    //     const nestedContext = context.push({
-    //         target: relatedNode,
-    //         relationship: relationshipTarget,
-    //     });
-
-    //     const returnColumns: Cypher.ProjectionColumn[] = [];
-    //     const predicate = this.getSubqueryReturnVariable(nestedContext);
-    //     if (predicate) {
-    //         returnColumns.push([predicate, this.subqueryReturnVariable]);
-    //     }
-
-    //     if (returnColumns.length === 0) return []; // Maybe throw?
-    //     //const distinctVariable = this.attachedTo === "node" ? relatedNode : relationshipTarget;
-    //     const subquery = labelsFilter
-    //         ? new Cypher.Match(pattern)
-    //               // .with(distinctVariable)
-    //               // .distinct()
-    //               .where(labelsFilter)
-    //               .return(...returnColumns)
-    //         : new Cypher.Match(pattern)
-    //               //   .with(distinctVariable)
-    //               //   .distinct()
-    //               .return(...returnColumns);
-
-    //     return [subquery];
-    // }
-
     private getPropertyRefOrAliasesCase(queryASTContext: QueryASTContext): Cypher.Property | Cypher.Case {
         const implementationsWithAlias = this.getAliasesToResolve();
         if (implementationsWithAlias) {
@@ -219,30 +164,4 @@ export class AggregationPropertyFilter extends AggregationFilter {
                 throw new Error(`Invalid operator ${aggregationOperator}`);
         }
     }
-
-    // /** Returns the default operation for a given filter */
-    // protected createBaseOperation({
-    //     operator,
-    //     property,
-    //     param,
-    // }: {
-    //     operator: AggregationLogicalOperator;
-    //     property: Cypher.Expr;
-    //     param: Cypher.Expr;
-    // }): Cypher.ComparisonOp {
-    //     switch (operator) {
-    //         case "LT":
-    //             return Cypher.lt(property, param);
-    //         case "LTE":
-    //             return Cypher.lte(property, param);
-    //         case "GT":
-    //             return Cypher.gt(property, param);
-    //         case "GTE":
-    //             return Cypher.gte(property, param);
-    //         case "EQUAL":
-    //             return Cypher.eq(property, param);
-    //         default:
-    //             throw new Error(`Invalid operator ${operator}`);
-    //     }
-    // }
 }

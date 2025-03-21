@@ -74,43 +74,4 @@ export class CountFilter extends AggregationFilter {
         }
         return target;
     }
-
-    /** Returns the default operation for a given filter */
-    // NOTE: duplicate from property filter
-    // protected createBaseOperation({
-    //     operator,
-    //     expr,
-    //     param,
-    // }: {
-    //     operator: FilterOperator;
-    //     expr: Cypher.Expr;
-    //     param: Cypher.Expr;
-    // }): Cypher.ComparisonOp {
-    //     switch (operator) {
-    //         case "LT":
-    //             return Cypher.lt(expr, param);
-    //         case "LTE":
-    //             return Cypher.lte(expr, param);
-    //         case "GT":
-    //             return Cypher.gt(expr, param);
-    //         case "GTE":
-    //             return Cypher.gte(expr, param);
-    //         case "ENDS_WITH":
-    //             return Cypher.endsWith(expr, param);
-    //         case "STARTS_WITH":
-    //             return Cypher.startsWith(expr, param);
-    //         case "MATCHES":
-    //             return Cypher.matches(expr, param);
-    //         case "CONTAINS":
-    //             return Cypher.contains(expr, param);
-    //         case "IN":
-    //             return Cypher.in(expr, param);
-    //         case "INCLUDES":
-    //             return Cypher.in(param, expr);
-    //         case "EQ":
-    //             return Cypher.eq(expr, param);
-    //         default:
-    //             throw new Error(`Invalid operator ${operator}`);
-    //     }
-    // }
 }

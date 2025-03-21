@@ -850,13 +850,13 @@ export class FilterFactory {
     private getAggregationNestedFilters(
         where: AggregateWhereInput,
         relationship: RelationshipAdapter,
-        isDeprecated = false
+        isDeprecated: boolean
     ): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> {
         const nestedFilters = Object.entries(where).flatMap(
             ([key, value]): Array<AggregationPropertyFilter | CountFilter | LogicalFilter> => {
                 if (isLogicalOperator(key)) {
                     const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                        return this.getAggregationNestedFilters(nestedWhere, relationship);
+                        return this.getAggregationNestedFilters(nestedWhere, relationship, isDeprecated);
                     });
 
                     const logicalFilter = new LogicalFilter({
@@ -873,7 +873,8 @@ export class FilterFactory {
                         // A little bit hacky, but here we don't longer know if we're in the likesConnection.aggregate or in likesAggregate that have different syntax for count
                         // so we check if nodes and/or edges fields are present to determine the correct parsing
                         // In v8 we will no longer have the likesAggregate syntax so we can assume the connection syntax
-                        if (isRecord(value) && (value.nodes || value.edges)) {
+                        if (!isDeprecated) {
+                        //if (isRecord(value) && (value.nodes || value.edges)) {
                             // TODO: Add value.edges when it's supported
                             return Object.entries(value).flatMap(([key, value]) => {
                                 if (key === "nodes") {
@@ -982,7 +983,6 @@ export class FilterFactory {
             if (!attr) {
                 throw new Error(`Attribute ${fieldName} not found`);
             }
-            // const attachedTo = entity instanceof RelationshipAdapter ? "relationship" : "node";
 
             if (!aggregationOperator) {
                 const filters = Object.entries(value).flatMap(([aggregationOperator, value]) => {
