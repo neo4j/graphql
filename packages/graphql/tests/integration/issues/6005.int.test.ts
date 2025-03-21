@@ -218,4 +218,76 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             ],
         });
     });
+
+    test("should return movies where the actors age sum is EQUAL to", async () => {
+        const age1 = 54;
+        const age2 = 37;
+        const age3 = 37;
+        // arnold should not counted twice
+        const sum = age1 + age2 + age3;
+
+        const query = /* GraphQL */ `
+            {
+                ${Movie.plural}(where: { 
+                    actorsConnection: {
+                        aggregate: {
+                            node: { 
+                                age: { sum: { eq: ${sum} } } 
+                            }
+                        }
+                    }
+                }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+
+        expect(result.errors).toBeUndefined();
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "Terminator",
+                },
+            ],
+        });
+    });
+
+    test("should return movies where the actors age avg is EQUAL to", async () => {
+        const age1 = 54;
+        const age2 = 37;
+        const age3 = 37;
+        // arnold should not counted twice
+        const avg = (age1 + age2 + age3) / 3;
+
+        const query = /* GraphQL */ `
+            {
+                ${Movie.plural}(where: { 
+                    actorsConnection: {
+                        aggregate: {
+                            node: { 
+                                age: { average: { eq: ${avg} } } 
+                            }
+                        }
+                    }
+                }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+
+        expect(result.errors).toBeUndefined();
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "Terminator",
+                },
+            ],
+        });
+    });
 });
