@@ -120,7 +120,6 @@ class Node extends GraphElement {
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
     public nodeDirective?: NodeDirective;
-    public description?: string;
     public limit?: LimitDirective;
     public singular: string;
     public plural: string;
