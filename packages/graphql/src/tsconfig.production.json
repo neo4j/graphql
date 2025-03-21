@@ -3,7 +3,7 @@
     "compilerOptions": {
         "rootDir": ".",
         "outDir": "../dist",
-        "module": "CommonJS",
+        "module": "commonjs",
         "target": "es2021",
         "moduleResolution": "node10"
     },
