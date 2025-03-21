@@ -58,7 +58,8 @@ jobs:
         with:
           title: changesets for branch `${{ github.ref_name }}`
           version: yarn changeset-version
-          publish: yarn ${{ github.ref_name == 'dev' && 'release-dev' || 'release-tagged' }}
+          # Don't use a custom tag if either latest build or prerelease (error under changesets)
+          publish: yarn ${{ (github.ref_name == 'dev' || hashFiles('.changeset/pre.json') != '') && 'release-dev' || 'release-tagged' }}
           setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
