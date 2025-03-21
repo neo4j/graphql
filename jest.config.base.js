@@ -18,7 +18,6 @@ module.exports = {
         "@neo4j/graphql/dist/types": "<rootDir>/packages/graphql/src/types",
         "@neo4j/introspector(.*)$": "<rootDir>/packages/introspector/src/$1",
         "@neo4j/graphql(.*)$": "<rootDir>/packages/graphql/src/$1",
-        "./Subgraph.js": "./Subgraph.ts",
     },
     snapshotFormat: {
         escapeString: true,
