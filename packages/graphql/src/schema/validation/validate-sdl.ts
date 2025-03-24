@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Maybe } from "@graphql-tools/utils/typings/types";
-import type { DocumentNode, GraphQLSchema, GraphQLError } from "graphql";
+import type { Maybe } from "@graphql-tools/utils";
+import type { DocumentNode, GraphQLError, GraphQLSchema } from "graphql";
 import { visit, visitInParallel } from "graphql";
 import type { SDLValidationRule } from "graphql/validation/ValidationContext";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";

@@ -24,7 +24,7 @@
         "release-tagged": "yarn build && changeset publish --tag $BRANCH"
     },
     "devDependencies": {
-        "@tsconfig/node16": "1.0.4",
+        "@tsconfig/node22": "22.0.0",
         "@typescript-eslint/eslint-plugin": "8.26.1",
         "@typescript-eslint/parser": "8.26.1",
         "concurrently": "9.1.2",
@@ -45,7 +45,7 @@
         "prettier-2": "npm:prettier@2.8.8",
         "set-tz": "0.2.0",
         "ts-jest": "29.2.6",
-        "typescript": "5.1.6"
+        "typescript": "5.8.2"
     },
     "packageManager": "yarn@4.7.0",
     "dependencies": {
