@@ -121,7 +121,6 @@ class Node extends GraphElement {
     public objectFields: ObjectField[];
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public description?: string;
     public limit?: LimitDirective;
     public singular: string;
     public plural: string;
