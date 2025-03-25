@@ -41,7 +41,7 @@
         "jest": "29.7.0",
         "lint-staged": "15.5.0",
         "neo4j-driver": "5.28.1",
-        "prettier": "2.8.8",
+        "prettier": "3.5.3",
         "set-tz": "0.2.0",
         "ts-jest": "29.2.6",
         "typescript": "5.8.2"
