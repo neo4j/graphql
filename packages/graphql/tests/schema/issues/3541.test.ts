@@ -706,6 +706,7 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -714,7 +715,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             input MovieCreateInput {

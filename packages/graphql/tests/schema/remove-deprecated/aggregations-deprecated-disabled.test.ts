@@ -1178,6 +1178,7 @@ describe("Deprecated Aggregations disabled", () => {
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesUpdateFieldInput {
@@ -1186,7 +1187,6 @@ describe("Deprecated Aggregations disabled", () => {
               delete: [PostLikesDeleteFieldInput!]
               disconnect: [PostLikesDisconnectFieldInput!]
               update: PostLikesUpdateConnectionInput
-              where: PostLikesConnectionWhere
             }
 
             \\"\\"\\"
@@ -2277,6 +2277,7 @@ describe("Deprecated Aggregations disabled", () => {
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesUpdateFieldInput {
@@ -2285,7 +2286,6 @@ describe("Deprecated Aggregations disabled", () => {
               delete: [PostLikesDeleteFieldInput!]
               disconnect: [PostLikesDisconnectFieldInput!]
               update: PostLikesUpdateConnectionInput
-              where: PostLikesConnectionWhere
             }
 
             \\"\\"\\"

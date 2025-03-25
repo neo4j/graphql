@@ -397,6 +397,7 @@ describe("Pluralize consistency", () => {
 
             input super_userMy_friendUpdateConnectionInput {
               node: super_friendUpdateInput
+              where: super_userMy_friendConnectionWhere
             }
 
             input super_userMy_friendUpdateFieldInput {
@@ -405,7 +406,6 @@ describe("Pluralize consistency", () => {
               delete: [super_userMy_friendDeleteFieldInput!]
               disconnect: [super_userMy_friendDisconnectFieldInput!]
               update: super_userMy_friendUpdateConnectionInput
-              where: super_userMy_friendConnectionWhere
             }
 
             \\"\\"\\"

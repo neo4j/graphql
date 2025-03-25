@@ -384,6 +384,7 @@ describe("Aggregations filters outside connection filters", () => {
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesUpdateFieldInput {
@@ -392,7 +393,6 @@ describe("Aggregations filters outside connection filters", () => {
               delete: [PostLikesDeleteFieldInput!]
               disconnect: [PostLikesDisconnectFieldInput!]
               update: PostLikesUpdateConnectionInput
-              where: PostLikesConnectionWhere
             }
 
             \\"\\"\\"

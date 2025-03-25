@@ -461,6 +461,7 @@ describe("lower case type names", () => {
 
             input actorMoviesUpdateConnectionInput {
               node: movieUpdateInput
+              where: actorMoviesConnectionWhere
             }
 
             input actorMoviesUpdateFieldInput {
@@ -469,7 +470,6 @@ describe("lower case type names", () => {
               delete: [actorMoviesDeleteFieldInput!]
               disconnect: [actorMoviesDisconnectFieldInput!]
               update: actorMoviesUpdateConnectionInput
-              where: actorMoviesConnectionWhere
             }
 
             input actorRelationshipFilters {
@@ -723,6 +723,7 @@ describe("lower case type names", () => {
 
             input movieActorsUpdateConnectionInput {
               node: actorUpdateInput
+              where: movieActorsConnectionWhere
             }
 
             input movieActorsUpdateFieldInput {
@@ -731,7 +732,6 @@ describe("lower case type names", () => {
               delete: [movieActorsDeleteFieldInput!]
               disconnect: [movieActorsDisconnectFieldInput!]
               update: movieActorsUpdateConnectionInput
-              where: movieActorsConnectionWhere
             }
 
             type movieAggregate {

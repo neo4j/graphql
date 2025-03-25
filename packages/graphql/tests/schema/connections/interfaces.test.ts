@@ -218,6 +218,7 @@ describe("Connection with interfaces", () => {
 
             input CreatureMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: CreatureMoviesConnectionWhere
             }
 
             input CreatureMoviesUpdateFieldInput {
@@ -226,7 +227,6 @@ describe("Connection with interfaces", () => {
               delete: [CreatureMoviesDeleteFieldInput!]
               disconnect: [CreatureMoviesDisconnectFieldInput!]
               update: CreatureMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere
             }
 
             input CreatureRelationshipFilters {
@@ -448,6 +448,7 @@ describe("Connection with interfaces", () => {
 
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input MovieDirectorUpdateFieldInput {
@@ -456,7 +457,6 @@ describe("Connection with interfaces", () => {
               delete: [MovieDirectorDeleteFieldInput!]
               disconnect: [MovieDirectorDisconnectFieldInput!]
               update: MovieDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
             }
 
             type MovieEdge {
@@ -651,6 +651,7 @@ describe("Connection with interfaces", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: CreatureMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -659,7 +660,6 @@ describe("Connection with interfaces", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere
             }
 
             \\"\\"\\"
@@ -826,6 +826,7 @@ describe("Connection with interfaces", () => {
 
             input ProductionDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input ProductionDirectorUpdateFieldInput {
@@ -834,7 +835,6 @@ describe("Connection with interfaces", () => {
               delete: [ProductionDirectorDeleteFieldInput!]
               disconnect: [ProductionDirectorDisconnectFieldInput!]
               update: ProductionDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
             }
 
             input ProductionDisconnectInput {
@@ -1047,6 +1047,7 @@ describe("Connection with interfaces", () => {
 
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input SeriesDirectorUpdateFieldInput {
@@ -1055,7 +1056,6 @@ describe("Connection with interfaces", () => {
               delete: [SeriesDirectorDeleteFieldInput!]
               disconnect: [SeriesDirectorDisconnectFieldInput!]
               update: SeriesDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
             }
 
             type SeriesEdge {

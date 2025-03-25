@@ -233,6 +233,7 @@ describe("limitRequired constructor option", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: PersonActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -241,7 +242,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: PersonActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -392,6 +392,7 @@ describe("limitRequired constructor option", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -400,7 +401,6 @@ describe("limitRequired constructor option", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
             }
 
             input ActorRelationshipFilters {
@@ -754,6 +754,7 @@ describe("limitRequired constructor option", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -762,7 +763,6 @@ describe("limitRequired constructor option", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -1776,6 +1776,7 @@ describe("limitRequired constructor option", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -1784,7 +1785,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -1886,6 +1886,7 @@ describe("limitRequired constructor option", () => {
 
             input ActorContactEmailUpdateConnectionInput {
               node: EmailUpdateInput
+              where: ActorContactEmailConnectionWhere
             }
 
             input ActorContactEmailUpdateFieldInput {
@@ -1894,7 +1895,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorContactEmailDeleteFieldInput!]
               disconnect: [ActorContactEmailDisconnectFieldInput!]
               update: ActorContactEmailUpdateConnectionInput
-              where: ActorContactEmailConnectionWhere
             }
 
             type ActorContactRelationship {
@@ -1932,6 +1932,7 @@ describe("limitRequired constructor option", () => {
 
             input ActorContactTelephoneUpdateConnectionInput {
               node: TelephoneUpdateInput
+              where: ActorContactTelephoneConnectionWhere
             }
 
             input ActorContactTelephoneUpdateFieldInput {
@@ -1940,7 +1941,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorContactTelephoneDeleteFieldInput!]
               disconnect: [ActorContactTelephoneDisconnectFieldInput!]
               update: ActorContactTelephoneUpdateConnectionInput
-              where: ActorContactTelephoneConnectionWhere
             }
 
             input ActorContactUpdateInput {
@@ -2130,6 +2130,7 @@ describe("limitRequired constructor option", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -2138,7 +2139,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             type ActorProductionActedInAggregateSelection {
@@ -2618,6 +2618,7 @@ describe("limitRequired constructor option", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2626,7 +2627,6 @@ describe("limitRequired constructor option", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -3366,6 +3366,7 @@ describe("limitRequired constructor option", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -3374,7 +3375,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             \\"\\"\\"
@@ -4011,6 +4011,7 @@ describe("limitRequired constructor option", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -4019,7 +4020,6 @@ describe("limitRequired constructor option", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             \\"\\"\\"

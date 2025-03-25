@@ -261,6 +261,7 @@ describe("nested aggregation on interface", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -269,7 +270,6 @@ describe("nested aggregation on interface", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {

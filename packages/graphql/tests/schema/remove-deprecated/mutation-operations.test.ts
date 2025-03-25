@@ -261,6 +261,7 @@ describe("Deprecated mutation operations", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -269,7 +270,6 @@ describe("Deprecated mutation operations", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -686,6 +686,7 @@ describe("Deprecated mutation operations", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -694,7 +695,6 @@ describe("Deprecated mutation operations", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {

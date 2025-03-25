@@ -345,6 +345,7 @@ describe("Union Interface Relationships", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -353,7 +354,6 @@ describe("Union Interface Relationships", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             input ActorRelationshipFilters {
@@ -835,6 +835,7 @@ describe("Union Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -843,7 +844,6 @@ describe("Union Interface Relationships", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -917,6 +917,7 @@ describe("Union Interface Relationships", () => {
             input MovieDirectorsActorUpdateConnectionInput {
               edge: DirectedUpdateInput
               node: ActorUpdateInput
+              where: MovieDirectorsActorConnectionWhere
             }
 
             input MovieDirectorsActorUpdateFieldInput {
@@ -925,7 +926,6 @@ describe("Union Interface Relationships", () => {
               delete: [MovieDirectorsActorDeleteFieldInput!]
               disconnect: [MovieDirectorsActorDisconnectFieldInput!]
               update: MovieDirectorsActorUpdateConnectionInput
-              where: MovieDirectorsActorConnectionWhere
             }
 
             input MovieDirectorsConnectInput {
@@ -1019,6 +1019,7 @@ describe("Union Interface Relationships", () => {
             input MovieDirectorsPersonUpdateConnectionInput {
               edge: DirectedUpdateInput
               node: PersonUpdateInput
+              where: MovieDirectorsPersonConnectionWhere
             }
 
             input MovieDirectorsPersonUpdateFieldInput {
@@ -1027,7 +1028,6 @@ describe("Union Interface Relationships", () => {
               delete: [MovieDirectorsPersonDeleteFieldInput!]
               disconnect: [MovieDirectorsPersonDisconnectFieldInput!]
               update: MovieDirectorsPersonUpdateConnectionInput
-              where: MovieDirectorsPersonConnectionWhere
             }
 
             type MovieDirectorsRelationship {
@@ -1224,6 +1224,7 @@ describe("Union Interface Relationships", () => {
             input MovieReviewersUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: ReviewerUpdateInput
+              where: MovieReviewersConnectionWhere
             }
 
             input MovieReviewersUpdateFieldInput {
@@ -1232,7 +1233,6 @@ describe("Union Interface Relationships", () => {
               delete: [MovieReviewersDeleteFieldInput!]
               disconnect: [MovieReviewersDisconnectFieldInput!]
               update: MovieReviewersUpdateConnectionInput
-              where: MovieReviewersConnectionWhere
             }
 
             \\"\\"\\"
@@ -1600,6 +1600,7 @@ describe("Union Interface Relationships", () => {
             input PersonMoviesUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -1608,7 +1609,6 @@ describe("Union Interface Relationships", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
             }
 
             \\"\\"\\"

@@ -1041,8 +1041,8 @@ describe("interface with declared relationships", () => {
             mutation {
                 ${Actor.operations.update}(update: { 
                     actedIn: [{ 
-                        where: { OR: [{ node: { title_EQ: "${movieTitle}" } }] }, 
                         update: { 
+                            where: { OR: [{ node: { title_EQ: "${movieTitle}" } }] }, 
                             node: { 
                                 actors: [{ 
                                     create: { 
@@ -1333,7 +1333,7 @@ describe("interface with declared relationships", () => {
             ]
         );
     });
-    
+
     test("update interface relationship, connect edge", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
@@ -1356,20 +1356,21 @@ describe("interface with declared relationships", () => {
                         name: { eq: "${actorName}" }
                     }
                     update: { 
-                    actedIn: [{ # ActorActedInUpdateFieldInput
-                        where: { node: { title_EQ: "${movieTitle}" } } # ActorActedInConnectionWhere
-                        update: { # ActorActedInUpdateConnectionInput
-                            node: { # ProductionUpdateInput
-                                actors: [{  # ProductionActorsUpdateFieldInput                          
-                                    connect: {  # ProductionActorsConnectFieldInput
-                                        where: { node: { name_EQ: "${actorName3}" } }, 
-                                        edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
-                                    } 
-                                }] 
+                        actedIn: [{ # ActorActedInUpdateFieldInput
+                            update: { # ActorActedInUpdateConnectionInput
+                                where: { node: { title_EQ: "${movieTitle}" } } # ActorActedInConnectionWhere
+                                node: { # ProductionUpdateInput
+                                    actors: [{  # ProductionActorsUpdateFieldInput                          
+                                        connect: {  # ProductionActorsConnectFieldInput
+                                            where: { node: { name_EQ: "${actorName3}" } }, 
+                                            edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
+                                        } 
+                                    }] 
+                                } 
                             } 
-                        } 
-                    }] 
-                }) {
+                        }] 
+                    }
+                ) {
                     ${Actor.plural} {
                         name
                         actedInConnection {

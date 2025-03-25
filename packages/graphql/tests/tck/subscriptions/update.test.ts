@@ -84,7 +84,7 @@ describe("Subscriptions metadata on update", () => {
                     update: {
                         id_SET: "2"
                         actors: [
-                            { where: { node: { name: { eq: "arthur" } } }, update: { node: { name_SET: "ford" } } }
+                            { update: { where: { node: { name: { eq: "arthur" } } }, node: { name_SET: "ford" } } }
                         ]
                     }
                 ) {
@@ -125,16 +125,16 @@ describe("Subscriptions metadata on update", () => {
                             \\"id_SET\\": \\"2\\",
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"arthur\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"ford\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"arthur\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }

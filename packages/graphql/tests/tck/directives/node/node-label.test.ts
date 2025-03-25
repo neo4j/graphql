@@ -281,8 +281,10 @@ describe("Label in Node directive", () => {
                     update: {
                         actors: [
                             {
-                                where: { node: { name: { eq: "old name" } } }
-                                update: { node: { name_SET: "new name" } }
+                                update: {
+                                    where: { node: { name: { eq: "old name" } } }
+                                    node: { name_SET: "new name" }
+                                }
                             }
                         ]
                     }
@@ -321,16 +323,16 @@ describe("Label in Node directive", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"old name\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"new name\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"old name\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }

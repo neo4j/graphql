@@ -498,8 +498,8 @@ describe("auth/bind", () => {
                         where: { id_EQ: "${userId}" },
                         update: {
                             posts: {
-                                where: { node: { id_EQ: "${postId}" } },
                                 update: {
+                                    where: { node: { id_EQ: "${postId}" } },
                                     node: {
                                         creator: { update: { node: { id_SET: "not bound" } } }
                                     }

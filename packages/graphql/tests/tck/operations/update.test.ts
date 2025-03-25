@@ -85,8 +85,11 @@ describe("Cypher Update", () => {
                     update: {
                         actors: [
                             {
-                                where: { node: { name: { eq: "old name" } } }
-                                update: { node: { name_SET: "new name" } }
+                                # where: { node: { name: { eq: "old name" } } }
+                                update: {
+                                    where: { node: { name: { eq: "old name" } } }
+                                    node: { name_SET: "new name" }
+                                }
                             }
                         ]
                     }
@@ -125,16 +128,16 @@ describe("Cypher Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"old name\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"new name\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"old name\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -155,14 +158,16 @@ describe("Cypher Update", () => {
                     update: {
                         actors: [
                             {
-                                where: { node: { name: { eq: "old actor name" } } }
                                 update: {
+                                    where: { node: { name: { eq: "old actor name" } } }
                                     node: {
                                         name_SET: "new actor name"
                                         movies: [
                                             {
-                                                where: { node: { id: { eq: "old movie title" } } }
-                                                update: { node: { title_SET: "new movie title" } }
+                                                update: {
+                                                    where: { node: { id: { eq: "old movie title" } } }
+                                                    node: { title_SET: "new movie title" }
+                                                }
                                             }
                                         ]
                                     }
@@ -215,32 +220,32 @@ describe("Cypher Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"old actor name\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"new actor name\\",
                                             \\"movies\\": [
                                                 {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"id\\": {
-                                                                \\"eq\\": \\"old movie title\\"
-                                                            }
-                                                        }
-                                                    },
                                                     \\"update\\": {
                                                         \\"node\\": {
                                                             \\"title_SET\\": \\"new movie title\\"
+                                                        },
+                                                        \\"where\\": {
+                                                            \\"node\\": {
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"old movie title\\"
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                             ]
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"old actor name\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -794,8 +799,10 @@ describe("Cypher Update", () => {
                     where: { id: { eq: "1" } }
                     update: {
                         actors: {
-                            where: { node: { name: { eq: "Actor to update" } } }
-                            update: { node: { name_SET: "Updated name" } }
+                            update: {
+                                where: { node: { name: { eq: "Actor to update" } } }
+                                node: { name_SET: "Updated name" }
+                            }
                             delete: { where: { node: { name: { eq: "Actor to delete" } } } }
                         }
                     }
@@ -847,16 +854,16 @@ describe("Cypher Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"Actor to update\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"Updated name\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"Actor to update\\"
+                                                }
+                                            }
                                         }
                                     },
                                     \\"delete\\": [

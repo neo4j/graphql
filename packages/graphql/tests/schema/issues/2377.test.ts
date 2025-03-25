@@ -408,6 +408,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByUpdateConnectionInput {
               node: ResourceUpdateInput
+              where: ResourceContainedByConnectionWhere
             }
 
             input ResourceContainedByUpdateFieldInput {
@@ -416,7 +417,6 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               delete: [ResourceContainedByDeleteFieldInput!]
               disconnect: [ResourceContainedByDisconnectFieldInput!]
               update: ResourceContainedByUpdateConnectionInput
-              where: ResourceContainedByConnectionWhere
             }
 
             input ResourceCreateInput {

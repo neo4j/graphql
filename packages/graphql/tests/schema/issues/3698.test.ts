@@ -315,6 +315,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
+              where: GenreProductConnectionWhere
             }
 
             input GenreProductUpdateFieldInput {
@@ -323,7 +324,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               delete: [GenreProductDeleteFieldInput!]
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
-              where: GenreProductConnectionWhere
             }
 
             input GenreRelationshipFilters {
@@ -657,6 +657,7 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
 
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieGenreConnectionWhere
             }
 
             input MovieGenreUpdateFieldInput {
@@ -665,7 +666,6 @@ describe("https://github.com/neo4j/graphql/issues/3698", () => {
               delete: [MovieGenreDeleteFieldInput!]
               disconnect: [MovieGenreDisconnectFieldInput!]
               update: MovieGenreUpdateConnectionInput
-              where: MovieGenreConnectionWhere
             }
 
             \\"\\"\\"

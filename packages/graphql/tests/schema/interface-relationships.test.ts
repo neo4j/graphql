@@ -246,6 +246,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -254,7 +255,6 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -980,6 +980,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -988,7 +989,6 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -1358,6 +1358,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesUpdateConnectionInput {
               node: SeriesUpdateInput
+              where: EpisodeSeriesConnectionWhere
             }
 
             input EpisodeSeriesUpdateFieldInput {
@@ -1366,7 +1367,6 @@ describe("Interface Relationships", () => {
               delete: [EpisodeSeriesDeleteFieldInput!]
               disconnect: [EpisodeSeriesDisconnectFieldInput!]
               update: EpisodeSeriesUpdateConnectionInput
-              where: EpisodeSeriesConnectionWhere
             }
 
             \\"\\"\\"
@@ -1567,6 +1567,7 @@ describe("Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -1575,7 +1576,6 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -1867,6 +1867,7 @@ describe("Interface Relationships", () => {
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsUpdateFieldInput {
@@ -1875,7 +1876,6 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type ProductionAggregate {
@@ -2098,6 +2098,7 @@ describe("Interface Relationships", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -2106,7 +2107,6 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type SeriesAggregate {
@@ -2286,6 +2286,7 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesUpdateConnectionInput {
               node: EpisodeUpdateInput
+              where: SeriesEpisodesConnectionWhere
             }
 
             input SeriesEpisodesUpdateFieldInput {
@@ -2294,7 +2295,6 @@ describe("Interface Relationships", () => {
               delete: [SeriesEpisodesDeleteFieldInput!]
               disconnect: [SeriesEpisodesDisconnectFieldInput!]
               update: SeriesEpisodesUpdateConnectionInput
-              where: SeriesEpisodesConnectionWhere
             }
 
             input SeriesRelationshipFilters {
@@ -2706,6 +2706,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -2714,7 +2715,6 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -3084,6 +3084,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesUpdateConnectionInput {
               node: SeriesUpdateInput
+              where: EpisodeSeriesConnectionWhere
             }
 
             input EpisodeSeriesUpdateFieldInput {
@@ -3092,7 +3093,6 @@ describe("Interface Relationships", () => {
               delete: [EpisodeSeriesDeleteFieldInput!]
               disconnect: [EpisodeSeriesDisconnectFieldInput!]
               update: EpisodeSeriesUpdateConnectionInput
-              where: EpisodeSeriesConnectionWhere
             }
 
             \\"\\"\\"
@@ -3293,6 +3293,7 @@ describe("Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -3301,7 +3302,6 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -3613,6 +3613,7 @@ describe("Interface Relationships", () => {
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsUpdateFieldInput {
@@ -3621,7 +3622,6 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type ProductionAggregate {
@@ -3844,6 +3844,7 @@ describe("Interface Relationships", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: StarredInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -3852,7 +3853,6 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type SeriesAggregate {
@@ -4032,6 +4032,7 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesUpdateConnectionInput {
               node: EpisodeUpdateInput
+              where: SeriesEpisodesConnectionWhere
             }
 
             input SeriesEpisodesUpdateFieldInput {
@@ -4040,7 +4041,6 @@ describe("Interface Relationships", () => {
               delete: [SeriesEpisodesDeleteFieldInput!]
               disconnect: [SeriesEpisodesDisconnectFieldInput!]
               update: SeriesEpisodesUpdateConnectionInput
-              where: SeriesEpisodesConnectionWhere
             }
 
             input SeriesRelationshipFilters {
@@ -4546,6 +4546,7 @@ describe("Interface Relationships", () => {
 
             input Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2UpdateFieldInput {
@@ -4554,7 +4555,6 @@ describe("Interface Relationships", () => {
               delete: [Interface1Interface2DeleteFieldInput!]
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1RelationshipFilters {
@@ -5030,6 +5030,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2UpdateFieldInput {
@@ -5038,7 +5039,6 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1Interface2DeleteFieldInput!]
               disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
               update: Type1Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1NodeAggregationWhereInput {
@@ -5077,6 +5077,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
+              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateFieldInput {
@@ -5085,7 +5086,6 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1DeleteFieldInput!]
               disconnect: [Type1Interface1DisconnectFieldInput!]
               update: Type1Interface1UpdateConnectionInput
-              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateInput {
@@ -5378,6 +5378,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2UpdateFieldInput {
@@ -5386,7 +5387,6 @@ describe("Interface Relationships", () => {
               delete: [Type2Interface1Interface2DeleteFieldInput!]
               disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
               update: Type2Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             \\"\\"\\"
@@ -5896,6 +5896,7 @@ describe("Interface Relationships", () => {
             input Interface1Interface2UpdateConnectionInput {
               edge: Interface1Interface2EdgeUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2UpdateFieldInput {
@@ -5904,7 +5905,6 @@ describe("Interface Relationships", () => {
               delete: [Interface1Interface2DeleteFieldInput!]
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1RelationshipFilters {
@@ -6449,6 +6449,7 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2UpdateConnectionInput {
               edge: PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2UpdateFieldInput {
@@ -6457,7 +6458,6 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1Interface2DeleteFieldInput!]
               disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
               update: Type1Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1NodeAggregationWhereInput {
@@ -6496,6 +6496,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
+              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateFieldInput {
@@ -6504,7 +6505,6 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1DeleteFieldInput!]
               disconnect: [Type1Interface1DisconnectFieldInput!]
               update: Type1Interface1UpdateConnectionInput
-              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateInput {
@@ -6802,6 +6802,7 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2UpdateConnectionInput {
               edge: PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2UpdateFieldInput {
@@ -6810,7 +6811,6 @@ describe("Interface Relationships", () => {
               delete: [Type2Interface1Interface2DeleteFieldInput!]
               disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
               update: Type2Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             \\"\\"\\"
@@ -7346,6 +7346,7 @@ describe("Interface Relationships", () => {
             input Interface1Interface2UpdateConnectionInput {
               edge: Interface1Interface2EdgeUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2UpdateFieldInput {
@@ -7354,7 +7355,6 @@ describe("Interface Relationships", () => {
               delete: [Interface1Interface2DeleteFieldInput!]
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1RelationshipFilters {
@@ -7835,6 +7835,7 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2UpdateConnectionInput {
               edge: Type1PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2UpdateFieldInput {
@@ -7843,7 +7844,6 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1Interface2DeleteFieldInput!]
               disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
               update: Type1Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1NodeAggregationWhereInput {
@@ -7882,6 +7882,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
+              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateFieldInput {
@@ -7890,7 +7891,6 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1DeleteFieldInput!]
               disconnect: [Type1Interface1DisconnectFieldInput!]
               update: Type1Interface1UpdateConnectionInput
-              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateInput {
@@ -8251,6 +8251,7 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2UpdateConnectionInput {
               edge: Type2PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2UpdateFieldInput {
@@ -8259,7 +8260,6 @@ describe("Interface Relationships", () => {
               delete: [Type2Interface1Interface2DeleteFieldInput!]
               disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
               update: Type2Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
             }
 
             \\"\\"\\"
@@ -8641,6 +8641,7 @@ describe("Interface Relationships", () => {
 
             input CommentCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: ContentCreatorConnectionWhere
             }
 
             input CommentCreatorUpdateFieldInput {
@@ -8649,7 +8650,6 @@ describe("Interface Relationships", () => {
               delete: [ContentCreatorDeleteFieldInput!]
               disconnect: [ContentCreatorDisconnectFieldInput!]
               update: CommentCreatorUpdateConnectionInput
-              where: ContentCreatorConnectionWhere
             }
 
             input CommentDeleteInput {
@@ -8791,6 +8791,7 @@ describe("Interface Relationships", () => {
 
             input CommentPostUpdateConnectionInput {
               node: PostUpdateInput
+              where: CommentPostConnectionWhere
             }
 
             input CommentPostUpdateFieldInput {
@@ -8799,7 +8800,6 @@ describe("Interface Relationships", () => {
               delete: [CommentPostDeleteFieldInput!]
               disconnect: [CommentPostDisconnectFieldInput!]
               update: CommentPostUpdateConnectionInput
-              where: CommentPostConnectionWhere
             }
 
             input CommentRelationshipFilters {
@@ -9052,6 +9052,7 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: ContentCreatorConnectionWhere
             }
 
             input ContentCreatorUpdateFieldInput {
@@ -9060,7 +9061,6 @@ describe("Interface Relationships", () => {
               delete: [ContentCreatorDeleteFieldInput!]
               disconnect: [ContentCreatorDisconnectFieldInput!]
               update: ContentCreatorUpdateConnectionInput
-              where: ContentCreatorConnectionWhere
             }
 
             input ContentDeleteInput {
@@ -9395,6 +9395,7 @@ describe("Interface Relationships", () => {
 
             input PostCommentsUpdateConnectionInput {
               node: CommentUpdateInput
+              where: PostCommentsConnectionWhere
             }
 
             input PostCommentsUpdateFieldInput {
@@ -9403,7 +9404,6 @@ describe("Interface Relationships", () => {
               delete: [PostCommentsDeleteFieldInput!]
               disconnect: [PostCommentsDisconnectFieldInput!]
               update: PostCommentsUpdateConnectionInput
-              where: PostCommentsConnectionWhere
             }
 
             input PostConnectInput {
@@ -9504,6 +9504,7 @@ describe("Interface Relationships", () => {
 
             input PostCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: ContentCreatorConnectionWhere
             }
 
             input PostCreatorUpdateFieldInput {
@@ -9512,7 +9513,6 @@ describe("Interface Relationships", () => {
               delete: [ContentCreatorDeleteFieldInput!]
               disconnect: [ContentCreatorDisconnectFieldInput!]
               update: PostCreatorUpdateConnectionInput
-              where: ContentCreatorConnectionWhere
             }
 
             input PostDeleteInput {
@@ -9853,6 +9853,7 @@ describe("Interface Relationships", () => {
 
             input UserContentUpdateConnectionInput {
               node: ContentUpdateInput
+              where: UserContentConnectionWhere
             }
 
             input UserContentUpdateFieldInput {
@@ -9861,7 +9862,6 @@ describe("Interface Relationships", () => {
               delete: [UserContentDeleteFieldInput!]
               disconnect: [UserContentDisconnectFieldInput!]
               update: UserContentUpdateConnectionInput
-              where: UserContentConnectionWhere
             }
 
             input UserCreateInput {
@@ -10204,6 +10204,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ShowUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -10212,7 +10213,6 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -10513,6 +10513,7 @@ describe("Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -10521,7 +10522,6 @@ describe("Interface Relationships", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -10796,6 +10796,7 @@ describe("Interface Relationships", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: StarredInUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -10804,7 +10805,6 @@ describe("Interface Relationships", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
             }
 
             type SeriesAggregate {
@@ -11091,6 +11091,7 @@ describe("Interface Relationships", () => {
             input ShowActorsUpdateConnectionInput {
               edge: ShowActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input ShowActorsUpdateFieldInput {
@@ -11099,7 +11100,6 @@ describe("Interface Relationships", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: ShowActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
             }
 
             type ShowAggregate {

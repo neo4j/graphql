@@ -481,6 +481,7 @@ describe("Directive-preserve", () => {
 
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: GenreMoviesConnectionWhere
             }
 
             input GenreMoviesUpdateFieldInput {
@@ -489,7 +490,6 @@ describe("Directive-preserve", () => {
               delete: [GenreMoviesDeleteFieldInput!]
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
-              where: GenreMoviesConnectionWhere
             }
 
             input GenreRelationshipFilters {
@@ -763,6 +763,7 @@ describe("Directive-preserve", () => {
 
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieGenresConnectionWhere
             }
 
             input MovieGenresUpdateFieldInput {
@@ -771,7 +772,6 @@ describe("Directive-preserve", () => {
               delete: [MovieGenresDeleteFieldInput!]
               disconnect: [MovieGenresDisconnectFieldInput!]
               update: MovieGenresUpdateConnectionInput
-              where: MovieGenresConnectionWhere
             }
 
             input MovieRelationshipFilters {
@@ -1184,6 +1184,7 @@ describe("Directive-preserve", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -1192,7 +1193,6 @@ describe("Directive-preserve", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -1487,6 +1487,7 @@ describe("Directive-preserve", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -1495,7 +1496,6 @@ describe("Directive-preserve", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -1784,6 +1784,7 @@ describe("Directive-preserve", () => {
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsUpdateFieldInput {
@@ -1792,7 +1793,6 @@ describe("Directive-preserve", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type ProductionAggregate {
@@ -2011,6 +2011,7 @@ describe("Directive-preserve", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -2019,7 +2020,6 @@ describe("Directive-preserve", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
             }
 
             type SeriesAggregate {
@@ -2411,6 +2411,7 @@ describe("Directive-preserve", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -2419,7 +2420,6 @@ describe("Directive-preserve", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -2762,6 +2762,7 @@ describe("Directive-preserve", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2770,7 +2771,6 @@ describe("Directive-preserve", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -3120,6 +3120,7 @@ describe("Directive-preserve", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: SeriesActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -3128,7 +3129,6 @@ describe("Directive-preserve", () => {
               delete: [SeriesActorsDeleteFieldInput!]
               disconnect: [SeriesActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: SeriesActorsConnectionWhere
             }
 
             type SeriesAggregate {
@@ -3508,6 +3508,7 @@ describe("Directive-preserve", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -3516,7 +3517,6 @@ describe("Directive-preserve", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregate {
@@ -3859,6 +3859,7 @@ describe("Directive-preserve", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -3867,7 +3868,6 @@ describe("Directive-preserve", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -4217,6 +4217,7 @@ describe("Directive-preserve", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: SeriesActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -4225,7 +4226,6 @@ describe("Directive-preserve", () => {
               delete: [SeriesActorsDeleteFieldInput!]
               disconnect: [SeriesActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: SeriesActorsConnectionWhere
             }
 
             type SeriesAggregate {
@@ -4575,6 +4575,7 @@ describe("Directive-preserve", () => {
 
             input BlogPostsUpdateConnectionInput {
               node: PostUpdateInput
+              where: BlogPostsConnectionWhere
             }
 
             input BlogPostsUpdateFieldInput {
@@ -4583,7 +4584,6 @@ describe("Directive-preserve", () => {
               delete: [BlogPostsDeleteFieldInput!]
               disconnect: [BlogPostsDisconnectFieldInput!]
               update: BlogPostsUpdateConnectionInput
-              where: BlogPostsConnectionWhere
             }
 
             \\"\\"\\"
@@ -4933,6 +4933,7 @@ describe("Directive-preserve", () => {
 
             input UserContentBlogUpdateConnectionInput {
               node: BlogUpdateInput
+              where: UserContentBlogConnectionWhere
             }
 
             input UserContentBlogUpdateFieldInput {
@@ -4941,7 +4942,6 @@ describe("Directive-preserve", () => {
               delete: [UserContentBlogDeleteFieldInput!]
               disconnect: [UserContentBlogDisconnectFieldInput!]
               update: UserContentBlogUpdateConnectionInput
-              where: UserContentBlogConnectionWhere
             }
 
             type UserContentConnection {
@@ -5014,6 +5014,7 @@ describe("Directive-preserve", () => {
 
             input UserContentPostUpdateConnectionInput {
               node: PostUpdateInput
+              where: UserContentPostConnectionWhere
             }
 
             input UserContentPostUpdateFieldInput {
@@ -5022,7 +5023,6 @@ describe("Directive-preserve", () => {
               delete: [UserContentPostDeleteFieldInput!]
               disconnect: [UserContentPostDisconnectFieldInput!]
               update: UserContentPostUpdateConnectionInput
-              where: UserContentPostConnectionWhere
             }
 
             type UserContentRelationship {

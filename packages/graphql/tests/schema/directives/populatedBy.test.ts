@@ -1020,6 +1020,7 @@ describe("@populatedBy tests", () => {
                 input MovieGenresUpdateConnectionInput {
                   edge: RelPropertiesUpdateInput
                   node: GenreUpdateInput
+                  where: MovieGenresConnectionWhere
                 }
 
                 input MovieGenresUpdateFieldInput {
@@ -1028,7 +1029,6 @@ describe("@populatedBy tests", () => {
                   delete: [MovieGenresDeleteFieldInput!]
                   disconnect: [MovieGenresDisconnectFieldInput!]
                   update: MovieGenresUpdateConnectionInput
-                  where: MovieGenresConnectionWhere
                 }
 
                 \\"\\"\\"
@@ -1616,6 +1616,7 @@ describe("@populatedBy tests", () => {
                 input MovieGenresUpdateConnectionInput {
                   edge: RelPropertiesUpdateInput
                   node: GenreUpdateInput
+                  where: MovieGenresConnectionWhere
                 }
 
                 input MovieGenresUpdateFieldInput {
@@ -1624,7 +1625,6 @@ describe("@populatedBy tests", () => {
                   delete: [MovieGenresDeleteFieldInput!]
                   disconnect: [MovieGenresDisconnectFieldInput!]
                   update: MovieGenresUpdateConnectionInput
-                  where: MovieGenresConnectionWhere
                 }
 
                 \\"\\"\\"

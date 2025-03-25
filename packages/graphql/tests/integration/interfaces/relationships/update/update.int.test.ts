@@ -105,7 +105,7 @@ describe("interface relationships", () => {
                 ${Actor.operations.update}(
                     where: { name_EQ: $name }
                     update: {
-                        actedIn: { where: { node: { title_EQ: $oldTitle } }, update: { node: { title_SET: $newTitle } } }
+                        actedIn: { update: { where: { node: { title_EQ: $oldTitle } }, node: { title_SET: $newTitle } } }
                     }
                 ) {
                     ${Actor.plural} {
@@ -201,8 +201,10 @@ describe("interface relationships", () => {
                     where: { name_EQ: $name }
                     update: {
                         actedIn: {
-                            where: { node: { title_EQ: $oldTitle } }
-                            update: { node: { title_SET: $newTitle, actors: { update: { node: { name_SET: $newName } } } } }
+                            update: { 
+                                where: { node: { title_EQ: $oldTitle } }
+                                node: { title_SET: $newTitle, actors: { update: { node: { name_SET: $newName } } } } 
+                            }
                         }
                     }
                 ) {
