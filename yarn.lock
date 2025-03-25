@@ -2136,7 +2136,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:^7.0.0-alpha.0, @neo4j/graphql@npm:^7.0.0-alpha.4, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:^7.0.0-alpha.0, @neo4j/graphql@npm:^7.0.0-alpha.5, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2743,10 +2743,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:1.0.4, @tsconfig/node16@npm:^1.0.2":
+"@tsconfig/node16@npm:^1.0.2":
   version: 1.0.4
   resolution: "@tsconfig/node16@npm:1.0.4"
   checksum: 10c0/05f8f2734e266fb1839eb1d57290df1664fe2aa3b0fdd685a9035806daa635f7519bf6d5d9b33f6e69dd545b8c46bd6e2b5c79acb2b1f146e885f7f11a42a5bb
+  languageName: node
+  linkType: hard
+
+"@tsconfig/node22@npm:22.0.0":
+  version: 22.0.0
+  resolution: "@tsconfig/node22@npm:22.0.0"
+  checksum: 10c0/ccb736a008d33fb5ae0ac1254e83d7fa53cdbade02c645131eafcddd11f61982a4efe4c507487952202c240d2bd46c991561a4a0dfea52972947446d80de2081
   languageName: node
   linkType: hard
 
@@ -3956,7 +3963,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.0"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
-    "@neo4j/graphql": "npm:^7.0.0-alpha.4"
+    "@neo4j/graphql": "npm:^7.0.0-alpha.5"
     fork-ts-checker-webpack-plugin: "npm:9.0.2"
     graphql: "npm:16.10.0"
     graphql-tag: "npm:^2.12.6"
@@ -12764,7 +12771,7 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": "npm:0.5.1"
     "@changesets/cli": "npm:2.28.1"
-    "@tsconfig/node16": "npm:1.0.4"
+    "@tsconfig/node22": "npm:22.0.0"
     "@typescript-eslint/eslint-plugin": "npm:8.26.1"
     "@typescript-eslint/parser": "npm:8.26.1"
     concurrently: "npm:9.1.2"
@@ -12785,7 +12792,7 @@ __metadata:
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.2.6"
-    typescript: "npm:5.1.6"
+    typescript: "npm:5.8.2"
   languageName: unknown
   linkType: soft
 
@@ -17144,6 +17151,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:5.8.2":
+  version: 5.8.2
+  resolution: "typescript@npm:5.8.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/5c4f6fbf1c6389b6928fe7b8fcd5dc73bb2d58cd4e3883f1d774ed5bd83b151cbac6b7ecf11723de56d4676daeba8713894b1e9af56174f2f9780ae7848ec3c6
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@npm%3A5.1.6#optional!builtin<compat/typescript>":
   version: 5.1.6
   resolution: "typescript@patch:typescript@npm%3A5.1.6#optional!builtin<compat/typescript>::version=5.1.6&hash=5da071"
@@ -17151,6 +17168,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/c2bded58ab897a8341fdbb0c1d92ea2362f498cfffebdc8a529d03e15ea2454142dfbf122dabbd9a5cb79b7123790d27def16e11844887d20636226773ed329a
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>":
+  version: 5.8.2
+  resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/5448a08e595cc558ab321e49d4cac64fb43d1fa106584f6ff9a8d8e592111b373a995a1d5c7f3046211c8a37201eb6d0f1566f15cdb7a62a5e3be01d087848e2
   languageName: node
   linkType: hard
 
