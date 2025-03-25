@@ -461,6 +461,7 @@ describe("162", () => {
 
             input TigerJawLevel2Part1TigerUpdateConnectionInput {
               node: TigerUpdateInput
+              where: TigerJawLevel2Part1TigerConnectionWhere
             }
 
             input TigerJawLevel2Part1TigerUpdateFieldInput {
@@ -469,11 +470,12 @@ describe("162", () => {
               delete: TigerJawLevel2Part1TigerDeleteFieldInput
               disconnect: TigerJawLevel2Part1TigerDisconnectFieldInput
               update: TigerJawLevel2Part1TigerUpdateConnectionInput
-              where: TigerJawLevel2Part1TigerConnectionWhere
+              where: TigerJawLevel2Part1TigerConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"TigerJawLevel2Part1TigerUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input TigerJawLevel2Part1UpdateConnectionInput {
               node: TigerJawLevel2Part1UpdateInput
+              where: TigerJawLevel2Part1ConnectionWhere
             }
 
             input TigerJawLevel2Part1UpdateFieldInput {
@@ -482,7 +484,7 @@ describe("162", () => {
               delete: TigerJawLevel2Part1DeleteFieldInput
               disconnect: TigerJawLevel2Part1DisconnectFieldInput
               update: TigerJawLevel2Part1UpdateConnectionInput
-              where: TigerJawLevel2Part1ConnectionWhere
+              where: TigerJawLevel2Part1ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"TigerJawLevel2Part1UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input TigerJawLevel2Part1UpdateInput {

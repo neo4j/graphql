@@ -227,6 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
 
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: GenreMoviesConnectionWhere
             }
 
             input GenreMoviesUpdateFieldInput {
@@ -235,7 +236,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               delete: [GenreMoviesDeleteFieldInput!]
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
-              where: GenreMoviesConnectionWhere
+              where: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input GenreOptions {
@@ -439,7 +440,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
             input MovieGenreUpdateFieldInput {
               connect: MovieGenreConnectFieldInput
               disconnect: MovieGenreDisconnectFieldInput
-              where: MovieGenreConnectionWhere
+              where: MovieGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieOptions {
@@ -737,6 +738,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
 
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: GenreMoviesConnectionWhere
             }
 
             input GenreMoviesUpdateFieldInput {
@@ -745,7 +747,7 @@ describe("https://github.com/neo4j/graphql/issues/3816", () => {
               delete: [GenreMoviesDeleteFieldInput!]
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
-              where: GenreMoviesConnectionWhere
+              where: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input GenreOptions {

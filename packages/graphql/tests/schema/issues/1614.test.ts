@@ -211,6 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
             input CrewMemberMoviesUpdateConnectionInput {
               edge: CrewPositionUpdateInput
               node: MovieUpdateInput
+              where: CrewMemberMoviesConnectionWhere
             }
 
             input CrewMemberMoviesUpdateFieldInput {
@@ -219,7 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
               delete: CrewMemberMoviesDeleteFieldInput
               disconnect: CrewMemberMoviesDisconnectFieldInput
               update: CrewMemberMoviesUpdateConnectionInput
-              where: CrewMemberMoviesConnectionWhere
+              where: CrewMemberMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CrewMemberMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input CrewMemberOptions {

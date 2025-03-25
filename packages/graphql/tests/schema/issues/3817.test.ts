@@ -319,6 +319,7 @@ describe("3817", () => {
             input PersonFriendsUpdateConnectionInput {
               edge: FriendOfUpdateInput
               node: PersonUpdateInput
+              where: PersonFriendsConnectionWhere
             }
 
             input PersonFriendsUpdateFieldInput {
@@ -328,7 +329,7 @@ describe("3817", () => {
               delete: [PersonFriendsDeleteFieldInput!]
               disconnect: [PersonFriendsDisconnectFieldInput!]
               update: PersonFriendsUpdateConnectionInput
-              where: PersonFriendsConnectionWhere
+              where: PersonFriendsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonFriendsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PersonOnCreateInput {

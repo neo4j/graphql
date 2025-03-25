@@ -220,6 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
 
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostAuthorConnectionWhere
             }
 
             input PostAuthorUpdateFieldInput {
@@ -228,7 +229,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               delete: PostAuthorDeleteFieldInput
               disconnect: PostAuthorDisconnectFieldInput
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
+              where: PostAuthorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostAuthorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostConnectInput {
@@ -519,6 +520,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
 
             input UserPostsUpdateConnectionInput {
               node: PostUpdateInput
+              where: UserPostsConnectionWhere
             }
 
             input UserPostsUpdateFieldInput {
@@ -527,7 +529,7 @@ describe("https://github.com/neo4j/graphql/issues/2969", () => {
               delete: [UserPostsDeleteFieldInput!]
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere
+              where: UserPostsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserPostsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"

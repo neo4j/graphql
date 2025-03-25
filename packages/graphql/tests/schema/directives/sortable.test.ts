@@ -298,6 +298,7 @@ describe("@sortable directive", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -306,7 +307,7 @@ describe("@sortable directive", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
+                      where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input ActorOptions {
@@ -576,6 +577,7 @@ describe("@sortable directive", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -584,7 +586,7 @@ describe("@sortable directive", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
+                      where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieAggregate {
@@ -991,6 +993,7 @@ describe("@sortable directive", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -999,7 +1002,7 @@ describe("@sortable directive", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
+                      where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input ActorOptions {
@@ -1269,6 +1272,7 @@ describe("@sortable directive", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -1277,7 +1281,7 @@ describe("@sortable directive", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
+                      where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieAggregate {

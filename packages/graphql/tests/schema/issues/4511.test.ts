@@ -205,6 +205,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input CreatureMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: CreatureMoviesConnectionWhere
             }
 
             input CreatureMoviesUpdateFieldInput {
@@ -213,7 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               delete: CreatureMoviesDeleteFieldInput
               disconnect: CreatureMoviesDisconnectFieldInput
               update: CreatureMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere
+              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CreatureMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input CreatureOptions {
@@ -347,6 +348,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input MovieDirectorUpdateFieldInput {
@@ -355,7 +357,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               delete: MovieDirectorDeleteFieldInput
               disconnect: MovieDirectorDisconnectFieldInput
               update: MovieDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
+              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieEdge {
@@ -535,6 +537,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: CreatureMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -543,7 +546,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               delete: PersonMoviesDeleteFieldInput
               disconnect: PersonMoviesDisconnectFieldInput
               update: PersonMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere
+              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PersonOptions {
@@ -666,6 +669,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input ProductionDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input ProductionDirectorUpdateFieldInput {
@@ -674,7 +678,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               delete: ProductionDirectorDeleteFieldInput
               disconnect: ProductionDirectorDisconnectFieldInput
               update: ProductionDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
+              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ProductionDisconnectInput {
@@ -854,6 +858,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
 
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input SeriesDirectorUpdateFieldInput {
@@ -862,7 +867,7 @@ describe("https://github.com/neo4j/graphql/issues/4511", () => {
               delete: SeriesDirectorDeleteFieldInput
               disconnect: SeriesDirectorDisconnectFieldInput
               update: SeriesDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
+              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesEdge {

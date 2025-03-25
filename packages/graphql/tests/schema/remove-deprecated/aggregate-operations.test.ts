@@ -330,6 +330,7 @@ describe("Aggregate operations", () => {
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesUpdateFieldInput {
@@ -338,7 +339,7 @@ describe("Aggregate operations", () => {
               delete: [PostLikesDeleteFieldInput!]
               disconnect: [PostLikesDisconnectFieldInput!]
               update: PostLikesUpdateConnectionInput
-              where: PostLikesConnectionWhere
+              where: PostLikesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostLikesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostOptions {

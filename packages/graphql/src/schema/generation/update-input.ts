@@ -41,6 +41,7 @@ import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
 import { withCreateFieldInputType } from "./relation-input";
 import { shouldAddDeprecatedFields } from "./utils";
+import { DEPRECATE_UPDATE_WHERE } from "../constants";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -261,11 +262,13 @@ function makeUpdateFieldInputTypeFields({
             ifUnionMemberEntity,
         });
     }
-    if (connectionWhereInputType) {
-        fields["where"] = {
-            type: connectionWhereInputType,
-            directives: [],
-        };
+    if (shouldAddDeprecatedFields(features, "nonNestedUpdateWhere")) {
+        if (connectionWhereInputType) {
+            fields["where"] = {
+                type: connectionWhereInputType,
+                directives: [DEPRECATE_UPDATE_WHERE(relationshipAdapter, ifUnionMemberEntity)],
+            };
+        }
     }
     if (connectOrCreateFieldInputType && shouldAddDeprecatedFields(features, "connectOrCreate")) {
         fields["connectOrCreate"] = {
@@ -450,6 +453,11 @@ function makeUpdateConnectionFieldInputTypeFields({
             composer,
         });
         fields["node"] = updateInputType;
+        fields["where"] = withConnectionWhereInputType({
+            relationshipAdapter,
+            memberEntity: ifUnionMemberEntity,
+            composer,
+        });
     } else {
         // TODO: we need to fix deprecatedDirectives before we can use the reference
         // const updateInputType = withUpdateInputType({
@@ -459,6 +467,7 @@ function makeUpdateConnectionFieldInputTypeFields({
         // });
         // fields["node"] = updateInputType;
         fields["node"] = relationshipAdapter.target.operations.updateInputTypeName;
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
     }
     if (relationshipAdapter.hasUpdateInputFields) {
         fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;

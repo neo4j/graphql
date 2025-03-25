@@ -229,6 +229,7 @@ describe("Apollo Federation", () => {
 
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostAuthorConnectionWhere
             }
 
             input PostAuthorUpdateFieldInput {
@@ -237,7 +238,7 @@ describe("Apollo Federation", () => {
               delete: PostAuthorDeleteFieldInput
               disconnect: PostAuthorDisconnectFieldInput
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
+              where: PostAuthorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostAuthorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostConnectInput {
@@ -524,6 +525,7 @@ describe("Apollo Federation", () => {
 
             input UserPostsUpdateConnectionInput {
               node: PostUpdateInput
+              where: UserPostsConnectionWhere
             }
 
             input UserPostsUpdateFieldInput {
@@ -532,7 +534,7 @@ describe("Apollo Federation", () => {
               delete: [UserPostsDeleteFieldInput!]
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere
+              where: UserPostsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserPostsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -817,6 +819,7 @@ describe("Apollo Federation", () => {
 
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostAuthorConnectionWhere
             }
 
             input PostAuthorUpdateFieldInput {
@@ -825,7 +828,7 @@ describe("Apollo Federation", () => {
               delete: PostAuthorDeleteFieldInput
               disconnect: PostAuthorDisconnectFieldInput
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
+              where: PostAuthorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostAuthorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostCreateInput {

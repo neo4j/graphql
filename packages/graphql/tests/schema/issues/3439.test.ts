@@ -311,6 +311,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
+              where: GenreProductConnectionWhere
             }
 
             input GenreProductUpdateFieldInput {
@@ -319,7 +320,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: [GenreProductDeleteFieldInput!]
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
-              where: GenreProductConnectionWhere
+              where: GenreProductConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreProductUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -727,6 +728,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieGenreConnectionWhere
             }
 
             input MovieGenreUpdateFieldInput {
@@ -736,7 +738,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: MovieGenreDeleteFieldInput
               disconnect: MovieGenreDisconnectFieldInput
               update: MovieGenreUpdateConnectionInput
-              where: MovieGenreConnectionWhere
+              where: MovieGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieOptions {
@@ -1029,6 +1031,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input SeriesGenreUpdateConnectionInput {
               node: GenreUpdateInput
+              where: SeriesGenreConnectionWhere
             }
 
             input SeriesGenreUpdateFieldInput {
@@ -1038,7 +1041,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: SeriesGenreDeleteFieldInput
               disconnect: SeriesGenreDisconnectFieldInput
               update: SeriesGenreUpdateConnectionInput
-              where: SeriesGenreConnectionWhere
+              where: SeriesGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesOptions {
@@ -1446,6 +1449,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
+              where: GenreProductConnectionWhere
             }
 
             input GenreProductUpdateFieldInput {
@@ -1454,7 +1458,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: [GenreProductDeleteFieldInput!]
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
-              where: GenreProductConnectionWhere
+              where: GenreProductConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreProductUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -1797,6 +1801,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input MovieGenreUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieGenreConnectionWhere
             }
 
             input MovieGenreUpdateFieldInput {
@@ -1806,7 +1811,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: MovieGenreDeleteFieldInput
               disconnect: MovieGenreDisconnectFieldInput
               update: MovieGenreUpdateConnectionInput
-              where: MovieGenreConnectionWhere
+              where: MovieGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieOptions {
@@ -2096,6 +2101,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input SeriesGenreUpdateConnectionInput {
               node: GenreUpdateInput
+              where: SeriesGenreConnectionWhere
             }
 
             input SeriesGenreUpdateFieldInput {
@@ -2105,7 +2111,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: SeriesGenreDeleteFieldInput
               disconnect: SeriesGenreDisconnectFieldInput
               update: SeriesGenreUpdateConnectionInput
-              where: SeriesGenreConnectionWhere
+              where: SeriesGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesOptions {
@@ -2524,6 +2530,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
+              where: GenreProductConnectionWhere
             }
 
             input GenreProductUpdateFieldInput {
@@ -2532,7 +2539,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: [GenreProductDeleteFieldInput!]
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
-              where: GenreProductConnectionWhere
+              where: GenreProductConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreProductUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -2830,6 +2837,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductGenreUpdateConnectionInput {
               edge: IProductGenreEdgeUpdateInput
               node: GenreUpdateInput
+              where: IProductGenreConnectionWhere
             }
 
             input IProductGenreUpdateFieldInput {
@@ -2839,7 +2847,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreDeleteFieldInput
               disconnect: IProductGenreDisconnectFieldInput
               update: IProductGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: IProductGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             enum IProductImplementation {
@@ -3048,6 +3056,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input MovieGenreUpdateConnectionInput {
               edge: MoviePropsUpdateInput
               node: GenreUpdateInput
+              where: IProductGenreConnectionWhere
             }
 
             input MovieGenreUpdateFieldInput {
@@ -3057,7 +3066,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreDeleteFieldInput
               disconnect: IProductGenreDisconnectFieldInput
               update: MovieGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: IProductGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieOptions {
@@ -3381,6 +3390,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input SeriesGenreUpdateConnectionInput {
               edge: SeriesPropsUpdateInput
               node: GenreUpdateInput
+              where: IProductGenreConnectionWhere
             }
 
             input SeriesGenreUpdateFieldInput {
@@ -3390,7 +3400,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreDeleteFieldInput
               disconnect: IProductGenreDisconnectFieldInput
               update: SeriesGenreUpdateConnectionInput
-              where: IProductGenreConnectionWhere
+              where: IProductGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesOptions {
@@ -3883,6 +3893,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input GenreProductUpdateConnectionInput {
               node: IProductUpdateInput
+              where: GenreProductConnectionWhere
             }
 
             input GenreProductUpdateFieldInput {
@@ -3891,7 +3902,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: [GenreProductDeleteFieldInput!]
               disconnect: [GenreProductDisconnectFieldInput!]
               update: GenreProductUpdateConnectionInput
-              where: GenreProductConnectionWhere
+              where: GenreProductConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreProductUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -4148,6 +4159,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductGenreGenreUpdateConnectionInput {
               edge: IProductGenreEdgeUpdateInput
               node: GenreUpdateInput
+              where: IProductGenreGenreConnectionWhere
             }
 
             input IProductGenreGenreUpdateFieldInput {
@@ -4157,7 +4169,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreGenreDeleteFieldInput
               disconnect: IProductGenreGenreDisconnectFieldInput
               update: IProductGenreGenreUpdateConnectionInput
-              where: IProductGenreGenreConnectionWhere
+              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input IProductGenreRatingConnectFieldInput {
@@ -4202,6 +4214,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input IProductGenreRatingUpdateConnectionInput {
               edge: IProductGenreEdgeUpdateInput
               node: RatingUpdateInput
+              where: IProductGenreRatingConnectionWhere
             }
 
             input IProductGenreRatingUpdateFieldInput {
@@ -4211,7 +4224,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreRatingDeleteFieldInput
               disconnect: IProductGenreRatingDisconnectFieldInput
               update: IProductGenreRatingUpdateConnectionInput
-              where: IProductGenreRatingConnectionWhere
+              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type IProductGenreRelationship {
@@ -4388,6 +4401,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input MovieGenreGenreUpdateConnectionInput {
               edge: MoviePropsUpdateInput
               node: GenreUpdateInput
+              where: IProductGenreGenreConnectionWhere
             }
 
             input MovieGenreGenreUpdateFieldInput {
@@ -4397,7 +4411,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreGenreDeleteFieldInput
               disconnect: IProductGenreGenreDisconnectFieldInput
               update: MovieGenreGenreUpdateConnectionInput
-              where: IProductGenreGenreConnectionWhere
+              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieGenreRatingConnectFieldInput {
@@ -4430,6 +4444,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input MovieGenreRatingUpdateConnectionInput {
               edge: MoviePropsUpdateInput
               node: RatingUpdateInput
+              where: IProductGenreRatingConnectionWhere
             }
 
             input MovieGenreRatingUpdateFieldInput {
@@ -4439,7 +4454,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreRatingDeleteFieldInput
               disconnect: IProductGenreRatingDisconnectFieldInput
               update: MovieGenreRatingUpdateConnectionInput
-              where: IProductGenreRatingConnectionWhere
+              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieGenreUpdateInput {
@@ -4801,6 +4816,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
 
             input RatingProductUpdateConnectionInput {
               node: IProductUpdateInput
+              where: RatingProductConnectionWhere
             }
 
             input RatingProductUpdateFieldInput {
@@ -4809,7 +4825,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: [RatingProductDeleteFieldInput!]
               disconnect: [RatingProductDisconnectFieldInput!]
               update: RatingProductUpdateConnectionInput
-              where: RatingProductConnectionWhere
+              where: RatingProductConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"RatingProductUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -4999,6 +5015,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input SeriesGenreGenreUpdateConnectionInput {
               edge: SeriesPropsUpdateInput
               node: GenreUpdateInput
+              where: IProductGenreGenreConnectionWhere
             }
 
             input SeriesGenreGenreUpdateFieldInput {
@@ -5008,7 +5025,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreGenreDeleteFieldInput
               disconnect: IProductGenreGenreDisconnectFieldInput
               update: SeriesGenreGenreUpdateConnectionInput
-              where: IProductGenreGenreConnectionWhere
+              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesGenreRatingConnectFieldInput {
@@ -5041,6 +5058,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
             input SeriesGenreRatingUpdateConnectionInput {
               edge: SeriesPropsUpdateInput
               node: RatingUpdateInput
+              where: IProductGenreRatingConnectionWhere
             }
 
             input SeriesGenreRatingUpdateFieldInput {
@@ -5050,7 +5068,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreRatingDeleteFieldInput
               disconnect: IProductGenreRatingDisconnectFieldInput
               update: SeriesGenreRatingUpdateConnectionInput
-              where: IProductGenreRatingConnectionWhere
+              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesGenreUpdateInput {

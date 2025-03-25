@@ -333,6 +333,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
 
             input ResourceContainedByUpdateConnectionInput {
               node: ResourceUpdateInput
+              where: ResourceContainedByConnectionWhere
             }
 
             input ResourceContainedByUpdateFieldInput {
@@ -342,7 +343,7 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
               delete: [ResourceContainedByDeleteFieldInput!]
               disconnect: [ResourceContainedByDisconnectFieldInput!]
               update: ResourceContainedByUpdateConnectionInput
-              where: ResourceContainedByConnectionWhere
+              where: ResourceContainedByConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ResourceContainedByUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ResourceCreateInput {

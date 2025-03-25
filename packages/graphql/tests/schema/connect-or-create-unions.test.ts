@@ -167,6 +167,7 @@ describe("Connect Or Create", () => {
             input ActorActedInMovieUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorActedInMovieConnectionWhere
             }
 
             input ActorActedInMovieUpdateFieldInput {
@@ -176,7 +177,7 @@ describe("Connect Or Create", () => {
               delete: [ActorActedInMovieDeleteFieldInput!]
               disconnect: [ActorActedInMovieDisconnectFieldInput!]
               update: ActorActedInMovieUpdateConnectionInput
-              where: ActorActedInMovieConnectionWhere
+              where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorActedInRelationship {
@@ -230,6 +231,7 @@ describe("Connect Or Create", () => {
             input ActorActedInSeriesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: SeriesUpdateInput
+              where: ActorActedInSeriesConnectionWhere
             }
 
             input ActorActedInSeriesUpdateFieldInput {
@@ -239,7 +241,7 @@ describe("Connect Or Create", () => {
               delete: [ActorActedInSeriesDeleteFieldInput!]
               disconnect: [ActorActedInSeriesDisconnectFieldInput!]
               update: ActorActedInSeriesUpdateConnectionInput
-              where: ActorActedInSeriesConnectionWhere
+              where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorActedInUpdateInput {

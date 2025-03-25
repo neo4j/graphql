@@ -224,6 +224,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ShowUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -232,7 +233,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -497,6 +498,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -505,7 +507,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
+              where: ShowActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -745,6 +747,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -753,7 +756,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
+              where: ShowActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -1006,6 +1009,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
             input ShowActorsUpdateConnectionInput {
               edge: ShowActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input ShowActorsUpdateFieldInput {
@@ -1014,7 +1018,7 @@ describe("https://github.com/neo4j/graphql/issues/4615", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: ShowActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
+              where: ShowActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ShowActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ShowAggregate {

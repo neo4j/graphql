@@ -344,6 +344,7 @@ describe("Union Interface Relationships", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -353,7 +354,7 @@ describe("Union Interface Relationships", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
+              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorOnCreateInput {
@@ -797,6 +798,7 @@ describe("Union Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -806,7 +808,7 @@ describe("Union Interface Relationships", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -901,6 +903,7 @@ describe("Union Interface Relationships", () => {
             input MovieDirectorsActorUpdateConnectionInput {
               edge: DirectedUpdateInput
               node: ActorUpdateInput
+              where: MovieDirectorsActorConnectionWhere
             }
 
             input MovieDirectorsActorUpdateFieldInput {
@@ -910,7 +913,7 @@ describe("Union Interface Relationships", () => {
               delete: [MovieDirectorsActorDeleteFieldInput!]
               disconnect: [MovieDirectorsActorDisconnectFieldInput!]
               update: MovieDirectorsActorUpdateConnectionInput
-              where: MovieDirectorsActorConnectionWhere
+              where: MovieDirectorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieDirectorsConnectInput {
@@ -996,6 +999,7 @@ describe("Union Interface Relationships", () => {
             input MovieDirectorsPersonUpdateConnectionInput {
               edge: DirectedUpdateInput
               node: PersonUpdateInput
+              where: MovieDirectorsPersonConnectionWhere
             }
 
             input MovieDirectorsPersonUpdateFieldInput {
@@ -1005,7 +1009,7 @@ describe("Union Interface Relationships", () => {
               delete: [MovieDirectorsPersonDeleteFieldInput!]
               disconnect: [MovieDirectorsPersonDisconnectFieldInput!]
               update: MovieDirectorsPersonUpdateConnectionInput
-              where: MovieDirectorsPersonConnectionWhere
+              where: MovieDirectorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieDirectorsRelationship {
@@ -1177,6 +1181,7 @@ describe("Union Interface Relationships", () => {
             input MovieReviewersUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: ReviewerUpdateInput
+              where: MovieReviewersConnectionWhere
             }
 
             input MovieReviewersUpdateFieldInput {
@@ -1185,7 +1190,7 @@ describe("Union Interface Relationships", () => {
               delete: [MovieReviewersDeleteFieldInput!]
               disconnect: [MovieReviewersDisconnectFieldInput!]
               update: MovieReviewersUpdateConnectionInput
-              where: MovieReviewersConnectionWhere
+              where: MovieReviewersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieReviewersUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -1552,6 +1557,7 @@ describe("Union Interface Relationships", () => {
             input PersonMoviesUpdateConnectionInput {
               edge: ReviewUpdateInput
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -1561,7 +1567,7 @@ describe("Union Interface Relationships", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
+              where: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PersonOnCreateInput {

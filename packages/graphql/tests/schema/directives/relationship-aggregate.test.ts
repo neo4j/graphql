@@ -436,6 +436,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -444,7 +445,7 @@ describe("@relationship directive, aggregate argument", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -864,6 +865,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -872,7 +874,7 @@ describe("@relationship directive, aggregate argument", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -1268,6 +1270,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -1276,7 +1279,7 @@ describe("@relationship directive, aggregate argument", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
+                      where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieAggregate {
@@ -1769,6 +1772,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -1777,7 +1781,7 @@ describe("@relationship directive, aggregate argument", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
+                      where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieAggregate {
@@ -2234,6 +2238,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsActorUpdateFieldInput {
@@ -2242,7 +2247,7 @@ describe("@relationship directive, aggregate argument", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere
+                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieActorsConnection {
@@ -2296,6 +2301,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieActorsPersonUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsPersonConnectionWhere
                     }
 
                     input MovieActorsPersonUpdateFieldInput {
@@ -2304,7 +2310,7 @@ describe("@relationship directive, aggregate argument", () => {
                       delete: [MovieActorsPersonDeleteFieldInput!]
                       disconnect: [MovieActorsPersonDisconnectFieldInput!]
                       update: MovieActorsPersonUpdateConnectionInput
-                      where: MovieActorsPersonConnectionWhere
+                      where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieActorsRelationship {
@@ -2749,6 +2755,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsActorUpdateFieldInput {
@@ -2757,7 +2764,7 @@ describe("@relationship directive, aggregate argument", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere
+                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieActorsConnection {
@@ -2811,6 +2818,7 @@ describe("@relationship directive, aggregate argument", () => {
 
                     input MovieActorsPersonUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsPersonConnectionWhere
                     }
 
                     input MovieActorsPersonUpdateFieldInput {
@@ -2819,7 +2827,7 @@ describe("@relationship directive, aggregate argument", () => {
                       delete: [MovieActorsPersonDeleteFieldInput!]
                       disconnect: [MovieActorsPersonDisconnectFieldInput!]
                       update: MovieActorsPersonUpdateConnectionInput
-                      where: MovieActorsPersonConnectionWhere
+                      where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     type MovieActorsRelationship {
