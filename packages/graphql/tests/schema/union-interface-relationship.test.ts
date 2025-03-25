@@ -913,7 +913,7 @@ describe("Union Interface Relationships", () => {
               delete: [MovieDirectorsActorDeleteFieldInput!]
               disconnect: [MovieDirectorsActorDisconnectFieldInput!]
               update: MovieDirectorsActorUpdateConnectionInput
-              where: MovieDirectorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorsUpdateConnectionInput\\\\\\" instead\\")
+              where: MovieDirectorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorsActorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieDirectorsConnectInput {
@@ -1009,7 +1009,7 @@ describe("Union Interface Relationships", () => {
               delete: [MovieDirectorsPersonDeleteFieldInput!]
               disconnect: [MovieDirectorsPersonDisconnectFieldInput!]
               update: MovieDirectorsPersonUpdateConnectionInput
-              where: MovieDirectorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorsUpdateConnectionInput\\\\\\" instead\\")
+              where: MovieDirectorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieDirectorsRelationship {

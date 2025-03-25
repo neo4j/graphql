@@ -1650,7 +1650,7 @@ describe("Comments", () => {
                   delete: [MovieSearchGenreDeleteFieldInput!]
                   disconnect: [MovieSearchGenreDisconnectFieldInput!]
                   update: MovieSearchGenreUpdateConnectionInput
-                  where: MovieSearchGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchUpdateConnectionInput\\\\\\" instead\\")
+                  where: MovieSearchGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchGenreUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieSearchMovieConnectFieldInput {
@@ -1695,7 +1695,7 @@ describe("Comments", () => {
                   delete: [MovieSearchMovieDeleteFieldInput!]
                   disconnect: [MovieSearchMovieDisconnectFieldInput!]
                   update: MovieSearchMovieUpdateConnectionInput
-                  where: MovieSearchMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchUpdateConnectionInput\\\\\\" instead\\")
+                  where: MovieSearchMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchMovieUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieSearchRelationship {

@@ -4169,7 +4169,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreGenreDeleteFieldInput
               disconnect: IProductGenreGenreDisconnectFieldInput
               update: IProductGenreGenreUpdateConnectionInput
-              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreUpdateConnectionInput\\\\\\" instead\\")
+              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input IProductGenreRatingConnectFieldInput {
@@ -4224,7 +4224,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreRatingDeleteFieldInput
               disconnect: IProductGenreRatingDisconnectFieldInput
               update: IProductGenreRatingUpdateConnectionInput
-              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreUpdateConnectionInput\\\\\\" instead\\")
+              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"IProductGenreRatingUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type IProductGenreRelationship {
@@ -4411,7 +4411,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreGenreDeleteFieldInput
               disconnect: IProductGenreGenreDisconnectFieldInput
               update: MovieGenreGenreUpdateConnectionInput
-              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
+              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieGenreRatingConnectFieldInput {
@@ -4454,7 +4454,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreRatingDeleteFieldInput
               disconnect: IProductGenreRatingDisconnectFieldInput
               update: MovieGenreRatingUpdateConnectionInput
-              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreUpdateConnectionInput\\\\\\" instead\\")
+              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenreRatingUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieGenreUpdateInput {
@@ -5025,7 +5025,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreGenreDeleteFieldInput
               disconnect: IProductGenreGenreDisconnectFieldInput
               update: SeriesGenreGenreUpdateConnectionInput
-              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
+              where: IProductGenreGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesGenreRatingConnectFieldInput {
@@ -5068,7 +5068,7 @@ describe("https://github.com/neo4j/graphql/issues/3439", () => {
               delete: IProductGenreRatingDeleteFieldInput
               disconnect: IProductGenreRatingDisconnectFieldInput
               update: SeriesGenreRatingUpdateConnectionInput
-              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreUpdateConnectionInput\\\\\\" instead\\")
+              where: IProductGenreRatingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesGenreRatingUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesGenreUpdateInput {

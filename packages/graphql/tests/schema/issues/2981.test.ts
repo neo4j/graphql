@@ -608,7 +608,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               delete: BookTranslatedTitleBookTitle_ENDeleteFieldInput
               disconnect: BookTranslatedTitleBookTitle_ENDisconnectFieldInput
               update: BookTranslatedTitleBookTitle_ENUpdateConnectionInput
-              where: BookTranslatedTitleBookTitle_ENConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTranslatedTitleUpdateConnectionInput\\\\\\" instead\\")
+              where: BookTranslatedTitleBookTitle_ENConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTranslatedTitleBookTitle_ENUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input BookTranslatedTitleBookTitle_SVConnectFieldInput {
@@ -653,7 +653,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               delete: BookTranslatedTitleBookTitle_SVDeleteFieldInput
               disconnect: BookTranslatedTitleBookTitle_SVDisconnectFieldInput
               update: BookTranslatedTitleBookTitle_SVUpdateConnectionInput
-              where: BookTranslatedTitleBookTitle_SVConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTranslatedTitleUpdateConnectionInput\\\\\\" instead\\")
+              where: BookTranslatedTitleBookTitle_SVConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTranslatedTitleBookTitle_SVUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input BookTranslatedTitleConnectInput {

@@ -8483,7 +8483,7 @@ describe("@filterable directive", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsActorUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input MovieActorsAppearanceConnectFieldInput {
@@ -8528,7 +8528,7 @@ describe("@filterable directive", () => {
                       delete: [MovieActorsAppearanceDeleteFieldInput!]
                       disconnect: [MovieActorsAppearanceDisconnectFieldInput!]
                       update: MovieActorsAppearanceUpdateConnectionInput
-                      where: MovieActorsAppearanceConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+                      where: MovieActorsAppearanceConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsAppearanceUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input MovieActorsConnectInput {
@@ -9507,7 +9507,7 @@ describe("@filterable directive", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsActorUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input MovieActorsAppearanceConnectFieldInput {
@@ -9552,7 +9552,7 @@ describe("@filterable directive", () => {
                       delete: [MovieActorsAppearanceDeleteFieldInput!]
                       disconnect: [MovieActorsAppearanceDisconnectFieldInput!]
                       update: MovieActorsAppearanceUpdateConnectionInput
-                      where: MovieActorsAppearanceConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+                      where: MovieActorsAppearanceConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsAppearanceUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input MovieActorsConnectInput {
@@ -10531,7 +10531,7 @@ describe("@filterable directive", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+                      where: MovieActorsActorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsActorUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input MovieActorsAppearanceConnectFieldInput {
@@ -10576,7 +10576,7 @@ describe("@filterable directive", () => {
                       delete: [MovieActorsAppearanceDeleteFieldInput!]
                       disconnect: [MovieActorsAppearanceDisconnectFieldInput!]
                       update: MovieActorsAppearanceUpdateConnectionInput
-                      where: MovieActorsAppearanceConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+                      where: MovieActorsAppearanceConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsAppearanceUpdateConnectionInput\\\\\\" instead\\")
                     }
 
                     input MovieActorsConnectInput {

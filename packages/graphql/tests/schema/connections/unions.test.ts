@@ -156,7 +156,7 @@ describe("Unions", () => {
               delete: [AuthorPublicationsBookDeleteFieldInput!]
               disconnect: [AuthorPublicationsBookDisconnectFieldInput!]
               update: AuthorPublicationsBookUpdateConnectionInput
-              where: AuthorPublicationsBookConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"AuthorPublicationsUpdateConnectionInput\\\\\\" instead\\")
+              where: AuthorPublicationsBookConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"AuthorPublicationsBookUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input AuthorPublicationsConnectInput {
@@ -240,7 +240,7 @@ describe("Unions", () => {
               delete: [AuthorPublicationsJournalDeleteFieldInput!]
               disconnect: [AuthorPublicationsJournalDisconnectFieldInput!]
               update: AuthorPublicationsJournalUpdateConnectionInput
-              where: AuthorPublicationsJournalConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"AuthorPublicationsUpdateConnectionInput\\\\\\" instead\\")
+              where: AuthorPublicationsJournalConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"AuthorPublicationsJournalUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type AuthorPublicationsRelationship {

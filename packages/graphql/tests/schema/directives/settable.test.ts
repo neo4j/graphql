@@ -2680,7 +2680,7 @@ describe("@settable", () => {
                   delete: [ActorActedInMovieDeleteFieldInput!]
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
+                  where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInMovieUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorActedInRelationship {
@@ -2722,7 +2722,7 @@ describe("@settable", () => {
                   delete: [ActorActedInSeriesDeleteFieldInput!]
                   disconnect: [ActorActedInSeriesDisconnectFieldInput!]
                   update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
+                  where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInSeriesUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input ActorActedInUpdateInput {
@@ -4380,7 +4380,7 @@ describe("@settable", () => {
                   delete: [ActorActedInMovieDeleteFieldInput!]
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
+                  where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInMovieUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorActedInRelationship {
@@ -4422,7 +4422,7 @@ describe("@settable", () => {
                   delete: [ActorActedInSeriesDeleteFieldInput!]
                   disconnect: [ActorActedInSeriesDisconnectFieldInput!]
                   update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
+                  where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInSeriesUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input ActorActedInUpdateInput {

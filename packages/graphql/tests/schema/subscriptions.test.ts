@@ -1487,7 +1487,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieActorsRelationship {
@@ -1537,7 +1537,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsStarUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieActorsUpdateInput {
@@ -4297,7 +4297,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieActorsRelationship {
@@ -4347,7 +4347,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
+              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsStarUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieActorsUpdateInput {

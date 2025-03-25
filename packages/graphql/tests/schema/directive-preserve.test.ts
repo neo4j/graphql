@@ -4526,7 +4526,7 @@ describe("Directive-preserve", () => {
               delete: [UserContentBlogDeleteFieldInput!]
               disconnect: [UserContentBlogDisconnectFieldInput!]
               update: UserContentBlogUpdateConnectionInput
-              where: UserContentBlogConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentUpdateConnectionInput\\\\\\" instead\\")
+              where: UserContentBlogConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentBlogUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type UserContentConnection {
@@ -4589,7 +4589,7 @@ describe("Directive-preserve", () => {
               delete: [UserContentPostDeleteFieldInput!]
               disconnect: [UserContentPostDisconnectFieldInput!]
               update: UserContentPostUpdateConnectionInput
-              where: UserContentPostConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentUpdateConnectionInput\\\\\\" instead\\")
+              where: UserContentPostConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentPostUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type UserContentRelationship {
