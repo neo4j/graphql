@@ -244,29 +244,6 @@ function makeUpdateFieldInputTypeFields({
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
 
-    // let connectionWhereInputType: InputTypeComposer | string | undefined;
-    // const relationshipTarget = relationshipAdapter.target;
-    // if (relationshipTarget instanceof ConcreteEntityAdapter) {
-    //     connectionWhereInputType = relationshipAdapter.operations.getConnectionWhereTypename();
-    // } else if (relationshipTarget instanceof InterfaceEntityAdapter) {
-    //     connectionWhereInputType = relationshipAdapter.operations.getConnectionWhereTypename();
-    // } else {
-    //     if (!ifUnionMemberEntity) {
-    //         throw new Error("Member Entity required.");
-    //     }
-    //     connectionWhereInputType = withConnectionWhereInputType({
-    //         relationshipAdapter,
-    //         memberEntity: ifUnionMemberEntity,
-    //         composer,
-    //     });
-    // }
-    // if (connectionWhereInputType) {
-    //     fields["where"] = {
-    //         type: connectionWhereInputType,
-    //         directives: [],
-    //     };
-    // }
-
     const connectFieldInputType = withConnectFieldInputType({ relationshipAdapter, ifUnionMemberEntity, composer });
     if (connectFieldInputType) {
         fields["connect"] = {
