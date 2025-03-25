@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.1
+
+### Patch Changes
+
+-   [#6105](https://github.com/neo4j/graphql/pull/6105) [`11952fd`](https://github.com/neo4j/graphql/commit/11952fd39e028ddd416bee8f87ad235307f0f788) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Typescript version has been updated to 5.8.2 slightly changing the emitted code. This change is not expected to have any impact on the generated code or the runtime behavior of the library.
+
 ## 5.12.0
 
 ### Minor Changes
