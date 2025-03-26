@@ -84,10 +84,9 @@ describe("aggregations filters nested", () => {
                                 }
                             }                            
                         }
-                    } 
+                    }
                 }) {
-                    title
-                    
+                    title                    
                 }
             }
         `;

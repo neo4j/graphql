@@ -64,7 +64,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN count(DISTINCT this1) = $param0 AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -103,7 +104,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    RETURN count(DISTINCT this3) = $param0 AS var4
+                    WITH DISTINCT this3
+                    RETURN count(this3) = $param0 AS var4
                 }
                 WITH *
                 WHERE var4 = true
@@ -143,7 +145,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                RETURN count(DISTINCT this2) = $param0 AS var3
+                WITH DISTINCT this2
+                RETURN count(this2) = $param0 AS var3
             }
             WITH *
             WHERE var3 = true
@@ -205,7 +208,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
                     CALL {
                         WITH this2
                         MATCH (this2)<-[this3:ACTED_IN]-(this4:Actor)
-                        RETURN count(DISTINCT this4) = $param0 AS var5
+                        WITH DISTINCT this4
+                        RETURN count(this4) = $param0 AS var5
                     }
                     WITH *
                     WHERE var5 = true

@@ -28,8 +28,8 @@ const basicTypeDefs = `
         createdAt: DateTime! @timestamp
     }
 
-    type Article @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
-        id: ID! @id  @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }])
+    type Article @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }]) @node {
+        id: ID! @id  @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -81,26 +81,22 @@ export function getLargeSchema(size = 500): string {
 
 export async function schemaPerformance() {
     const typeDefs = getLargeSchema(600);
-    console.log("TypeDefs Size:", prettyBytes(byteSize(typeDefs)));
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
+        features: {
+            excludeDeprecatedFields: {
+                mutationOperations: true,
+                aggregationFilters: true,
+                aggregationFiltersOutsideConnection: true,
+                relationshipFilters: true,
+                attributeFilters: true,
+            },
+        },
     });
+
     console.time("Schema Generation");
     await neoSchema.getSchema().catch((e) => {
         console.error(e);
     });
     console.timeEnd("Schema Generation");
-}
-
-function byteSize(str: string): number {
-    return new Blob([str]).size;
-}
-
-function prettyBytes(num: number): string {
-    const UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-    if (Math.abs(num) < 1) return `${num} ${UNITS[0]}`;
-    const exponent = Math.min(Math.floor(Math.log10(num < 0 ? -num : num) / 3), UNITS.length - 1);
-    const n = Number(((num < 0 ? -num : num) / 1000 ** exponent).toPrecision(3));
-
-    return `${num < 0 ? "-" : ""}${n} ${UNITS[exponent]}`;
 }

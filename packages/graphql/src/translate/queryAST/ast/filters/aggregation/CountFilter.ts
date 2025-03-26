@@ -18,50 +18,32 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import type { AggregationLogicalOperator } from "../../../factory/parsers/parse-where-field";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
-import type { FilterOperator } from "../Filter";
-import { Filter } from "../Filter";
+import { AggregationFilter } from "./AggregationFilter";
 
-export class CountFilter extends Filter {
+export class CountFilter extends AggregationFilter {
     protected comparisonValue: unknown;
-    protected operator: FilterOperator;
-    protected attachedTo: "node" | "relationship";
+    protected operator: AggregationLogicalOperator;
 
     constructor({
         operator,
         comparisonValue,
         attachedTo = "node",
+        relationship,
+        isDeprecated,
     }: {
-        operator: FilterOperator;
+        operator: AggregationLogicalOperator;
         comparisonValue: unknown;
         attachedTo?: "node" | "relationship";
+        relationship: RelationshipAdapter;
+        isDeprecated?: boolean;
     }) {
-        super();
+        super(relationship, isDeprecated, attachedTo);
         this.comparisonValue = comparisonValue;
         this.operator = operator;
-        this.attachedTo = attachedTo;
-    }
-
-    protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
-        const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
-        if (!target) {
-            throw new Error("No target found");
-        }
-        return target;
-    }
-
-    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        if (!queryASTContext.hasTarget()) {
-            throw new Error("No parent node found!");
-        }
-        const target = this.getTarget(queryASTContext);
-
-        return this.createBaseOperation({
-            operator: this.operator,
-            expr: Cypher.count(target).distinct(),
-            param: new Cypher.Param(this.comparisonValue),
-        });
     }
 
     public getChildren(): QueryASTNode[] {
@@ -72,42 +54,24 @@ export class CountFilter extends Filter {
         return `${super.print()} <${this.operator}>`;
     }
 
-    /** Returns the default operation for a given filter */
-    // NOTE: duplicate from property filter
-    protected createBaseOperation({
-        operator,
-        expr,
-        param,
-    }: {
-        operator: FilterOperator;
-        expr: Cypher.Expr;
-        param: Cypher.Expr;
-    }): Cypher.ComparisonOp {
-        switch (operator) {
-            case "LT":
-                return Cypher.lt(expr, param);
-            case "LTE":
-                return Cypher.lte(expr, param);
-            case "GT":
-                return Cypher.gt(expr, param);
-            case "GTE":
-                return Cypher.gte(expr, param);
-            case "ENDS_WITH":
-                return Cypher.endsWith(expr, param);
-            case "STARTS_WITH":
-                return Cypher.startsWith(expr, param);
-            case "MATCHES":
-                return Cypher.matches(expr, param);
-            case "CONTAINS":
-                return Cypher.contains(expr, param);
-            case "IN":
-                return Cypher.in(expr, param);
-            case "INCLUDES":
-                return Cypher.in(param, expr);
-            case "EQ":
-                return Cypher.eq(expr, param);
-            default:
-                throw new Error(`Invalid operator ${operator}`);
+    public getSubqueryReturnVariable(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        if (!queryASTContext.hasTarget()) {
+            throw new Error("No parent node found!");
         }
+        const target = this.getTarget(queryASTContext);
+
+        return this.createBaseOperation({
+            operator: this.operator,
+            expr: Cypher.count(target),
+            param: new Cypher.Param(this.comparisonValue),
+        });
+    }
+
+    protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
+        const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
+        if (!target) {
+            throw new Error("No target found");
+        }
+        return target;
     }
 }

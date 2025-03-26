@@ -64,10 +64,17 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(DISTINCT this1) > $param0 AND count(DISTINCT this1) < $param1) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
             }
             WITH *
-            WHERE var2 = true
+            WHERE (var2 = true AND var5 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -108,10 +115,17 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(DISTINCT this1) > $param0 OR count(DISTINCT this1) < $param1) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
             }
             WITH *
-            WHERE var2 = true
+            WHERE (var2 = true OR var5 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -146,10 +160,11 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN NOT (count(DISTINCT this1) > $param0) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = true
+            WHERE NOT (var2 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -189,10 +204,29 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN ((count(DISTINCT this1) > $param0 AND count(DISTINCT this1) < $param1) AND (count(DISTINCT this1) > $param2 OR count(DISTINCT this1) < $param3)) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this6:LIKES]-(this7:User)
+                WITH DISTINCT this7
+                RETURN count(this7) > $param2 AS var8
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this9:LIKES]-(this10:User)
+                WITH DISTINCT this10
+                RETURN count(this10) < $param3 AS var11
             }
             WITH *
-            WHERE var2 = true
+            WHERE ((var2 = true AND var5 = true) AND (var8 = true OR var11 = true))
             RETURN this { .content } AS this"
         `);
 
@@ -248,10 +282,35 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(DISTINCT this1) > $param0 AND count(DISTINCT this1) < $param1 AND (count(DISTINCT this1) > $param2 OR count(DISTINCT this1) < $param3 OR count(DISTINCT this1) < $param4)) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this6:LIKES]-(this7:User)
+                WITH DISTINCT this7
+                RETURN count(this7) > $param2 AS var8
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this9:LIKES]-(this10:User)
+                WITH DISTINCT this10
+                RETURN count(this10) < $param3 AS var11
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this12:LIKES]-(this13:User)
+                WITH DISTINCT this13
+                RETURN count(this13) < $param4 AS var14
             }
             WITH *
-            WHERE var2 = true
+            WHERE (var2 = true AND var5 = true AND (var8 = true OR var11 = true OR var14 = true))
             RETURN this { .content } AS this"
         `);
 

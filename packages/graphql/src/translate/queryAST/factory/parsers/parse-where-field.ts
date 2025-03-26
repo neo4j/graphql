@@ -54,10 +54,10 @@ export function parseWhereField(field: string): WhereRegexGroups {
 }
 
 export const aggregationFieldRegEx =
-    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|GT|GTE|LT|LTE))?$/;
+    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|EQ|GT|GTE|LT|LTE|IN))?$/;
 
 export type AggregationOperator = "AVERAGE" | "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";
-export type AggregationLogicalOperator = "EQUAL" | "GT" | "GTE" | "LT" | "LTE";
+export type AggregationLogicalOperator = "EQUAL" | "EQ" | "GT" | "GTE" | "LT" | "LTE" | "IN";
 
 export type AggregationFieldRegexGroups = {
     fieldName: string;

@@ -49,6 +49,7 @@ describe("aggregations-where-node-int - connections", () => {
                     CREATE (p)<-[:LIKES]-(u1:${User} { someInt: ${someInt1} })
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt2} })
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt3} })
+                    CREATE (p)<-[:LIKES]-(u1)
                     CREATE (:${Post} {title: "An unpopular Post"})
                 `
         );
@@ -364,15 +365,16 @@ describe("aggregations-where-node-int - connections - interface relationships of
         Person = testHelper.createUniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
-        interface Human {
-            name: String!
-            someInt: Int!
-        }
+            interface Human {
+                name: String!
+                someInt: Int!
+            }
 
-        type ${Person} implements Human @node {
-            name: String!
-            someInt: Int!
-        }
+            type ${Person} implements Human @node {
+                name: String!
+                someInt: Int!
+            }
+
             type ${User} implements Human @node {
                 name: String!
                 someInt: Int!
@@ -389,6 +391,7 @@ describe("aggregations-where-node-int - connections - interface relationships of
                     CREATE (p)<-[:LIKES]-(u1:${User} { someInt: ${someInt1} })
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt2} })
                     CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt3} })
+                    CREATE (p)<-[:LIKES]-(u1)
                     CREATE (:${Post} {title: "An unpopular Post"})
                 `
         );

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
@@ -25,22 +24,35 @@ describe("aggregations-where-node-int - connections", () => {
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
+    const someInt1 = 1;
+    const someInt2 = 2;
+    const someInt3 = 3;
 
     beforeEach(async () => {
         testHelper = new TestHelper();
         User = testHelper.createUniqueType("User");
         Post = testHelper.createUniqueType("Post");
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${User} @node {
-                testString: String!
                 someInt: Int!
             }
     
             type ${Post} @node {
-              testString: String!
+              title: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (p:${Post} {title: "A popular Post"})
+                    CREATE (p)<-[:LIKES]-(u1:${User} { someInt: ${someInt1} })
+                    CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt2} })
+                    CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt3} })
+                    CREATE (p)<-[:LIKES]-(u1)
+                    CREATE (:${Post} {title: "An unpopular Post"})
+                `
+        );
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
@@ -54,31 +66,16 @@ describe("aggregations-where-node-int - connections", () => {
         const someInt3 = 3;
 
         test("should return posts where the average of like Int's is EQUAL to", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the average calculation to account for 4 relationships
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
-                           edges {
-                            node {
-                                 testString
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                            edges {
+                                node {
+                                    title 
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -90,39 +87,36 @@ describe("aggregations-where-node-int - connections", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is GT than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
-
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
+            // Update the average calculation and GT value
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
             const avgGT = avg - 1;
 
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -134,38 +128,35 @@ describe("aggregations-where-node-int - connections", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is GTE than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the average calculation
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -177,39 +168,36 @@ describe("aggregations-where-node-int - connections", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is LT than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
-
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
+            // Update the average calculation and LT value
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
             const avgLT = avg + 1;
 
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -221,38 +209,35 @@ describe("aggregations-where-node-int - connections", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is LTE than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the average calculation
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -264,44 +249,37 @@ describe("aggregations-where-node-int - connections", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
     });
 
     describe("sum", () => {
         test("should return posts where the sum of like Int's is EQUAL to", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the sum calculation to include someInt1 twice
+            const sum = someInt1 + someInt1 + someInt2 + someInt3;
 
-            const someInt1 = 1;
-            const someInt2 = 2;
-            const someInt3 = 3;
-
-            const sum = someInt1 + someInt2 + someInt3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -313,15 +291,31 @@ describe("aggregations-where-node-int - connections", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
     });
 });
 
 describe("aggregations-where-node-int - connections - interface relationships of concrete types", () => {
+    const someInt1 = 1;
+    const someInt2 = 2;
+    const someInt3 = 3;
+
     let testHelper: TestHelper;
     let User: UniqueType;
     let Post: UniqueType;
@@ -333,26 +327,36 @@ describe("aggregations-where-node-int - connections - interface relationships of
         Post = testHelper.createUniqueType("Post");
         Person = testHelper.createUniqueType("Person");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
         interface Human {
-            testString: String!
+            title: String!
             someInt: Int!
         }
 
         type ${Person} implements Human @node {
-            testString: String!
+            title: String!
             someInt: Int!
         }
             type ${User} implements Human @node {
-                testString: String!
+                title: String!
                 someInt: Int!
             }
     
             type ${Post} @node {
-              testString: String!
+              title: String!
               likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
+        await testHelper.executeCypher(
+            `
+                CREATE (p:${Post} {title: "A popular Post"})
+                CREATE (p)<-[:LIKES]-(u1:${User} { someInt: ${someInt1} })
+                CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt2} })
+                CREATE (p)<-[:LIKES]-(:${User} { someInt: ${someInt3} })
+                CREATE (p)<-[:LIKES]-(u1)
+                CREATE (:${Post} {title: "An unpopular Post"})
+            `
+        );
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
@@ -361,36 +365,17 @@ describe("aggregations-where-node-int - connections - interface relationships of
     });
 
     describe("AVERAGE", () => {
-        const someInt1 = 1;
-        const someInt2 = 2;
-        const someInt3 = 3;
-
         test("should return posts where the average of like Int's is EQUAL to", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the average calculation to account for 4 relationships
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
                            edges {
                             node {
-                                 testString
+                                 title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -402,39 +387,36 @@ describe("aggregations-where-node-int - connections - interface relationships of
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is GT than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
-
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
+            // Update the average calculation and GT value
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
             const avgGT = avg - 1;
 
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_GT: ${avgGT} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -446,38 +428,35 @@ describe("aggregations-where-node-int - connections - interface relationships of
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is GTE than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the average calculation
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_GTE: ${avg} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -489,39 +468,36 @@ describe("aggregations-where-node-int - connections - interface relationships of
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is LT than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
-
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
+            // Update the average calculation and LT value
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
             const avgLT = avg + 1;
 
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_LT: ${avgLT} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -533,38 +509,35 @@ describe("aggregations-where-node-int - connections - interface relationships of
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
 
         test("should return posts where the average of like Int's is LTE than", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the average calculation
+            const avg = (someInt1 + someInt1 + someInt2 + someInt3) / 4;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_AVERAGE_LTE: ${avg} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -576,44 +549,37 @@ describe("aggregations-where-node-int - connections - interface relationships of
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
     });
 
     describe("sum", () => {
         test("should return posts where the sum of like Int's is EQUAL to", async () => {
-            const testString = generate({
-                charset: "alphabetic",
-                readable: true,
-            });
+            // Update the sum calculation to include someInt1 twice
+            const sum = someInt1 + someInt1 + someInt2 + someInt3;
 
-            const someInt1 = 1;
-            const someInt2 = 2;
-            const someInt3 = 3;
-
-            const sum = someInt1 + someInt2 + someInt3;
-
-            await testHelper.executeCypher(
-                `
-                        CREATE (p:${Post} {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt1}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt2}})
-                        CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}", someInt: ${someInt3}})
-                        CREATE (:${Post} {testString: "${testString}"})
-                    `
-            );
-
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
+                        ${Post.operations.connection}(where: { likesAggregate: { node: { someInt_SUM_EQUAL: ${sum} } } }) {
                             edges {
                                 node {
-                                    testString
+                                    title
                                     likes {
-                                        testString
                                         someInt
                                     }
                                 }
@@ -625,10 +591,22 @@ describe("aggregations-where-node-int - connections - interface relationships of
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-
-            const [post] = ((gqlResult.data as any)[Post.operations.connection] as any[])["edges"];
-            expect(post.node.testString).toEqual(testString);
-            expect(post.node.likes).toHaveLength(3);
+            expect(gqlResult.data).toEqual({
+                [Post.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                title: "A popular Post",
+                                likes: expect.toIncludeSameMembers([
+                                    { someInt: someInt1 },
+                                    { someInt: someInt2 },
+                                    { someInt: someInt3 },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            });
         });
     });
 });

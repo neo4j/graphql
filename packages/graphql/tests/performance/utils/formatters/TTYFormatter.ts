@@ -35,19 +35,16 @@ export class TTYFormatter {
         results: Array<Performance.TestDisplayData>,
         oldResults: Record<string, Performance.TestDisplayData> | undefined
     ): Record<string, TTYTableItem> {
-        return results.reduce(
-            (acc: Record<string, TTYTableItem>, displayData) => {
-                if (displayData.error !== undefined) {
-                    const [key, item] = this.formatErrorItem(displayData);
-                    acc[key] = item;
-                } else {
-                    const [key, item] = this.formatTableItem(displayData, oldResults);
-                    acc[key] = item;
-                }
-                return acc;
-            },
-            {}
-        );
+        return results.reduce((acc: Record<string, TTYTableItem>, displayData) => {
+            if (displayData.error !== undefined) {
+                const [key, item] = this.formatErrorItem(displayData);
+                acc[key] = item;
+            } else {
+                const [key, item] = this.formatTableItem(displayData, oldResults);
+                acc[key] = item;
+            }
+            return acc;
+        }, {});
     }
 
     private formatTableItem(
@@ -82,7 +79,7 @@ export class TTYFormatter {
         }
 
         return [
-            `${tableFileText}${errorLabel}`,
+            `${tableFileText} ${errorLabel}`,
             {
                 error: errorMsg,
             },
