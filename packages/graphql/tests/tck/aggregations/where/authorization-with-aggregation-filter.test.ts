@@ -62,7 +62,8 @@ describe("Authorization with aggregation filter rule", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN count(DISTINCT this1) = $param0 AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) = $param0 AS var2
             }
             WITH *
             WHERE ($isAuthenticated = true AND var2 = true)
@@ -98,7 +99,8 @@ describe("Authorization with aggregation filter rule", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[this1:LIKES]-(this2:User)
-                RETURN count(DISTINCT this2) = $param0 AS var3
+                WITH DISTINCT this2
+                RETURN count(this2) = $param0 AS var3
             }
             WITH *
             WHERE ($isAuthenticated = true AND var3 = true)

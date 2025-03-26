@@ -17,15 +17,12 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/6005", () => {
+describe("https://github.com/neo4j/graphql/issues/6005 - deprecated", () => {
     let Movie: UniqueType;
     let Actor: UniqueType;
-    const age1 = 54;
-    const age2 = 37;
-    const age3 = 40;
 
     const testHelper = new TestHelper();
 
@@ -54,9 +51,9 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
 
         await testHelper.executeCypher(`
             CREATE (m:${Movie} { title: "Terminator"})
-            CREATE (m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${Actor} { name: "Arnold", age: ${age1}, born: datetime('1980-07-02')})
-            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${Actor} {name: "Linda", age: ${age2}, born: datetime('2000-02-02')})
-            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Another Character" }]-(:${Actor} {name: "Another actor", age: ${age3}, born: datetime('2000-02-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${Actor} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${Actor} {name: "Linda", age: 37, born: datetime('2000-02-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Another Character" }]-(:${Actor} {name: "Another actor", age: 37, born: datetime('2000-02-02')})
             CREATE (m)<-[:ACTED_IN { screentime: 10, character: "Future Terminator" }]-(arnold)
         `);
     });
@@ -65,11 +62,11 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         await testHelper.close();
     });
 
-    test("should filter movies by actors count with unique results", async () => {
-        // count should be the 3 actors but should not count Arnold twice
+    test("should filter movies by actors count with non-unique results", async () => {
+        // count should be 4 as Arnold is counted twice due to two edges
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
+                ${Movie.plural}(where: { actorsAggregate: { count: { eq: 4 } } }) {
                     title
                 }
             }
@@ -86,12 +83,12 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         });
     });
 
-    test("should filter movies by actors count with unique results at the field-level", async () => {
+    test("should filter movies by actors count with non-unique results at the field-level", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Actor.plural} {
                     name
-                    movies(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
+                    movies(where: { actorsAggregate: { count: { eq: 4 } } }) {
                         title
                     }
                 }
@@ -112,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
     test("should filter movies by actors count on connection projection", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.operations.connection}(where: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } }) {
+                ${Movie.operations.connection}(where: { actorsAggregate: { count: { eq: 4 } } }) {
                     edges {
                         node {
                             title
@@ -145,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
                         node {
                             name
                             moviesConnection(
-                                where: { node: { actorsConnection: { aggregate: { count: { nodes: { eq: 3 } } } } } }
+                                where: { node: { actorsAggregate: { count: { eq: 4 } } } }
                             ) {
                                 edges {
                                     properties {
@@ -198,10 +195,10 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         });
     });
 
-    test("should filter movies by related movies count without duplicate results, double nested", async () => {
+    test("should filter movies by related movies count with duplicate results, double nested", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { actors: { all: { moviesConnection: { aggregate: { count: { nodes: { eq: 1 } } } } } } }) {
+                ${Movie.plural}(where: { actors: { all: { moviesAggregate: { count: { eq: 1 } } } } }) {
                     title
                 }
             }
@@ -210,26 +207,23 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "Terminator",
-                },
-            ],
+            [Movie.plural]: [],
         });
     });
 
     test("should return movies where the actors age sum is EQUAL to", async () => {
-        // arnold should not counted twice
-        const sum = age1 + age2 + age3;
+        const age1 = 54;
+        const age2 = 37;
+        const age3 = 37;
+        // arnold should be counted twice when using the Legacy API
+        const sum = age1 + age1 + age2 + age3;
 
         const query = /* GraphQL */ `
             {
                 ${Movie.plural}(where: { 
-                    actorsConnection: {
-                        aggregate: {
-                            node: { 
-                                age: { sum: { eq: ${sum} } } 
-                            }
+                    actorsAggregate: {
+                        node: { 
+                            age: { sum: { eq: ${sum} } } 
                         }
                     }
                 }) {
@@ -240,7 +234,6 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
 
         const result = await testHelper.executeGraphQL(query);
 
-        expect(result.errors).toBeUndefined();
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({
             [Movie.plural]: [
@@ -252,17 +245,18 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
     });
 
     test("should return movies where the actors age avg is EQUAL to", async () => {
-        // arnold should not counted twice
-        const avg = (age1 + age2 + age3) / 3;
+        const age1 = 54;
+        const age2 = 37;
+        const age3 = 37;
+        // arnold should be counted twice with legacy API
+        const avg = (age1 + age1 + age2 + age3) / 4;
 
         const query = /* GraphQL */ `
             {
                 ${Movie.plural}(where: { 
-                    actorsConnection: {
-                        aggregate: {
-                            node: { 
-                                age: { average: { eq: ${avg} } } 
-                            }
+                    actorsAggregate: {
+                        node: { 
+                            age: { average: { eq: ${avg} } } 
                         }
                     }
                 }) {
@@ -273,7 +267,6 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
 
         const result = await testHelper.executeGraphQL(query);
 
-        expect(result.errors).toBeUndefined();
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({
             [Movie.plural]: [
