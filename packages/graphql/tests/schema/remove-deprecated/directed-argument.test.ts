@@ -321,6 +321,7 @@ describe("Deprecated directed argument", () => {
             input ActorMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -329,7 +330,7 @@ describe("Deprecated directed argument", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
+              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorOptions {
@@ -641,6 +642,7 @@ describe("Deprecated directed argument", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -649,7 +651,7 @@ describe("Deprecated directed argument", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {

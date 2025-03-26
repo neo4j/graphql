@@ -280,6 +280,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: GenreMoviesConnectionWhere
             }
 
             input GenreMoviesUpdateFieldInput {
@@ -288,7 +289,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               delete: [GenreMoviesDeleteFieldInput!]
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
-              where: GenreMoviesConnectionWhere
+              where: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input GenreOptions {
@@ -520,6 +521,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
 
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieGenresConnectionWhere
             }
 
             input MovieGenresUpdateFieldInput {
@@ -528,7 +530,7 @@ describe("https://github.com/neo4j/graphql/issues/2187", () => {
               delete: [MovieGenresDeleteFieldInput!]
               disconnect: [MovieGenresDisconnectFieldInput!]
               update: MovieGenresUpdateConnectionInput
-              where: MovieGenresConnectionWhere
+              where: MovieGenresConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenresUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieOptions {

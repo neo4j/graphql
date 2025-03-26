@@ -518,7 +518,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -891,7 +891,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -1256,11 +1256,12 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: PersonUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -1624,7 +1625,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   delete: [MovieActorsDeleteFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -1992,7 +1993,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   disconnect: [MovieActorsDisconnectFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -2732,7 +2733,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   connectOrCreate: [MovieActorsConnectOrCreateFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -3146,6 +3147,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: PersonUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -3154,7 +3156,7 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -3285,7 +3287,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere
+                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -3641,7 +3643,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -3768,7 +3770,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere
+                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -4503,7 +4505,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   create: [MovieActorsPersonOneCreateFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -4523,7 +4525,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   create: [MovieActorsPersonTwoCreateFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -4950,7 +4952,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   connect: [MovieActorsPersonOneConnectFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectFieldInput {
@@ -4970,7 +4972,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   connect: [MovieActorsPersonTwoConnectFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -5392,11 +5394,12 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateConnectionInput {
                   node: PersonOneUpdateInput
+                  where: MovieActorsPersonOneConnectionWhere
                 }
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   update: MovieActorsPersonOneUpdateConnectionInput
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -5408,11 +5411,12 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateConnectionInput {
                   node: PersonTwoUpdateInput
+                  where: MovieActorsPersonTwoConnectionWhere
                 }
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   update: MovieActorsPersonTwoUpdateConnectionInput
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -5834,7 +5838,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   delete: [MovieActorsPersonOneDeleteFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -5850,7 +5854,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   delete: [MovieActorsPersonTwoDeleteFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -6271,7 +6275,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -6287,7 +6291,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -7131,7 +7135,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   connectOrCreate: [MovieActorsPersonOneConnectOrCreateFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectOrCreateFieldInput {
@@ -7156,7 +7160,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   connectOrCreate: [MovieActorsPersonTwoConnectOrCreateFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -7650,6 +7654,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateConnectionInput {
                   node: PersonOneUpdateInput
+                  where: MovieActorsPersonOneConnectionWhere
                 }
 
                 input MovieActorsPersonOneUpdateFieldInput {
@@ -7658,7 +7663,7 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsPersonOneDeleteFieldInput!]
                   disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
                   update: MovieActorsPersonOneUpdateConnectionInput
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectFieldInput {
@@ -7691,6 +7696,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateConnectionInput {
                   node: PersonTwoUpdateInput
+                  where: MovieActorsPersonTwoConnectionWhere
                 }
 
                 input MovieActorsPersonTwoUpdateFieldInput {
@@ -7699,7 +7705,7 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsPersonTwoDeleteFieldInput!]
                   disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
                   update: MovieActorsPersonTwoUpdateConnectionInput
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -7773,7 +7779,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonOneUpdateFieldInput {
                   disconnect: [MovieProducersPersonOneDisconnectFieldInput!]
-                  where: MovieProducersPersonOneConnectionWhere
+                  where: MovieProducersPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieProducersPersonTwoConnectionWhere {
@@ -7789,7 +7795,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonTwoUpdateFieldInput {
                   disconnect: [MovieProducersPersonTwoDisconnectFieldInput!]
-                  where: MovieProducersPersonTwoConnectionWhere
+                  where: MovieProducersPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieProducersRelationship {
@@ -8219,7 +8225,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   create: [MovieActorsPersonOneCreateFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere
+                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -8239,7 +8245,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   create: [MovieActorsPersonTwoCreateFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere
+                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -8309,7 +8315,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonOneUpdateFieldInput {
                   disconnect: [MovieProducersPersonOneDisconnectFieldInput!]
-                  where: MovieProducersPersonOneConnectionWhere
+                  where: MovieProducersPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieProducersPersonTwoConnectionWhere {
@@ -8325,7 +8331,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonTwoUpdateFieldInput {
                   disconnect: [MovieProducersPersonTwoDisconnectFieldInput!]
-                  where: MovieProducersPersonTwoConnectionWhere
+                  where: MovieProducersPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieProducersRelationship {
@@ -9317,7 +9323,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -9860,7 +9866,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -10394,11 +10400,12 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: PersonUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -10936,7 +10943,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   delete: [MovieActorsDeleteFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -11473,7 +11480,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   disconnect: [MovieActorsDisconnectFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -12027,6 +12034,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: PersonUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -12035,7 +12043,7 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -12166,7 +12174,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere
+                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -12707,7 +12715,7 @@ describe("Relationship nested operations", () => {
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
                   delete: [MovieActorsDeleteFieldInput!]
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -12838,7 +12846,7 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere
+                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"

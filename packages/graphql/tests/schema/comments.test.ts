@@ -535,6 +535,7 @@ describe("Comments", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -543,7 +544,7 @@ describe("Comments", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
+                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
@@ -893,6 +894,7 @@ describe("Comments", () => {
                 input ActorActedInUpdateConnectionInput {
                   edge: ActedInUpdateInput
                   node: ProductionUpdateInput
+                  where: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInUpdateFieldInput {
@@ -901,7 +903,7 @@ describe("Comments", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
+                  where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorAggregate {
@@ -1631,6 +1633,7 @@ describe("Comments", () => {
 
                 input MovieSearchGenreUpdateConnectionInput {
                   node: GenreUpdateInput
+                  where: MovieSearchGenreConnectionWhere
                 }
 
                 input MovieSearchGenreUpdateFieldInput {
@@ -1639,7 +1642,7 @@ describe("Comments", () => {
                   delete: [MovieSearchGenreDeleteFieldInput!]
                   disconnect: [MovieSearchGenreDisconnectFieldInput!]
                   update: MovieSearchGenreUpdateConnectionInput
-                  where: MovieSearchGenreConnectionWhere
+                  where: MovieSearchGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchGenreUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieSearchMovieConnectFieldInput {
@@ -1675,6 +1678,7 @@ describe("Comments", () => {
 
                 input MovieSearchMovieUpdateConnectionInput {
                   node: MovieUpdateInput
+                  where: MovieSearchMovieConnectionWhere
                 }
 
                 input MovieSearchMovieUpdateFieldInput {
@@ -1683,7 +1687,7 @@ describe("Comments", () => {
                   delete: [MovieSearchMovieDeleteFieldInput!]
                   disconnect: [MovieSearchMovieDisconnectFieldInput!]
                   update: MovieSearchMovieUpdateConnectionInput
-                  where: MovieSearchMovieConnectionWhere
+                  where: MovieSearchMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchMovieUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieSearchRelationship {

@@ -198,6 +198,7 @@ describe("connect or create with id", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -207,7 +208,7 @@ describe("connect or create with id", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
+              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorOptions {
@@ -713,6 +714,7 @@ describe("connect or create with id", () => {
 
             input PostCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostCreatorConnectionWhere
             }
 
             input PostCreatorUpdateFieldInput {
@@ -722,7 +724,7 @@ describe("connect or create with id", () => {
               delete: PostCreatorDeleteFieldInput
               disconnect: PostCreatorDisconnectFieldInput
               update: PostCreatorUpdateConnectionInput
-              where: PostCreatorConnectionWhere
+              where: PostCreatorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostCreatorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostDeleteInput {
@@ -1069,6 +1071,7 @@ describe("connect or create with id", () => {
 
             input UserPostsUpdateConnectionInput {
               node: PostUpdateInput
+              where: UserPostsConnectionWhere
             }
 
             input UserPostsUpdateFieldInput {
@@ -1078,7 +1081,7 @@ describe("connect or create with id", () => {
               delete: [UserPostsDeleteFieldInput!]
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere
+              where: UserPostsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserPostsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"

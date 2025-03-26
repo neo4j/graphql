@@ -225,6 +225,7 @@ describe("Authorization", () => {
 
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostAuthorConnectionWhere
             }
 
             input PostAuthorUpdateFieldInput {
@@ -233,7 +234,7 @@ describe("Authorization", () => {
               delete: PostAuthorDeleteFieldInput
               disconnect: PostAuthorDisconnectFieldInput
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
+              where: PostAuthorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostAuthorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostCreateInput {
@@ -518,6 +519,7 @@ describe("Authorization", () => {
 
             input UserPostsUpdateConnectionInput {
               node: UserUpdateInput
+              where: UserPostsConnectionWhere
             }
 
             input UserPostsUpdateFieldInput {
@@ -526,7 +528,7 @@ describe("Authorization", () => {
               delete: [UserPostsDeleteFieldInput!]
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere
+              where: UserPostsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserPostsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"

@@ -278,6 +278,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             input BookTitle_ENBookUpdateConnectionInput {
               node: BookUpdateInput
+              where: BookTitle_ENBookConnectionWhere
             }
 
             input BookTitle_ENBookUpdateFieldInput {
@@ -286,7 +287,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               delete: BookTitle_ENBookDeleteFieldInput
               disconnect: BookTitle_ENBookDisconnectFieldInput
               update: BookTitle_ENBookUpdateConnectionInput
-              where: BookTitle_ENBookConnectionWhere
+              where: BookTitle_ENBookConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTitle_ENBookUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input BookTitle_ENConnectInput {
@@ -490,6 +491,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             input BookTitle_SVBookUpdateConnectionInput {
               node: BookUpdateInput
+              where: BookTitle_SVBookConnectionWhere
             }
 
             input BookTitle_SVBookUpdateFieldInput {
@@ -498,7 +500,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               delete: BookTitle_SVBookDeleteFieldInput
               disconnect: BookTitle_SVBookDisconnectFieldInput
               update: BookTitle_SVBookUpdateConnectionInput
-              where: BookTitle_SVBookConnectionWhere
+              where: BookTitle_SVBookConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTitle_SVBookUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input BookTitle_SVConnectInput {
@@ -597,6 +599,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             input BookTranslatedTitleBookTitle_ENUpdateConnectionInput {
               node: BookTitle_ENUpdateInput
+              where: BookTranslatedTitleBookTitle_ENConnectionWhere
             }
 
             input BookTranslatedTitleBookTitle_ENUpdateFieldInput {
@@ -605,7 +608,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               delete: BookTranslatedTitleBookTitle_ENDeleteFieldInput
               disconnect: BookTranslatedTitleBookTitle_ENDisconnectFieldInput
               update: BookTranslatedTitleBookTitle_ENUpdateConnectionInput
-              where: BookTranslatedTitleBookTitle_ENConnectionWhere
+              where: BookTranslatedTitleBookTitle_ENConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTranslatedTitleBookTitle_ENUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input BookTranslatedTitleBookTitle_SVConnectFieldInput {
@@ -641,6 +644,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
 
             input BookTranslatedTitleBookTitle_SVUpdateConnectionInput {
               node: BookTitle_SVUpdateInput
+              where: BookTranslatedTitleBookTitle_SVConnectionWhere
             }
 
             input BookTranslatedTitleBookTitle_SVUpdateFieldInput {
@@ -649,7 +653,7 @@ describe("https://github.com/neo4j/graphql/issues/2981", () => {
               delete: BookTranslatedTitleBookTitle_SVDeleteFieldInput
               disconnect: BookTranslatedTitleBookTitle_SVDisconnectFieldInput
               update: BookTranslatedTitleBookTitle_SVUpdateConnectionInput
-              where: BookTranslatedTitleBookTitle_SVConnectionWhere
+              where: BookTranslatedTitleBookTitle_SVConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BookTranslatedTitleBookTitle_SVUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input BookTranslatedTitleConnectInput {

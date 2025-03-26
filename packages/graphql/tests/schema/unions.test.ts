@@ -269,6 +269,7 @@ describe("Unions", () => {
 
             input MovieSearchGenreUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieSearchGenreConnectionWhere
             }
 
             input MovieSearchGenreUpdateFieldInput {
@@ -277,7 +278,7 @@ describe("Unions", () => {
               delete: [MovieSearchGenreDeleteFieldInput!]
               disconnect: [MovieSearchGenreDisconnectFieldInput!]
               update: MovieSearchGenreUpdateConnectionInput
-              where: MovieSearchGenreConnectionWhere
+              where: MovieSearchGenreConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchGenreUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieSearchMovieConnectFieldInput {
@@ -313,6 +314,7 @@ describe("Unions", () => {
 
             input MovieSearchMovieUpdateConnectionInput {
               node: MovieUpdateInput
+              where: MovieSearchMovieConnectionWhere
             }
 
             input MovieSearchMovieUpdateFieldInput {
@@ -321,7 +323,7 @@ describe("Unions", () => {
               delete: [MovieSearchMovieDeleteFieldInput!]
               disconnect: [MovieSearchMovieDisconnectFieldInput!]
               update: MovieSearchMovieUpdateConnectionInput
-              where: MovieSearchMovieConnectionWhere
+              where: MovieSearchMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieSearchMovieUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieSearchRelationship {

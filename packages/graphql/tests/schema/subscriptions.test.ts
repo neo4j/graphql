@@ -329,6 +329,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -337,7 +338,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -814,6 +815,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -822,7 +824,7 @@ describe("Subscriptions", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
+              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorOptions {
@@ -1018,6 +1020,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -1026,7 +1029,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -1475,6 +1478,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsPersonUpdateConnectionInput {
               node: PersonUpdateInput
+              where: MovieActorsPersonConnectionWhere
             }
 
             input MovieActorsPersonUpdateFieldInput {
@@ -1483,7 +1487,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere
+              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieActorsRelationship {
@@ -1524,6 +1528,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsStarUpdateConnectionInput {
               node: StarUpdateInput
+              where: MovieActorsStarConnectionWhere
             }
 
             input MovieActorsStarUpdateFieldInput {
@@ -1532,7 +1537,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere
+              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsStarUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieActorsUpdateInput {
@@ -1951,6 +1956,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -1959,7 +1965,7 @@ describe("Subscriptions", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
+              where: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PersonOptions {
@@ -2221,6 +2227,7 @@ describe("Subscriptions", () => {
 
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: StarMoviesConnectionWhere
             }
 
             input StarMoviesUpdateFieldInput {
@@ -2229,7 +2236,7 @@ describe("Subscriptions", () => {
               delete: [StarMoviesDeleteFieldInput!]
               disconnect: [StarMoviesDisconnectFieldInput!]
               update: StarMoviesUpdateConnectionInput
-              where: StarMoviesConnectionWhere
+              where: StarMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"StarMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input StarOptions {
@@ -2607,6 +2614,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -2615,7 +2623,7 @@ describe("Subscriptions", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
+              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorOptions {
@@ -2827,6 +2835,7 @@ describe("Subscriptions", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2835,7 +2844,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -3406,6 +3415,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -3414,7 +3424,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -3807,6 +3817,7 @@ describe("Subscriptions", () => {
 
             input AgreementOwnerUpdateConnectionInput {
               node: UserUpdateInput
+              where: AgreementOwnerConnectionWhere
             }
 
             input AgreementOwnerUpdateFieldInput {
@@ -3815,7 +3826,7 @@ describe("Subscriptions", () => {
               delete: AgreementOwnerDeleteFieldInput
               disconnect: AgreementOwnerDisconnectFieldInput
               update: AgreementOwnerUpdateConnectionInput
-              where: AgreementOwnerConnectionWhere
+              where: AgreementOwnerConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"AgreementOwnerUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -4277,6 +4288,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsPersonUpdateConnectionInput {
               node: PersonUpdateInput
+              where: MovieActorsPersonConnectionWhere
             }
 
             input MovieActorsPersonUpdateFieldInput {
@@ -4285,7 +4297,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere
+              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieActorsRelationship {
@@ -4326,6 +4338,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsStarUpdateConnectionInput {
               node: StarUpdateInput
+              where: MovieActorsStarConnectionWhere
             }
 
             input MovieActorsStarUpdateFieldInput {
@@ -4334,7 +4347,7 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere
+              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsStarUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieActorsUpdateInput {
@@ -4753,6 +4766,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -4761,7 +4775,7 @@ describe("Subscriptions", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
+              where: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PersonOptions {
@@ -5013,6 +5027,7 @@ describe("Subscriptions", () => {
 
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: StarMoviesConnectionWhere
             }
 
             input StarMoviesUpdateFieldInput {
@@ -5021,7 +5036,7 @@ describe("Subscriptions", () => {
               delete: [StarMoviesDeleteFieldInput!]
               disconnect: [StarMoviesDisconnectFieldInput!]
               update: StarMoviesUpdateConnectionInput
-              where: StarMoviesConnectionWhere
+              where: StarMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"StarMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input StarOptions {
@@ -5293,6 +5308,7 @@ describe("Subscriptions", () => {
 
             input CreatureMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: CreatureMoviesConnectionWhere
             }
 
             input CreatureMoviesUpdateFieldInput {
@@ -5301,7 +5317,7 @@ describe("Subscriptions", () => {
               delete: CreatureMoviesDeleteFieldInput
               disconnect: CreatureMoviesDisconnectFieldInput
               update: CreatureMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere
+              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CreatureMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input CreatureOptions {
@@ -5435,6 +5451,7 @@ describe("Subscriptions", () => {
 
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input MovieDirectorUpdateFieldInput {
@@ -5443,7 +5460,7 @@ describe("Subscriptions", () => {
               delete: MovieDirectorDeleteFieldInput
               disconnect: MovieDirectorDisconnectFieldInput
               update: MovieDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
+              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieEdge {
@@ -5623,6 +5640,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: CreatureMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -5631,7 +5649,7 @@ describe("Subscriptions", () => {
               delete: PersonMoviesDeleteFieldInput
               disconnect: PersonMoviesDisconnectFieldInput
               update: PersonMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere
+              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PersonOptions {
@@ -5754,6 +5772,7 @@ describe("Subscriptions", () => {
 
             input ProductionDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input ProductionDirectorUpdateFieldInput {
@@ -5762,7 +5781,7 @@ describe("Subscriptions", () => {
               delete: ProductionDirectorDeleteFieldInput
               disconnect: ProductionDirectorDisconnectFieldInput
               update: ProductionDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
+              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ProductionDisconnectInput {
@@ -5942,6 +5961,7 @@ describe("Subscriptions", () => {
 
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input SeriesDirectorUpdateFieldInput {
@@ -5950,7 +5970,7 @@ describe("Subscriptions", () => {
               delete: SeriesDirectorDeleteFieldInput
               disconnect: SeriesDirectorDisconnectFieldInput
               update: SeriesDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere
+              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesEdge {

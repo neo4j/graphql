@@ -210,6 +210,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: Actor2MoviesConnectionWhere
             }
 
             input Actor2MoviesUpdateFieldInput {
@@ -219,7 +220,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               delete: [Actor2MoviesDeleteFieldInput!]
               disconnect: [Actor2MoviesDisconnectFieldInput!]
               update: Actor2MoviesUpdateConnectionInput
-              where: Actor2MoviesConnectionWhere
+              where: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Actor2MoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Actor2Options {
@@ -435,6 +436,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -444,7 +446,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
+              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ActorOptions {

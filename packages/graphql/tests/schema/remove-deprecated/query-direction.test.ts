@@ -252,6 +252,7 @@ describe("Query Direction", () => {
 
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
+              where: UserFriendsConnectionWhere
             }
 
             input UserFriendsUpdateFieldInput {
@@ -260,7 +261,7 @@ describe("Query Direction", () => {
               delete: [UserFriendsDeleteFieldInput!]
               disconnect: [UserFriendsDisconnectFieldInput!]
               update: UserFriendsUpdateConnectionInput
-              where: UserFriendsConnectionWhere
+              where: UserFriendsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserFriendsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input UserOptions {
@@ -573,6 +574,7 @@ describe("Query Direction", () => {
 
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
+              where: UserFriendsConnectionWhere
             }
 
             input UserFriendsUpdateFieldInput {
@@ -581,7 +583,7 @@ describe("Query Direction", () => {
               delete: [UserFriendsDeleteFieldInput!]
               disconnect: [UserFriendsDisconnectFieldInput!]
               update: UserFriendsUpdateConnectionInput
-              where: UserFriendsConnectionWhere
+              where: UserFriendsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserFriendsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input UserOptions {
@@ -894,6 +896,7 @@ describe("Query Direction", () => {
 
             input UserFriendsUpdateConnectionInput {
               node: UserUpdateInput
+              where: UserFriendsConnectionWhere
             }
 
             input UserFriendsUpdateFieldInput {
@@ -902,7 +905,7 @@ describe("Query Direction", () => {
               delete: [UserFriendsDeleteFieldInput!]
               disconnect: [UserFriendsDisconnectFieldInput!]
               update: UserFriendsUpdateConnectionInput
-              where: UserFriendsConnectionWhere
+              where: UserFriendsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserFriendsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input UserOptions {

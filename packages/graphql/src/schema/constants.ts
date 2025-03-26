@@ -96,3 +96,15 @@ export function DEPRECATE_NESTED_AGGREGATION(relationship: RelationshipAdapter |
         },
     };
 }
+
+export function DEPRECATE_UPDATE_WHERE(
+    relationship: RelationshipAdapter | RelationshipDeclarationAdapter,
+    ifUnionMemberEntity?: ConcreteEntityAdapter
+) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use field "where" inside "${relationship.operations.getUpdateConnectionInputTypename(ifUnionMemberEntity)}" instead`,
+        },
+    };
+}

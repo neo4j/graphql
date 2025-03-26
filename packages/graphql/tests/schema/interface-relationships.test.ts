@@ -213,6 +213,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -221,7 +222,7 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -909,6 +910,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -917,7 +919,7 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -1269,6 +1271,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesUpdateConnectionInput {
               node: SeriesUpdateInput
+              where: EpisodeSeriesConnectionWhere
             }
 
             input EpisodeSeriesUpdateFieldInput {
@@ -1277,7 +1280,7 @@ describe("Interface Relationships", () => {
               delete: EpisodeSeriesDeleteFieldInput
               disconnect: EpisodeSeriesDisconnectFieldInput
               update: EpisodeSeriesUpdateConnectionInput
-              where: EpisodeSeriesConnectionWhere
+              where: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"EpisodeSeriesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -1405,6 +1408,7 @@ describe("Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -1413,7 +1417,7 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -1689,6 +1693,7 @@ describe("Interface Relationships", () => {
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsUpdateFieldInput {
@@ -1697,7 +1702,7 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ProductionAggregate {
@@ -1914,6 +1919,7 @@ describe("Interface Relationships", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -1922,7 +1928,7 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -2085,6 +2091,7 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesUpdateConnectionInput {
               node: EpisodeUpdateInput
+              where: SeriesEpisodesConnectionWhere
             }
 
             input SeriesEpisodesUpdateFieldInput {
@@ -2093,7 +2100,7 @@ describe("Interface Relationships", () => {
               delete: [SeriesEpisodesDeleteFieldInput!]
               disconnect: [SeriesEpisodesDisconnectFieldInput!]
               update: SeriesEpisodesUpdateConnectionInput
-              where: SeriesEpisodesConnectionWhere
+              where: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesEpisodesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesOptions {
@@ -2445,6 +2452,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -2453,7 +2461,7 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -2805,6 +2813,7 @@ describe("Interface Relationships", () => {
 
             input EpisodeSeriesUpdateConnectionInput {
               node: SeriesUpdateInput
+              where: EpisodeSeriesConnectionWhere
             }
 
             input EpisodeSeriesUpdateFieldInput {
@@ -2813,7 +2822,7 @@ describe("Interface Relationships", () => {
               delete: EpisodeSeriesDeleteFieldInput
               disconnect: EpisodeSeriesDisconnectFieldInput
               update: EpisodeSeriesUpdateConnectionInput
-              where: EpisodeSeriesConnectionWhere
+              where: EpisodeSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"EpisodeSeriesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -2941,6 +2950,7 @@ describe("Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2949,7 +2959,7 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -3245,6 +3255,7 @@ describe("Interface Relationships", () => {
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsUpdateFieldInput {
@@ -3253,7 +3264,7 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ProductionAggregate {
@@ -3470,6 +3481,7 @@ describe("Interface Relationships", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: StarredInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -3478,7 +3490,7 @@ describe("Interface Relationships", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -3641,6 +3653,7 @@ describe("Interface Relationships", () => {
 
             input SeriesEpisodesUpdateConnectionInput {
               node: EpisodeUpdateInput
+              where: SeriesEpisodesConnectionWhere
             }
 
             input SeriesEpisodesUpdateFieldInput {
@@ -3649,7 +3662,7 @@ describe("Interface Relationships", () => {
               delete: [SeriesEpisodesDeleteFieldInput!]
               disconnect: [SeriesEpisodesDisconnectFieldInput!]
               update: SeriesEpisodesUpdateConnectionInput
-              where: SeriesEpisodesConnectionWhere
+              where: SeriesEpisodesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesEpisodesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input SeriesOptions {
@@ -4075,6 +4088,7 @@ describe("Interface Relationships", () => {
 
             input Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2UpdateFieldInput {
@@ -4083,7 +4097,7 @@ describe("Interface Relationships", () => {
               delete: [Interface1Interface2DeleteFieldInput!]
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Interface1Options {
@@ -4509,6 +4523,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2UpdateFieldInput {
@@ -4517,7 +4532,7 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1Interface2DeleteFieldInput!]
               disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
               update: Type1Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type1Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type1Interface1NodeAggregationWhereInput {
@@ -4564,6 +4579,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
+              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateFieldInput {
@@ -4572,7 +4588,7 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1DeleteFieldInput!]
               disconnect: [Type1Interface1DisconnectFieldInput!]
               update: Type1Interface1UpdateConnectionInput
-              where: Type1Interface1ConnectionWhere
+              where: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type1Interface1UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type1Interface1UpdateInput {
@@ -4867,6 +4883,7 @@ describe("Interface Relationships", () => {
 
             input Type2Interface1Interface2UpdateConnectionInput {
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2UpdateFieldInput {
@@ -4875,7 +4892,7 @@ describe("Interface Relationships", () => {
               delete: [Type2Interface1Interface2DeleteFieldInput!]
               disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
               update: Type2Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type2Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type2Interface1Options {
@@ -5345,6 +5362,7 @@ describe("Interface Relationships", () => {
             input Interface1Interface2UpdateConnectionInput {
               edge: Interface1Interface2EdgeUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2UpdateFieldInput {
@@ -5353,7 +5371,7 @@ describe("Interface Relationships", () => {
               delete: [Interface1Interface2DeleteFieldInput!]
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Interface1Options {
@@ -5851,6 +5869,7 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2UpdateConnectionInput {
               edge: PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2UpdateFieldInput {
@@ -5859,7 +5878,7 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1Interface2DeleteFieldInput!]
               disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
               update: Type1Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type1Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type1Interface1NodeAggregationWhereInput {
@@ -5906,6 +5925,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
+              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateFieldInput {
@@ -5914,7 +5934,7 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1DeleteFieldInput!]
               disconnect: [Type1Interface1DisconnectFieldInput!]
               update: Type1Interface1UpdateConnectionInput
-              where: Type1Interface1ConnectionWhere
+              where: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type1Interface1UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type1Interface1UpdateInput {
@@ -6218,6 +6238,7 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2UpdateConnectionInput {
               edge: PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2UpdateFieldInput {
@@ -6226,7 +6247,7 @@ describe("Interface Relationships", () => {
               delete: [Type2Interface1Interface2DeleteFieldInput!]
               disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
               update: Type2Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type2Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type2Interface1Options {
@@ -6722,6 +6743,7 @@ describe("Interface Relationships", () => {
             input Interface1Interface2UpdateConnectionInput {
               edge: Interface1Interface2EdgeUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Interface1Interface2UpdateFieldInput {
@@ -6730,7 +6752,7 @@ describe("Interface Relationships", () => {
               delete: [Interface1Interface2DeleteFieldInput!]
               disconnect: [Interface1Interface2DisconnectFieldInput!]
               update: Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Interface1Options {
@@ -7165,6 +7187,7 @@ describe("Interface Relationships", () => {
             input Type1Interface1Interface2UpdateConnectionInput {
               edge: Type1PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type1Interface1Interface2UpdateFieldInput {
@@ -7173,7 +7196,7 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1Interface2DeleteFieldInput!]
               disconnect: [Type1Interface1Interface2DisconnectFieldInput!]
               update: Type1Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type1Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type1Interface1NodeAggregationWhereInput {
@@ -7220,6 +7243,7 @@ describe("Interface Relationships", () => {
 
             input Type1Interface1UpdateConnectionInput {
               node: Interface1UpdateInput
+              where: Type1Interface1ConnectionWhere
             }
 
             input Type1Interface1UpdateFieldInput {
@@ -7228,7 +7252,7 @@ describe("Interface Relationships", () => {
               delete: [Type1Interface1DeleteFieldInput!]
               disconnect: [Type1Interface1DisconnectFieldInput!]
               update: Type1Interface1UpdateConnectionInput
-              where: Type1Interface1ConnectionWhere
+              where: Type1Interface1ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type1Interface1UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type1Interface1UpdateInput {
@@ -7594,6 +7618,7 @@ describe("Interface Relationships", () => {
             input Type2Interface1Interface2UpdateConnectionInput {
               edge: Type2PropsUpdateInput
               node: Interface2UpdateInput
+              where: Interface1Interface2ConnectionWhere
             }
 
             input Type2Interface1Interface2UpdateFieldInput {
@@ -7602,7 +7627,7 @@ describe("Interface Relationships", () => {
               delete: [Type2Interface1Interface2DeleteFieldInput!]
               disconnect: [Type2Interface1Interface2DisconnectFieldInput!]
               update: Type2Interface1Interface2UpdateConnectionInput
-              where: Interface1Interface2ConnectionWhere
+              where: Interface1Interface2ConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Type2Interface1Interface2UpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Type2Interface1Options {
@@ -7995,6 +8020,7 @@ describe("Interface Relationships", () => {
 
             input CommentCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: ContentCreatorConnectionWhere
             }
 
             input CommentCreatorUpdateFieldInput {
@@ -8003,7 +8029,7 @@ describe("Interface Relationships", () => {
               delete: ContentCreatorDeleteFieldInput
               disconnect: ContentCreatorDisconnectFieldInput
               update: CommentCreatorUpdateConnectionInput
-              where: ContentCreatorConnectionWhere
+              where: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CommentCreatorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input CommentDeleteInput {
@@ -8142,6 +8168,7 @@ describe("Interface Relationships", () => {
 
             input CommentPostUpdateConnectionInput {
               node: PostUpdateInput
+              where: CommentPostConnectionWhere
             }
 
             input CommentPostUpdateFieldInput {
@@ -8150,7 +8177,7 @@ describe("Interface Relationships", () => {
               delete: CommentPostDeleteFieldInput
               disconnect: CommentPostDisconnectFieldInput
               update: CommentPostUpdateConnectionInput
-              where: CommentPostConnectionWhere
+              where: CommentPostConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CommentPostUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -8338,6 +8365,7 @@ describe("Interface Relationships", () => {
 
             input ContentCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: ContentCreatorConnectionWhere
             }
 
             input ContentCreatorUpdateFieldInput {
@@ -8346,7 +8374,7 @@ describe("Interface Relationships", () => {
               delete: ContentCreatorDeleteFieldInput
               disconnect: ContentCreatorDisconnectFieldInput
               update: ContentCreatorUpdateConnectionInput
-              where: ContentCreatorConnectionWhere
+              where: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ContentCreatorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ContentDeleteInput {
@@ -8626,6 +8654,7 @@ describe("Interface Relationships", () => {
 
             input PostCommentsUpdateConnectionInput {
               node: CommentUpdateInput
+              where: PostCommentsConnectionWhere
             }
 
             input PostCommentsUpdateFieldInput {
@@ -8634,7 +8663,7 @@ describe("Interface Relationships", () => {
               delete: [PostCommentsDeleteFieldInput!]
               disconnect: [PostCommentsDisconnectFieldInput!]
               update: PostCommentsUpdateConnectionInput
-              where: PostCommentsConnectionWhere
+              where: PostCommentsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostCommentsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostConnectInput {
@@ -8717,6 +8746,7 @@ describe("Interface Relationships", () => {
 
             input PostCreatorUpdateConnectionInput {
               node: UserUpdateInput
+              where: ContentCreatorConnectionWhere
             }
 
             input PostCreatorUpdateFieldInput {
@@ -8725,7 +8755,7 @@ describe("Interface Relationships", () => {
               delete: ContentCreatorDeleteFieldInput
               disconnect: ContentCreatorDisconnectFieldInput
               update: PostCreatorUpdateConnectionInput
-              where: ContentCreatorConnectionWhere
+              where: ContentCreatorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostCreatorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostDeleteInput {
@@ -9025,6 +9055,7 @@ describe("Interface Relationships", () => {
 
             input UserContentUpdateConnectionInput {
               node: ContentUpdateInput
+              where: UserContentConnectionWhere
             }
 
             input UserContentUpdateFieldInput {
@@ -9033,7 +9064,7 @@ describe("Interface Relationships", () => {
               delete: [UserContentDeleteFieldInput!]
               disconnect: [UserContentDisconnectFieldInput!]
               update: UserContentUpdateConnectionInput
-              where: UserContentConnectionWhere
+              where: UserContentConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input UserCreateInput {
@@ -9339,6 +9370,7 @@ describe("Interface Relationships", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ShowUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -9347,7 +9379,7 @@ describe("Interface Relationships", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -9603,6 +9635,7 @@ describe("Interface Relationships", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -9611,7 +9644,7 @@ describe("Interface Relationships", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
+              where: ShowActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -9907,6 +9940,7 @@ describe("Interface Relationships", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: StarredInUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -9915,7 +9949,7 @@ describe("Interface Relationships", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
+              where: ShowActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -10188,6 +10222,7 @@ describe("Interface Relationships", () => {
             input ShowActorsUpdateConnectionInput {
               edge: ShowActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ShowActorsConnectionWhere
             }
 
             input ShowActorsUpdateFieldInput {
@@ -10196,7 +10231,7 @@ describe("Interface Relationships", () => {
               delete: [ShowActorsDeleteFieldInput!]
               disconnect: [ShowActorsDisconnectFieldInput!]
               update: ShowActorsUpdateConnectionInput
-              where: ShowActorsConnectionWhere
+              where: ShowActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ShowActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ShowAggregate {

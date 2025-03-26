@@ -212,6 +212,7 @@ describe("Sort", () => {
 
             input Node1RelatedToUpdateConnectionInput {
               node: Node2UpdateInput
+              where: Node1RelatedToConnectionWhere
             }
 
             input Node1RelatedToUpdateFieldInput {
@@ -220,7 +221,7 @@ describe("Sort", () => {
               delete: [Node1RelatedToDeleteFieldInput!]
               disconnect: [Node1RelatedToDisconnectFieldInput!]
               update: Node1RelatedToUpdateConnectionInput
-              where: Node1RelatedToConnectionWhere
+              where: Node1RelatedToConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Node1RelatedToUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -425,6 +426,7 @@ describe("Sort", () => {
 
             input Node2RelatedToUpdateConnectionInput {
               node: Node1UpdateInput
+              where: Node2RelatedToConnectionWhere
             }
 
             input Node2RelatedToUpdateFieldInput {
@@ -433,7 +435,7 @@ describe("Sort", () => {
               delete: [Node2RelatedToDeleteFieldInput!]
               disconnect: [Node2RelatedToDisconnectFieldInput!]
               update: Node2RelatedToUpdateConnectionInput
-              where: Node2RelatedToConnectionWhere
+              where: Node2RelatedToConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Node2RelatedToUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input Node2UpdateInput {

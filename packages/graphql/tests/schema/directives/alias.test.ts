@@ -257,6 +257,7 @@ describe("Alias", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActorActedInPropsUpdateInput
               node: MovieUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -265,7 +266,7 @@ describe("Alias", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {

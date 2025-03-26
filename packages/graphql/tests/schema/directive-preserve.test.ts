@@ -443,6 +443,7 @@ describe("Directive-preserve", () => {
 
             input GenreMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: GenreMoviesConnectionWhere
             }
 
             input GenreMoviesUpdateFieldInput {
@@ -451,7 +452,7 @@ describe("Directive-preserve", () => {
               delete: [GenreMoviesDeleteFieldInput!]
               disconnect: [GenreMoviesDisconnectFieldInput!]
               update: GenreMoviesUpdateConnectionInput
-              where: GenreMoviesConnectionWhere
+              where: GenreMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"GenreMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input GenreOptions {
@@ -683,6 +684,7 @@ describe("Directive-preserve", () => {
 
             input MovieGenresUpdateConnectionInput {
               node: GenreUpdateInput
+              where: MovieGenresConnectionWhere
             }
 
             input MovieGenresUpdateFieldInput {
@@ -691,7 +693,7 @@ describe("Directive-preserve", () => {
               delete: [MovieGenresDeleteFieldInput!]
               disconnect: [MovieGenresDisconnectFieldInput!]
               update: MovieGenresUpdateConnectionInput
-              where: MovieGenresConnectionWhere
+              where: MovieGenresConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieGenresUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieOptions {
@@ -1048,6 +1050,7 @@ describe("Directive-preserve", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -1056,7 +1059,7 @@ describe("Directive-preserve", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -1312,6 +1315,7 @@ describe("Directive-preserve", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -1320,7 +1324,7 @@ describe("Directive-preserve", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -1593,6 +1597,7 @@ describe("Directive-preserve", () => {
             input ProductionActorsUpdateConnectionInput {
               edge: ProductionActorsEdgeUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input ProductionActorsUpdateFieldInput {
@@ -1601,7 +1606,7 @@ describe("Directive-preserve", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: ProductionActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ProductionAggregate {
@@ -1812,6 +1817,7 @@ describe("Directive-preserve", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: ProductionActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -1820,7 +1826,7 @@ describe("Directive-preserve", () => {
               delete: [ProductionActorsDeleteFieldInput!]
               disconnect: [ProductionActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: ProductionActorsConnectionWhere
+              where: ProductionActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -2171,6 +2177,7 @@ describe("Directive-preserve", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -2179,7 +2186,7 @@ describe("Directive-preserve", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -2477,6 +2484,7 @@ describe("Directive-preserve", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2485,7 +2493,7 @@ describe("Directive-preserve", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -2834,6 +2842,7 @@ describe("Directive-preserve", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: SeriesActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -2842,7 +2851,7 @@ describe("Directive-preserve", () => {
               delete: [SeriesActorsDeleteFieldInput!]
               disconnect: [SeriesActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: SeriesActorsConnectionWhere
+              where: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -3181,6 +3190,7 @@ describe("Directive-preserve", () => {
             input ActorActedInUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ProductionUpdateInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInUpdateFieldInput {
@@ -3189,7 +3199,7 @@ describe("Directive-preserve", () => {
               delete: [ActorActedInDeleteFieldInput!]
               disconnect: [ActorActedInDisconnectFieldInput!]
               update: ActorActedInUpdateConnectionInput
-              where: ActorActedInConnectionWhere
+              where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type ActorAggregate {
@@ -3487,6 +3497,7 @@ describe("Directive-preserve", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -3495,7 +3506,7 @@ describe("Directive-preserve", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
+              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -3844,6 +3855,7 @@ describe("Directive-preserve", () => {
             input SeriesActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: SeriesActorsConnectionWhere
             }
 
             input SeriesActorsUpdateFieldInput {
@@ -3852,7 +3864,7 @@ describe("Directive-preserve", () => {
               delete: [SeriesActorsDeleteFieldInput!]
               disconnect: [SeriesActorsDisconnectFieldInput!]
               update: SeriesActorsUpdateConnectionInput
-              where: SeriesActorsConnectionWhere
+              where: SeriesActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesAggregate {
@@ -4188,6 +4200,7 @@ describe("Directive-preserve", () => {
 
             input BlogPostsUpdateConnectionInput {
               node: PostUpdateInput
+              where: BlogPostsConnectionWhere
             }
 
             input BlogPostsUpdateFieldInput {
@@ -4196,7 +4209,7 @@ describe("Directive-preserve", () => {
               delete: [BlogPostsDeleteFieldInput!]
               disconnect: [BlogPostsDisconnectFieldInput!]
               update: BlogPostsUpdateConnectionInput
-              where: BlogPostsConnectionWhere
+              where: BlogPostsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"BlogPostsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             \\"\\"\\"
@@ -4504,6 +4517,7 @@ describe("Directive-preserve", () => {
 
             input UserContentBlogUpdateConnectionInput {
               node: BlogUpdateInput
+              where: UserContentBlogConnectionWhere
             }
 
             input UserContentBlogUpdateFieldInput {
@@ -4512,7 +4526,7 @@ describe("Directive-preserve", () => {
               delete: [UserContentBlogDeleteFieldInput!]
               disconnect: [UserContentBlogDisconnectFieldInput!]
               update: UserContentBlogUpdateConnectionInput
-              where: UserContentBlogConnectionWhere
+              where: UserContentBlogConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentBlogUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type UserContentConnection {
@@ -4566,6 +4580,7 @@ describe("Directive-preserve", () => {
 
             input UserContentPostUpdateConnectionInput {
               node: PostUpdateInput
+              where: UserContentPostConnectionWhere
             }
 
             input UserContentPostUpdateFieldInput {
@@ -4574,7 +4589,7 @@ describe("Directive-preserve", () => {
               delete: [UserContentPostDeleteFieldInput!]
               disconnect: [UserContentPostDisconnectFieldInput!]
               update: UserContentPostUpdateConnectionInput
-              where: UserContentPostConnectionWhere
+              where: UserContentPostConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserContentPostUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type UserContentRelationship {
