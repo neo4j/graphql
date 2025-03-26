@@ -23,6 +23,9 @@ import { TestHelper } from "../../utils/tests-helper";
 describe("https://github.com/neo4j/graphql/issues/6005", () => {
     let Movie: UniqueType;
     let Actor: UniqueType;
+    const age1 = 54;
+    const age2 = 37;
+    const age3 = 40;
 
     const testHelper = new TestHelper();
 
@@ -51,9 +54,9 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
 
         await testHelper.executeCypher(`
             CREATE (m:${Movie} { title: "Terminator"})
-            CREATE (m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${Actor} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
-            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${Actor} {name: "Linda", age: 37, born: datetime('2000-02-02')})
-            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Another Character" }]-(:${Actor} {name: "Another actor", age: 37, born: datetime('2000-02-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(arnold:${Actor} { name: "Arnold", age: ${age1}, born: datetime('1980-07-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${Actor} {name: "Linda", age: ${age2}, born: datetime('2000-02-02')})
+            CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Another Character" }]-(:${Actor} {name: "Another actor", age: ${age3}, born: datetime('2000-02-02')})
             CREATE (m)<-[:ACTED_IN { screentime: 10, character: "Future Terminator" }]-(arnold)
         `);
     });
@@ -62,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         await testHelper.close();
     });
 
-    test.only("should filter movies by actors count with unique results", async () => {
+    test("should filter movies by actors count with unique results", async () => {
         // count should be the 3 actors but should not count Arnold twice
         const query = /* GraphQL */ `
             query {
@@ -106,10 +109,6 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         });
     });
 
-    /**
-     * For the following tests we assuming that the deprecated syntax keep the existing behavior while when using the new syntax the
-     * distinct is applied. This is applied only to count aggregation as for node aggregations second thoughts are needed.
-     **/
     test("should filter movies by actors count on connection projection", async () => {
         const query = /* GraphQL */ `
             query {
@@ -220,9 +219,6 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
     });
 
     test("should return movies where the actors age sum is EQUAL to", async () => {
-        const age1 = 54;
-        const age2 = 37;
-        const age3 = 37;
         // arnold should not counted twice
         const sum = age1 + age2 + age3;
 
@@ -256,9 +252,6 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
     });
 
     test("should return movies where the actors age avg is EQUAL to", async () => {
-        const age1 = 54;
-        const age2 = 37;
-        const age3 = 37;
         // arnold should not counted twice
         const avg = (age1 + age2 + age3) / 3;
 
