@@ -380,8 +380,7 @@ describe("update", () => {
               where: { id_EQ: $movieId },
               update: {
                 actors: [{
-                  where: { node: { name_EQ: $initialName } },
-                  update: { node: { name: { set: $updatedName } } }
+                  update: { where: { node: { name_EQ: $initialName } }, node: { name: { set: $updatedName } } }
                 }]
               }
           ) {
@@ -742,13 +741,12 @@ describe("update", () => {
               where: { id_EQ: "${movieId}" }
               update: {
                 actors: [{
-                  where: { node: { name_EQ: "old actor name" } }
                   update: {
+                    where: { node: { name_EQ: "old actor name" } }
                     node: {
                         name: { set: "new actor name" }
                         movies: [{
-                            where: { node: { title_EQ: "old movie title" } }
-                            update: { node: { title: { set: "new movie title" } } }
+                            update: { where: { node: { title_EQ: "old movie title" } }, node: { title: { set: "new movie title" } } }
                         }]
                     }
                   }
@@ -1012,8 +1010,8 @@ describe("update", () => {
               where: { id_EQ: "${productId}" }
               update: {
                 photos: [{
-                  where: { node: { id_EQ: "${photoId}" } }
                   update: {
+                      where: { node: { id_EQ: "${photoId}" } }
                       node: {
                         color: { disconnect: { where: { node: { id_EQ: "${colorId}" } } } }
                       }
@@ -1116,8 +1114,8 @@ describe("update", () => {
                   update: {
                     photos: [
                       {
-                        where: { node: { name_EQ: "Green Photo", id_EQ: "${photo0Id}" } }
                         update: {
+                            where: { node: { name_EQ: "Green Photo", id_EQ: "${photo0Id}" } }
                             node: {
                                 name: { set: "Light Green Photo" }
                                 color: {
@@ -1128,8 +1126,8 @@ describe("update", () => {
                         }
                       }
                       {
-                        where: { node: { name_EQ: "Yellow Photo", id_EQ: "${photo1Id}" } }
                         update: {
+                            where: { node: { name_EQ: "Yellow Photo", id_EQ: "${photo1Id}" } }
                             node: {
                                 name: { set: "Light Yellow Photo" }
                                 color: {

@@ -53,7 +53,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                     where: { title: { eq: "Forrest Gump" } }
                     update: {
                         actors: [
-                            { where: { node: { name: { eq: "Tom Hanks" } } }, update: { edge: { screenTime_SET: 60 } } }
+                            { update: { where: { node: { name: { eq: "Tom Hanks" } } }, edge: { screenTime_SET: 60 } } }
                         ]
                     }
                 ) {
@@ -90,14 +90,14 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"Tom Hanks\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"Tom Hanks\\"
+                                                }
+                                            }
+                                        },
                                         \\"edge\\": {
                                             \\"screenTime_SET\\": {
                                                 \\"low\\": 60,
@@ -123,8 +123,11 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                     update: {
                         actors: [
                             {
-                                where: { node: { name: { eq: "Tom Hanks" } } }
-                                update: { edge: { screenTime_SET: 60 }, node: { name_SET: "Tom Hanks" } }
+                                update: {
+                                    where: { node: { name: { eq: "Tom Hanks" } } }
+                                    edge: { screenTime_SET: 60 }
+                                    node: { name_SET: "Tom Hanks" }
+                                }
                             }
                         ]
                     }
@@ -164,16 +167,16 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name\\": {
-                                                \\"eq\\": \\"Tom Hanks\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"Tom Hanks\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"Tom Hanks\\"
+                                                }
+                                            }
                                         },
                                         \\"edge\\": {
                                             \\"screenTime_SET\\": {

@@ -813,6 +813,7 @@ describe("Algebraic", () => {
 
             input DirectorDirectsUpdateConnectionInput {
               node: MovieUpdateInput
+              where: DirectorDirectsConnectionWhere
             }
 
             input DirectorDirectsUpdateFieldInput {
@@ -821,7 +822,6 @@ describe("Algebraic", () => {
               delete: [DirectorDirectsDeleteFieldInput!]
               disconnect: [DirectorDirectsDisconnectFieldInput!]
               update: DirectorDirectsUpdateConnectionInput
-              where: DirectorDirectsConnectionWhere
             }
 
             input DirectorDisconnectInput {
@@ -1117,6 +1117,7 @@ describe("Algebraic", () => {
 
             input MovieDirectedByUpdateConnectionInput {
               node: DirectorUpdateInput
+              where: MovieDirectedByConnectionWhere
             }
 
             input MovieDirectedByUpdateFieldInput {
@@ -1125,7 +1126,6 @@ describe("Algebraic", () => {
               delete: [MovieDirectedByDeleteFieldInput!]
               disconnect: [MovieDirectedByDisconnectFieldInput!]
               update: MovieDirectedByUpdateConnectionInput
-              where: MovieDirectedByConnectionWhere
             }
 
             type MovieDirectorDirectedByAggregateSelection {
@@ -1648,6 +1648,7 @@ describe("Algebraic", () => {
 
             input MovieWorkersUpdateConnectionInput {
               node: PersonUpdateInput
+              where: MovieWorkersConnectionWhere
             }
 
             input MovieWorkersUpdateFieldInput {
@@ -1656,7 +1657,6 @@ describe("Algebraic", () => {
               delete: [MovieWorkersDeleteFieldInput!]
               disconnect: [MovieWorkersDisconnectFieldInput!]
               update: MovieWorkersUpdateConnectionInput
-              where: MovieWorkersConnectionWhere
             }
 
             type MoviesConnection {
@@ -1920,6 +1920,7 @@ describe("Algebraic", () => {
 
             input PersonWorksInProductionUpdateConnectionInput {
               node: ProductionUpdateInput
+              where: PersonWorksInProductionConnectionWhere
             }
 
             input PersonWorksInProductionUpdateFieldInput {
@@ -1928,7 +1929,6 @@ describe("Algebraic", () => {
               delete: [PersonWorksInProductionDeleteFieldInput!]
               disconnect: [PersonWorksInProductionDisconnectFieldInput!]
               update: PersonWorksInProductionUpdateConnectionInput
-              where: PersonWorksInProductionConnectionWhere
             }
 
             interface Production {
@@ -2392,6 +2392,7 @@ describe("Algebraic", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: PersonUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2400,7 +2401,6 @@ describe("Algebraic", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -2675,6 +2675,7 @@ describe("Algebraic", () => {
             input PersonActedInMoviesUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: MovieUpdateInput
+              where: PersonActedInMoviesConnectionWhere
             }
 
             input PersonActedInMoviesUpdateFieldInput {
@@ -2683,7 +2684,6 @@ describe("Algebraic", () => {
               delete: [PersonActedInMoviesDeleteFieldInput!]
               disconnect: [PersonActedInMoviesDisconnectFieldInput!]
               update: PersonActedInMoviesUpdateConnectionInput
-              where: PersonActedInMoviesConnectionWhere
             }
 
             type PersonAggregate {

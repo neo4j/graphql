@@ -310,6 +310,7 @@ describe("Relationship", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -318,7 +319,6 @@ describe("Relationship", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -663,6 +663,7 @@ describe("Relationship", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -671,7 +672,6 @@ describe("Relationship", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             input ActorRelationshipFilters {
@@ -947,6 +947,7 @@ describe("Relationship", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -955,7 +956,6 @@ describe("Relationship", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {

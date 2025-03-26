@@ -1434,6 +1434,7 @@ describe("Aggregations", () => {
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesUpdateFieldInput {
@@ -1442,7 +1443,6 @@ describe("Aggregations", () => {
               delete: [PostLikesDeleteFieldInput!]
               disconnect: [PostLikesDisconnectFieldInput!]
               update: PostLikesUpdateConnectionInput
-              where: PostLikesConnectionWhere
             }
 
             \\"\\"\\"
@@ -2669,6 +2669,7 @@ describe("Aggregations", () => {
             input PostLikesUpdateConnectionInput {
               edge: LikesUpdateInput
               node: UserUpdateInput
+              where: PostLikesConnectionWhere
             }
 
             input PostLikesUpdateFieldInput {
@@ -2677,7 +2678,6 @@ describe("Aggregations", () => {
               delete: [PostLikesDeleteFieldInput!]
               disconnect: [PostLikesDisconnectFieldInput!]
               update: PostLikesUpdateConnectionInput
-              where: PostLikesConnectionWhere
             }
 
             \\"\\"\\"

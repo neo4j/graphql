@@ -496,6 +496,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             input UserFollowingUpdateConnectionInput {
               edge: FOLLOWSUpdateInput
               node: ProfileUpdateInput
+              where: UserFollowingConnectionWhere
             }
 
             input UserFollowingUpdateFieldInput {
@@ -504,7 +505,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               delete: [UserFollowingDeleteFieldInput!]
               disconnect: [UserFollowingDisconnectFieldInput!]
               update: UserFollowingUpdateConnectionInput
-              where: UserFollowingConnectionWhere
             }
 
             type UserProfileFollowingAggregateSelection {

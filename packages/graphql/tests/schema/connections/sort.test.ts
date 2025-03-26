@@ -244,6 +244,7 @@ describe("Sort", () => {
 
             input Node1RelatedToUpdateConnectionInput {
               node: Node2UpdateInput
+              where: Node1RelatedToConnectionWhere
             }
 
             input Node1RelatedToUpdateFieldInput {
@@ -252,7 +253,6 @@ describe("Sort", () => {
               delete: [Node1RelatedToDeleteFieldInput!]
               disconnect: [Node1RelatedToDisconnectFieldInput!]
               update: Node1RelatedToUpdateConnectionInput
-              where: Node1RelatedToConnectionWhere
             }
 
             input Node1RelationshipFilters {
@@ -483,6 +483,7 @@ describe("Sort", () => {
 
             input Node2RelatedToUpdateConnectionInput {
               node: Node1UpdateInput
+              where: Node2RelatedToConnectionWhere
             }
 
             input Node2RelatedToUpdateFieldInput {
@@ -491,7 +492,6 @@ describe("Sort", () => {
               delete: [Node2RelatedToDeleteFieldInput!]
               disconnect: [Node2RelatedToDisconnectFieldInput!]
               update: Node2RelatedToUpdateConnectionInput
-              where: Node2RelatedToConnectionWhere
             }
 
             input Node2RelationshipFilters {

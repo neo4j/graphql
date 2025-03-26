@@ -184,6 +184,7 @@ describe("inheritance", () => {
             input ActorFriendsUpdateConnectionInput {
               edge: FriendsWithUpdateInput
               node: PersonUpdateInput
+              where: PersonFriendsConnectionWhere
             }
 
             input ActorFriendsUpdateFieldInput {
@@ -192,7 +193,6 @@ describe("inheritance", () => {
               delete: [ActorFriendsDeleteFieldInput!]
               disconnect: [ActorFriendsDisconnectFieldInput!]
               update: ActorFriendsUpdateConnectionInput
-              where: PersonFriendsConnectionWhere
             }
 
             \\"\\"\\"
@@ -602,6 +602,7 @@ describe("inheritance", () => {
             input PersonFriendsUpdateConnectionInput {
               edge: PersonFriendsEdgeUpdateInput
               node: PersonUpdateInput
+              where: PersonFriendsConnectionWhere
             }
 
             input PersonFriendsUpdateFieldInput {
@@ -610,7 +611,6 @@ describe("inheritance", () => {
               delete: [PersonFriendsDeleteFieldInput!]
               disconnect: [PersonFriendsDisconnectFieldInput!]
               update: PersonFriendsUpdateConnectionInput
-              where: PersonFriendsConnectionWhere
             }
 
             enum PersonImplementation {

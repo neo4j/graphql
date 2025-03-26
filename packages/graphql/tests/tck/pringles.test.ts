@@ -230,8 +230,8 @@ describe("Cypher Create Pringles", () => {
                     update: {
                         photos: [
                             {
-                                where: { node: { description: { eq: "Green Photo" } } }
                                 update: {
+                                    where: { node: { description: { eq: "Green Photo" } } }
                                     node: {
                                         description_SET: "Light Green Photo"
                                         color: {
@@ -311,13 +311,6 @@ describe("Cypher Create Pringles", () => {
                         \\"update\\": {
                             \\"photos\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"description\\": {
-                                                \\"eq\\": \\"Green Photo\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"description_SET\\": \\"Light Green Photo\\",
@@ -347,6 +340,13 @@ describe("Cypher Create Pringles", () => {
                                                     ]
                                                 }
                                             ]
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"description\\": {
+                                                    \\"eq\\": \\"Green Photo\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -247,8 +247,10 @@ describe("Cypher Auth Allow", () => {
                     where: { id: { eq: "id-01" } }
                     update: {
                         content: {
-                            where: { node: { id: { eq: "post-id" } } }
-                            update: { node: { creator: { update: { node: { id_SET: "not bound" } } } } }
+                            update: {
+                                where: { node: { id: { eq: "post-id" } } }
+                                node: { creator: { update: { node: { id_SET: "not bound" } } } }
+                            }
                         }
                     }
                 ) {
@@ -336,13 +338,6 @@ describe("Cypher Auth Allow", () => {
                         \\"update\\": {
                             \\"content\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id\\": {
-                                                \\"eq\\": \\"post-id\\"
-                                            }
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"creator\\": [
@@ -354,6 +349,13 @@ describe("Cypher Auth Allow", () => {
                                                     }
                                                 }
                                             ]
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"id\\": {
+                                                    \\"eq\\": \\"post-id\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }

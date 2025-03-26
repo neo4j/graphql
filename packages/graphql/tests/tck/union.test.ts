@@ -376,8 +376,10 @@ describe("Cypher Union", () => {
                     update: {
                         search: {
                             Genre: {
-                                where: { node: { name: { eq: "some genre" } } }
-                                update: { node: { name_SET: "some new genre" } }
+                                update: {
+                                    where: { node: { name: { eq: "some genre" } } }
+                                    node: { name_SET: "some new genre" }
+                                }
                             }
                         }
                     }
@@ -418,16 +420,16 @@ describe("Cypher Union", () => {
                             \\"search\\": {
                                 \\"Genre\\": [
                                     {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name\\": {
-                                                    \\"eq\\": \\"some genre\\"
-                                                }
-                                            }
-                                        },
                                         \\"update\\": {
                                             \\"node\\": {
                                                 \\"name_SET\\": \\"some new genre\\"
+                                            },
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"some genre\\"
+                                                    }
+                                                }
                                             }
                                         }
                                     }

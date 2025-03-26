@@ -385,6 +385,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -393,7 +394,6 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {

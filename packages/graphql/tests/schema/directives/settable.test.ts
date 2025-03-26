@@ -674,6 +674,7 @@ describe("@settable", () => {
 
                 input ActorActedInUpdateConnectionInput {
                   node: MovieUpdateInput
+                  where: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInUpdateFieldInput {
@@ -682,7 +683,6 @@ describe("@settable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
                 }
 
                 type ActorAggregate {
@@ -1916,6 +1916,7 @@ describe("@settable", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -1924,7 +1925,6 @@ describe("@settable", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
                 }
 
                 type MovieAggregate {
@@ -2276,6 +2276,7 @@ describe("@settable", () => {
 
                 input ActorActedInUpdateConnectionInput {
                   node: MovieUpdateInput
+                  where: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInUpdateFieldInput {
@@ -2284,7 +2285,6 @@ describe("@settable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
                 }
 
                 type ActorAggregate {
@@ -2590,6 +2590,7 @@ describe("@settable", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -2598,7 +2599,6 @@ describe("@settable", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
                 }
 
                 type MovieAggregate {
@@ -2893,6 +2893,7 @@ describe("@settable", () => {
 
                 input ActorActedInMovieUpdateConnectionInput {
                   node: MovieUpdateInput
+                  where: ActorActedInMovieConnectionWhere
                 }
 
                 input ActorActedInMovieUpdateFieldInput {
@@ -2901,7 +2902,6 @@ describe("@settable", () => {
                   delete: [ActorActedInMovieDeleteFieldInput!]
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere
                 }
 
                 type ActorActedInRelationship {
@@ -2934,6 +2934,7 @@ describe("@settable", () => {
 
                 input ActorActedInSeriesUpdateConnectionInput {
                   node: SeriesUpdateInput
+                  where: ActorActedInSeriesConnectionWhere
                 }
 
                 input ActorActedInSeriesUpdateFieldInput {
@@ -2942,7 +2943,6 @@ describe("@settable", () => {
                   delete: [ActorActedInSeriesDeleteFieldInput!]
                   disconnect: [ActorActedInSeriesDisconnectFieldInput!]
                   update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere
                 }
 
                 input ActorActedInUpdateInput {
@@ -4233,6 +4233,7 @@ describe("@settable", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -4241,7 +4242,6 @@ describe("@settable", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
                 }
 
                 type MovieAggregate {
@@ -4634,6 +4634,7 @@ describe("@settable", () => {
 
                 input ActorActedInMovieUpdateConnectionInput {
                   node: MovieUpdateInput
+                  where: ActorActedInMovieConnectionWhere
                 }
 
                 input ActorActedInMovieUpdateFieldInput {
@@ -4642,7 +4643,6 @@ describe("@settable", () => {
                   delete: [ActorActedInMovieDeleteFieldInput!]
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere
                 }
 
                 type ActorActedInRelationship {
@@ -4675,6 +4675,7 @@ describe("@settable", () => {
 
                 input ActorActedInSeriesUpdateConnectionInput {
                   node: SeriesUpdateInput
+                  where: ActorActedInSeriesConnectionWhere
                 }
 
                 input ActorActedInSeriesUpdateFieldInput {
@@ -4683,7 +4684,6 @@ describe("@settable", () => {
                   delete: [ActorActedInSeriesDeleteFieldInput!]
                   disconnect: [ActorActedInSeriesDisconnectFieldInput!]
                   update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere
                 }
 
                 input ActorActedInUpdateInput {
@@ -4988,6 +4988,7 @@ describe("@settable", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -4996,7 +4997,6 @@ describe("@settable", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere
                 }
 
                 type MovieAggregate {
@@ -5445,6 +5445,7 @@ describe("@settable", () => {
 
                 input ActorActedInUpdateConnectionInput {
                   node: ProductionUpdateInput
+                  where: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInUpdateFieldInput {
@@ -5453,7 +5454,6 @@ describe("@settable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
                 }
 
                 type ActorAggregate {
@@ -6973,6 +6973,7 @@ describe("@settable", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: ProductionActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -6981,7 +6982,6 @@ describe("@settable", () => {
                   delete: [ProductionActorsDeleteFieldInput!]
                   disconnect: [ProductionActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
                 }
 
                 type MovieAggregate {
@@ -7420,6 +7420,7 @@ describe("@settable", () => {
 
                 input SeriesActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: ProductionActorsConnectionWhere
                 }
 
                 input SeriesActorsUpdateFieldInput {
@@ -7428,7 +7429,6 @@ describe("@settable", () => {
                   delete: [ProductionActorsDeleteFieldInput!]
                   disconnect: [ProductionActorsDisconnectFieldInput!]
                   update: SeriesActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
                 }
 
                 type SeriesAggregate {
@@ -7750,6 +7750,7 @@ describe("@settable", () => {
 
                 input ActorActedInUpdateConnectionInput {
                   node: ProductionUpdateInput
+                  where: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInUpdateFieldInput {
@@ -7758,7 +7759,6 @@ describe("@settable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere
                 }
 
                 type ActorAggregate {
@@ -8029,6 +8029,7 @@ describe("@settable", () => {
 
                 input MovieActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: ProductionActorsConnectionWhere
                 }
 
                 input MovieActorsUpdateFieldInput {
@@ -8037,7 +8038,6 @@ describe("@settable", () => {
                   delete: [ProductionActorsDeleteFieldInput!]
                   disconnect: [ProductionActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
                 }
 
                 type MovieAggregate {
@@ -8269,6 +8269,7 @@ describe("@settable", () => {
 
                 input ProductionActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: ProductionActorsConnectionWhere
                 }
 
                 input ProductionActorsUpdateFieldInput {
@@ -8277,7 +8278,6 @@ describe("@settable", () => {
                   delete: [ProductionActorsDeleteFieldInput!]
                   disconnect: [ProductionActorsDisconnectFieldInput!]
                   update: ProductionActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
                 }
 
                 type ProductionAggregate {
@@ -8501,6 +8501,7 @@ describe("@settable", () => {
 
                 input SeriesActorsUpdateConnectionInput {
                   node: ActorUpdateInput
+                  where: ProductionActorsConnectionWhere
                 }
 
                 input SeriesActorsUpdateFieldInput {
@@ -8509,7 +8510,6 @@ describe("@settable", () => {
                   delete: [ProductionActorsDeleteFieldInput!]
                   disconnect: [ProductionActorsDisconnectFieldInput!]
                   update: SeriesActorsUpdateConnectionInput
-                  where: ProductionActorsConnectionWhere
                 }
 
                 type SeriesAggregate {

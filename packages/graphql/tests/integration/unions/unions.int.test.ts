@@ -518,8 +518,8 @@ describe("unions", () => {
                     update: {
                         search: {
                             ${GenreType}: {
-                                where: { node: { name_EQ: "${genreName}" } },
                                 update: {
+                                    where: { node: { name_EQ: "${genreName}" } },
                                     node: { name_SET: "${newGenreName}" }
                                 }
                             }
@@ -598,14 +598,14 @@ describe("unions", () => {
                     update: {
                         search: {
                             ${GenreType}: {
-                                where: { node: { name_EQ: "${genreName}" } },
                                 update: {
+                                    where: { node: { name_EQ: "${genreName}" } },
                                     node: { name_SET: "${newGenreName}" }
                                 }
                             }
                             ${MovieType}: {
-                                where: { node: { title_EQ: "${nestedMovieTitle}" } },
                                 update: {
+                                    where: { node: { title_EQ: "${nestedMovieTitle}" } },
                                     node: { title_SET: "${newNestedMovieTitle}" }
                                 }
                             }

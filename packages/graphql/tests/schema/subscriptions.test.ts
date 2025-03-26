@@ -362,6 +362,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -370,7 +371,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -783,6 +783,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -791,7 +792,6 @@ describe("Subscriptions", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             input ActorRelationshipFilters {
@@ -1077,6 +1077,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -1085,7 +1086,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -1562,6 +1562,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsPersonUpdateConnectionInput {
               node: PersonUpdateInput
+              where: MovieActorsPersonConnectionWhere
             }
 
             input MovieActorsPersonUpdateFieldInput {
@@ -1570,7 +1571,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere
             }
 
             type MovieActorsRelationship {
@@ -1611,6 +1611,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsStarUpdateConnectionInput {
               node: StarUpdateInput
+              where: MovieActorsStarConnectionWhere
             }
 
             input MovieActorsStarUpdateFieldInput {
@@ -1619,7 +1620,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere
             }
 
             input MovieActorsUpdateInput {
@@ -1978,6 +1978,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -1986,7 +1987,6 @@ describe("Subscriptions", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
             }
 
             input PersonUpdateInput {
@@ -2227,6 +2227,7 @@ describe("Subscriptions", () => {
 
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: StarMoviesConnectionWhere
             }
 
             input StarMoviesUpdateFieldInput {
@@ -2235,7 +2236,6 @@ describe("Subscriptions", () => {
               delete: [StarMoviesDeleteFieldInput!]
               disconnect: [StarMoviesDisconnectFieldInput!]
               update: StarMoviesUpdateConnectionInput
-              where: StarMoviesConnectionWhere
             }
 
             input StarUpdateInput {
@@ -2589,6 +2589,7 @@ describe("Subscriptions", () => {
 
             input ActorMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesUpdateFieldInput {
@@ -2597,7 +2598,6 @@ describe("Subscriptions", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere
             }
 
             input ActorRelationshipFilters {
@@ -2899,6 +2899,7 @@ describe("Subscriptions", () => {
             input MovieActorsUpdateConnectionInput {
               edge: ActedInUpdateInput
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -2907,7 +2908,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -3442,6 +3442,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsUpdateConnectionInput {
               node: ActorUpdateInput
+              where: MovieActorsConnectionWhere
             }
 
             input MovieActorsUpdateFieldInput {
@@ -3450,7 +3451,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere
             }
 
             type MovieAggregate {
@@ -3930,6 +3930,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsPersonUpdateConnectionInput {
               node: PersonUpdateInput
+              where: MovieActorsPersonConnectionWhere
             }
 
             input MovieActorsPersonUpdateFieldInput {
@@ -3938,7 +3939,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere
             }
 
             type MovieActorsRelationship {
@@ -3979,6 +3979,7 @@ describe("Subscriptions", () => {
 
             input MovieActorsStarUpdateConnectionInput {
               node: StarUpdateInput
+              where: MovieActorsStarConnectionWhere
             }
 
             input MovieActorsStarUpdateFieldInput {
@@ -3987,7 +3988,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere
             }
 
             input MovieActorsUpdateInput {
@@ -4346,6 +4346,7 @@ describe("Subscriptions", () => {
 
             input PersonMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesUpdateFieldInput {
@@ -4354,7 +4355,6 @@ describe("Subscriptions", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere
             }
 
             input PersonUpdateInput {
@@ -4595,6 +4595,7 @@ describe("Subscriptions", () => {
 
             input StarMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: StarMoviesConnectionWhere
             }
 
             input StarMoviesUpdateFieldInput {
@@ -4603,7 +4604,6 @@ describe("Subscriptions", () => {
               delete: [StarMoviesDeleteFieldInput!]
               disconnect: [StarMoviesDisconnectFieldInput!]
               update: StarMoviesUpdateConnectionInput
-              where: StarMoviesConnectionWhere
             }
 
             input StarUpdateInput {

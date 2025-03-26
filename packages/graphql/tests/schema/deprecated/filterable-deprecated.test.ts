@@ -856,6 +856,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -864,7 +865,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorRelationshipFilters {
@@ -1151,6 +1151,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -1159,7 +1160,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -1540,6 +1540,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -1548,7 +1549,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorRelationshipFilters {
@@ -1835,6 +1835,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -1843,7 +1844,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -2224,6 +2224,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -2232,7 +2233,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorRelationshipFilters {
@@ -2519,6 +2519,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -2527,7 +2528,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -2905,6 +2905,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -2913,7 +2914,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorRelationshipFilters {
@@ -3139,6 +3139,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -3147,7 +3148,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -3529,6 +3529,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -3537,7 +3538,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorRelationshipFilters {
@@ -3824,6 +3824,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -3832,7 +3833,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -4215,6 +4215,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -4223,7 +4224,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -4483,6 +4483,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -4491,7 +4492,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -4849,6 +4849,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -4857,7 +4858,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorRelationshipFilters {
@@ -5083,6 +5083,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -5091,7 +5092,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -5466,6 +5466,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -5474,7 +5475,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -5676,6 +5676,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -5684,7 +5685,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -6143,6 +6143,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -6151,7 +6152,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -6398,6 +6398,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -6406,7 +6407,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -6866,6 +6866,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -6874,7 +6875,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -7076,6 +7076,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsUpdateConnectionInput {
                       node: PersonUpdateInput
+                      where: MovieActorsConnectionWhere
                     }
 
                     input MovieActorsUpdateFieldInput {
@@ -7084,7 +7085,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsDeleteFieldInput!]
                       disconnect: [MovieActorsDisconnectFieldInput!]
                       update: MovieActorsUpdateConnectionInput
-                      where: MovieActorsConnectionWhere
                     }
 
                     type MovieAggregate {
@@ -7559,6 +7559,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -7567,7 +7568,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -7806,6 +7806,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: AppearanceMoviesConnectionWhere
                     }
 
                     input AppearanceMoviesUpdateFieldInput {
@@ -7814,7 +7815,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [AppearanceMoviesDeleteFieldInput!]
                       disconnect: [AppearanceMoviesDisconnectFieldInput!]
                       update: AppearanceMoviesUpdateConnectionInput
-                      where: AppearanceMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -7989,6 +7989,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsActorUpdateFieldInput {
@@ -7997,7 +7998,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsAppearanceConnectFieldInput {
@@ -8033,6 +8033,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsAppearanceUpdateConnectionInput {
                       node: AppearanceUpdateInput
+                      where: MovieActorsAppearanceConnectionWhere
                     }
 
                     input MovieActorsAppearanceUpdateFieldInput {
@@ -8041,7 +8042,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsAppearanceDeleteFieldInput!]
                       disconnect: [MovieActorsAppearanceDisconnectFieldInput!]
                       update: MovieActorsAppearanceUpdateConnectionInput
-                      where: MovieActorsAppearanceConnectionWhere
                     }
 
                     input MovieActorsConnectInput {
@@ -8521,6 +8521,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -8529,7 +8530,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -8768,6 +8768,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: AppearanceMoviesConnectionWhere
                     }
 
                     input AppearanceMoviesUpdateFieldInput {
@@ -8776,7 +8777,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [AppearanceMoviesDeleteFieldInput!]
                       disconnect: [AppearanceMoviesDisconnectFieldInput!]
                       update: AppearanceMoviesUpdateConnectionInput
-                      where: AppearanceMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -8951,6 +8951,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsActorUpdateFieldInput {
@@ -8959,7 +8960,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsAppearanceConnectFieldInput {
@@ -8995,6 +8995,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsAppearanceUpdateConnectionInput {
                       node: AppearanceUpdateInput
+                      where: MovieActorsAppearanceConnectionWhere
                     }
 
                     input MovieActorsAppearanceUpdateFieldInput {
@@ -9003,7 +9004,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsAppearanceDeleteFieldInput!]
                       disconnect: [MovieActorsAppearanceDisconnectFieldInput!]
                       update: MovieActorsAppearanceUpdateConnectionInput
-                      where: MovieActorsAppearanceConnectionWhere
                     }
 
                     input MovieActorsConnectInput {
@@ -9483,6 +9483,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input ActorMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: ActorMoviesConnectionWhere
                     }
 
                     input ActorMoviesUpdateFieldInput {
@@ -9491,7 +9492,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [ActorMoviesDeleteFieldInput!]
                       disconnect: [ActorMoviesDisconnectFieldInput!]
                       update: ActorMoviesUpdateConnectionInput
-                      where: ActorMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -9730,6 +9730,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input AppearanceMoviesUpdateConnectionInput {
                       node: MovieUpdateInput
+                      where: AppearanceMoviesConnectionWhere
                     }
 
                     input AppearanceMoviesUpdateFieldInput {
@@ -9738,7 +9739,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [AppearanceMoviesDeleteFieldInput!]
                       disconnect: [AppearanceMoviesDisconnectFieldInput!]
                       update: AppearanceMoviesUpdateConnectionInput
-                      where: AppearanceMoviesConnectionWhere
                     }
 
                     \\"\\"\\"
@@ -9913,6 +9913,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsActorUpdateConnectionInput {
                       node: ActorUpdateInput
+                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsActorUpdateFieldInput {
@@ -9921,7 +9922,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsActorDeleteFieldInput!]
                       disconnect: [MovieActorsActorDisconnectFieldInput!]
                       update: MovieActorsActorUpdateConnectionInput
-                      where: MovieActorsActorConnectionWhere
                     }
 
                     input MovieActorsAppearanceConnectFieldInput {
@@ -9957,6 +9957,7 @@ describe("@filterable directive - deprecated", () => {
 
                     input MovieActorsAppearanceUpdateConnectionInput {
                       node: AppearanceUpdateInput
+                      where: MovieActorsAppearanceConnectionWhere
                     }
 
                     input MovieActorsAppearanceUpdateFieldInput {
@@ -9965,7 +9966,6 @@ describe("@filterable directive - deprecated", () => {
                       delete: [MovieActorsAppearanceDeleteFieldInput!]
                       disconnect: [MovieActorsAppearanceDisconnectFieldInput!]
                       update: MovieActorsAppearanceUpdateConnectionInput
-                      where: MovieActorsAppearanceConnectionWhere
                     }
 
                     input MovieActorsConnectInput {

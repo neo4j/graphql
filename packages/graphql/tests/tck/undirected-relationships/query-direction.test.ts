@@ -271,8 +271,10 @@ describe("queryDirection in relationships", () => {
                         where: { friends: { some: { name: { eq: "John Smith" } } } }
                         update: {
                             friends: {
-                                where: { node: { name: { eq: "Jane Smith" } } }
-                                update: { node: { name_SET: "Janet Smith" } }
+                                update: {
+                                    where: { node: { name: { eq: "Jane Smith" } } }
+                                    node: { name_SET: "Janet Smith" }
+                                }
                             }
                         }
                     ) {
@@ -324,16 +326,16 @@ describe("queryDirection in relationships", () => {
                             \\"update\\": {
                                 \\"friends\\": [
                                     {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name\\": {
-                                                    \\"eq\\": \\"Jane Smith\\"
-                                                }
-                                            }
-                                        },
                                         \\"update\\": {
                                             \\"node\\": {
                                                 \\"name_SET\\": \\"Janet Smith\\"
+                                            },
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Jane Smith\\"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -642,8 +644,10 @@ describe("queryDirection in relationships", () => {
                         where: { friends: { some: { name: { eq: "John Smith" } } } }
                         update: {
                             friends: {
-                                where: { node: { name: { eq: "Jane Smith" } } }
-                                update: { node: { name_SET: "Janet Smith" } }
+                                update: {
+                                    where: { node: { name: { eq: "Jane Smith" } } }
+                                    node: { name_SET: "Janet Smith" }
+                                }
                             }
                         }
                     ) {
@@ -695,16 +699,16 @@ describe("queryDirection in relationships", () => {
                             \\"update\\": {
                                 \\"friends\\": [
                                     {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name\\": {
-                                                    \\"eq\\": \\"Jane Smith\\"
-                                                }
-                                            }
-                                        },
                                         \\"update\\": {
                                             \\"node\\": {
                                                 \\"name_SET\\": \\"Janet Smith\\"
+                                            },
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Jane Smith\\"
+                                                    }
+                                                }
                                             }
                                         }
                                     }

@@ -329,6 +329,7 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
             input PersonFriendsUpdateConnectionInput {
               edge: FriendOfUpdateInput
               node: PersonUpdateInput
+              where: PersonFriendsConnectionWhere
             }
 
             input PersonFriendsUpdateFieldInput {
@@ -337,7 +338,6 @@ describe("https://github.com/neo4j/graphql/issues/3817", () => {
               delete: [PersonFriendsDeleteFieldInput!]
               disconnect: [PersonFriendsDisconnectFieldInput!]
               update: PersonFriendsUpdateConnectionInput
-              where: PersonFriendsConnectionWhere
             }
 
             type PersonPersonFriendsAggregateSelection {

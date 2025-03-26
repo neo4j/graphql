@@ -274,6 +274,7 @@ describe("Apollo Federation", () => {
 
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostAuthorConnectionWhere
             }
 
             input PostAuthorUpdateFieldInput {
@@ -282,7 +283,6 @@ describe("Apollo Federation", () => {
               delete: [PostAuthorDeleteFieldInput!]
               disconnect: [PostAuthorDisconnectFieldInput!]
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
             }
 
             input PostConnectInput {
@@ -615,6 +615,7 @@ describe("Apollo Federation", () => {
 
             input UserPostsUpdateConnectionInput {
               node: PostUpdateInput
+              where: UserPostsConnectionWhere
             }
 
             input UserPostsUpdateFieldInput {
@@ -623,7 +624,6 @@ describe("Apollo Federation", () => {
               delete: [UserPostsDeleteFieldInput!]
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere
             }
 
             input UserRelationshipFilters {
@@ -966,6 +966,7 @@ describe("Apollo Federation", () => {
 
             input PostAuthorUpdateConnectionInput {
               node: UserUpdateInput
+              where: PostAuthorConnectionWhere
             }
 
             input PostAuthorUpdateFieldInput {
@@ -974,7 +975,6 @@ describe("Apollo Federation", () => {
               delete: [PostAuthorDeleteFieldInput!]
               disconnect: [PostAuthorDisconnectFieldInput!]
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere
             }
 
             input PostCreateInput {

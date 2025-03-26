@@ -181,14 +181,14 @@ export default function createUpdateAndParams({
                         const delayedSubquery: string[] = [];
                         let aggregationWhere = false;
 
-                        if (update.where) {
+                        if (update.update.where) {
                             try {
                                 const {
                                     cypher: whereClause,
                                     subquery: preComputedSubqueries,
                                     params: whereParams,
                                 } = createConnectionWhereAndParams({
-                                    whereInput: update.where,
+                                    whereInput: update.update.where,
                                     node: refNode,
                                     nodeVariable: variableName,
                                     relationship,

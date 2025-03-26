@@ -27,7 +27,7 @@ import type {
 } from "graphql-compose";
 import { RelationshipNestedOperationsOption } from "../../constants";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
@@ -244,29 +244,6 @@ function makeUpdateFieldInputTypeFields({
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
 
-    let connectionWhereInputType: InputTypeComposer | string | undefined;
-    const relationshipTarget = relationshipAdapter.target;
-    if (relationshipTarget instanceof ConcreteEntityAdapter) {
-        connectionWhereInputType = relationshipAdapter.operations.getConnectionWhereTypename();
-    } else if (relationshipTarget instanceof InterfaceEntityAdapter) {
-        connectionWhereInputType = relationshipAdapter.operations.getConnectionWhereTypename();
-    } else {
-        if (!ifUnionMemberEntity) {
-            throw new Error("Member Entity required.");
-        }
-        connectionWhereInputType = withConnectionWhereInputType({
-            relationshipAdapter,
-            memberEntity: ifUnionMemberEntity,
-            composer,
-        });
-    }
-    if (connectionWhereInputType) {
-        fields["where"] = {
-            type: connectionWhereInputType,
-            directives: [],
-        };
-    }
-
     const connectFieldInputType = withConnectFieldInputType({ relationshipAdapter, ifUnionMemberEntity, composer });
     if (connectFieldInputType) {
         fields["connect"] = {
@@ -449,6 +426,11 @@ function makeUpdateConnectionFieldInputTypeFields({
             features,
         });
         fields["node"] = updateInputType;
+        fields["where"] = withConnectionWhereInputType({
+            relationshipAdapter,
+            memberEntity: ifUnionMemberEntity,
+            composer,
+        });
     } else {
         // TODO: we need to fix deprecatedDirectives before we can use the reference
         // const updateInputType = withUpdateInputType({
@@ -458,6 +440,7 @@ function makeUpdateConnectionFieldInputTypeFields({
         // });
         // fields["node"] = updateInputType;
         fields["node"] = relationshipAdapter.target.operations.updateInputTypeName;
+        fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
     }
     if (relationshipAdapter.hasUpdateInputFields) {
         fields["edge"] = relationshipAdapter.operations.edgeUpdateInputTypeName;

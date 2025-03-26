@@ -204,6 +204,7 @@ describe("Interfaces", () => {
 
             input MovieMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: MovieNodeMoviesConnectionWhere
             }
 
             input MovieMoviesUpdateFieldInput {
@@ -212,7 +213,6 @@ describe("Interfaces", () => {
               delete: [MovieNodeMoviesDeleteFieldInput!]
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieMoviesUpdateConnectionInput
-              where: MovieNodeMoviesConnectionWhere
             }
 
             interface MovieNode {
@@ -668,6 +668,7 @@ describe("Interfaces", () => {
 
             input MovieMoviesUpdateConnectionInput {
               node: MovieUpdateInput
+              where: MovieNodeMoviesConnectionWhere
             }
 
             input MovieMoviesUpdateFieldInput {
@@ -676,7 +677,6 @@ describe("Interfaces", () => {
               delete: [MovieNodeMoviesDeleteFieldInput!]
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieMoviesUpdateConnectionInput
-              where: MovieNodeMoviesConnectionWhere
             }
 
             interface MovieNode @something(something: \\"test\\") {

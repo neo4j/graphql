@@ -1004,6 +1004,7 @@ describe("Exclude attribute suffix based filtering", () => {
             input typeAActedInUpdateConnectionInput {
               edge: relTypeUpdateInput
               node: typeBUpdateInput
+              where: typeAActedInConnectionWhere
             }
 
             input typeAActedInUpdateFieldInput {
@@ -1012,7 +1013,6 @@ describe("Exclude attribute suffix based filtering", () => {
               delete: [typeAActedInDeleteFieldInput!]
               disconnect: [typeAActedInDisconnectFieldInput!]
               update: typeAActedInUpdateConnectionInput
-              where: typeAActedInConnectionWhere
             }
 
             type typeAAggregate {
@@ -1332,6 +1332,7 @@ describe("Exclude attribute suffix based filtering", () => {
             input typeBRelsUpdateConnectionInput {
               edge: relTypeUpdateInput
               node: typeAUpdateInput
+              where: typeBRelsConnectionWhere
             }
 
             input typeBRelsUpdateFieldInput {
@@ -1340,7 +1341,6 @@ describe("Exclude attribute suffix based filtering", () => {
               delete: [typeBRelsDeleteFieldInput!]
               disconnect: [typeBRelsDisconnectFieldInput!]
               update: typeBRelsUpdateConnectionInput
-              where: typeBRelsConnectionWhere
             }
 
             \\"\\"\\"
