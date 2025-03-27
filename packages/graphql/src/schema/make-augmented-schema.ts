@@ -801,59 +801,61 @@ function generateInterfaceObjectType({
         complexityEstimatorHelper,
     });
 
-    const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
-    if (interfaceEntityAdapter.isReadable || interfaceEntityAdapter.isAggregable) {
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
+    const hasImplementedEntities = interfaceEntityAdapter.concreteEntities.length > 0;
+    if (hasImplementedEntities) {
+        const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
+        if (interfaceEntityAdapter.isReadable || interfaceEntityAdapter.isAggregable) {
+            composer.Query.addFields({
+                [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                    composer,
+                    entityAdapter: interfaceEntityAdapter,
+                    propagatedDirectives,
+                    isLimitRequired: features?.limitRequired,
+                }),
+            });
+        }
+        if (interfaceEntityAdapter.isReadable) {
+            complexityEstimatorHelper.registerField("Query", interfaceEntityAdapter.operations.rootTypeFieldNames.read);
+            composer.Query.addFields({
+                [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
+                    entityAdapter: interfaceEntityAdapter,
+                    composer,
+                    isLimitRequired: features?.limitRequired,
+                }),
+            });
+
+            composer.Query.setFieldDirectives(
+                interfaceEntityAdapter.operations.rootTypeFieldNames.read,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+
+            complexityEstimatorHelper.registerField(
+                "Query",
+                interfaceEntityAdapter.operations.rootTypeFieldNames.connection
+            );
+
+            composer.Query.addFields({
+                [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
+                    composer,
+                    entityAdapter: interfaceEntityAdapter,
+                    propagatedDirectives,
+                    isLimitRequired: features?.limitRequired,
+                }),
+            });
+            composer.Query.setFieldDirectives(
+                interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
+        }
+
+        if (interfaceEntityAdapter.isAggregable) {
+            withAggregateSelectionType({
                 entityAdapter: interfaceEntityAdapter,
+                aggregationTypesMapper,
                 propagatedDirectives,
-                isLimitRequired: features?.limitRequired,
-            }),
-        });
-    }
-    if (interfaceEntityAdapter.isReadable) {
-        complexityEstimatorHelper.registerField("Query", interfaceEntityAdapter.operations.rootTypeFieldNames.read);
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
-                entityAdapter: interfaceEntityAdapter,
                 composer,
-                isLimitRequired: features?.limitRequired,
-            }),
-        });
-
-        composer.Query.setFieldDirectives(
-            interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
-
-        complexityEstimatorHelper.registerField(
-            "Query",
-            interfaceEntityAdapter.operations.rootTypeFieldNames.connection
-        );
-
-        // if (interfaceEntityAdapter.isAggregable) {
-        composer.Query.addFields({
-            [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                composer,
-                entityAdapter: interfaceEntityAdapter,
-                propagatedDirectives,
-                isLimitRequired: features?.limitRequired,
-            }),
-        });
-        // }
-        composer.Query.setFieldDirectives(
-            interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
-    }
-    if (interfaceEntityAdapter.isAggregable) {
-        withAggregateSelectionType({
-            entityAdapter: interfaceEntityAdapter,
-            aggregationTypesMapper,
-            propagatedDirectives,
-            composer,
-            features,
-        });
+                features,
+            });
+        }
     }
 }
