@@ -371,6 +371,7 @@ function createRelationshipFieldsForTarget({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
+        features,
     });
 
     augmentDeleteInputTypeWithDeleteFieldInput({
