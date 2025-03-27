@@ -30,7 +30,7 @@
         "concurrently": "9.1.2",
         "dotenv": "16.4.7",
         "eslint": "8.57.1",
-        "eslint-config-prettier": "9.1.0",
+        "eslint-config-prettier": "10.1.1",
         "eslint-formatter-summary": "1.1.0",
         "eslint-import-resolver-typescript": "3.10.0",
         "eslint-plugin-eslint-comments": "3.2.0",
