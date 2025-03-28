@@ -318,7 +318,9 @@ function makeAugmentedSchema({
             def.setDirectives(
                 graphqlDirectivesToCompose(userDefinedDirectivesForUnion.get(unionEntityAdapter.name) || [])
             );
-            if (unionEntityAdapter.isReadable) {
+            const hasImplementedEntities = unionEntityAdapter.concreteEntities.length > 0;
+
+            if (unionEntityAdapter.isReadable && hasImplementedEntities) {
                 complexityEstimatorHelper.registerField("Query", unionEntityAdapter.operations.rootTypeFieldNames.read);
                 composer.Query.addFields({
                     [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({

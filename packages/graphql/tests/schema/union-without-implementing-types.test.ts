@@ -18,22 +18,23 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { gql } from "graphql-tag";
-import { lexicographicSortSchema } from "graphql/utilities";
+import { lexicographicSortSchema } from "graphql";
+import gql from "graphql-tag";
 import { Neo4jGraphQL } from "../../src";
 
-describe("Interfaces without implementing types", () => {
-    test("Interfaces without implementing types", async () => {
+describe("Union Interface Relationships", () => {
+    test("Union Interface Relationships", async () => {
         const typeDefs = gql`
-            interface Production {
-                title: String!
-            }
+            union Production = NotANode | FakeNode
 
             type Movie @node {
                 title: String!
             }
 
-            type NotANode implements Production {
+            type NotANode {
+                title: String!
+            }
+            type FakeNode {
                 title: String!
             }
         `;
