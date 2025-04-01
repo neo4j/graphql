@@ -3116,7 +3116,7 @@ __metadata:
     is-uuid: "npm:1.0.2"
     jest: "npm:29.7.0"
     jest-extended: "npm:4.0.2"
-    jose: "npm:^5.0.0"
+    jose: "npm:^6.0.0"
     jwks-rsa: "npm:3.2.0"
     koa: "npm:2.16.0"
     koa-jwt: "npm:4.0.4"
@@ -13775,10 +13775,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.0.0":
-  version: 5.10.0
-  resolution: "jose@npm:5.10.0"
-  checksum: 10c0/e20d9fc58d7e402f2e5f04e824b8897d5579aae60e64cb88ebdea1395311c24537bf4892f7de413fab1acf11e922797fb1b42269bc8fc65089a3749265ccb7b0
+"jose@npm:^6.0.0":
+  version: 6.0.10
+  resolution: "jose@npm:6.0.10"
+  checksum: 10c0/d1327afd7fe6011a6648b570b8a220dd89c3d427d6fb3225825650df3249b58bf0f76494179a34a0f7ad185832fb083d6402092d3c7f880c677d0dd38cc75eae
   languageName: node
   linkType: hard
 
