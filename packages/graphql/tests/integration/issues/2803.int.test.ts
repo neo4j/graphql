@@ -97,6 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
+        ActedIn = testHelper.createUniqueType("ActedIn");
 
         const typeDefs = `
             type ${Movie} {
