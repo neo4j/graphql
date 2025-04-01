@@ -35,6 +35,8 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
 
     test("Retain attributes when aliasing the same field multiple times in a single query", async () => {
         Post = testHelper.createUniqueType("Post");
+        Comment = testHelper.createUniqueType("Comment");
+
         typeDefs = `
             type ${Post} {
                 id: ID!
