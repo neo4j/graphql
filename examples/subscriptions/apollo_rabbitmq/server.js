@@ -25,8 +25,10 @@ const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
-const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
+const cors = require("cors");
+const { ApolloServer } = require("@apollo/server");
+const { expressMiddleware } = require("@apollo/server/express4");
+const { ApolloServerPluginDrainHttpServer } = require("@apollo/server/plugin/drainHttpServer");
 const { Neo4jGraphQLAMQPSubscriptionsEngine } = require("@neo4j/graphql-amqp-subscriptions-engine");
 
 const NEO4J_URL = "bolt://localhost:7687";
@@ -50,10 +52,10 @@ const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-
 const driver = neo4j.driver(NEO4J_URL, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD));
 
 const neoSchema = new Neo4jGraphQL({
-    typeDefs: typeDefs,
-    driver,
-    features: {
-        subscriptions: subscriptionsEngine,
+        typeDefs: typeDefs,
+        driver,
+        features: {
+            subscriptions: subscriptionsEngine,
     },
 });
 
@@ -96,9 +98,14 @@ async function main() {
         ],
     });
     await server.start();
-    server.applyMiddleware({
-        app,
-    });
+
+    // Use Apollo's express middleware
+    app.use(
+        "/graphql",
+        cors(),
+        express.json(),
+        expressMiddleware(server)
+    );
 
     const PORT = process.argv[2];
     httpServer.listen(PORT, () => {
