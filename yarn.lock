@@ -2310,9 +2310,9 @@ __metadata:
   linkType: hard
 
 "@neo4j/cypher-builder@npm:^2.4.0":
-  version: 2.5.0
-  resolution: "@neo4j/cypher-builder@npm:2.5.0"
-  checksum: 10c0/963ba9cbe83cc23d654ee78a5a006883aadd7f421e6fcff7776e22b739f857f63bef1bc7d238e869e7c91a72bcc3fb121bc8410084be9db8803eb988470beffb
+  version: 2.5.1
+  resolution: "@neo4j/cypher-builder@npm:2.5.1"
+  checksum: 10c0/53115f528bc8f46ed01bbdd4d3bca3a91736fdca7530b95f9a11cf8770bffe6dd55763de9ad3d7bfac88614685c7bb29a545098c5d46f9398199a19d5aa10fc2
   languageName: node
   linkType: hard
 
