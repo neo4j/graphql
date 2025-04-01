@@ -311,7 +311,12 @@ function makeFieldInputTypeFields({
         }
     }
 
-    const connectFieldInputType = withConnectFieldInputType({ relationshipAdapter, ifUnionMemberEntity, composer });
+    const connectFieldInputType = withConnectFieldInputType({
+        relationshipAdapter,
+        ifUnionMemberEntity,
+        composer,
+        features,
+    });
     if (connectFieldInputType) {
         fields["connect"] = {
             type: relationshipAdapter.isList ? connectFieldInputType.NonNull.List : connectFieldInputType,
