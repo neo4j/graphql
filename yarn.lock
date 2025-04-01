@@ -2851,7 +2851,7 @@ __metadata:
     body-parser: "npm:^1.20.2"
     camelcase: "npm:6.3.0"
     cors: "npm:^2.8.5"
-    graphql-ws: "npm:5.16.2"
+    graphql-ws: "npm:6.0.4"
     jest: "npm:29.7.0"
     neo4j-driver: "npm:5.28.1"
     pluralize: "npm:8.0.0"
@@ -2927,7 +2927,7 @@ __metadata:
     graphql-parse-resolve-info: "npm:^4.12.3"
     graphql-relay: "npm:^0.10.0"
     graphql-tag: "npm:2.12.6"
-    graphql-ws: "npm:5.16.2"
+    graphql-ws: "npm:6.0.4"
     is-uuid: "npm:1.0.2"
     jest: "npm:29.7.0"
     jest-extended: "npm:4.0.2"
@@ -5876,7 +5876,7 @@ __metadata:
     "@neo4j/graphql-amqp-subscriptions-engine": "npm:^2.0.0"
     amqplib: "npm:^0.10.3"
     express: "npm:^4.17.3"
-    graphql-ws: "npm:^5.7.0"
+    graphql-ws: "npm:^6.0.0"
     neo4j-driver: "npm:^5.8.0"
     ws: "npm:^8.5.0"
   languageName: unknown
@@ -11170,12 +11170,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.16.2, graphql-ws@npm:^5.11.2, graphql-ws@npm:^5.7.0":
-  version: 5.16.2
-  resolution: "graphql-ws@npm:5.16.2"
+"graphql-ws@npm:6.0.4, graphql-ws@npm:^6.0.0":
+  version: 6.0.4
+  resolution: "graphql-ws@npm:6.0.4"
   peerDependencies:
-    graphql: ">=0.11 <=16"
-  checksum: 10c0/ba373df11ea8c6349c9f67335a0dfb09050a09ecc6b724b64730d242675c41d9f4b4a114b190b8711d014f8491c2bb8249e0df8308d51c4b27c921f87c4f6c58
+    "@fastify/websocket": ^10 || ^11
+    graphql: ^15.10.1 || ^16
+    uWebSockets.js: ^20
+    ws: ^8
+  peerDependenciesMeta:
+    "@fastify/websocket":
+      optional: true
+    uWebSockets.js:
+      optional: true
+    ws:
+      optional: true
+  checksum: 10c0/ed17502300c702d42820ca2acc593d82acbcbec91fa93e588dc008d07d7b6914b4b22062f1ee181cff6ac62f69ea0052555ee75f270601311b943a6b7ef709dc
   languageName: node
   linkType: hard
 
@@ -15328,7 +15338,7 @@ __metadata:
     dotenv: "npm:^16.0.3"
     express: "npm:^4.18.2"
     graphql: "npm:^16.6.0"
-    graphql-ws: "npm:^5.11.2"
+    graphql-ws: "npm:^6.0.0"
     neo4j-driver: "npm:^5.8.0"
     parcel: "npm:2.13.3"
     rimraf: "npm:^6.0.0"
