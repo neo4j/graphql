@@ -25,7 +25,6 @@ const { Neo4jGraphQL } = require("@neo4j/graphql");
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 const express = require("express");
-const cors = require("cors");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@apollo/server/express4");
 const { ApolloServerPluginDrainHttpServer } = require("@apollo/server/plugin/drainHttpServer");
@@ -102,7 +101,6 @@ async function main() {
     // Use Apollo's express middleware
     app.use(
         "/graphql",
-        cors(),
         express.json(),
         expressMiddleware(server)
     );
