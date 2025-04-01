@@ -51,10 +51,10 @@ const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-
 const driver = neo4j.driver(NEO4J_URL, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD));
 
 const neoSchema = new Neo4jGraphQL({
-        typeDefs: typeDefs,
-        driver,
-        features: {
-            subscriptions: subscriptionsEngine,
+    typeDefs: typeDefs,
+    driver,
+    features: {
+        subscriptions: subscriptionsEngine,
     },
 });
 
