@@ -36,6 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/283", () => {
     };
 
     beforeAll(() => {
+        Post = testHelper.createUniqueType("Post");
+
         typeDefs = `
         type Mutation {
             login: String
