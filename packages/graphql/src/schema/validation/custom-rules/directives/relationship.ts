@@ -17,22 +17,29 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode, ObjectTypeExtensionNode } from "graphql";
+import {
+    Kind,
+    type ASTVisitor,
+    type FieldDefinitionNode,
+    type ObjectTypeDefinitionNode,
+    type ObjectTypeExtensionNode,
+} from "graphql";
 import {
     declareRelationshipDirective,
     relationshipDirective,
     relationshipPropertiesDirective,
 } from "../../../../graphql/directives";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
-import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { fieldIsInInterfaceType } from "../utils/location-helpers/is-in-interface-type";
 import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
 export function validateRelationshipDirective(context: Neo4jValidationContext): ASTVisitor {
-    const typeMapWithExtensions = context.typeMapWithExtensions;
+    const typeMapWithExtensions = context.typeMapWithExtensions; // Check if it has node here somehow
     if (!typeMapWithExtensions) {
         throw new Error("No typeMapWithExtensions found in the context");
     }
@@ -90,6 +97,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
             if (!appliedRelationship) {
                 return;
             }
+
             const isValidLocation = fieldIsInNodeType({ path, ancestors, typeMapWithExtensions });
             const [pathToNode, _traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
             const typeArg = appliedRelationship.arguments?.find((a) => a.name.value === "type");
@@ -135,6 +143,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
                         );
                     }
                 }
+                validateRelationshipTarget(fieldDefinitionNode, typeMapWithExtensions);
             });
 
             if (!isValid) {
@@ -148,4 +157,24 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
             }
         },
     };
+}
+
+function validateRelationshipTarget(
+    fieldDefinitionNode: FieldDefinitionNode,
+    typeMapWithExtensions: TypeMapWithExtensions
+): void {
+    const relatedTypename = getInnerTypeName(fieldDefinitionNode.type);
+    const relatedType = typeMapWithExtensions[relatedTypename]?.definition;
+    if (!relatedType) {
+        return;
+    }
+
+    if (relatedType.kind === Kind.OBJECT_TYPE_DEFINITION) {
+        if (!typeIsANodeType({ objectTypeDefinitionNode: relatedType, typeMapWithExtensions })) {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @${relationshipDirective.name} should be a type with "@node".`,
+                []
+            );
+        }
+    }
 }
