@@ -2273,7 +2273,7 @@ __metadata:
     supertest: "npm:7.1.0"
     ts-jest: "npm:29.3.1"
     ts-node: "npm:10.9.2"
-    typescript: "npm:5.1.6"
+    typescript: "npm:5.8.2"
     typescript-memoize: "npm:^1.1.1"
     ws: "npm:8.18.1"
   peerDependencies:
@@ -2295,7 +2295,7 @@ __metadata:
     jest: "npm:29.7.0"
     pluralize: "npm:^8.0.0"
     ts-jest: "npm:29.3.1"
-    typescript: "npm:5.1.6"
+    typescript: "npm:5.8.2"
   peerDependencies:
     neo4j-driver: ^5.8.0
   languageName: unknown
@@ -4143,7 +4143,7 @@ __metadata:
     neo4j-driver: "npm:^5.8.0"
     ts-loader: "npm:9.5.2"
     tsconfig-paths-webpack-plugin: "npm:4.2.0"
-    typescript: "npm:5.1.6"
+    typescript: "npm:5.8.2"
     webpack: "npm:5.98.0"
   languageName: unknown
   linkType: soft
@@ -17262,16 +17262,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.1.6":
-  version: 5.1.6
-  resolution: "typescript@npm:5.1.6"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/45ac28e2df8365fd28dac42f5d62edfe69a7203d5ec646732cadc04065331f34f9078f81f150fde42ed9754eed6fa3b06a8f3523c40b821e557b727f1992e025
-  languageName: node
-  linkType: hard
-
 "typescript@npm:5.8.2":
   version: 5.8.2
   resolution: "typescript@npm:5.8.2"
@@ -17279,16 +17269,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/5c4f6fbf1c6389b6928fe7b8fcd5dc73bb2d58cd4e3883f1d774ed5bd83b151cbac6b7ecf11723de56d4676daeba8713894b1e9af56174f2f9780ae7848ec3c6
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@npm%3A5.1.6#optional!builtin<compat/typescript>":
-  version: 5.1.6
-  resolution: "typescript@patch:typescript@npm%3A5.1.6#optional!builtin<compat/typescript>::version=5.1.6&hash=5da071"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 10c0/c2bded58ab897a8341fdbb0c1d92ea2362f498cfffebdc8a529d03e15ea2454142dfbf122dabbd9a5cb79b7123790d27def16e11844887d20636226773ed329a
   languageName: node
   linkType: hard
 
