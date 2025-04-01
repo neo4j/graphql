@@ -82,6 +82,7 @@ jobs:
         if: matrix.package.name == '@neo4j/graphql'
         uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         with:
-          payload: '{"version":"${{ matrix.package.version }}"}'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
+          payload: |
+            version: ${{ matrix.package.version }}
+          webhook: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
