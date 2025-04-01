@@ -229,5 +229,36 @@ describe("@query directive", () => {
                 ),
             ]);
         });
+
+        test("should not generate queries for interfaces and unions", async () => {
+            const typeDefs = /* GraphQL */ `
+                interface Production {
+                    title: String!
+                }
+
+                type Movie implements Production @node {
+                    title: String!
+                }
+
+                type Series implements Production @node {
+                    title: String!
+                }
+
+                union Media = Movie | Series
+
+                extend schema @query(read: false, aggregate: false)
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const schema = await neoSchema.getSchema();
+            const { media, productions, productionsConnection, productionsAggregate } = schema
+                .getQueryType()
+                ?.getFields() as GraphQLFieldMap<any, any>;
+
+            expect(media).toBeUndefined();
+            expect(productions).toBeUndefined();
+            expect(productionsConnection).toBeUndefined();
+            expect(productionsAggregate).toBeUndefined();
+        });
     });
 });

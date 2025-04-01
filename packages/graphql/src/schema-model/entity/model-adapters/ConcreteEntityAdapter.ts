@@ -93,12 +93,20 @@ export class ConcreteEntityAdapter {
         return this.attributes.get(name);
     }
 
-    get isReadable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.read === true;
+    public isReadable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.read;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.read === true;
     }
 
-    get isAggregable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+    public isAggregable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.aggregate;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.aggregate === true;
     }
 
     get isCreatable(): boolean {

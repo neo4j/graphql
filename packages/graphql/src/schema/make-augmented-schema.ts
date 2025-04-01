@@ -320,7 +320,7 @@ function makeAugmentedSchema({
             );
             const hasImplementedEntities = unionEntityAdapter.concreteEntities.length > 0;
 
-            if (unionEntityAdapter.isReadable && hasImplementedEntities) {
+            if (unionEntityAdapter.isReadable(schemaModel) && hasImplementedEntities) {
                 complexityEstimatorHelper.registerField("Query", unionEntityAdapter.operations.rootTypeFieldNames.read);
                 composer.Query.addFields({
                     [unionEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -346,6 +346,7 @@ function makeAugmentedSchema({
                 seenRelationshipPropertiesTypes,
                 features,
                 complexityEstimatorHelper,
+                schemaModel,
             });
             const connectionFields = createConnectionFields({
                 entityAdapter: interfaceEntityAdapter,
@@ -388,6 +389,7 @@ function makeAugmentedSchema({
                 userDefinedDirectivesForNode,
                 userDefinedFieldDirectivesForNode,
                 complexityEstimatorHelper,
+                schemaModel,
             });
 
             const connectionFields = createConnectionFields({
@@ -617,6 +619,7 @@ function generateObjectType({
     userDefinedDirectivesForNode,
     userDefinedFieldDirectivesForNode,
     complexityEstimatorHelper,
+    schemaModel,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
@@ -631,6 +634,7 @@ function generateObjectType({
     userDefinedDirectivesForNode: Map<string, DirectiveNode[]>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     complexityEstimatorHelper: ComplexityEstimatorHelper;
+    schemaModel: Neo4jGraphQLSchemaModel;
 }) {
     withWhereInputType({
         entityAdapter: concreteEntityAdapter,
@@ -665,7 +669,7 @@ function generateObjectType({
 
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
-    if (concreteEntityAdapter.isReadable || concreteEntityAdapter.isAggregable) {
+    if (concreteEntityAdapter.isReadable(schemaModel) || concreteEntityAdapter.isAggregable(schemaModel)) {
         complexityEstimatorHelper.registerField(
             "Query",
             concreteEntityAdapter.operations.rootTypeFieldNames.connection
@@ -676,10 +680,11 @@ function generateObjectType({
                 entityAdapter: concreteEntityAdapter,
                 propagatedDirectives,
                 isLimitRequired: features?.limitRequired,
+                schemaModel,
             }),
         });
     }
-    if (concreteEntityAdapter.isReadable) {
+    if (concreteEntityAdapter.isReadable(schemaModel)) {
         complexityEstimatorHelper.registerField("Query", concreteEntityAdapter.operations.rootTypeFieldNames.read);
         composer.Query.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -698,7 +703,7 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
-    if (concreteEntityAdapter.isAggregable) {
+    if (concreteEntityAdapter.isAggregable(schemaModel)) {
         withAggregateSelectionType({
             entityAdapter: concreteEntityAdapter,
             aggregationTypesMapper,
@@ -759,6 +764,7 @@ function generateInterfaceObjectType({
     aggregationTypesMapper,
     seenRelationshipPropertiesTypes,
     complexityEstimatorHelper,
+    schemaModel,
 }: {
     composer: SchemaComposer;
     interfaceEntityAdapter: InterfaceEntityAdapter;
@@ -770,6 +776,7 @@ function generateInterfaceObjectType({
     aggregationTypesMapper: AggregationTypesMapper;
     seenRelationshipPropertiesTypes: Set<string>;
     complexityEstimatorHelper: ComplexityEstimatorHelper;
+    schemaModel: Neo4jGraphQLSchemaModel;
 }) {
     const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(interfaceEntityAdapter.name) as Map<
         string,
@@ -806,17 +813,18 @@ function generateInterfaceObjectType({
     const hasImplementedEntities = interfaceEntityAdapter.concreteEntities.length > 0;
     if (hasImplementedEntities) {
         const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
-        if (interfaceEntityAdapter.isReadable || interfaceEntityAdapter.isAggregable) {
+        if (interfaceEntityAdapter.isReadable(schemaModel) || interfaceEntityAdapter.isAggregable(schemaModel)) {
             composer.Query.addFields({
                 [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                     composer,
                     entityAdapter: interfaceEntityAdapter,
                     propagatedDirectives,
                     isLimitRequired: features?.limitRequired,
+                    schemaModel,
                 }),
             });
         }
-        if (interfaceEntityAdapter.isReadable) {
+        if (interfaceEntityAdapter.isReadable(schemaModel)) {
             complexityEstimatorHelper.registerField("Query", interfaceEntityAdapter.operations.rootTypeFieldNames.read);
             composer.Query.addFields({
                 [interfaceEntityAdapter.operations.rootTypeFieldNames.read]: findResolver({
@@ -842,6 +850,7 @@ function generateInterfaceObjectType({
                     entityAdapter: interfaceEntityAdapter,
                     propagatedDirectives,
                     isLimitRequired: features?.limitRequired,
+                    schemaModel,
                 }),
             });
             composer.Query.setFieldDirectives(
@@ -850,7 +859,7 @@ function generateInterfaceObjectType({
             );
         }
 
-        if (interfaceEntityAdapter.isAggregable) {
+        if (interfaceEntityAdapter.isAggregable(schemaModel)) {
             withAggregateSelectionType({
                 entityAdapter: interfaceEntityAdapter,
                 aggregationTypesMapper,

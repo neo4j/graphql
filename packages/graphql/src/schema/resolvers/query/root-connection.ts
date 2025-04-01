@@ -39,17 +39,20 @@ import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import { emptyConnection } from "./empty-connection";
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 
 export function rootConnectionResolver({
     composer,
     entityAdapter,
     propagatedDirectives,
     isLimitRequired,
+    schemaModel,
 }: {
     composer: SchemaComposer;
     entityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
     isLimitRequired: boolean | undefined;
+    schemaModel: Neo4jGraphQLSchemaModel;
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
@@ -103,7 +106,7 @@ export function rootConnectionResolver({
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
-    if (entityAdapter.isReadable) {
+    if (entityAdapter.isReadable(schemaModel)) {
         rootConnection.addFields({
             edges: rootEdge.NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
@@ -111,7 +114,7 @@ export function rootConnectionResolver({
         });
     }
 
-    if (entityAdapter.isAggregable) {
+    if (entityAdapter.isAggregable(schemaModel)) {
         rootConnection.addFields({
             aggregate: `${entityAdapter.operations.aggregateTypeNames.connection}!`,
         });

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import type { Annotations } from "../../annotation/Annotation";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
@@ -75,7 +76,11 @@ export class UnionEntityAdapter {
         return this._plural;
     }
 
-    get isReadable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.read === true;
+    public isReadable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.read;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.read === true;
     }
 }
