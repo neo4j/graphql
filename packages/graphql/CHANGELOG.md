@@ -437,6 +437,51 @@
 
 - [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
 
+## 6.6.0
+
+### Minor Changes
+
+- [#6110](https://github.com/neo4j/graphql/pull/6110) [`100a603`](https://github.com/neo4j/graphql/commit/100a6035375c3c0c2d91ebca6d521cdb67784508) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `where` field for nested update operations has been deprecated to be moved within the `update` input field.
+  The `where` in its deprecated location is a no-op for all nested operations apart from `update`.
+
+    For example, the following mutation is using the deprecated syntax:
+
+    ```graphql
+    mutation {
+        updateUsers(
+            where: { name: { eq: "Darrell" } }
+            update: {
+                posts: {
+                    where: { node: { title: { eq: "Version 7 Release Notes" } } }
+                    update: { node: { title: { set: "Version 7 Release Announcement" } } }
+                }
+            }
+        )
+    }
+    ```
+
+    It should be modified to move the `where` inside the `update` operation:
+
+    ```graphql
+    mutation {
+        updateUsers(
+            where: { name: { eq: "Darrell" } }
+            update: {
+                posts: {
+                    update: {
+                        where: { node: { title: { eq: "Version 7 Release Notes" } } }
+                        node: { title: { set: "Version 7 Release Announcement" } }
+                    }
+                }
+            }
+        )
+    }
+    ```
+
+### Patch Changes
+
+- [#6126](https://github.com/neo4j/graphql/pull/6126) [`7af4bbd`](https://github.com/neo4j/graphql/commit/7af4bbddb399384ef39fe700f8c14620d4210adb) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `overwriteArgument` option to `excludeDeprecatedFields` to remove the argument `overwrite` from connect operations
+
 ## 6.5.3
 
 ### Patch Changes
