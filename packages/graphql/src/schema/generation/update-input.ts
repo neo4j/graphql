@@ -32,6 +32,7 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
+import { DEPRECATE_UPDATE_WHERE } from "../constants";
 import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { concreteEntityToUpdateInputFields, withArrayOperators, withMathOperators } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
@@ -41,7 +42,6 @@ import { withDeleteFieldInputType } from "./delete-input";
 import { withDisconnectFieldInputType } from "./disconnect-input";
 import { withCreateFieldInputType } from "./relation-input";
 import { shouldAddDeprecatedFields } from "./utils";
-import { DEPRECATE_UPDATE_WHERE } from "../constants";
 
 export function withUpdateInputType({
     entityAdapter,
@@ -278,7 +278,12 @@ function makeUpdateFieldInputTypeFields({
             directives: [],
         };
     }
-    const connectFieldInputType = withConnectFieldInputType({ relationshipAdapter, ifUnionMemberEntity, composer });
+    const connectFieldInputType = withConnectFieldInputType({
+        relationshipAdapter,
+        ifUnionMemberEntity,
+        composer,
+        features,
+    });
     if (connectFieldInputType) {
         fields["connect"] = {
             type: relationshipAdapter.isList ? connectFieldInputType.NonNull.List : connectFieldInputType,
