@@ -34,6 +34,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
         User = testHelper.createUniqueType("User");
         Tenant = testHelper.createUniqueType("Tenant");
         Car = testHelper.createUniqueType("Car");
+        DeletedCar = testHelper.createUniqueType("DeletedCar");
 
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
