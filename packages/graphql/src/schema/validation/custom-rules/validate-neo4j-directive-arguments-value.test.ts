@@ -110,7 +110,7 @@ describe("validateNeo4jDirectiveArgumentsValue", () => {
     describe("fulltext", () => {
         test("should returns no errors for valid fulltext arguments", () => {
             const userDocument = gql`
-                type User @fulltext(indexes: [{ fields: ["id", "name"], indexName: "UserIndex" }]) {
+                type User @fulltext(indexes: [{ fields: ["id", "name"], queryName: "userFullText", indexName: "UserIndex" }]) {
                     id: ID!
                     name: String!
                 }

@@ -41,10 +41,10 @@ export const fulltextDirective = new GraphQLDirective({
                                 type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
                             },
                             queryName: {
-                                type: GraphQLString,
+                                type: new GraphQLNonNull(GraphQLString),
                             },
                             indexName: {
-                                type: GraphQLString,
+                                type: new GraphQLNonNull(GraphQLString),
                             },
                         },
                     })
