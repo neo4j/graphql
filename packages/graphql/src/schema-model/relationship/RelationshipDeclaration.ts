@@ -24,7 +24,7 @@ import type { Entity } from "../entity/Entity";
 import type { Relationship } from "./Relationship";
 
 export type NestedOperation = keyof typeof RelationshipNestedOperationsOption;
-// "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "CONNECT_OR_CREATE";
+// "CREATE" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
 
 export class RelationshipDeclaration {
     public readonly name: string; // name of the relationship field, e.g. friends

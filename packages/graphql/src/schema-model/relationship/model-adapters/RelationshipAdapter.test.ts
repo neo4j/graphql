@@ -89,7 +89,7 @@ describe("RelationshipAdapter", () => {
             isList: Boolean(false),
             attributes: [accountAlias],
             queryDirection: "DIRECTED",
-            nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "CONNECT_OR_CREATE"],
+            nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT"],
             aggregate: false,
             description: "",
             annotations: { selectable },

@@ -29,6 +29,5 @@ export const RelationshipNestedOperationsEnum = new GraphQLEnumType({
         [RelationshipNestedOperationsOption.DELETE]: {},
         [RelationshipNestedOperationsOption.CONNECT]: {},
         [RelationshipNestedOperationsOption.DISCONNECT]: {},
-        [RelationshipNestedOperationsOption.CONNECT_OR_CREATE]: {},
     },
 });
