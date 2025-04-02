@@ -2,4 +2,4 @@
 "@neo4j/graphql": patch
 ---
 
-Make the `queryName` and `fields` argument of the `@fulltext` directive mandatory.
+Fixed a bug that allowed the `queryName` and `fields` arguments of the `@fulltext` directive to be undefined. 
