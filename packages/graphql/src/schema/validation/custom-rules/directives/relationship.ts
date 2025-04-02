@@ -39,7 +39,7 @@ import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
 export function validateRelationshipDirective(context: Neo4jValidationContext): ASTVisitor {
-    const typeMapWithExtensions = context.typeMapWithExtensions; // Check if it has node here somehow
+    const typeMapWithExtensions = context.typeMapWithExtensions;
     if (!typeMapWithExtensions) {
         throw new Error("No typeMapWithExtensions found in the context");
     }
