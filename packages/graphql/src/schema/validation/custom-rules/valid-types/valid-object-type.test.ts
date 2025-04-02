@@ -15,7 +15,7 @@ const additionalDefinitions = {
     objects: [] as ObjectTypeDefinitionNode[],
 };
 
-describe("Object types validateion", () => {
+describe("Object types validation", () => {
     test("interfaces cannot be partially nodes", () => {
         const doc = gql`
             interface Person {
