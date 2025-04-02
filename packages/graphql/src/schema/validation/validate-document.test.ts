@@ -609,6 +609,18 @@ describe("validation 2.0", () => {
                     'Directive "@fulltext" argument "indexes" of type "[FulltextInput]!" is required, but it was not provided.'
                 );
             });
+
+            test("@fulltext queryName required", () => {
+                const doc = gql`
+                    type User @fulltext(indexes: [{ indexName: "UserIndex", fields: ["name"] }]) @node {
+                        name: String
+                    }
+                `;
+                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                    `Invalid argument: indexes, error: Field "queryName" of required type "String!" was not provided.`
+                );
+            });
+
             test("@fulltext ok", () => {
                 const doc = gql`
                     type User
