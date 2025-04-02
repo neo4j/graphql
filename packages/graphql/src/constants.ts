@@ -85,7 +85,6 @@ export enum RelationshipNestedOperationsOption {
     DELETE = "DELETE",
     CONNECT = "CONNECT",
     DISCONNECT = "DISCONNECT",
-    CONNECT_OR_CREATE = "CONNECT_OR_CREATE",
 }
 
 export const META_CYPHER_VARIABLE = "meta";
