@@ -272,7 +272,11 @@ function makeFieldInputTypeFields({
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
 
-    const connectFieldInputType = withConnectFieldInputType({ relationshipAdapter, ifUnionMemberEntity, composer });
+    const connectFieldInputType = withConnectFieldInputType({
+        relationshipAdapter,
+        ifUnionMemberEntity,
+        composer,
+    });
     if (connectFieldInputType) {
         fields["connect"] = {
             type: relationshipAdapter.isList ? connectFieldInputType.NonNull.List : connectFieldInputType,

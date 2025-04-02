@@ -736,7 +736,7 @@ export class FilterFactory {
         target: EntityAdapter,
         operator: "SOME" | "ALL" | "SINGLE" | "NONE" = "SOME"
     ): "AND" | "OR" | "XOR" {
-        if (isInterfaceEntity(target)) {
+        if (isInterfaceEntity(target) || isUnionEntity(target)) {
             if (operator === "SOME") {
                 return "OR";
             }
