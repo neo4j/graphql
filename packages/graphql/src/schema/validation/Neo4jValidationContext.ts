@@ -47,7 +47,9 @@ export type TypeMapWithExtensions = Record<
 >;
 export class Neo4jValidationContext extends SDLValidationContext {
     public readonly typeMapWithExtensions?: TypeMapWithExtensions;
+    public readonly interfacesMap?: Record<string, Array<ObjectTypeDefinitionNode>>;
     public readonly callbacks?: any;
+
     constructor(
         ast: DocumentNode,
         schema: Maybe<GraphQLSchema>,
@@ -57,6 +59,7 @@ export class Neo4jValidationContext extends SDLValidationContext {
         super(ast, schema, onError);
         this.callbacks = callbacks;
         this.typeMapWithExtensions = buildTypeMapWithExtensions(ast.definitions);
+        this.interfacesMap = buildInterfacesMap(ast.definitions, this.typeMapWithExtensions);
     }
 }
 
@@ -88,6 +91,27 @@ function buildTypeMapWithExtensions(definitions: Readonly<DefinitionNode[]>): Ty
                 }
             } else {
                 acc[typeName].definition = def;
+            }
+        }
+        return acc;
+    }, {});
+}
+
+function buildInterfacesMap(
+    definitions: Readonly<DefinitionNode[]>,
+    typeMapWithExtensions: TypeMapWithExtensions
+): Record<string, Array<ObjectTypeDefinitionNode>> {
+    return definitions.reduce((acc, def): TypeMapWithExtensions => {
+        if (def.kind === Kind.OBJECT_TYPE_DEFINITION || def.kind === Kind.OBJECT_TYPE_EXTENSION) {
+            const typeName = def.name.value;
+            for (const defInterface of def.interfaces ?? []) {
+                const interfaceName = defInterface.name.value;
+                if (!acc[interfaceName]) {
+                    acc[interfaceName] = [];
+                }
+
+                const concreteDefinition = typeMapWithExtensions[typeName]?.definition;
+                acc[interfaceName].push(concreteDefinition);
             }
         }
         return acc;
