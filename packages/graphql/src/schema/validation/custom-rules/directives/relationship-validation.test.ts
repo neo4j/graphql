@@ -92,7 +92,7 @@ describe("@relationship validation", () => {
     test("@relationship can't be used with a non-node interface", () => {
         const doc = gql`
             type Movie @node {
-                someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                someActors: [Person!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             interface Person {
@@ -124,7 +124,7 @@ describe("@relationship validation", () => {
     test("@relationship can be used with a node interface", () => {
         const doc = gql`
             type Movie @node {
-                someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+                someActors: [Person!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             interface Person {
