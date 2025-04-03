@@ -4255,7 +4255,7 @@ __metadata:
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
     "@neo4j/graphql": "npm:^6.6.0"
-    fork-ts-checker-webpack-plugin: "npm:9.0.3"
+    fork-ts-checker-webpack-plugin: "npm:9.1.0"
     graphql: "npm:16.10.0"
     graphql-tag: "npm:^2.12.6"
     neo4j-driver: "npm:^5.8.0"
@@ -5449,6 +5449,15 @@ __metadata:
     fsevents:
       optional: true
   checksum: 10c0/8361dcd013f2ddbe260eacb1f3cb2f2c6f2b0ad118708a343a5ed8158941a39cb8fb1d272e0f389712e74ee90ce8ba864eece9e0e62b9705cb468a2f6d917462
+  languageName: node
+  linkType: hard
+
+"chokidar@npm:^4.0.1":
+  version: 4.0.3
+  resolution: "chokidar@npm:4.0.3"
+  dependencies:
+    readdirp: "npm:^4.0.1"
+  checksum: 10c0/a58b9df05bb452f7d105d9e7229ac82fa873741c0c40ddcc7bb82f8a909fbe3f7814c9ebe9bc9a2bef9b737c0ec6e2d699d179048ef06ad3ec46315df0ebe6ad
   languageName: node
   linkType: hard
 
@@ -8548,13 +8557,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fork-ts-checker-webpack-plugin@npm:9.0.3":
-  version: 9.0.3
-  resolution: "fork-ts-checker-webpack-plugin@npm:9.0.3"
+"fork-ts-checker-webpack-plugin@npm:9.1.0":
+  version: 9.1.0
+  resolution: "fork-ts-checker-webpack-plugin@npm:9.1.0"
   dependencies:
     "@babel/code-frame": "npm:^7.16.7"
     chalk: "npm:^4.1.2"
-    chokidar: "npm:^3.5.3"
+    chokidar: "npm:^4.0.1"
     cosmiconfig: "npm:^8.2.0"
     deepmerge: "npm:^4.2.2"
     fs-extra: "npm:^10.0.0"
@@ -8567,7 +8576,7 @@ __metadata:
   peerDependencies:
     typescript: ">3.6.0"
     webpack: ^5.11.0
-  checksum: 10c0/f9a265d3a990d35cbd2a877f20760175da3af8fae8470a1728ea1ac9e07e8d18e90f2e1fbbca1db5483993f89d5577c2a5655e49cee793f9d094c735a9b981ae
+  checksum: 10c0/b4acdf400862af5f57d3e159b3a444e7f9f73e9f4609d54604c3810f75f8adcea0165a8b17ee856ed3c65591d058ffd73cd08d273e289d4952844e75f6efa85d
   languageName: node
   linkType: hard
 
@@ -15006,6 +15015,13 @@ __metadata:
     process: "npm:^0.11.10"
     string_decoder: "npm:^1.3.0"
   checksum: 10c0/a2c80e0e53aabd91d7df0330929e32d0a73219f9477dbbb18472f6fdd6a11a699fc5d172a1beff98d50eae4f1496c950ffa85b7cc2c4c196963f289a5f39275d
+  languageName: node
+  linkType: hard
+
+"readdirp@npm:^4.0.1":
+  version: 4.1.2
+  resolution: "readdirp@npm:4.1.2"
+  checksum: 10c0/60a14f7619dec48c9c850255cd523e2717001b0e179dc7037cfa0895da7b9e9ab07532d324bfb118d73a710887d1e35f79c495fa91582784493e085d18c72c62
   languageName: node
   linkType: hard
 

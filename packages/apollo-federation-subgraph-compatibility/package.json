@@ -17,7 +17,7 @@
     },
     "devDependencies": {
         "@apollo/federation-subgraph-compatibility": "2.2.0",
-        "fork-ts-checker-webpack-plugin": "9.0.3",
+        "fork-ts-checker-webpack-plugin": "9.1.0",
         "ts-loader": "9.5.2",
         "tsconfig-paths-webpack-plugin": "4.2.0",
         "typescript": "5.8.2",
