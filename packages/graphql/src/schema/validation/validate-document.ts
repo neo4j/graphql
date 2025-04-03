@@ -76,6 +76,7 @@ import {
 import { ValidFieldTypes } from "./custom-rules/valid-types/valid-field-types";
 import { ValidListInNodeType } from "./custom-rules/valid-types/valid-list-in-node-type";
 import { ValidObjectType } from "./custom-rules/valid-types/valid-object-type";
+import { ValidUnionType } from "./custom-rules/valid-types/valid-union-type";
 import { ValidateNeo4jDirectiveArgumentsValue } from "./custom-rules/validate-neo4j-directive-arguments-value";
 import { WarnIfAuthorizationFeatureDisabled } from "./custom-rules/warnings/authorization-feature-disabled";
 import { WarnIfAMaxLimitCanBeBypassedThroughInterface } from "./custom-rules/warnings/limit-max-can-be-bypassed";
@@ -230,6 +231,7 @@ function runValidationRulesOnFilteredDocument({
             ValidFieldTypes,
             ReservedTypeNames,
             ValidObjectType,
+            ValidUnionType,
             ValidDirectiveInheritance,
             ValidateNeo4jDirectiveArgumentsValue,
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
