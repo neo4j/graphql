@@ -47,6 +47,7 @@ export class ConnectionReadOperation extends Operation {
     private aggregationField: ConnectionAggregationField | undefined;
 
     public filters: Filter[] = [];
+    public skipConnection: boolean = false; // If set to true, skips the connection (use for aggregation only queries optimisation)
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
@@ -183,6 +184,20 @@ export class ConnectionReadOperation extends Operation {
         const totalCount = new Cypher.NamedVariable("totalCount");
         const edgesProjectionVar = new Cypher.Variable();
 
+        if (this.skipConnection) {
+            const returnClause = new Cypher.Return([
+                new Cypher.Map({
+                    ...aggregationProjection,
+                }),
+                context.returnVariable,
+            ]);
+
+            return {
+                clauses: [Cypher.utils.concat(...aggregationSubqueries, returnClause)],
+                projectionExpr: context.returnVariable,
+            };
+        }
+
         const unwindAndProjectionSubquery = this.createUnwindAndProjectionSubquery(
             nestedContext,
             edgesVar,
@@ -212,7 +227,9 @@ export class ConnectionReadOperation extends Operation {
             context.returnVariable,
         ]);
 
-        let connectionClauses: Cypher.Clause = Cypher.utils.concat(
+        let connectionClauses: Cypher.Clause;
+
+        connectionClauses = Cypher.utils.concat(
             ...extraMatches,
             selectionClause,
             ...filtersSubqueries,

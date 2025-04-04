@@ -39,8 +39,12 @@ describe("Cypher Aggregations Count", () => {
     test("Simple Count", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    count
+                moviesConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -50,9 +54,9 @@ describe("Cypher Aggregations Count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this:Movie)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            RETURN { aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
