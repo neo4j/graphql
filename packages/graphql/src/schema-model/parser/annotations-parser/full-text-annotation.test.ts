@@ -26,7 +26,7 @@ describe("parseFullTextAnnotation", () => {
     it("should parse correctly", () => {
         const directive: DirectiveNode = makeDirectiveNode(
             "fullText",
-            { indexes: [{ indexName: "ProductName", fields: ["name"] }] },
+            { indexes: [{ indexName: "ProductName", queryName: "productFullText", fields: ["name"] }] },
             fulltextDirective
         );
         const fullTextAnnotation = parseFulltextAnnotation(directive);
@@ -36,6 +36,7 @@ describe("parseFullTextAnnotation", () => {
                 {
                     fields: ["name"],
                     indexName: "ProductName",
+                    queryName: "productFullText",
                 },
             ],
         });

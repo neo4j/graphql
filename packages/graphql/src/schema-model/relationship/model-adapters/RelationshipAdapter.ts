@@ -25,8 +25,7 @@ import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import type { Entity } from "../../entity/Entity";
 import type { EntityAdapter } from "../../entity/EntityAdapter";
-import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
+import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import { getEntityAdapter } from "../../utils/get-entity-adapter";
 import { plural, singular } from "../../utils/string-manipulation";
@@ -198,38 +197,20 @@ export class RelationshipAdapter {
         return this.annotations.settable?.onUpdate !== false;
     }
 
-    public shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
-        let relationshipTarget = this.target;
-        if (ifUnionRelationshipTargetEntity) {
-            relationshipTarget = ifUnionRelationshipTargetEntity;
-        }
+    public shouldGenerateFieldInputType(): boolean {
         return (
             this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
-            this.nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
-            // The connectOrCreate field is not generated if the related type does not have a unique field
-            (this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
-                relationshipTarget instanceof ConcreteEntityAdapter &&
-                false)
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CREATE)
         );
     }
 
     public shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
-        const onlyConnectOrCreate =
-            this.nestedOperations.size === 1 &&
-            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE);
-
-        if (this.target instanceof InterfaceEntityAdapter) {
-            return this.nestedOperations.size > 0 && !onlyConnectOrCreate;
-        }
         if (this.target instanceof UnionEntityAdapter) {
             if (!ifUnionRelationshipTargetEntity) {
                 throw new Error("Expected member entity");
             }
-            const onlyConnectOrCreateAndNoUniqueFields = onlyConnectOrCreate;
-            return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
         }
-        const onlyConnectOrCreateAndNoUniqueFields = onlyConnectOrCreate;
-        return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
+        return this.nestedOperations.size > 0;
     }
 
     public get hasNonNullCreateInputFields(): boolean {

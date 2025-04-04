@@ -240,7 +240,7 @@ export function withFieldInputType({
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
-    if (!relationshipAdapter.shouldGenerateFieldInputType(ifUnionMemberEntity)) {
+    if (!relationshipAdapter.shouldGenerateFieldInputType()) {
         return;
     }
     const fields = makeFieldInputTypeFields({
