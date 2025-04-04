@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-import type { InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import {
+    Kind,
+    type InterfaceTypeDefinitionNode,
+    type ObjectTypeDefinitionNode,
+    type UnionTypeDefinitionNode,
+} from "graphql";
 import { nodeDirective } from "../../../../../graphql/directives";
 import { asArray } from "../../../../../utils/utils";
 import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
@@ -62,5 +67,33 @@ export function interfaceIsNode({
             return false;
         }
     }
+    return true;
+}
+
+export function unionIsNode({
+    unionTypeDefinitionNode,
+    typeMapWithExtensions,
+}: {
+    unionTypeDefinitionNode: UnionTypeDefinitionNode;
+    typeMapWithExtensions: TypeMapWithExtensions;
+}): boolean {
+    for (const concreteType of unionTypeDefinitionNode.types ?? []) {
+        const concreteTypeFileName = concreteType.name.value;
+        const type = typeMapWithExtensions[concreteTypeFileName];
+        if (!type) {
+            throw new Error(`Type ${concreteTypeFileName} not found in validation`);
+        }
+
+        if (type.definition && type.definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
+            const isConcreteTypeANode = typeIsANodeType({
+                objectTypeDefinitionNode: type.definition,
+                typeMapWithExtensions,
+            });
+            if (!isConcreteTypeANode) {
+                return false;
+            }
+        }
+    }
+
     return true;
 }
