@@ -2,11 +2,11 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "../dist/esm",
+        "outDir": "../dist-esm",
         "module": "ES2022",
         "target": "es2021",
         "moduleResolution": "node10",
-        "declarationDir": "../dist/types"
+        "declarationDir": "../dist-types"
     },
     "exclude": ["**/*.test.ts", "test-api.ts"],
     "references": [

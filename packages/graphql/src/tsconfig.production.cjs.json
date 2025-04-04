@@ -2,11 +2,11 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "../dist/cjs",
+        "outDir": "../dist-cjs",
         "module": "CommonJS",
         "target": "es2021",
         "moduleResolution": "node10",
-        "declarationDir": "../dist/types"
+        "declarationDir": "../dist-types"
     },
     "exclude": ["**/*.test.ts", "test-api.ts"],
     "references": [
