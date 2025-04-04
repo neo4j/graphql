@@ -31,13 +31,13 @@ export function ValidUnionType(context: Neo4jValidationContext): ASTVisitor {
     return {
         UnionTypeDefinition(unionType: UnionTypeDefinitionNode) {
             const { isValid, errorMsg } = assertValid(() => {
-                let isNodeInterface = false;
+                let hasNodeTypes = false;
                 let hasNonNodeTypes = false;
                 for (const concreteType of unionType.types ?? []) {
                     const concreteTypeFileName = concreteType.name.value;
                     const type = typeMapWithExtensions[concreteTypeFileName];
                     if (!type) {
-                        throw new Error("Invalid type");
+                        throw new Error(`Type ${concreteTypeFileName} not found in validation`);
                     }
 
                     if (type.definition && type.definition.kind === Kind.OBJECT_TYPE_DEFINITION) {
@@ -47,14 +47,17 @@ export function ValidUnionType(context: Neo4jValidationContext): ASTVisitor {
                         });
 
                         if (isConcreteTypeANode) {
-                            isNodeInterface = true;
+                            hasNodeTypes = true;
                         } else {
                             hasNonNodeTypes = true;
                         }
                     }
                 }
-                if (isNodeInterface && hasNonNodeTypes) {
-                    throw new DocumentValidationError("Union needs to be fully implemented by `@node` types.", []);
+                if (hasNodeTypes && hasNonNodeTypes) {
+                    throw new DocumentValidationError(
+                        "Union needs to be fully implemented by `@node` types or no type in the union have the `@node` directive.",
+                        []
+                    );
                 }
             });
             if (!isValid) {
