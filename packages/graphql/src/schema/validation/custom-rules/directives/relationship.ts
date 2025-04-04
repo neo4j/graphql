@@ -34,7 +34,7 @@ import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { fieldIsInInterfaceType } from "../utils/location-helpers/is-in-interface-type";
 import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
-import { interfaceIsNode, typeIsANodeType } from "../utils/location-helpers/is-node-type";
+import { interfaceIsNode, typeIsANodeType, unionIsNode } from "../utils/location-helpers/is-node-type";
 import { getPathToNode } from "../utils/path-parser";
 import { getInnerTypeName } from "../utils/utils";
 
@@ -189,7 +189,19 @@ function validateRelationshipTarget(fieldDefinitionNode: FieldDefinitionNode, co
             })
         ) {
             throw new DocumentValidationError(
-                `Invalid directive usage: Directive @${relationshipDirective.name} should be a type with "@node".`,
+                `Invalid directive usage: Directive @${relationshipDirective.name} should be an interface implemented by a type with "@node".`,
+                []
+            );
+        }
+    } else if (relatedType.kind === Kind.UNION_TYPE_DEFINITION) {
+        if (
+            !unionIsNode({
+                unionTypeDefinitionNode: relatedType,
+                typeMapWithExtensions,
+            })
+        ) {
+            throw new DocumentValidationError(
+                `Invalid directive usage: Directive @${relationshipDirective.name} to an union should have all its types with "@node".`,
                 []
             );
         }
