@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { type ObjectTypeDefinitionNode } from "graphql";
+import type { InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { nodeDirective } from "../../../../../graphql/directives";
 import { asArray } from "../../../../../utils/utils";
 import type { TypeMapWithExtensions } from "../../../Neo4jValidationContext";
@@ -38,4 +38,29 @@ export function typeIsANodeType({
     const allDirectives = [...(directives ?? []), ...extensionsDirectives];
 
     return !!allDirectives?.find((directive) => directive.name.value === nodeDirective.name);
+}
+
+export function interfaceIsNode({
+    interfaceTypeDefinitionNode,
+    typeMapWithExtensions,
+    interfacesMap,
+}: {
+    interfaceTypeDefinitionNode: InterfaceTypeDefinitionNode;
+    typeMapWithExtensions: TypeMapWithExtensions;
+    interfacesMap: Record<string, Array<ObjectTypeDefinitionNode>>;
+}): boolean {
+    const interfaceName = interfaceTypeDefinitionNode.name.value;
+    const interfaceConcreteTypes = interfacesMap[interfaceName] ?? [];
+
+    for (const concreteType of interfaceConcreteTypes) {
+        const isConcreteTypeANode = typeIsANodeType({
+            objectTypeDefinitionNode: concreteType,
+            typeMapWithExtensions,
+        });
+
+        if (!isConcreteTypeANode) {
+            return false;
+        }
+    }
+    return true;
 }
