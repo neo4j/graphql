@@ -12,27 +12,20 @@
         "url": "https://github.com/neo4j/graphql/issues"
     },
     "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/graphql",
-    "main": "./dist-cjs/index.js",
-    "types": "./dist-types/index.d.ts",
-    "exports": {
-        ".": {
-            "require": "./dist-cjs/index.js",
-            "import": "./dist-esm/index.js",
-            "default": "./dist-cjs/index.js",
-            "types": "./dist-types/index.d.ts"
-        }
-    },
+    "exports": "./dist/index.js",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "files": [
-        "dist-*/**/*.ts",
-        "dist-*/**/*.ts.map",
-        "dist-*/**/*.js",
-        "dist-*/**/*.js.map"
+        "dist/**/*.ts",
+        "dist/**/*.ts.map",
+        "dist/**/*.js",
+        "dist/**/*.js.map"
     ],
     "engines": {
         "node": ">=20.0.0"
     },
     "scripts": {
-        "build": "tsc --build src/tsconfig.production.cjs.json",
+        "build": "tsc --build src/tsconfig.production.json",
         "clean": "cd src/ && tsc --build --clean",
         "cleanup:package-tests": "cd ../package-tests/ && yarn run cleanup && rimraf ./package/ && rimraf *.tgz",
         "performance": "ts-node tests/performance/performance.ts",

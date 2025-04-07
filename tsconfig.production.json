@@ -1,8 +1,7 @@
 {
     "files": [],
     "references": [
-        { "path": "./packages/graphql/src/tsconfig.production.cjs.json" },
-        { "path": "./packages/graphql/src/tsconfig.production.esm.json" },
+        { "path": "./packages/graphql/src/tsconfig.production.json" },
         { "path": "./packages/introspector/tsconfig.production.json" }
     ]
 }
