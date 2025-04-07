@@ -39,6 +39,9 @@ jspm_packages/
 # Build directories
 dist/
 tmp/
+dist-esm/
+dist-cjs/
+dist-types/
 
 # Optional npm cache directory
 .npm
