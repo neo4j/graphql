@@ -9,6 +9,7 @@
     "@neo4j/package-tests": "1.0.0"
   },
   "changesets": [
+    "all-corners-tan",
     "beige-poets-move",
     "brown-turtles-grab",
     "calm-balloons-argue",
@@ -17,9 +18,12 @@
     "clever-tomatoes-float",
     "cool-peas-chew",
     "cyan-grapes-laugh",
+    "eleven-pianos-give",
     "fair-elephants-yell",
     "few-sloths-battle",
+    "floppy-badgers-shop",
     "four-insects-repeat",
+    "free-socks-cover",
     "funny-tools-arrive",
     "good-sheep-refuse",
     "gorgeous-goats-design",
@@ -29,6 +33,8 @@
     "kind-clocks-tickle",
     "little-lemons-fail",
     "loud-phones-march",
+    "mighty-pumas-fry",
+    "nice-streets-rescue",
     "nine-games-clap",
     "perfect-zoos-push",
     "quick-dolphins-accept",
@@ -45,9 +51,12 @@
     "soft-socks-count",
     "strong-jobs-eat",
     "tame-melons-confess",
-    "ten-starfishes-attend",
     "thick-dogs-provide",
+    "three-dingos-greet",
+    "twelve-icons-bake",
+    "twenty-islands-film",
     "two-boxes-cheer",
+    "two-shoes-jam",
     "unlucky-spoons-trade"
   ]
 }
