@@ -437,6 +437,59 @@
 
 - [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
 
+## 6.6.1
+
+### Patch Changes
+
+- [#6171](https://github.com/neo4j/graphql/pull/6171) [`c75cda3`](https://github.com/neo4j/graphql/commit/c75cda3cfc63b9cd4e3328762d880516b48497ee) Thanks [@angrykoala](https://github.com/angrykoala)! - Cypher optimized for connections only containing aggregate fields. The following query:
+
+    ```graphql
+    {
+        moviesConnection {
+            aggregate {
+                count {
+                    nodes
+                }
+            }
+        }
+    }
+    ```
+
+    Will generate the new Cypher:
+
+    ```cypher
+    CALL {
+        MATCH (this:Movie)
+        RETURN { nodes: count(DISTINCT this) } AS var0
+    }
+    RETURN { aggregate: { count: var0 } } AS this
+    ```
+
+    Instead of the less performant previous Cypher:
+
+    ```cypher
+    CALL {
+        MATCH (this:Movie)
+        RETURN { nodes: count(DISTINCT this) } AS var0
+    }
+    CALL {
+        WITH *
+        MATCH (this1:Movie)
+        WITH collect({ node: this1 }) AS edges
+        WITH edges, size(edges) AS totalCount
+        CALL {
+            WITH edges
+            UNWIND edges AS edge
+            WITH edge.node AS this1
+            RETURN collect({ node: { __id: id(this1), __resolveType: "Movie" } }) AS var2
+        }
+        RETURN var2, totalCount
+    }
+    RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this
+    ```
+
+> > > > > > > origin/dev
+
 ## 6.6.0
 
 ### Minor Changes
