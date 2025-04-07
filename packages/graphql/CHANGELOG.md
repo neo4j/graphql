@@ -1,5 +1,206 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.6
+
+### Major Changes
+
+- [#6153](https://github.com/neo4j/graphql/pull/6153) [`0779691`](https://github.com/neo4j/graphql/commit/0779691eb9eeb0b36df260d7366eabe20fb6ca37) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema validation if a field with `@relationship` targets a type without `@node`.
+
+    For example, the following schema will fail:
+
+    ```graphql
+    type Movie @node {
+        someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+    }
+
+    type Actor {
+        name: String
+    }
+    ```
+
+- [#6158](https://github.com/neo4j/graphql/pull/6158) [`19dc0dd`](https://github.com/neo4j/graphql/commit/19dc0dd7e92daad354fcc3effcc6909df3a891c6) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove option `CONNECT_OR_CREATE` from argument `nestedOperations` from `@relationship` directives as it is no longer relevant after `connectOrCreate` have been removed
+
+- [#6109](https://github.com/neo4j/graphql/pull/6109) [`6801d70`](https://github.com/neo4j/graphql/commit/6801d7003f6f8f0f8bfd3ae9431ba081799dfcb5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `where` field for nested update operations has been moved within the `update` input field.
+  The `where` in its previous location was a no-op for all nested operations apart from `update`.
+
+    For example, the following syntax would filter the `Post` nodes to update in Version 6:
+
+    ```graphql
+    mutation {
+        updateUsers(
+            where: { name: { eq: "Darrell" } }
+            update: {
+                posts: {
+                    where: { node: { title: { eq: "Version 7 Release Notes" } } }
+                    update: { node: { title: { set: "Version 7 Release Announcement" } } }
+                }
+            }
+        )
+    }
+    ```
+
+    In Version 7, this `where` has been moved inside the `update` operation:
+
+    ```graphql
+    mutation {
+        updateUsers(
+            where: { name: { eq: "Darrell" } }
+            update: {
+                posts: {
+                    update: {
+                        where: { node: { title: { eq: "Version 7 Release Notes" } } }
+                        node: { title: { set: "Version 7 Release Announcement" } }
+                    }
+                }
+            }
+        )
+    }
+    ```
+
+- [#6124](https://github.com/neo4j/graphql/pull/6124) [`d9cfd69`](https://github.com/neo4j/graphql/commit/d9cfd69f7e7daa8b7ad23a1046fee734aa038199) Thanks [@angrykoala](https://github.com/angrykoala)! - Fixed incorrect behavior of `single` and `some` filters on relationships to unions.
+
+    Given the following union and relationship:
+
+    ```graphql
+    union Production = Movie | Series
+    ```
+
+    and a relationship to this union:
+
+    ```graphql
+    type Actor @node {
+        name: String!
+        actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
+    }
+    ```
+
+    These queries previously returned incorrect results:
+
+    ```graphql
+    query {
+        actors(
+            where: {
+                actedIn: { single: { Movie: { title_CONTAINS: "The Office" }, Series: { title_ENDS_WITH: "Office" } } }
+            }
+        ) {
+            name
+        }
+    }
+    ```
+
+    ```graphql
+    query {
+        actors(
+            where: {
+                actedIn: { some: { Movie: { title_CONTAINS: "The Office" }, Series: { title_ENDS_WITH: "Office" } } }
+            }
+        ) {
+            name
+        }
+    }
+    ```
+
+    Previously, conditions inside single and some were evaluated separately for each concrete type in the union, requiring all to match. This was incorrect.
+
+    New behavior:
+
+    - `single`: Now correctly returns actors with exactly one related node across the whole union, rather than per type.
+    - `some`: Now correctly returns actors with at least one matching related node of any type in the union.
+
+    This fix also applies to the deprecated filters `actedIn_SINGLE` and `actedIn_SOME`.
+
+- [#6125](https://github.com/neo4j/graphql/pull/6125) [`c51c9c0`](https://github.com/neo4j/graphql/commit/c51c9c06e381f69432d1685badf0ebba093e6280) Thanks [@angrykoala](https://github.com/angrykoala)! - Does not generate queries for interfaces without an implementing type with the `@node` directive.
+
+    For example. The following type definitions:
+
+    ```graphql
+    interface Production {
+        title: String!
+    }
+
+    type Movie @node {
+        title: String!
+    }
+
+    type NotANode implements Production {
+        title: String!
+    }
+    ```
+
+    Will no longer generate the queries and types related to the interface `Production`:
+
+    ```graphql
+    type Query {
+        productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+        productionsConnection(
+            after: String
+            first: Int
+            sort: [ProductionSort!]
+            where: ProductionWhere
+        ): ProductionsConnection!
+    }
+    ```
+
+- [#6152](https://github.com/neo4j/graphql/pull/6152) [`3e642d9`](https://github.com/neo4j/graphql/commit/3e642d9ea7dd0b661132d006f678575a9b11f5b2) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `@query` directive used on the schema will now also apply to the generation of queries for interface and union types.
+
+    The following type definitions will not produce query fields for the `Production` or `Media` types.
+
+    ```graphql
+    interface Production {
+        title: String!
+    }
+
+    type Movie implements Production @node {
+        title: String!
+    }
+
+    type Series implements Production @node {
+        title: String!
+    }
+
+    union Media = Movie | Series
+
+    extend schema @query(read: false, aggregate: false)
+    ```
+
+- [#6159](https://github.com/neo4j/graphql/pull/6159) [`2adfdec`](https://github.com/neo4j/graphql/commit/2adfdec38f6d371988eaf9573e49220a5a444e6f) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema validation if an interface is implemented by a type with `@node` but not all implemented types use `@node`. For example, the following is invalid:
+
+    ```graphql
+    interface Person {
+        name: String
+    }
+
+    type Director implements Person {
+        name: String
+    }
+
+    type Actor implements Person @node {
+        name: String
+    }
+    ```
+
+- [#6165](https://github.com/neo4j/graphql/pull/6165) [`992c53a`](https://github.com/neo4j/graphql/commit/992c53a38a7731c2f51a1365825b63e3b3bbb2b1) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema validation if an union is composed of a type with `@node` but not all other types. For example, the following is invalid:
+
+    ```graphql
+    union Person = Director | Actor
+
+    type Director {
+        name: String
+    }
+
+    type Actor @node {
+        name: String
+    }
+    ```
+
+### Minor Changes
+
+- [#6178](https://github.com/neo4j/graphql/pull/6178) [`7aa1b95`](https://github.com/neo4j/graphql/commit/7aa1b95eb52b5fb5ed2259669b09fa8e8e840f3e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library is now bundled as a dual package containing both CommonJS and ESM builds. This is a changelog entry for #6177.
+
+### Patch Changes
+
+- [#6154](https://github.com/neo4j/graphql/pull/6154) [`5fedc91`](https://github.com/neo4j/graphql/commit/5fedc9115b2b8e68e26b478c9571d7cadfbe9cdd) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed a bug that allowed the `queryName` and `fields` arguments of the `@fulltext` directive to be undefined.
+
 ## 7.0.0-alpha.5
 
 ### Patch Changes
