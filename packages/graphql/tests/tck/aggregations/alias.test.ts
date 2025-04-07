@@ -92,20 +92,7 @@ describe("Cypher Aggregations Many while Alias fields", () => {
                 WITH DISTINCT this
                 RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
-            CALL {
-                WITH *
-                MATCH (this4:Movie)
-                WITH collect({ node: this4 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this4
-                    RETURN collect({ node: { __id: id(this4), __resolveType: \\"Movie\\" } }) AS var5
-                }
-                RETURN var5, totalCount
-            }
-            RETURN { edges: var5, totalCount: totalCount, aggregate: { _count: var0, node: { _title: var1, _imdbRating: var2, _createdAt: var3 } } } AS this"
+            RETURN { aggregate: { _count: var0, node: { _title: var1, _imdbRating: var2, _createdAt: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

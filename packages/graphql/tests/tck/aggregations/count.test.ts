@@ -57,20 +57,7 @@ describe("Cypher Aggregations Count", () => {
                 MATCH (this:Movie)
                 RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
+            RETURN { aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -98,27 +85,12 @@ describe("Cypher Aggregations Count", () => {
                 WHERE this.title = $param0
                 RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WHERE this1.title = $param1
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this"
+            RETURN { aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some-title\\",
-                \\"param1\\": \\"some-title\\"
+                \\"param0\\": \\"some-title\\"
             }"
         `);
     });

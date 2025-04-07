@@ -79,39 +79,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var2
             }
-            CALL {
-                WITH *
-                MATCH (this3:Movie)
-                CALL {
-                    WITH this3
-                    CALL {
-                        WITH this3
-                        WITH this3 AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    WITH s AS this4
-                    RETURN this4 AS var5
-                }
-                WITH *
-                WHERE var5 STARTS WITH $param1
-                WITH collect({ node: this3 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this3
-                    RETURN collect({ node: { __id: id(this3), __resolveType: \\"Movie\\" } }) AS var6
-                }
-                RETURN var6, totalCount
-            }
-            RETURN { edges: var6, totalCount: totalCount, aggregate: { node: { title: var2 } } } AS this"
+            RETURN { aggregate: { node: { title: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"he\\",
-                \\"param1\\": \\"he\\"
+                \\"param0\\": \\"he\\"
             }"
         `);
     });
@@ -172,42 +145,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 WITH DISTINCT this
                 RETURN { min: min(this.released) } AS var2
             }
-            CALL {
-                WITH *
-                MATCH (this3:Movie)
-                CALL {
-                    WITH this3
-                    CALL {
-                        WITH this3
-                        WITH this3 AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    WITH s AS this4
-                    RETURN this4 AS var5
-                }
-                WITH *
-                WHERE var5 > $param1
-                WITH collect({ node: this3 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this3
-                    RETURN collect({ node: { __id: id(this3), __resolveType: \\"Movie\\" } }) AS var6
-                }
-                RETURN var6, totalCount
-            }
-            RETURN { edges: var6, totalCount: totalCount, aggregate: { node: { released: var2 } } } AS this"
+            RETURN { aggregate: { node: { released: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 0,
-                    \\"high\\": 0
-                },
-                \\"param1\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 }
@@ -274,40 +217,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var3
             }
-            CALL {
-                WITH *
-                MATCH (this4:Movie)
-                CALL {
-                    WITH this4
-                    CALL {
-                        WITH this4
-                        WITH this4 AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    UNWIND s AS var5
-                    WITH var5 AS this6
-                    RETURN collect(this6) AS var7
-                }
-                WITH *
-                WHERE $param1 IN var7
-                WITH collect({ node: this4 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this4
-                    RETURN collect({ node: { __id: id(this4), __resolveType: \\"Movie\\" } }) AS var8
-                }
-                RETURN var8, totalCount
-            }
-            RETURN { edges: var8, totalCount: totalCount, aggregate: { node: { title: var3 } } } AS this"
+            RETURN { aggregate: { node: { title: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"test\\",
-                \\"param1\\": \\"test\\"
+                \\"param0\\": \\"test\\"
             }"
         `);
     });
@@ -371,43 +286,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var3
             }
-            CALL {
-                WITH *
-                MATCH (this4:Movie)
-                CALL {
-                    WITH this4
-                    CALL {
-                        WITH this4
-                        WITH this4 AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    UNWIND s AS var5
-                    WITH var5 AS this6
-                    RETURN collect(this6) AS var7
-                }
-                WITH *
-                WHERE $param1 IN var7
-                WITH collect({ node: this4 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this4
-                    RETURN collect({ node: { __id: id(this4), __resolveType: \\"Movie\\" } }) AS var8
-                }
-                RETURN var8, totalCount
-            }
-            RETURN { edges: var8, totalCount: totalCount, aggregate: { node: { title: var3 } } } AS this"
+            RETURN { aggregate: { node: { title: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 2,
-                    \\"high\\": 0
-                },
-                \\"param1\\": {
                     \\"low\\": 2,
                     \\"high\\": 0
                 }

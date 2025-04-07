@@ -74,32 +74,14 @@ describe("Field Level Aggregations Where", () => {
                     WHERE this1.age > $param0
                     RETURN { nodes: count(DISTINCT this1) } AS var2
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:Person)
-                    WHERE this4.age > $param1
-                    WITH collect({ node: this4, relationship: this3 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this4, edge.relationship AS this3
-                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Person\\" } }) AS var5
-                    }
-                    RETURN var5, totalCount
-                }
-                RETURN { edges: var5, totalCount: totalCount, aggregate: { count: var2 } } AS var6
+                RETURN { aggregate: { count: var2 } } AS var3
             }
-            RETURN this { .title, actorsConnection: var6 } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 40,
-                    \\"high\\": 0
-                },
-                \\"param1\\": {
                     \\"low\\": 40,
                     \\"high\\": 0
                 }
@@ -143,55 +125,25 @@ describe("Field Level Aggregations Where", () => {
                     WHERE this1.name CONTAINS $param0
                     RETURN { nodes: count(DISTINCT this1) } AS var2
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:Person)
-                    WHERE this4.name CONTAINS $param1
-                    WITH collect({ node: this4, relationship: this3 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this4, edge.relationship AS this3
-                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Person\\" } }) AS var5
-                    }
-                    RETURN var5, totalCount
-                }
-                RETURN { edges: var5, totalCount: totalCount, aggregate: { count: var2 } } AS var6
+                RETURN { aggregate: { count: var2 } } AS var3
             }
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)<-[this7:DIRECTED]-(this8:Person)
-                    WHERE this8.name CONTAINS $param2
-                    RETURN { nodes: count(DISTINCT this8) } AS var9
+                    MATCH (this)<-[this4:DIRECTED]-(this5:Person)
+                    WHERE this5.name CONTAINS $param1
+                    RETURN { nodes: count(DISTINCT this5) } AS var6
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)<-[this10:DIRECTED]-(this11:Person)
-                    WHERE this11.name CONTAINS $param3
-                    WITH collect({ node: this11, relationship: this10 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this11, edge.relationship AS this10
-                        RETURN collect({ node: { __id: id(this11), __resolveType: \\"Person\\" } }) AS var12
-                    }
-                    RETURN var12, totalCount
-                }
-                RETURN { edges: var12, totalCount: totalCount, aggregate: { count: var9 } } AS var13
+                RETURN { aggregate: { count: var6 } } AS var7
             }
-            RETURN this { .title, actorsConnection: var6, directorsConnection: var13 } AS this"
+            RETURN this { .title, actorsConnection: var3, directorsConnection: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"abc\\",
-                \\"param1\\": \\"abc\\",
-                \\"param2\\": \\"abcdefg\\",
-                \\"param3\\": \\"abcdefg\\"
+                \\"param1\\": \\"abcdefg\\"
             }"
         `);
     });

@@ -79,22 +79,9 @@ describe("Field Level Aggregations Alias", () => {
                     WITH collect(this1.name) AS list
                     RETURN { shortest: last(list) } AS var2
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:Person)
-                    WITH collect({ node: this4, relationship: this3 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this4, edge.relationship AS this3
-                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Actor\\" } }) AS var5
-                    }
-                    RETURN var5, totalCount
-                }
-                RETURN { edges: var5, totalCount: totalCount, aggregate: { node: { name: var2 } } } AS var6
+                RETURN { aggregate: { node: { name: var2 } } } AS var3
             }
-            RETURN this { actorsConnection: var6 } AS this"
+            RETURN this { actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -60,20 +60,7 @@ describe("Cypher Aggregations Float", () => {
                 WITH DISTINCT this
                 RETURN { min: min(this.actorCount) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -103,20 +90,7 @@ describe("Cypher Aggregations Float", () => {
                 WITH DISTINCT this
                 RETURN { max: max(this.actorCount) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -146,20 +120,7 @@ describe("Cypher Aggregations Float", () => {
                 WITH DISTINCT this
                 RETURN { average: avg(this.actorCount) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -189,20 +150,7 @@ describe("Cypher Aggregations Float", () => {
                 WITH DISTINCT this
                 RETURN { sum: sum(this.actorCount) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -235,20 +183,7 @@ describe("Cypher Aggregations Float", () => {
                 WITH DISTINCT this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -288,20 +223,7 @@ describe("Cypher Aggregations Float", () => {
                 WITH DISTINCT this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
             }
-            CALL {
-                WITH *
-                MATCH (this2:Movie)
-                WITH collect({ node: this2 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this2
-                    RETURN collect({ node: { __id: id(this2), __resolveType: \\"Movie\\" } }) AS var3
-                }
-                RETURN var3, totalCount
-            }
-            RETURN { edges: var3, totalCount: totalCount, aggregate: { count: var0, node: { actorCount: var1 } } } AS this"
+            RETURN { aggregate: { count: var0, node: { actorCount: var1 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

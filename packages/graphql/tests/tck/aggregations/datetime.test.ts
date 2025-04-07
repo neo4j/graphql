@@ -60,20 +60,7 @@ describe("Cypher Aggregations DateTime", () => {
                 WITH DISTINCT this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -103,20 +90,7 @@ describe("Cypher Aggregations DateTime", () => {
                 WITH DISTINCT this
                 RETURN { max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -147,20 +121,7 @@ describe("Cypher Aggregations DateTime", () => {
                 WITH DISTINCT this
                 RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

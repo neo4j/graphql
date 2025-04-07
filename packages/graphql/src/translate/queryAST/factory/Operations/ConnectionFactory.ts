@@ -95,7 +95,7 @@ export class ConnectionFactory {
                     entityOrRel: relationship,
                     target: concreteEntity,
                     resolveTree,
-                });
+                }).edges;
             } else {
                 selection = new NodeSelection({
                     target: concreteEntity,
@@ -104,7 +104,7 @@ export class ConnectionFactory {
                     entityOrRel: concreteEntity,
                     target: concreteEntity,
                     resolveTree,
-                });
+                }).edges;
             }
 
             const connectionPartial = new CompositeConnectionPartial({
@@ -188,15 +188,20 @@ export class ConnectionFactory {
 
         let selection: EntitySelection;
         let resolveTreeEdgeFields: Record<string, ResolveTree>;
+        let totalCountEdgeField: ResolveTree | undefined;
+        let pageInfoEdgeField: ResolveTree | undefined;
         if (relationship) {
             selection = new RelationshipSelection({
                 relationship,
             });
-            resolveTreeEdgeFields = this.parseConnectionFields({
+            const { edges, totalCount, pageInfo } = this.parseConnectionFields({
                 entityOrRel: relationship,
                 target,
                 resolveTree,
             });
+            resolveTreeEdgeFields = edges;
+            totalCountEdgeField = totalCount;
+            pageInfoEdgeField = pageInfo;
         } else {
             if (context.resolveTree.args.fulltext || context.resolveTree.args.phrase) {
                 selection = this.fulltextFactory.getFulltextSelection(target, context);
@@ -205,13 +210,20 @@ export class ConnectionFactory {
                     target,
                 });
             }
-            resolveTreeEdgeFields = this.parseConnectionFields({
+            const { edges, totalCount, pageInfo } = this.parseConnectionFields({
                 entityOrRel: target,
                 target,
                 resolveTree,
             });
+            resolveTreeEdgeFields = edges;
+            totalCountEdgeField = totalCount;
+            pageInfoEdgeField = pageInfo;
         }
         const operation = new ConnectionReadOperation({ relationship, target, selection });
+
+        if (Object.keys(resolveTreeEdgeFields).length === 0 && !totalCountEdgeField && !pageInfoEdgeField) {
+            operation.skipConnection = true;
+        }
 
         this.hydrateConnectionOperationAST({
             relationship,
@@ -517,7 +529,7 @@ export class ConnectionFactory {
         entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
         target: ConcreteEntityAdapter;
         resolveTree: ResolveTree;
-    }): Record<string, ResolveTree> {
+    }): { edges: Record<string, ResolveTree>; totalCount?: ResolveTree; pageInfo?: ResolveTree } {
         const resolveTreeConnectionFields = this.parseConnectionResolveTree({
             entityOrRel,
             target,
@@ -526,13 +538,19 @@ export class ConnectionFactory {
 
         const entityInterfaces = getEntityInterfaces(target);
         const edgeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "edges");
+        const totalCountFieldRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "totalCount");
+        const pageInfoFieldRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "pageInfo");
         const interfacesEdgeFields = entityInterfaces.map((interfaceAdapter) => {
             return getFieldsByTypeName(edgeFieldsRaw, `${interfaceAdapter.name}Edge`);
         });
 
         const concreteEdgeFields = getFieldsByTypeName(edgeFieldsRaw, entityOrRel.operations.relationshipFieldTypename);
 
-        return deepMerge([...interfacesEdgeFields, concreteEdgeFields]);
+        return {
+            edges: deepMerge([...interfacesEdgeFields, concreteEdgeFields]),
+            totalCount: totalCountFieldRaw[0],
+            pageInfo: pageInfoFieldRaw[0],
+        };
     }
 
     private parseConnectionResolveTree({

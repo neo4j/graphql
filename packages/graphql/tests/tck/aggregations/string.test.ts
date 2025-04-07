@@ -63,20 +63,7 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -108,20 +95,7 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -154,20 +128,7 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -200,27 +161,12 @@ describe("Cypher Aggregations String", () => {
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:Movie)
-                WHERE this1.testId = $param1
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { title: var0 } } } AS this"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"10\\",
-                \\"param1\\": \\"10\\"
+                \\"param0\\": \\"10\\"
             }"
         `);
     });

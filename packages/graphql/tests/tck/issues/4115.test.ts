@@ -119,32 +119,9 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
                     }))
                     RETURN { nodes: count(DISTINCT this1) } AS var5
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)<-[this6:MEMBER_OF]-(this7:Person)
-                    WHERE ($isAuthenticated = true AND (EXISTS {
-                        MATCH (this7)<-[:CREATOR_OF]-(this8:User)
-                        WHERE ($jwt.uid IS NOT NULL AND this8.id = $jwt.uid)
-                    } AND EXISTS {
-                        MATCH (this7)-[:MEMBER_OF]->(this9:Family)
-                        WHERE EXISTS {
-                            MATCH (this9)<-[:CREATOR_OF]-(this10:User)
-                            WHERE ($param3 IS NOT NULL AND $param3 IN this10.roles)
-                        }
-                    }))
-                    WITH collect({ node: this7, relationship: this6 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this7, edge.relationship AS this6
-                        RETURN collect({ node: { __id: id(this7), __resolveType: \\"Person\\" } }) AS var11
-                    }
-                    RETURN var11, totalCount
-                }
-                RETURN { edges: var11, totalCount: totalCount, aggregate: { count: var5 } } AS var12
+                RETURN { aggregate: { count: var5 } } AS var6
             }
-            RETURN this { .id, membersConnection: var12 } AS this"
+            RETURN this { .id, membersConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -156,8 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
                     ],
                     \\"sub\\": \\"michel\\"
                 },
-                \\"param2\\": \\"plan:paid\\",
-                \\"param3\\": \\"plan:paid\\"
+                \\"param2\\": \\"plan:paid\\"
             }"
         `);
     });

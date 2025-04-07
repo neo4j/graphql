@@ -107,36 +107,15 @@ describe("https://github.com/neo4j/graphql/issues/4116", () => {
                     })
                     RETURN { nodes: count(DISTINCT this1) } AS var4
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)<-[this5:MEMBER_OF]-(this6:Person)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this6)-[:MEMBER_OF]->(this7:Family)
-                        WHERE EXISTS {
-                            MATCH (this7)<-[:CREATOR_OF]-(this8:User)
-                            WHERE ($param2 IS NOT NULL AND $param2 IN this8.roles)
-                        }
-                    })
-                    WITH collect({ node: this6, relationship: this5 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this6, edge.relationship AS this5
-                        RETURN collect({ node: { __id: id(this6), __resolveType: \\"Person\\" } }) AS var9
-                    }
-                    RETURN var9, totalCount
-                }
-                RETURN { edges: var9, totalCount: totalCount, aggregate: { count: var4 } } AS var10
+                RETURN { aggregate: { count: var4 } } AS var5
             }
-            RETURN this { .id, membersConnection: var10 } AS this"
+            RETURN this { .id, membersConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"isAuthenticated\\": true,
-                \\"param1\\": \\"plan:paid\\",
-                \\"param2\\": \\"plan:paid\\"
+                \\"param1\\": \\"plan:paid\\"
             }"
         `);
     });

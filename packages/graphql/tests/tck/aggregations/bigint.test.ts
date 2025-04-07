@@ -60,20 +60,7 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH DISTINCT this
                 RETURN { min: min(this.size) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:File)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -103,20 +90,7 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH DISTINCT this
                 RETURN { max: max(this.size) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:File)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -146,20 +120,7 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH DISTINCT this
                 RETURN { average: avg(this.size) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:File)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -189,20 +150,7 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH DISTINCT this
                 RETURN { sum: sum(this.size) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:File)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -235,20 +183,7 @@ describe("Cypher Aggregations BigInt", () => {
                 WITH DISTINCT this
                 RETURN { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } AS var0
             }
-            CALL {
-                WITH *
-                MATCH (this1:File)
-                WITH collect({ node: this1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"File\\" } }) AS var2
-                }
-                RETURN var2, totalCount
-            }
-            RETURN { edges: var2, totalCount: totalCount, aggregate: { node: { size: var0 } } } AS this"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

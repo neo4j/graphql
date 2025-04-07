@@ -84,55 +84,25 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
                     WHERE $param0 IN this1.mitigationState
                     RETURN { nodes: count(DISTINCT this1) } AS var2
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)-[this3:OWNS_RISK]->(this4:Risk)
-                    WHERE $param1 IN this4.mitigationState
-                    WITH collect({ node: this4, relationship: this3 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this4, edge.relationship AS this3
-                        RETURN collect({ node: { __id: id(this4), __resolveType: \\"Risk\\" } }) AS var5
-                    }
-                    RETURN var5, totalCount
-                }
-                RETURN { edges: var5, totalCount: totalCount, aggregate: { count: var2 } } AS var6
+                RETURN { aggregate: { count: var2 } } AS var3
             }
             CALL {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[this7:OWNS_RISK]->(this8:Risk)
-                    WHERE $param2 IN this8.mitigationState
-                    RETURN { nodes: count(DISTINCT this8) } AS var9
+                    MATCH (this)-[this4:OWNS_RISK]->(this5:Risk)
+                    WHERE $param1 IN this5.mitigationState
+                    RETURN { nodes: count(DISTINCT this5) } AS var6
                 }
-                CALL {
-                    WITH *
-                    MATCH (this)-[this10:OWNS_RISK]->(this11:Risk)
-                    WHERE $param3 IN this11.mitigationState
-                    WITH collect({ node: this11, relationship: this10 }) AS edges
-                    WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
-                        UNWIND edges AS edge
-                        WITH edge.node AS this11, edge.relationship AS this10
-                        RETURN collect({ node: { __id: id(this11), __resolveType: \\"Risk\\" } }) AS var12
-                    }
-                    RETURN var12, totalCount
-                }
-                RETURN { edges: var12, totalCount: totalCount, aggregate: { count: var9 } } AS var13
+                RETURN { aggregate: { count: var6 } } AS var7
             }
-            RETURN this { accepted: var6, identified: var13 } AS this"
+            RETURN this { accepted: var3, identified: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Accepted\\",
-                \\"param1\\": \\"Accepted\\",
-                \\"param2\\": \\"Identified\\",
-                \\"param3\\": \\"Identified\\"
+                \\"param1\\": \\"Identified\\"
             }"
         `);
     });
