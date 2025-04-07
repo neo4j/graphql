@@ -2,11 +2,10 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "rootDir": ".",
-        "outDir": "../dist-esm",
-        "module": "ES2022",
+        "outDir": "../dist",
+        "module": "commonjs",
         "target": "es2021",
-        "moduleResolution": "node10",
-        "declarationDir": "../dist-types"
+        "moduleResolution": "node10"
     },
     "exclude": ["**/*.test.ts", "test-api.ts"],
     "references": [

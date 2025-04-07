@@ -9,5 +9,5 @@
         }
     },
     "include": ["src/**/*"],
-    "references": [{ "path": "../graphql/src/tsconfig.production.cjs.json" }]
+    "references": [{ "path": "../graphql/src/tsconfig.production.json" }]
 }
