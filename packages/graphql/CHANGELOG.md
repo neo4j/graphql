@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.7
+
+### Patch Changes
+
+- [#6180](https://github.com/neo4j/graphql/pull/6180) [`eae9bb4`](https://github.com/neo4j/graphql/commit/eae9bb427bb41f8436951400b36aa4f30a8e2b9c) Thanks [@angrykoala](https://github.com/angrykoala)! - Revert dual package bundling. Publishing only cjs package
+
 ## 7.0.0-alpha.6
 
 ### Major Changes
