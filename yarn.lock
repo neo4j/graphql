@@ -2244,7 +2244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mswjs/interceptors@npm:^0.38.0":
+"@mswjs/interceptors@npm:^0.38.1":
   version: 0.38.1
   resolution: "@mswjs/interceptors@npm:0.38.1"
   dependencies:
@@ -2330,11 +2330,11 @@ __metadata:
     jest-extended: "npm:4.0.2"
     jose: "npm:^5.0.0"
     jwks-rsa: "npm:3.2.0"
-    koa: "npm:2.16.0"
+    koa: "npm:2.16.1"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:13.0.1"
     mock-jwks: "npm:3.3.5"
-    nock: "npm:14.0.2"
+    nock: "npm:14.0.3"
     pluralize: "npm:^8.0.0"
     randomstring: "npm:1.3.1"
     rimraf: "npm:6.0.1"
@@ -2342,7 +2342,7 @@ __metadata:
     supertest: "npm:7.1.0"
     ts-jest: "npm:29.3.1"
     ts-node: "npm:10.9.2"
-    typescript: "npm:5.8.2"
+    typescript: "npm:5.8.3"
     typescript-memoize: "npm:^1.1.1"
     ws: "npm:8.18.1"
   peerDependencies:
@@ -2364,7 +2364,7 @@ __metadata:
     jest: "npm:29.7.0"
     pluralize: "npm:^8.0.0"
     ts-jest: "npm:29.3.1"
-    typescript: "npm:5.8.2"
+    typescript: "npm:5.8.3"
   peerDependencies:
     neo4j-driver: ^5.8.0
   languageName: unknown
@@ -4169,7 +4169,7 @@ __metadata:
     neo4j-driver: "npm:^5.8.0"
     ts-loader: "npm:9.5.2"
     tsconfig-paths-webpack-plugin: "npm:4.2.0"
-    typescript: "npm:5.8.2"
+    typescript: "npm:5.8.3"
     webpack: "npm:5.98.0"
   languageName: unknown
   linkType: soft
@@ -7584,16 +7584,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:4.3.1":
-  version: 4.3.1
-  resolution: "eslint-import-resolver-typescript@npm:4.3.1"
+"eslint-import-resolver-typescript@npm:4.3.2":
+  version: 4.3.2
+  resolution: "eslint-import-resolver-typescript@npm:4.3.2"
   dependencies:
     debug: "npm:^4.4.0"
     get-tsconfig: "npm:^4.10.0"
     is-bun-module: "npm:^2.0.0"
     stable-hash: "npm:^0.0.5"
     tinyglobby: "npm:^0.2.12"
-    unrs-resolver: "npm:^1.3.3"
+    unrs-resolver: "npm:^1.4.1"
   peerDependencies:
     eslint: "*"
     eslint-plugin-import: "*"
@@ -7603,7 +7603,7 @@ __metadata:
       optional: true
     eslint-plugin-import-x:
       optional: true
-  checksum: 10c0/ed6ff5f71e41495d0045625497fbcdc09a54bcca959b118a35e505edaaf5dd9fcd2d5d10477b952fe59d1d9cb2703f43cc30595a7ba9b569169515c1646d51ea
+  checksum: 10c0/76af6e18e0363a62a4b3e92c043dc2060c5e1f84973f596efe0d2f5d838d572d3714136310d2c68257f50b829ab88e79c534a22a57752195b780642fc7d5e943
   languageName: node
   linkType: hard
 
@@ -11494,9 +11494,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa@npm:2.16.0":
-  version: 2.16.0
-  resolution: "koa@npm:2.16.0"
+"koa@npm:2.16.1":
+  version: 2.16.1
+  resolution: "koa@npm:2.16.1"
   dependencies:
     accepts: "npm:^1.3.5"
     cache-content-type: "npm:^1.0.0"
@@ -11521,7 +11521,7 @@ __metadata:
     statuses: "npm:^1.5.0"
     type-is: "npm:^1.6.16"
     vary: "npm:^1.1.2"
-  checksum: 10c0/7416042e6b47b6eaf7131e57fa1857ca3e695ddff4088bf228c85d4ba1c4dc9510ab4aaaff5466bcc5df5e81370532edd15939095c796226a95f068306c8436e
+  checksum: 10c0/66beb2e4d7968e1081341ea9a9c1f7f3fad4aaa0475c813f1be79ed84c345d9d45de9e34eeee3cdd790fc81ee5efbde2223d49fd5da571e29b0b3bed6baafb8e
   languageName: node
   linkType: hard
 
@@ -13122,7 +13122,7 @@ __metadata:
     eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:10.1.1"
     eslint-formatter-summary: "npm:1.1.0"
-    eslint-import-resolver-typescript: "npm:4.3.1"
+    eslint-import-resolver-typescript: "npm:4.3.2"
     eslint-plugin-eslint-comments: "npm:3.2.0"
     eslint-plugin-import: "npm:2.31.0"
     eslint-plugin-jest: "npm:28.11.0"
@@ -13135,7 +13135,7 @@ __metadata:
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.3.1"
-    typescript: "npm:5.8.2"
+    typescript: "npm:5.8.3"
   languageName: unknown
   linkType: soft
 
@@ -13171,14 +13171,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:14.0.2":
-  version: 14.0.2
-  resolution: "nock@npm:14.0.2"
+"nock@npm:14.0.3":
+  version: 14.0.3
+  resolution: "nock@npm:14.0.3"
   dependencies:
-    "@mswjs/interceptors": "npm:^0.38.0"
+    "@mswjs/interceptors": "npm:^0.38.1"
     json-stringify-safe: "npm:^5.0.1"
     propagate: "npm:^2.0.0"
-  checksum: 10c0/b593749257ff290db1ffedb0b2187a4b2508776c4f819a35055d34e68074b85d8df8b2821c2babfb0dbb0917679891d1017bde28624823d2a07135a3d4bbf9ff
+  checksum: 10c0/ce8196bc66827da8c368f00c88cbf0f1e5cccde4cc6c5a6629540b3a45cd629cd510d916d799b386cff27fe90cf80269e4c83a86ecae72bda40f55f9595c2ae2
   languageName: node
   linkType: hard
 
@@ -17528,23 +17528,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.8.2":
-  version: 5.8.2
-  resolution: "typescript@npm:5.8.2"
+"typescript@npm:5.8.3":
+  version: 5.8.3
+  resolution: "typescript@npm:5.8.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/5c4f6fbf1c6389b6928fe7b8fcd5dc73bb2d58cd4e3883f1d774ed5bd83b151cbac6b7ecf11723de56d4676daeba8713894b1e9af56174f2f9780ae7848ec3c6
+  checksum: 10c0/5f8bb01196e542e64d44db3d16ee0e4063ce4f3e3966df6005f2588e86d91c03e1fb131c2581baf0fb65ee79669eea6e161cd448178986587e9f6844446dbb48
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>":
-  version: 5.8.2
-  resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=5786d5"
+"typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>":
+  version: 5.8.3
+  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/5448a08e595cc558ab321e49d4cac64fb43d1fa106584f6ff9a8d8e592111b373a995a1d5c7f3046211c8a37201eb6d0f1566f15cdb7a62a5e3be01d087848e2
+  checksum: 10c0/39117e346ff8ebd87ae1510b3a77d5d92dae5a89bde588c747d25da5c146603a99c8ee588c7ef80faaf123d89ed46f6dbd918d534d641083177d5fac38b8a1cb
   languageName: node
   linkType: hard
 
@@ -17680,7 +17680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unrs-resolver@npm:^1.3.3":
+"unrs-resolver@npm:^1.4.1":
   version: 1.4.1
   resolution: "unrs-resolver@npm:1.4.1"
   dependencies:
